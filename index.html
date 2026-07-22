@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="La Urbana">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2d6a4f">
 <title>La Urbana</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -1621,6 +1625,12 @@ function arrancarApp() {
 window._appReady = arrancarApp;
 if(window._firebaseReady) {
   arrancarApp();
+}
+</script>
+<!-- Service Worker para PWA -->
+<script>
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
 </script>
 </body>
