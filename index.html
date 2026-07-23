@@ -29,14 +29,27 @@ body.dark{--negro:#1a1209;--negro-c:#231a0f;--negro-m:#2e2215;--crema:#f5efe6;--
 
 /* LOGIN */
 #login-screen{position:fixed;inset:0;background:var(--negro);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px}
-#login-screen img{height:64px;margin-bottom:24px}
-#login-screen h2{color:var(--oro);font-size:1.4rem;margin-bottom:8px;text-align:center}
-#login-screen p{color:var(--gris);font-size:14px;margin-bottom:28px;text-align:center}
-.login-btn{width:100%;max-width:320px;padding:16px;border-radius:14px;border:2px solid var(--negro-m);background:var(--negro-c);color:var(--crema);font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:12px;text-align:left;display:flex;align-items:center;gap:14px;transition:border-color .2s}
-.login-btn:hover{border-color:var(--oro)}
-.login-btn .role-emoji{font-size:2rem}
+#login-screen img{height:56px;margin-bottom:16px}
+#login-screen h2{color:var(--oro);font-size:1.4rem;margin-bottom:4px;text-align:center}
+#login-screen p{color:var(--gris);font-size:14px;margin-bottom:6px;text-align:center}
+.bourdain{font-size:12px;color:var(--gris);font-style:italic;text-align:center;margin-bottom:22px;max-width:300px;line-height:1.6;padding:10px 14px;border-left:2px solid var(--oro);background:rgba(201,151,58,.07);border-radius:0 8px 8px 0}
+.login-btn{width:100%;max-width:320px;padding:14px 16px;border-radius:14px;border:2px solid var(--negro-m);background:var(--negro-c);color:var(--crema);font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:10px;text-align:left;display:flex;align-items:center;gap:14px;transition:border-color .2s}
+.login-btn:hover,.login-btn.sel{border-color:var(--oro)}
+.login-btn .role-emoji{font-size:1.8rem}
 .login-btn .role-name{font-size:1rem;font-weight:800}
 .login-btn .role-desc{font-size:12px;color:var(--gris);margin-top:2px}
+/* PIN pad */
+#pin-panel{display:none;width:100%;max-width:320px;text-align:center}
+#pin-panel .pin-quien{font-size:14px;color:var(--gris);margin-bottom:8px}
+#pin-dots{display:flex;justify-content:center;gap:10px;margin-bottom:16px}
+#pin-dots span{width:14px;height:14px;border-radius:50%;border:2px solid var(--gris);background:transparent;display:block;transition:background .15s}
+#pin-dots span.lleno{background:var(--oro);border-color:var(--oro)}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.pin-key{background:var(--negro-c);border:2px solid var(--negro-m);border-radius:12px;padding:16px;font-size:1.3rem;font-weight:700;cursor:pointer;color:var(--crema);transition:all .1s;user-select:none}
+.pin-key:active{background:var(--oro);color:var(--negro);border-color:var(--oro);transform:scale(.95)}
+.pin-key.del{color:var(--gris);font-size:1rem}
+#pin-error{color:#e05555;font-size:13px;font-weight:700;min-height:18px;margin-bottom:6px}
+.btn-volver{background:none;border:none;color:var(--gris);font-size:13px;cursor:pointer;text-decoration:underline;margin-top:4px}
 
 /* HEADER */
 header{background:var(--negro-c);padding:10px 16px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,0.5);border-bottom:2px solid var(--oro);display:flex;align-items:center;justify-content:space-between}
@@ -211,18 +224,46 @@ nav button.oculto{display:none}
   <img src="https://laurbana.es/wp-content/uploads/2023/08/1-La%20urbana.png" alt="La Urbana" onerror="this.style.display='none'">
   <h2>La Urbana</h2>
   <p>¿Quién eres hoy?</p>
-  <button class="login-btn" onclick="iniciarSesion('lore')">
-    <div class="role-emoji">👩‍🍳</div>
-    <div><div class="role-name">Lore</div><div class="role-desc">Acceso completo · Gestión total</div></div>
-  </button>
-  <button class="login-btn" onclick="iniciarSesion('cesar')">
-    <div class="role-emoji">🧑‍💼</div>
-    <div><div class="role-name">César</div><div class="role-desc">Acceso completo · Propietario</div></div>
-  </button>
-  <button class="login-btn" onclick="iniciarSesion('maria')">
-    <div class="role-emoji">🧑‍🍳</div>
-    <div><div class="role-name">María</div><div class="role-desc">Stock del día · Mermas · Pedidos</div></div>
-  </button>
+  <div class="bourdain" id="bourdain-quote"></div>
+
+  <!-- selección de persona -->
+  <div id="login-roles">
+    <button class="login-btn" onclick="seleccionarRol('lore',this)">
+      <div class="role-emoji">👩‍🍳</div>
+      <div><div class="role-name">Lore</div><div class="role-desc">Acceso completo · Gestión total</div></div>
+    </button>
+    <button class="login-btn" onclick="seleccionarRol('cesar',this)">
+      <div class="role-emoji">🧑‍💼</div>
+      <div><div class="role-name">César</div><div class="role-desc">Acceso completo · Propietario</div></div>
+    </button>
+    <button class="login-btn" onclick="seleccionarRol('maria',this)">
+      <div class="role-emoji">🧑‍🍳</div>
+      <div><div class="role-name">María</div><div class="role-desc">Stock del día · Mermas · Pedidos</div></div>
+    </button>
+  </div>
+
+  <!-- PIN pad -->
+  <div id="pin-panel">
+    <div class="pin-quien" id="pin-quien-txt">Introduce tu PIN</div>
+    <div id="pin-dots">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div id="pin-error"></div>
+    <div class="pin-grid">
+      <button class="pin-key" onclick="pinPulsar('1')">1</button>
+      <button class="pin-key" onclick="pinPulsar('2')">2</button>
+      <button class="pin-key" onclick="pinPulsar('3')">3</button>
+      <button class="pin-key" onclick="pinPulsar('4')">4</button>
+      <button class="pin-key" onclick="pinPulsar('5')">5</button>
+      <button class="pin-key" onclick="pinPulsar('6')">6</button>
+      <button class="pin-key" onclick="pinPulsar('7')">7</button>
+      <button class="pin-key" onclick="pinPulsar('8')">8</button>
+      <button class="pin-key" onclick="pinPulsar('9')">9</button>
+      <button class="pin-key" onclick="pinPulsar('0')" style="grid-column:2">0</button>
+      <button class="pin-key del" onclick="pinBorrar()">⌫</button>
+    </div>
+    <button class="btn-volver" onclick="volverLogin()">← Cambiar persona</button>
+  </div>
 </div>
 
 <!-- HEADER -->
@@ -746,11 +787,99 @@ function initTema() {
 }
 
 // ══════════════════════════════════════════
-// LOGIN / ROLES
+// BOURDAIN QUOTES
 // ══════════════════════════════════════════
+const BOURDAIN = [
+  "Your body is not a temple, it's an amusement park. Enjoy the ride.",
+  "Skills can be taught. Character you either have or you don't have.",
+  "If you're twenty-two, physically fit, hungry to learn and be better, I urge you to travel — as far and as widely as possible.",
+  "Do we really want to travel in hermetically sealed popemobiles through the rural provinces of France, Mexico and the Far East?",
+  "Without new experiences, something inside of us sleeps. The sleeper must awaken.",
+  "I wanted adventure. I wanted to find the edges of what I could do.",
+  "Context and memory play powerful roles in all the truly great meals in one's life.",
+  "A gourmet who thinks of calories is like a tart who looks at her watch.",
+  "Meals make the society, hold the fabric together in lots of ways that were charming and interesting and intoxicating to me.",
+  "The journey is part of the experience — an expression of the seriousness of one's intent.",
+  "I cook. I know how to cook and I like doing it — it's one of the things in life I'm good at.",
+  "Good food and good eating are about risk.",
+  "Be a traveler, not a tourist.",
+  "Open your mind, get up off the couch, move.",
+  "Pull yourself up from wherever you are. Live without a safety net.",
+];
+function initBourdain() {
+  const q = BOURDAIN[Math.floor(Math.random() * BOURDAIN.length)];
+  const el = document.getElementById('bourdain-quote');
+  if (el) el.textContent = '"' + q + '"';
+}
+
+// ══════════════════════════════════════════
+// LOGIN / ROLES / PIN
+// ══════════════════════════════════════════
+const PINS = { lore:'1234', cesar:'5678', maria:'0000' };
+// Para cambiar PINes: modifica los valores de PINS arriba.
+// lore:1234 · cesar:5678 · maria:0000
+
+let pinRolActual = null;
+let pinBuffer = '';
+
+function seleccionarRol(rol, btn) {
+  pinRolActual = rol;
+  pinBuffer = '';
+  document.getElementById('login-roles').style.display = 'none';
+  document.getElementById('pin-panel').style.display = 'block';
+  const names = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
+  document.getElementById('pin-quien-txt').textContent = names[rol] + ' — introduce tu PIN';
+  document.getElementById('pin-error').textContent = '';
+  actualizarDots();
+}
+
+function volverLogin() {
+  pinRolActual = null;
+  pinBuffer = '';
+  document.getElementById('pin-panel').style.display = 'none';
+  document.getElementById('login-roles').style.display = 'block';
+  document.getElementById('pin-error').textContent = '';
+  actualizarDots();
+}
+
+function pinPulsar(d) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += d;
+  actualizarDots();
+  if (pinBuffer.length === 4) {
+    setTimeout(verificarPin, 120);
+  }
+}
+
+function pinBorrar() {
+  pinBuffer = pinBuffer.slice(0,-1);
+  actualizarDots();
+  document.getElementById('pin-error').textContent = '';
+}
+
+function actualizarDots() {
+  const dots = document.querySelectorAll('#pin-dots span');
+  dots.forEach((d,i) => d.classList.toggle('lleno', i < pinBuffer.length));
+}
+
+function verificarPin() {
+  const pinCorrecto = PINS[pinRolActual];
+  if (pinBuffer === pinCorrecto) {
+    iniciarSesion(pinRolActual);
+  } else {
+    document.getElementById('pin-error').textContent = 'PIN incorrecto. Inténtalo de nuevo.';
+    pinBuffer = '';
+    actualizarDots();
+    // vibrar si disponible
+    if (navigator.vibrate) navigator.vibrate([80,40,80]);
+  }
+}
+
 function iniciarSesion(rol) {
   USUARIO = rol;
   document.getElementById('login-screen').style.display = 'none';
+  // reset panel para próxima vez
+  volverLogin();
   const names = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
   const badge = document.getElementById('header-role');
   badge.textContent = names[rol];
@@ -763,6 +892,7 @@ function cerrarSesion() {
   USUARIO = null;
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('header-role').textContent = '—';
+  initBourdain();
 }
 function aplicarPermisos() {
   ['nav-menu','nav-recetas','nav-proveedores','nav-historial','nav-spotify','nav-instagram'].forEach(id => {
@@ -1691,6 +1821,7 @@ function arrancarApp() {
 window._appReady = arrancarApp;
 if (window._firebaseReady) arrancarApp();
 initTema();
+initBourdain();
 </script>
 
 <script>
