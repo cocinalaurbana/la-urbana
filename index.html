@@ -369,11 +369,54 @@ nav button.oculto{display:none}
     <div class="form-group"><input type="text" id="pincho-nuevo" placeholder="Nuevo pincho..." onkeydown="if(event.key==='Enter')addPincho()"></div>
     <button class="btn btn-outline btn-sm" onclick="addPincho()">+ Añadir</button>
   </div>
+  <!-- COMIDA DEL PERSONAL: cuadro semanal -->
   <div class="card">
     <div class="card-title">👨‍🍳 Comida del personal</div>
-    <div class="form-group"><input type="text" id="personal-plato" placeholder="¿Qué comemos hoy?"></div>
-    <button class="btn btn-outline btn-sm" onclick="guardarPersonal()">Guardar</button>
-    <div id="personal-actual" style="font-size:14px;color:var(--oro);margin-top:8px;font-weight:600"></div>
+
+    <!-- presupuesto semanal -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:var(--negro);border-radius:10px;padding:10px 14px;border:1px solid var(--negro-m)">
+      <div style="flex:1">
+        <div style="font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Presupuesto semanal</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <input type="number" id="personal-presupuesto" step="1" min="0" placeholder="ej. 50"
+            style="width:90px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--negro-m);font-size:1rem;font-weight:700;color:var(--crema);background:var(--negro-c)"
+            oninput="actualizarPresupuesto()">
+          <span style="color:var(--gris);font-size:.9rem">€ / semana</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:4px">Gastado</div>
+        <div id="personal-gastado" style="font-size:1.4rem;font-weight:800;color:var(--verde-m)">0€</div>
+        <div id="personal-resto" style="font-size:11px;color:var(--gris)">—</div>
+      </div>
+    </div>
+
+    <!-- cuadro semanal -->
+    <div id="personal-semana" style="margin-bottom:14px"></div>
+
+    <!-- añadir al día -->
+    <div style="background:var(--negro);border-radius:10px;padding:12px;border:1px solid var(--negro-m)">
+      <div style="font-size:12px;font-weight:700;color:var(--gris);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Añadir comida</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <select id="personal-dia-sel" style="padding:8px 10px;border-radius:8px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);flex:1">
+          <option value="lun">Lunes</option><option value="mar">Martes</option><option value="mie">Miércoles</option>
+          <option value="jue">Jueves</option><option value="vie">Viernes</option><option value="sab">Sábado</option><option value="dom">Domingo</option>
+        </select>
+        <input type="number" id="personal-coste" step="0.5" min="0" placeholder="€ coste"
+          style="width:90px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+      </div>
+      <input type="text" id="personal-plato" placeholder="¿Qué coméis? ej. Arroz caldoso con costilla"
+        style="width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid var(--negro-m);font-size:15px;color:var(--crema);background:var(--negro-c);margin-bottom:8px"
+        onkeydown="if(event.key==='Enter')guardarPersonal()">
+      <button class="btn btn-oro btn-sm btn-full" onclick="guardarPersonal()">Guardar</button>
+    </div>
+
+    <!-- propuestas de recetas -->
+    <div style="margin-top:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">💡 Propuestas (de las recetas guardadas)</div>
+      <div id="personal-propuestas" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      <div style="font-size:12px;color:var(--gris);margin-top:6px">Las recetas marcadas como "Personal" aparecen aquí. Toca una para añadirla al día seleccionado.</div>
+    </div>
   </div>
 </div>
 
@@ -1226,8 +1269,15 @@ function initMenu() {
   document.getElementById('menu-fecha').value = hoy();
   cargarMenuFecha();
   renderPinchos();
-  const personal = cargar('personal_'+hoy(),'');
-  document.getElementById('personal-actual').textContent = personal ? '🍴 Hoy: '+personal : '';
+  // preselector de día: poner el día de hoy
+  const dias = ['dom','lun','mar','mie','jue','vie','sab'];
+  const diaHoy = dias[new Date().getDay()];
+  document.getElementById('personal-dia-sel').value = diaHoy;
+  renderPersonalSemana();
+  renderPersonalPropuestas();
+  // presupuesto
+  const pres = cargar('personal_presupuesto', '');
+  if (pres) document.getElementById('personal-presupuesto').value = pres;
 }
 function cargarMenuFecha() {
   const fecha = document.getElementById('menu-fecha').value;
@@ -1275,14 +1325,131 @@ function borrarPincho(i) {
   guardar('pinchos',p);
   renderPinchos();
 }
-function guardarPersonal() {
-  const val = document.getElementById('personal-plato').value.trim();
-  if (!val) return;
-  guardar('personal_'+hoy(), val);
-  document.getElementById('personal-actual').textContent = '🍴 Hoy: '+val;
-  document.getElementById('personal-plato').value = '';
-  toast('Guardado ✓');
+// ═══════════════════════════════════════════
+// PERSONAL SEMANAL
+// ═══════════════════════════════════════════
+const DIAS_LABELS = {lun:'Lunes',mar:'Martes',mie:'Miércoles',jue:'Jueves',vie:'Viernes',sab:'Sábado',dom:'Domingo'};
+const DIAS_ORD = ['lun','mar','mie','jue','vie','sab','dom'];
+
+function getSemanaKey() {
+  // lunes de la semana actual como clave
+  const hoyDate = new Date();
+  const dow = hoyDate.getDay(); // 0=dom
+  const lunes = new Date(hoyDate);
+  lunes.setDate(hoyDate.getDate() - (dow === 0 ? 6 : dow - 1));
+  return lunes.toISOString().slice(0,10);
 }
+
+function getPersonalSemana() {
+  return cargar('personal_semana_' + getSemanaKey(), {});
+}
+
+function actualizarPresupuesto() {
+  const val = document.getElementById('personal-presupuesto').value;
+  guardar('personal_presupuesto', val);
+  renderPersonalSemana();
+}
+
+function renderPersonalSemana() {
+  const semana = getPersonalSemana();
+  const presupuesto = parseFloat(cargar('personal_presupuesto', 0)) || 0;
+  const gastado = Object.values(semana).reduce((s, d) => s + (parseFloat(d.coste)||0), 0);
+  const resto = presupuesto - gastado;
+
+  // actualizar contadores
+  document.getElementById('personal-gastado').textContent = gastado.toFixed(2) + '€';
+  document.getElementById('personal-gastado').style.color = presupuesto > 0 && gastado > presupuesto ? '#e05555' : 'var(--verde-m)';
+  if (presupuesto > 0) {
+    document.getElementById('personal-resto').textContent = resto >= 0 ? `Quedan ${resto.toFixed(2)}€` : `⚠️ Pasado ${Math.abs(resto).toFixed(2)}€`;
+    document.getElementById('personal-resto').style.color = resto >= 0 ? 'var(--gris)' : '#e05555';
+  } else {
+    document.getElementById('personal-resto').textContent = 'Sin presupuesto fijado';
+  }
+
+  const el = document.getElementById('personal-semana');
+  let html = '';
+  DIAS_ORD.forEach(d => {
+    const entrada = semana[d];
+    const tieneHoy = d === (['dom','lun','mar','mie','jue','vie','sab'][new Date().getDay()]);
+    html += `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--negro-m)">
+      <div style="width:36px;text-align:center;font-size:11px;font-weight:800;color:${tieneHoy ? 'var(--oro)' : 'var(--gris)'};text-transform:uppercase">${d.toUpperCase()}</div>
+      <div style="flex:1">`;
+    if (entrada && entrada.plato) {
+      html += `<div style="font-size:.9rem;font-weight:600;color:var(--crema)">${entrada.plato}</div>`;
+      if (entrada.coste) html += `<div style="font-size:11px;color:var(--gris);margin-top:2px">${parseFloat(entrada.coste).toFixed(2)}€</div>`;
+    } else {
+      html += `<div style="font-size:.85rem;color:var(--gris);opacity:.6">Sin anotar</div>`;
+    }
+    html += `</div>`;
+    if (entrada && entrada.plato) {
+      html += `<button onclick="borrarPersonalDia('${d}')" style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px;padding:4px">×</button>`;
+    } else {
+      html += `<button onclick="seleccionarDiaPersonal('${d}')" style="background:none;border:none;color:var(--oro);cursor:pointer;font-size:18px;padding:4px">+</button>`;
+    }
+    html += `</div>`;
+  });
+  el.innerHTML = html || '<div style="color:var(--gris);font-size:14px">Semana vacía.</div>';
+}
+
+function seleccionarDiaPersonal(d) {
+  document.getElementById('personal-dia-sel').value = d;
+  document.getElementById('personal-plato').focus();
+}
+
+function guardarPersonal() {
+  const plato = document.getElementById('personal-plato').value.trim();
+  if (!plato) { toast('Escribe qué coméis'); return; }
+  const dia = document.getElementById('personal-dia-sel').value;
+  const coste = parseFloat(document.getElementById('personal-coste').value) || 0;
+
+  // comprobar si supera presupuesto
+  const presupuesto = parseFloat(cargar('personal_presupuesto', 0)) || 0;
+  if (presupuesto > 0) {
+    const semana = getPersonalSemana();
+    const gastadoActual = Object.values(semana).reduce((s, d) => s + (parseFloat(d.coste)||0), 0);
+    const gastadoSinEsteDia = gastadoActual - (semana[dia] ? parseFloat(semana[dia].coste)||0 : 0);
+    if (gastadoSinEsteDia + coste > presupuesto) {
+      if (!confirm(`⚠️ Con esto superas el presupuesto semanal de ${presupuesto}€. ¿Continuar?`)) return;
+    }
+  }
+
+  const semana = getPersonalSemana();
+  semana[dia] = { plato, coste };
+  guardar('personal_semana_' + getSemanaKey(), semana);
+  document.getElementById('personal-plato').value = '';
+  document.getElementById('personal-coste').value = '';
+  renderPersonalSemana();
+  toast(`${DIAS_LABELS[dia]}: ${plato} ✓`, 'verde');
+}
+
+function borrarPersonalDia(d) {
+  const semana = getPersonalSemana();
+  delete semana[d];
+  guardar('personal_semana_' + getSemanaKey(), semana);
+  renderPersonalSemana();
+}
+
+function renderPersonalPropuestas() {
+  const recetas = cargar('recetas', []).filter(r => r.categoria === 'personal');
+  const el = document.getElementById('personal-propuestas');
+  if (!recetas.length) {
+    el.innerHTML = '<div style="color:var(--gris);font-size:13px">Aún no tienes recetas de personal guardadas.</div>';
+    return;
+  }
+  el.innerHTML = recetas.map(r => `
+    <button onclick="usarPropuestaPersonal('${r.nombre.replace(/'/g,"\\'")}','${r.costeRacion||0}')"
+      style="padding:7px 13px;border-radius:10px;border:1.5px solid var(--negro-m);background:var(--negro-c);color:var(--crema);font-size:13px;cursor:pointer;font-weight:600">
+      ${r.nombre}${r.costeRacion ? ` <span style="color:var(--gris);font-weight:400">${r.costeRacion}€</span>` : ''}
+    </button>`).join('');
+}
+
+function usarPropuestaPersonal(nombre, coste) {
+  document.getElementById('personal-plato').value = nombre;
+  if (coste && parseFloat(coste) > 0) document.getElementById('personal-coste').value = coste;
+  document.getElementById('personal-plato').scrollIntoView({behavior:'smooth'});
+  document.getElementById('personal-plato').focus();
+}
+
 
 // ══════════════════════════════════════════
 // RECETAS
