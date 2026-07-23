@@ -13,208 +13,312 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --negro:#1a1209;--negro-c:#231a0f;--negro-m:#2e2215;
-  --oro:#c9973a;--oro-c:#3a2c10;--oro-m:#e8b86d;
-  --crema:#f5efe6;--crema-m:#e8ddd0;
-  --rojo:#c1121f;--rojo-c:#2e1010;
-  --verde:#2d7a4f;--verde-c:#0d2e1a;--verde-m:#3da067;
-  --naranja:#d4703a;--naranja-c:#2e1a0e;
-  --amarillo:#c9a227;--amarillo-c:#2a2208;
-  --gris:#9e9689;--gris-m:#2e2518;
-  --sombra:0 2px 12px rgba(0,0,0,0.45);
+  /* PALETA CLARA — inspirada en Gronda */
+  --bg:#f7f4f0;          /* fondo principal, crema muy suave */
+  --surface:#ffffff;     /* cards y superficies */
+  --surface-2:#f2ede7;   /* superficies secundarias */
+  --border:#e8e2da;      /* bordes sutiles */
+  --border-s:#d4ccc0;    /* bordes más marcados */
+
+  --text:#1c1814;        /* texto principal */
+  --text-2:#5a524a;      /* texto secundario */
+  --text-3:#9e9690;      /* texto terciario/placeholder */
+
+  --accent:#c17f3a;      /* acento terra-cotta dorado */
+  --accent-l:#f5e9d5;    /* acento claro (fondos) */
+  --accent-d:#9a6228;    /* acento oscuro (hover) */
+
+  --rojo:#c0392b;
+  --rojo-l:#fdecea;
+  --verde:#2d7a4f;
+  --verde-l:#e8f5ee;
+  --verde-m:#3da067;
+  --naranja:#d4703a;
+  --naranja-l:#fef0e8;
+  --amarillo:#b5861a;
+  --amarillo-l:#fef8e6;
+
+  --sombra:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
+  --sombra-s:0 1px 3px rgba(0,0,0,.08);
   --radio:14px;
+  --radio-s:10px;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--negro);color:var(--crema);font-size:16px;min-height:100vh;--negro:#f0ebe0;--negro-c:#fff;--negro-m:#e0d8c8;--crema:#1a1209;--crema-m:#3a2c10;--gris:#7a7060;--gris-m:#c8c0b0;--sombra:0 2px 12px rgba(0,0,0,0.12)}
-body.dark{--negro:#1a1209;--negro-c:#231a0f;--negro-m:#2e2215;--crema:#f5efe6;--crema-m:#e8ddd0;--gris:#9e9689;--gris-m:#2e2518;--sombra:0 2px 12px rgba(0,0,0,0.45)}
 
-/* LOGIN */
-#login-screen{position:fixed;inset:0;background:var(--negro);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px}
-#login-screen img{height:56px;margin-bottom:16px}
-#login-screen h2{color:var(--oro);font-size:1.4rem;margin-bottom:4px;text-align:center}
-#login-screen p{color:var(--gris);font-size:14px;margin-bottom:6px;text-align:center}
-.bourdain{font-size:12px;color:var(--gris);font-style:italic;text-align:center;margin-bottom:22px;max-width:300px;line-height:1.6;padding:10px 14px;border-left:2px solid var(--oro);background:rgba(201,151,58,.07);border-radius:0 8px 8px 0}
-.login-btn{width:100%;max-width:320px;padding:14px 16px;border-radius:14px;border:2px solid var(--negro-m);background:var(--negro-c);color:var(--crema);font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:10px;text-align:left;display:flex;align-items:center;gap:14px;transition:border-color .2s}
-.login-btn:hover,.login-btn.sel{border-color:var(--oro)}
+/* ─── BASE ─── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:16px;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+/* dark mode opcional */
+body.dark{
+  --bg:#141210;--surface:#1e1c18;--surface-2:#252218;--border:#2e2a22;--border-s:#3a342a;
+  --text:#f0ebe3;--text-2:#a09890;--text-3:#6a6258;
+  --accent:#c9973a;--accent-l:#2e2510;--accent-d:#e8b86d;
+  --rojo-l:#2e1010;--verde-l:#0d2414;--naranja-l:#2a1810;--amarillo-l:#241e08;
+  --sombra:0 2px 12px rgba(0,0,0,.4);
+}
+
+/* ─── LOGIN ─── */
+#login-screen{
+  position:fixed;inset:0;background:var(--surface);z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;
+  overflow-y:auto;
+}
+#login-screen img{height:52px;margin-bottom:12px;object-fit:contain}
+#login-screen h2{color:var(--text);font-size:1.6rem;font-weight:800;margin-bottom:2px;text-align:center;letter-spacing:-.5px}
+#login-screen p{color:var(--text-3);font-size:14px;margin-bottom:10px;text-align:center}
+.bourdain{
+  font-size:12px;color:var(--text-3);font-style:italic;text-align:center;
+  margin-bottom:24px;max-width:300px;line-height:1.7;
+  padding:10px 14px;border-left:2px solid var(--accent);
+  background:var(--accent-l);border-radius:0 8px 8px 0;
+}
+.login-btn{
+  width:100%;max-width:340px;padding:14px 16px;border-radius:var(--radio);
+  border:1.5px solid var(--border);background:var(--surface);color:var(--text);
+  font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:10px;
+  text-align:left;display:flex;align-items:center;gap:14px;
+  transition:border-color .2s,box-shadow .2s;box-shadow:var(--sombra-s);
+}
+.login-btn:hover,.login-btn.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-l)}
 .login-btn .role-emoji{font-size:1.8rem}
-.login-btn .role-name{font-size:1rem;font-weight:800}
-.login-btn .role-desc{font-size:12px;color:var(--gris);margin-top:2px}
-/* PIN pad */
+.login-btn .role-name{font-size:1rem;font-weight:800;color:var(--text)}
+.login-btn .role-desc{font-size:12px;color:var(--text-3);margin-top:2px}
+
+/* PIN */
 #pin-panel{display:none;width:100%;max-width:320px;text-align:center}
-#pin-panel .pin-quien{font-size:14px;color:var(--gris);margin-bottom:8px}
-#pin-dots{display:flex;justify-content:center;gap:10px;margin-bottom:16px}
-#pin-dots span{width:14px;height:14px;border-radius:50%;border:2px solid var(--gris);background:transparent;display:block;transition:background .15s}
-#pin-dots span.lleno{background:var(--oro);border-color:var(--oro)}
+#pin-panel .pin-quien{font-size:14px;color:var(--text-2);margin-bottom:10px;font-weight:600}
+#pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:18px}
+#pin-dots span{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--border-s);background:transparent;display:block;transition:background .15s;
+}
+#pin-dots span.lleno{background:var(--accent);border-color:var(--accent)}
 .pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.pin-key{background:var(--negro-c);border:2px solid var(--negro-m);border-radius:12px;padding:16px;font-size:1.3rem;font-weight:700;cursor:pointer;color:var(--crema);transition:all .1s;user-select:none}
-.pin-key:active{background:var(--oro);color:var(--negro);border-color:var(--oro);transform:scale(.95)}
-.pin-key.del{color:var(--gris);font-size:1rem}
-#pin-error{color:#e05555;font-size:13px;font-weight:700;min-height:18px;margin-bottom:6px}
-.btn-volver{background:none;border:none;color:var(--gris);font-size:13px;cursor:pointer;text-decoration:underline;margin-top:4px}
+.pin-key{
+  background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radio);
+  padding:16px;font-size:1.3rem;font-weight:700;cursor:pointer;color:var(--text);
+  transition:all .1s;user-select:none;box-shadow:var(--sombra-s);
+}
+.pin-key:active{background:var(--accent);color:white;border-color:var(--accent);transform:scale(.94)}
+.pin-key.del{color:var(--text-3);font-size:1rem}
+#pin-error{color:var(--rojo);font-size:13px;font-weight:700;min-height:18px;margin-bottom:6px}
+.btn-volver{background:none;border:none;color:var(--text-3);font-size:13px;cursor:pointer;text-decoration:underline;margin-top:6px}
 
-/* HEADER */
-header{background:var(--negro-c);padding:10px 16px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,0.5);border-bottom:2px solid var(--oro);display:flex;align-items:center;justify-content:space-between}
+/* ─── HEADER ─── */
+header{
+  background:var(--surface);padding:12px 16px;position:sticky;top:0;z-index:200;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;
+  box-shadow:var(--sombra-s);
+}
 .header-left{display:flex;align-items:center;gap:10px}
-header img.logo{height:32px;width:auto;object-fit:contain}
-header h1{font-size:1.1rem;font-weight:800;color:var(--oro)}
-header .sub{font-size:0.7rem;opacity:0.6;color:var(--crema-m)}
+header img.logo{height:30px;width:auto;object-fit:contain}
+header h1{font-size:1.05rem;font-weight:800;color:var(--text);letter-spacing:-.3px}
+header .sub{font-size:0.68rem;color:var(--text-3);margin-top:1px}
 .header-right{display:flex;align-items:center;gap:8px}
-.role-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--oro-c);color:var(--oro);border:1px solid var(--oro)}
-.role-badge.maria{background:var(--verde-c);color:var(--verde-m);border-color:var(--verde)}
-.btn-theme{background:none;border:none;font-size:1.2rem;cursor:pointer;padding:4px}
-.btn-salir{background:none;border:none;color:var(--gris);cursor:pointer;font-size:13px}
+.role-badge{
+  font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;
+  background:var(--accent-l);color:var(--accent-d);border:1px solid rgba(193,127,58,.25);
+}
+.role-badge.maria{background:var(--verde-l);color:var(--verde);border-color:rgba(45,122,79,.25)}
+.btn-theme{background:none;border:none;font-size:1.1rem;cursor:pointer;padding:5px;color:var(--text-3)}
+.btn-salir{background:none;border:none;color:var(--text-3);cursor:pointer;font-size:13px;font-family:inherit}
 
-/* NAV */
-nav{display:flex;overflow-x:auto;background:var(--negro-c);border-bottom:1px solid var(--negro-m);scrollbar-width:none;position:sticky;top:57px;z-index:100}
+/* ─── NAV ─── */
+nav{
+  display:flex;overflow-x:auto;background:var(--surface);
+  border-bottom:1px solid var(--border);scrollbar-width:none;
+  position:sticky;top:57px;z-index:100;
+}
 nav::-webkit-scrollbar{display:none}
-nav button{background:none;border:none;border-bottom:3px solid transparent;color:var(--gris);padding:11px 14px;font-size:12px;white-space:nowrap;cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s}
-nav button.active{color:var(--oro);border-bottom-color:var(--oro)}
-nav button:hover{color:var(--oro)}
+nav button{
+  background:none;border:none;border-bottom:2px solid transparent;
+  color:var(--text-3);padding:11px 15px;font-size:12.5px;white-space:nowrap;
+  cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s;
+}
+nav button.active{color:var(--accent);border-bottom-color:var(--accent)}
+nav button:hover{color:var(--accent)}
 nav button.oculto{display:none}
 
-/* TABS */
-.tab{display:none;padding:14px;max-width:700px;margin:0 auto;padding-bottom:70px}
+/* ─── TABS ─── */
+.tab{display:none;padding:16px;max-width:700px;margin:0 auto;padding-bottom:80px}
 .tab.active{display:block}
 
-/* CARDS */
-.card{background:var(--negro-c);border-radius:var(--radio);padding:16px;margin-bottom:14px;box-shadow:var(--sombra);border:1px solid var(--negro-m)}
-.card-title{font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--oro)}
+/* ─── CARDS ─── */
+.card{
+  background:var(--surface);border-radius:var(--radio);padding:18px;
+  margin-bottom:14px;box-shadow:var(--sombra);border:1px solid var(--border);
+}
+.card-title{
+  font-size:.85rem;font-weight:700;margin-bottom:14px;
+  display:flex;align-items:center;gap:7px;
+  color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;
+}
 
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-.stat{background:var(--negro-c);border-radius:var(--radio);padding:14px;text-align:center;box-shadow:var(--sombra);border:1px solid var(--negro-m)}
-.stat .num{font-size:2rem;font-weight:800;color:var(--oro)}
-.stat .lbl{font-size:0.7rem;color:var(--gris);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
-.stat.rojo .num{color:#e05555}
-.stat.verde .num{color:var(--verde-m)}
+/* ─── STATS ─── */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.stat{
+  background:var(--surface);border-radius:var(--radio);padding:16px;
+  text-align:center;box-shadow:var(--sombra);border:1px solid var(--border);
+}
+.stat .num{font-size:2rem;font-weight:800;color:var(--text)}
+.stat .lbl{font-size:.68rem;color:var(--text-3);margin-top:3px;text-transform:uppercase;letter-spacing:.6px}
+.stat.rojo .num{color:var(--rojo)}
+.stat.verde .num{color:var(--verde)}
 
-/* SEMAFORO */
+/* semáforo */
 .sema{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700}
-.sema.verde{background:rgba(45,122,79,.3);color:#5ec984;border:1px solid rgba(94,201,132,.3)}
-.sema.amarillo{background:rgba(201,162,39,.2);color:var(--amarillo);border:1px solid rgba(201,162,39,.3)}
-.sema.rojo{background:rgba(193,18,31,.25);color:#e05555;border:1px solid rgba(224,85,85,.3)}
+.sema.verde{background:var(--verde-l);color:var(--verde)}
+.sema.amarillo{background:var(--amarillo-l);color:var(--amarillo)}
+.sema.rojo{background:var(--rojo-l);color:var(--rojo)}
 
-/* ITEMS */
-.item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--negro-m)}
+/* ─── ITEMS ─── */
+.item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
 .item:last-child{border-bottom:none}
 .item-body{flex:1}
-.item-title{font-weight:600;font-size:0.9rem;color:var(--crema)}
-.item-sub{font-size:0.75rem;color:var(--gris);margin-top:2px}
+.item-title{font-weight:600;font-size:.9rem;color:var(--text)}
+.item-sub{font-size:.75rem;color:var(--text-3);margin-top:2px}
 
-/* BOTONES */
-.btn{padding:10px 18px;border-radius:10px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
-.btn-oro{background:var(--oro);color:var(--negro)}
-.btn-oro:hover{background:var(--oro-m)}
-.btn-outline{background:none;border:2px solid var(--negro-m);color:var(--gris)}
-.btn-outline:hover{border-color:var(--oro);color:var(--oro)}
-.btn-rojo{background:rgba(193,18,31,.8);color:white}
-.btn-verde{background:rgba(45,122,79,.8);color:white}
-.btn-sm{padding:7px 13px;font-size:13px}
+/* ─── BOTONES ─── */
+.btn{padding:11px 18px;border-radius:var(--radio-s);border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-oro{background:var(--accent);color:white}
+.btn-oro:hover{background:var(--accent-d)}
+.btn-outline{background:none;border:1.5px solid var(--border-s);color:var(--text-2)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-rojo{background:var(--rojo-l);color:var(--rojo);border:1.5px solid rgba(192,57,43,.2)}
+.btn-verde{background:var(--verde-l);color:var(--verde);border:1.5px solid rgba(45,122,79,.2)}
+.btn-sm{padding:7px 13px;font-size:13px;border-radius:8px}
 .btn-full{width:100%}
 
-/* FORM */
-.form-group{margin-bottom:12px}
-.form-group label{display:block;font-size:12px;font-weight:600;color:var(--gris);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
-.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 12px;border:1.5px solid var(--negro-m);border-radius:10px;font-family:inherit;font-size:15px;color:var(--crema);background:var(--negro)}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--oro)}
+/* ─── FORMULARIOS ─── */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--radio-s);
+  font-family:inherit;font-size:15px;color:var(--text);background:var(--surface);
+  transition:border-color .2s;
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-l)}
 .form-group textarea{resize:vertical;min-height:80px}
-.form-group select option{background:var(--negro-c)}
+.form-group select option{background:var(--surface)}
 
-/* BADGES */
-.badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:12px;font-weight:700}
-.badge-verde{background:rgba(45,122,79,.3);color:#5ec984}
-.badge-rojo{background:rgba(193,18,31,.25);color:#e05555}
-.badge-naranja{background:rgba(212,112,58,.25);color:var(--naranja)}
-.badge-oro{background:rgba(201,151,58,.2);color:var(--oro)}
-.badge-gris{background:var(--negro-m);color:var(--gris)}
+/* ─── BADGES ─── */
+.badge{display:inline-block;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:700}
+.badge-verde{background:var(--verde-l);color:var(--verde)}
+.badge-rojo{background:var(--rojo-l);color:var(--rojo)}
+.badge-naranja{background:var(--naranja-l);color:var(--naranja)}
+.badge-oro{background:var(--accent-l);color:var(--accent-d)}
+.badge-gris{background:var(--surface-2);color:var(--text-3)}
 
-/* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-end;justify-content:center}
+/* ─── MODAL ─── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:var(--negro-c);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;border-top:2px solid var(--oro)}
-.modal-title{font-size:1.1rem;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;color:var(--oro)}
-.modal-close{background:var(--negro-m);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--crema)}
+.modal{
+  background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px;
+  width:100%;max-width:700px;max-height:92vh;overflow-y:auto;
+  border-top:1px solid var(--border);box-shadow:0 -4px 32px rgba(0,0,0,.12);
+}
+.modal-title{font-size:1rem;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;color:var(--text)}
+.modal-close{
+  background:var(--surface-2);border:none;border-radius:50%;width:32px;height:32px;
+  font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-3);
+}
 
-/* STOCK */
-.stock-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:12px;border:1px solid var(--negro-m);border-left:4px solid var(--negro-m);box-shadow:var(--sombra)}
-.stock-card.rojo{border-left-color:#e05555}
+/* ─── STOCK ─── */
+.stock-card{
+  background:var(--surface);border-radius:var(--radio);padding:14px;margin-bottom:10px;
+  border:1px solid var(--border);border-left:3px solid var(--border-s);box-shadow:var(--sombra-s);
+}
+.stock-card.rojo{border-left-color:var(--rojo)}
 .stock-card.amarillo{border-left-color:var(--amarillo)}
-.stock-card.verde{border-left-color:var(--verde-m)}
-.lote-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--negro-m)}
+.stock-card.verde{border-left-color:var(--verde)}
+.lote-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
 .lote-row:last-child{border-bottom:none}
-.ubicacion-tag{font-size:11px;padding:2px 7px;border-radius:8px;background:rgba(201,151,58,.15);color:var(--oro);font-weight:600}
+.ubicacion-tag{font-size:11px;padding:2px 8px;border-radius:8px;background:var(--accent-l);color:var(--accent-d);font-weight:600}
 
-/* MERMA */
-.merma-row{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--negro-m)}
+/* ─── MERMA ─── */
+.merma-row{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)}
 .merma-row:last-child{border-bottom:none}
 .merma-motivo{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap}
-.merma-motivo.cocinado{background:rgba(45,122,79,.25);color:var(--verde-m)}
-.merma-motivo.tirado{background:rgba(193,18,31,.25);color:#e05555}
-.merma-motivo.caducado{background:rgba(201,162,39,.2);color:var(--amarillo)}
-.merma-motivo.roto{background:rgba(212,112,58,.2);color:var(--naranja)}
-.merma-motivo.otro{background:var(--negro-m);color:var(--gris)}
+.merma-motivo.cocinado{background:var(--verde-l);color:var(--verde)}
+.merma-motivo.tirado{background:var(--rojo-l);color:var(--rojo)}
+.merma-motivo.caducado{background:var(--amarillo-l);color:var(--amarillo)}
+.merma-motivo.roto{background:var(--naranja-l);color:var(--naranja)}
+.merma-motivo.otro{background:var(--surface-2);color:var(--text-3)}
 
-/* PEDIDO */
-.pedido-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:10px;border:1px solid var(--negro-m);border-left:4px solid var(--naranja)}
-.pedido-card.aprobado{border-left-color:var(--verde-m)}
+/* ─── PEDIDO ─── */
+.pedido-card{
+  background:var(--surface);border-radius:var(--radio);padding:14px;margin-bottom:10px;
+  border:1px solid var(--border);border-left:3px solid var(--naranja);box-shadow:var(--sombra-s);
+}
+.pedido-card.aprobado{border-left-color:var(--verde)}
 .pedido-estado{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
-.pedido-estado.pendiente{background:rgba(212,112,58,.2);color:var(--naranja)}
-.pedido-estado.aprobado{background:rgba(45,122,79,.25);color:var(--verde-m)}
+.pedido-estado.pendiente{background:var(--naranja-l);color:var(--naranja)}
+.pedido-estado.aprobado{background:var(--verde-l);color:var(--verde)}
 
-/* RECETAS */
-.receta-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:10px;cursor:pointer;border:1px solid var(--negro-m);border-left:4px solid var(--oro)}
-.receta-card.menu{border-left-color:var(--verde-m)}
+/* ─── RECETAS ─── */
+.receta-card{
+  background:var(--surface);border-radius:var(--radio);padding:14px;margin-bottom:10px;
+  cursor:pointer;border:1px solid var(--border);border-left:3px solid var(--accent);box-shadow:var(--sombra-s);
+}
+.receta-card.menu{border-left-color:var(--verde)}
 .receta-card.pincho{border-left-color:var(--naranja)}
-.receta-card.personal{border-left-color:var(--gris)}
-.receta-nombre{font-weight:700;font-size:1rem;color:var(--crema)}
-.receta-meta{font-size:12px;color:var(--gris);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+.receta-card.personal{border-left-color:var(--text-3)}
+.receta-nombre{font-weight:700;font-size:1rem;color:var(--text)}
+.receta-meta{font-size:12px;color:var(--text-3);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
 
-/* MENÚ */
-.menu-dia{background:var(--negro-m);border-radius:var(--radio);padding:18px;margin-bottom:14px;border:1px solid var(--oro)}
-.menu-dia h2{font-size:1.1rem;font-weight:800;margin-bottom:4px;color:var(--oro)}
-.menu-plato{background:rgba(201,151,58,.08);border-radius:10px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(201,151,58,.2)}
-.menu-plato .tipo{font-size:11px;opacity:.65;text-transform:uppercase;letter-spacing:.5px;color:var(--oro)}
-.menu-plato .nombre{font-weight:700;font-size:.95rem;margin-top:2px;color:var(--crema)}
+/* ─── MENÚ ─── */
+.menu-dia{background:var(--accent-l);border-radius:var(--radio);padding:18px;margin-bottom:14px;border:1px solid rgba(193,127,58,.2)}
+.menu-dia h2{font-size:1.05rem;font-weight:800;margin-bottom:6px;color:var(--accent-d)}
+.menu-plato{background:white;border-radius:var(--radio-s);padding:10px 14px;margin-bottom:8px;border:1px solid var(--border)}
+.menu-plato .tipo{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+.menu-plato .nombre{font-weight:700;font-size:.95rem;margin-top:2px;color:var(--text)}
 
-/* HISTORIAL */
-.hist-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--negro-m)}
+/* ─── HISTORIAL ─── */
+.hist-row{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
 .hist-row:last-child{border-bottom:none}
-.hist-who{font-size:11px;font-weight:700;color:var(--oro)}
-.hist-what{font-size:13px;color:var(--crema);margin-top:1px}
-.hist-when{font-size:11px;color:var(--gris);margin-top:2px}
+.hist-who{font-size:11px;font-weight:700;color:var(--accent)}
+.hist-what{font-size:13px;color:var(--text);margin-top:1px}
+.hist-when{font-size:11px;color:var(--text-3);margin-top:2px}
 
-/* SPOTIFY */
+/* ─── SPOTIFY ─── */
 .sp-section{margin-bottom:16px}
 .sp-momento{font-size:13px;font-weight:700;color:#1ed760;margin-bottom:6px}
-.sp-link{display:flex;align-items:center;gap:10px;background:rgba(30,215,96,.08);border:1px solid rgba(30,215,96,.2);border-radius:12px;padding:10px 14px;text-decoration:none;margin-bottom:6px;transition:background .2s}
-.sp-link:hover{background:rgba(30,215,96,.15)}
-.sp-link-name{font-size:14px;font-weight:700;color:var(--crema)}
-.sp-link-desc{font-size:12px;color:var(--gris);margin-top:1px}
+.sp-link{display:flex;align-items:center;gap:10px;background:rgba(30,215,96,.06);border:1px solid rgba(30,215,96,.2);border-radius:var(--radio-s);padding:10px 14px;text-decoration:none;margin-bottom:6px;transition:background .2s}
+.sp-link:hover{background:rgba(30,215,96,.12)}
+.sp-link-name{font-size:14px;font-weight:700;color:var(--text)}
+.sp-link-desc{font-size:12px;color:var(--text-3);margin-top:1px}
 .sp-open{font-size:12px;color:#1ed760;font-weight:700}
 
-/* INSTAGRAM */
-.ig-week{background:var(--negro-c);border-radius:var(--radio);overflow:hidden;margin-bottom:14px;border:1px solid var(--negro-m)}
-.ig-week-header{background:var(--negro-m);color:var(--oro);padding:10px 16px;font-weight:700;font-size:.85rem}
-.ig-post{padding:12px 16px;border-bottom:1px solid var(--negro-m)}
+/* ─── INSTAGRAM ─── */
+.ig-week{background:var(--surface);border-radius:var(--radio);overflow:hidden;margin-bottom:14px;border:1px solid var(--border)}
+.ig-week-header{background:var(--surface-2);color:var(--text-2);padding:10px 16px;font-weight:700;font-size:.85rem;border-bottom:1px solid var(--border)}
+.ig-post{padding:12px 16px;border-bottom:1px solid var(--border)}
 .ig-post:last-child{border-bottom:none}
-.ig-post-dia{font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:4px}
-.ig-post-tipo{font-size:12px;font-weight:700;margin-bottom:6px;color:var(--oro)}
-.ig-post-texto{font-size:13px;color:var(--crema);line-height:1.6;background:var(--negro);padding:10px;border-radius:8px;cursor:pointer;border:1px dashed var(--negro-m)}
-.ig-post-texto:hover{border-color:var(--oro)}
+.ig-post-dia{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:4px}
+.ig-post-tipo{font-size:12px;font-weight:700;margin-bottom:6px;color:var(--accent)}
+.ig-post-texto{font-size:13px;color:var(--text);line-height:1.6;background:var(--surface-2);padding:10px;border-radius:8px;cursor:pointer;border:1px dashed var(--border-s)}
+.ig-post-texto:hover{border-color:var(--accent)}
 
-/* PROVEEDORES */
-.prov-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--negro-m)}
+/* ─── PROVEEDORES ─── */
+.prov-card{background:var(--surface);border-radius:var(--radio);padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border)}
 .prov-emoji{font-size:1.8rem}
-.prov-nombre{font-weight:700;font-size:1rem;color:var(--crema)}
-.prov-datos{font-size:13px;color:var(--gris);margin-top:4px;line-height:1.7}
+.prov-nombre{font-weight:700;font-size:1rem;color:var(--text)}
+.prov-datos{font-size:13px;color:var(--text-3);margin-top:4px;line-height:1.7}
 
-/* TOAST */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--oro);color:var(--negro);padding:10px 20px;border-radius:20px;font-size:14px;font-weight:700;z-index:9990;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:10px 20px;border-radius:20px;font-size:14px;font-weight:700;z-index:9990;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)}
 .toast.show{opacity:1}
 
-.divider{border:none;border-top:1px solid var(--negro-m);margin:12px 0}
-.consejo{background:var(--negro);border-radius:10px;padding:12px;margin-bottom:8px;border-left:3px solid var(--oro)}
-.consejo-titulo{font-weight:700;font-size:.85rem;margin-bottom:4px;color:var(--oro)}
-.consejo-texto{font-size:13px;color:var(--gris);line-height:1.5}
+.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+.consejo{background:var(--accent-l);border-radius:var(--radio-s);padding:12px;margin-bottom:8px;border-left:3px solid var(--accent)}
+.consejo-titulo{font-weight:700;font-size:.85rem;margin-bottom:4px;color:var(--accent-d)}
+.consejo-texto{font-size:13px;color:var(--text-2);line-height:1.5}
 </style>
 </head>
 <body>
@@ -310,22 +414,22 @@ nav button.oculto{display:none}
   </div>
 
   <!-- CAJA DEL DÍA: resumen en inicio -->
-  <div id="caja-widget" style="display:none;background:var(--negro);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid var(--negro-m);cursor:pointer" onclick="tab('caja',document.getElementById('nav-caja'))">
+  <div id="caja-widget" style="display:none;background:var(--bg);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid var(--border);cursor:pointer" onclick="tab('caja',document.getElementById('nav-caja'))">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div style="font-size:13px;font-weight:800;color:var(--crema);text-transform:uppercase;letter-spacing:.4px">💰 Caja hoy</div>
-      <div style="font-size:11px;color:var(--gris)" id="caja-widget-fecha"></div>
+      <div style="font-size:13px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.4px">💰 Caja hoy</div>
+      <div style="font-size:11px;color:var(--text-3)" id="caja-widget-fecha"></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
       <div>
-        <div style="font-size:11px;color:var(--gris);margin-bottom:2px">Ventas</div>
-        <div style="font-size:1.2rem;font-weight:800;color:var(--verde-m)" id="cw-ventas">—</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:2px">Ventas</div>
+        <div style="font-size:1.2rem;font-weight:800;color:var(--verde)" id="cw-ventas">—</div>
       </div>
       <div>
-        <div style="font-size:11px;color:var(--gris);margin-bottom:2px">Gastos</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:2px">Gastos</div>
         <div style="font-size:1.2rem;font-weight:800;color:var(--rojo)" id="cw-gastos">—</div>
       </div>
       <div>
-        <div style="font-size:11px;color:var(--gris);margin-bottom:2px">Balance</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:2px">Balance</div>
         <div style="font-size:1.2rem;font-weight:800" id="cw-balance">—</div>
       </div>
     </div>
@@ -346,22 +450,22 @@ nav button.oculto{display:none}
   <!-- selector de fecha + resumen del día -->
   <div class="card" style="margin-bottom:14px">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <input type="date" id="caja-fecha" oninput="cargarCaja()" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:14px;color:var(--crema);background:var(--negro-c)">
+      <input type="date" id="caja-fecha" oninput="cargarCaja()" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
       <button class="btn btn-outline btn-sm" onclick="document.getElementById('caja-fecha').value=hoy();cargarCaja()">Hoy</button>
     </div>
     <!-- totales día -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-bottom:4px">
       <div style="background:rgba(74,190,120,.08);border-radius:10px;padding:10px">
-        <div style="font-size:11px;color:var(--gris);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Ventas</div>
-        <div style="font-size:1.4rem;font-weight:800;color:var(--verde-m)" id="caja-total-ventas">0€</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Ventas</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--verde)" id="caja-total-ventas">0€</div>
       </div>
       <div style="background:rgba(224,85,85,.08);border-radius:10px;padding:10px">
-        <div style="font-size:11px;color:var(--gris);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Gastos</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Gastos</div>
         <div style="font-size:1.4rem;font-weight:800;color:var(--rojo)" id="caja-total-gastos">0€</div>
       </div>
       <div style="background:rgba(201,151,58,.08);border-radius:10px;padding:10px">
-        <div style="font-size:11px;color:var(--gris);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Balance</div>
-        <div style="font-size:1.4rem;font-weight:800;color:var(--oro)" id="caja-balance">0€</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Balance</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--accent)" id="caja-balance">0€</div>
       </div>
     </div>
     <div id="caja-alerta-dia" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:700;text-align:center"></div>
@@ -372,15 +476,15 @@ nav button.oculto{display:none}
     <div class="card-title">📈 Apuntar venta</div>
     <div style="display:flex;gap:8px;margin-bottom:8px">
       <input type="number" id="venta-importe" placeholder="Importe €" step="0.5" min="0"
-        style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:15px;color:var(--crema);background:var(--negro-c)">
-      <select id="venta-tipo" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+        style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:15px;color:var(--text);background:var(--surface)">
+      <select id="venta-tipo" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
         <option value="efectivo">💵 Efectivo</option>
         <option value="tarjeta">💳 Tarjeta</option>
         <option value="mixto">🔀 Mixto</option>
       </select>
     </div>
     <input type="text" id="venta-nota" placeholder="Nota opcional (ej. Menú mediodía x12)"
-      style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);margin-bottom:8px"
+      style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);margin-bottom:8px"
       onkeydown="if(event.key==='Enter')guardarVenta()">
     <button class="btn btn-oro btn-full" onclick="guardarVenta()">Guardar venta</button>
   </div>
@@ -390,8 +494,8 @@ nav button.oculto{display:none}
     <div class="card-title">📉 Apuntar gasto</div>
     <div style="display:flex;gap:8px;margin-bottom:8px">
       <input type="number" id="gasto-importe" placeholder="Importe €" step="0.5" min="0"
-        style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:15px;color:var(--crema);background:var(--negro-c)">
-      <select id="gasto-cat" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+        style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:15px;color:var(--text);background:var(--surface)">
+      <select id="gasto-cat" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
         <option value="compra">🛒 Compra</option>
         <option value="proveedor">🤝 Proveedor</option>
         <option value="suministro">💡 Suministro</option>
@@ -400,7 +504,7 @@ nav button.oculto{display:none}
       </select>
     </div>
     <input type="text" id="gasto-desc" placeholder="Descripción (ej. Verdura mercado)"
-      style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);margin-bottom:8px"
+      style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);margin-bottom:8px"
       onkeydown="if(event.key==='Enter')guardarGasto()">
     <button class="btn btn-rojo btn-full" onclick="guardarGasto()">Guardar gasto</button>
   </div>
@@ -408,7 +512,7 @@ nav button.oculto{display:none}
   <!-- movimientos del día -->
   <div class="card">
     <div class="card-title">📋 Movimientos del día</div>
-    <div id="caja-movimientos"><div style="color:var(--gris);font-size:14px;text-align:center;padding:12px">Sin movimientos.</div></div>
+    <div id="caja-movimientos"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin movimientos.</div></div>
   </div>
 
   <!-- resumen semanal (solo admin) -->
@@ -423,10 +527,10 @@ nav button.oculto{display:none}
 <div id="tab-stock" class="tab">
   <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
     <button class="btn btn-oro btn-sm" id="btn-nuevo-prod" onclick="abrirModalProducto()">➕ Producto</button>
-    <select id="filtro-sem" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+    <select id="filtro-sem" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
       <option value="">Todo</option><option value="rojo">🔴 Urgente</option><option value="amarillo">🟡 Bajo</option><option value="verde">🟢 OK</option>
     </select>
-    <select id="filtro-ubic" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+    <select id="filtro-ubic" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
       <option value="">Todas ubicaciones</option>
       <option value="nevera-columna">🧊 Nevera columna</option>
       <option value="nevera-cesar">❄️ Nevera César</option>
@@ -443,11 +547,11 @@ nav button.oculto{display:none}
 <div id="tab-mermas" class="tab">
   <div class="card">
     <div class="card-title">📉 Registrar merma</div>
-    <div class="form-group"><label>Producto</label><select id="m-producto" style="color:var(--crema);background:var(--negro)"></select></div>
+    <div class="form-group"><label>Producto</label><select id="m-producto" style="color:var(--text);background:var(--bg)"></select></div>
     <div class="form-group"><label>Cantidad</label><input type="number" id="m-cantidad" placeholder="ej. 2" min="0.1" step="0.1"></div>
     <div class="form-group">
       <label>Motivo <span style="color:var(--rojo)">*obligatorio</span></label>
-      <select id="m-motivo" onchange="onMotivoChange()" style="color:var(--crema);background:var(--negro)">
+      <select id="m-motivo" onchange="onMotivoChange()" style="color:var(--text);background:var(--bg)">
         <option value="">— Selecciona —</option>
         <option value="cocinado">✅ Usado en cocina</option>
         <option value="tirado">🗑 Tirado (no servido)</option>
@@ -464,11 +568,11 @@ nav button.oculto{display:none}
   </div>
   <div class="card">
     <div class="card-title">📋 Historial de mermas</div>
-    <select id="filtro-merma" onchange="renderMermas()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);margin-bottom:10px">
+    <select id="filtro-merma" onchange="renderMermas()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);margin-bottom:10px">
       <option value="hoy">Hoy</option><option value="semana">Esta semana</option><option value="todo">Todo</option>
     </select>
     <div id="mermas-lista"></div>
-    <div id="mermas-resumen" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--negro-m);font-size:13px;color:var(--gris)"></div>
+    <div id="mermas-resumen" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:13px;color:var(--text-3)"></div>
   </div>
 </div>
 
@@ -487,7 +591,7 @@ nav button.oculto{display:none}
   </div>
   <div class="card">
     <div class="card-title">📋 Solicitudes</div>
-    <select id="filtro-pedido" onchange="renderPedidos()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);margin-bottom:10px">
+    <select id="filtro-pedido" onchange="renderPedidos()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);margin-bottom:10px">
       <option value="pendiente">Pendientes</option><option value="aprobado">Aprobadas</option><option value="todo">Todas</option>
     </select>
     <div id="pedidos-lista"></div>
@@ -518,20 +622,20 @@ nav button.oculto{display:none}
     <div class="card-title">👨‍🍳 Comida del personal</div>
 
     <!-- presupuesto semanal -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:var(--negro);border-radius:10px;padding:10px 14px;border:1px solid var(--negro-m)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:var(--bg);border-radius:10px;padding:10px 14px;border:1px solid var(--border)">
       <div style="flex:1">
-        <div style="font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Presupuesto semanal</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Presupuesto semanal</div>
         <div style="display:flex;align-items:center;gap:6px">
           <input type="number" id="personal-presupuesto" step="1" min="0" placeholder="ej. 50"
-            style="width:90px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--negro-m);font-size:1rem;font-weight:700;color:var(--crema);background:var(--negro-c)"
+            style="width:90px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:1rem;font-weight:700;color:var(--text);background:var(--surface)"
             oninput="actualizarPresupuesto()">
-          <span style="color:var(--gris);font-size:.9rem">€ / semana</span>
+          <span style="color:var(--text-3);font-size:.9rem">€ / semana</span>
         </div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:4px">Gastado</div>
-        <div id="personal-gastado" style="font-size:1.4rem;font-weight:800;color:var(--verde-m)">0€</div>
-        <div id="personal-resto" style="font-size:11px;color:var(--gris)">—</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:4px">Gastado</div>
+        <div id="personal-gastado" style="font-size:1.4rem;font-weight:800;color:var(--verde)">0€</div>
+        <div id="personal-resto" style="font-size:11px;color:var(--text-3)">—</div>
       </div>
     </div>
 
@@ -539,27 +643,27 @@ nav button.oculto{display:none}
     <div id="personal-semana" style="margin-bottom:14px"></div>
 
     <!-- añadir al día -->
-    <div style="background:var(--negro);border-radius:10px;padding:12px;border:1px solid var(--negro-m)">
-      <div style="font-size:12px;font-weight:700;color:var(--gris);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Añadir comida</div>
+    <div style="background:var(--bg);border-radius:10px;padding:12px;border:1px solid var(--border)">
+      <div style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Añadir comida</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <select id="personal-dia-sel" style="padding:8px 10px;border-radius:8px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);flex:1">
+        <select id="personal-dia-sel" style="padding:8px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);flex:1">
           <option value="lun">Lunes</option><option value="mar">Martes</option><option value="mie">Miércoles</option>
           <option value="jue">Jueves</option><option value="vie">Viernes</option><option value="sab">Sábado</option><option value="dom">Domingo</option>
         </select>
         <input type="number" id="personal-coste" step="0.5" min="0" placeholder="€ coste"
-          style="width:90px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+          style="width:90px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
       </div>
       <input type="text" id="personal-plato" placeholder="¿Qué coméis? ej. Arroz caldoso con costilla"
-        style="width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid var(--negro-m);font-size:15px;color:var(--crema);background:var(--negro-c);margin-bottom:8px"
+        style="width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:15px;color:var(--text);background:var(--surface);margin-bottom:8px"
         onkeydown="if(event.key==='Enter')guardarPersonal()">
       <button class="btn btn-oro btn-sm btn-full" onclick="guardarPersonal()">Guardar</button>
     </div>
 
     <!-- propuestas de recetas -->
     <div style="margin-top:14px">
-      <div style="font-size:12px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">💡 Propuestas (de las recetas guardadas)</div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">💡 Propuestas (de las recetas guardadas)</div>
       <div id="personal-propuestas" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-      <div style="font-size:12px;color:var(--gris);margin-top:6px">Las recetas marcadas como "Personal" aparecen aquí. Toca una para añadirla al día seleccionado.</div>
+      <div style="font-size:12px;color:var(--text-3);margin-top:6px">Las recetas marcadas como "Personal" aparecen aquí. Toca una para añadirla al día seleccionado.</div>
     </div>
   </div>
 </div>
@@ -568,7 +672,7 @@ nav button.oculto{display:none}
 <div id="tab-recetas" class="tab">
   <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
     <button class="btn btn-oro btn-sm" onclick="abrirModalReceta()">➕ Nueva receta</button>
-    <select id="filtro-receta" onchange="renderRecetas()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+    <select id="filtro-receta" onchange="renderRecetas()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
       <option value="">Todas</option><option value="carta">Carta</option><option value="menu">Menú</option><option value="pincho">Pinchos</option><option value="personal">Personal</option>
     </select>
   </div>
@@ -586,10 +690,10 @@ nav button.oculto{display:none}
   <div class="card">
     <div class="card-title">📋 Movimientos</div>
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-      <select id="filtro-hist-tipo" onchange="renderHistorial()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+      <select id="filtro-hist-tipo" onchange="renderHistorial()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
         <option value="">Todo</option><option value="stock">Stock</option><option value="merma">Mermas</option><option value="pedido">Pedidos</option><option value="menu">Menú</option>
       </select>
-      <select id="filtro-hist-quien" onchange="renderHistorial()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+      <select id="filtro-hist-quien" onchange="renderHistorial()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
         <option value="">Todos</option><option value="lore">Lore</option><option value="cesar">César</option><option value="maria">María</option>
       </select>
     </div>
@@ -601,7 +705,7 @@ nav button.oculto{display:none}
 <div id="tab-spotify" class="tab">
   <div class="card" style="background:linear-gradient(135deg,#0a1a0a,#0d2010);border-color:rgba(30,215,96,.3)">
     <div class="card-title" style="color:#1ed760">🎵 Playlists del turno</div>
-    <div style="font-size:13px;color:var(--gris);margin-bottom:16px">La música adecuada para cada momento.</div>
+    <div style="font-size:13px;color:var(--text-3);margin-bottom:16px">La música adecuada para cada momento.</div>
     <div class="sp-section">
       <div class="sp-momento">🌅 Preparación / Mise en place</div>
       <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0" target="_blank"><div style="font-size:1.4rem">🎧</div><div style="flex:1"><div class="sp-link-name">Mood Booster</div><div class="sp-link-desc">Para activarse antes del turno</div></div><div class="sp-open">↗</div></a>
@@ -636,7 +740,7 @@ nav button.oculto{display:none}
   <div class="card" style="border-left:4px solid #E1306C">
     <div class="card-title">📝 Bio sugerida</div>
     <div class="ig-post-texto" onclick="copiarTexto(this,'Bio copiada ✓')">🍽️ Cocina gallega de verdad<br>📍 A Coruña · Tarde-noche + mediodía fin de semana<br>🌈 Espacio seguro para todxs<br>📞 [Teléfono]</div>
-    <div style="font-size:11px;color:var(--oro);margin-top:6px;font-weight:600">Toca para copiar</div>
+    <div style="font-size:11px;color:var(--accent);margin-top:6px;font-weight:600">Toca para copiar</div>
   </div>
   <div class="ig-week">
     <div class="ig-week-header">SEMANA 1 — "Aquí se come"</div>
@@ -647,7 +751,7 @@ nav button.oculto{display:none}
 Abrimos esta noche a partir de las [hora]. 📍 A Coruña
 
 #LaUrbana #CocinaGallega #ACoruña #DondeComereNCoruña</div>
-      <div style="font-size:11px;color:var(--oro);margin-top:4px">Toca para copiar</div>
+      <div style="font-size:11px;color:var(--accent);margin-top:4px">Toca para copiar</div>
     </div>
     <div class="ig-post">
       <div class="ig-post-dia">Post 2 · Viernes</div>
@@ -656,7 +760,7 @@ Abrimos esta noche a partir de las [hora]. 📍 A Coruña
 De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
 
 #LaUrbana #MenuDelDia #CocinaGallega #ACoruña</div>
-      <div style="font-size:11px;color:var(--oro);margin-top:4px">Toca para copiar</div>
+      <div style="font-size:11px;color:var(--accent);margin-top:4px">Toca para copiar</div>
     </div>
   </div>
   <div class="card">
@@ -675,7 +779,7 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
     <div class="form-group"><label>Unidad</label><input type="text" id="s-unidad" placeholder="ej. ud, bolsa, brik"></div>
     <div class="form-group">
       <label>Ubicación</label>
-      <select id="s-ubicacion" style="color:var(--crema);background:var(--negro)">
+      <select id="s-ubicacion" style="color:var(--text);background:var(--bg)">
         <option value="">Sin especificar</option>
         <option value="nevera-columna">🧊 Nevera columna</option>
         <option value="nevera-cesar">❄️ Nevera César</option>
@@ -699,7 +803,7 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
 <div class="modal-overlay" id="modal-lote">
   <div class="modal">
     <div class="modal-title"><span id="modal-lote-titulo">Añadir lote</span><button class="modal-close" onclick="cerrarModal('modal-lote')">×</button></div>
-    <div class="form-group"><label>Cantidad</label><input type="number" id="l-cantidad" placeholder="ej. 4" min="0.1" step="0.1"><div id="l-unidad-label" style="font-size:12px;color:var(--oro);margin-top:4px;font-weight:600"></div></div>
+    <div class="form-group"><label>Cantidad</label><input type="number" id="l-cantidad" placeholder="ej. 4" min="0.1" step="0.1"><div id="l-unidad-label" style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600"></div></div>
     <div class="form-group"><label>Caducidad</label><input type="date" id="l-caduca"></div>
     <div class="form-group"><label>Notas</label><input type="text" id="l-notas" placeholder="ej. Pedido Mercadona 22 jul"></div>
     <input type="hidden" id="l-prod-id">
@@ -714,7 +818,7 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
   <div class="modal">
     <div class="modal-title"><span id="modal-receta-titulo">Nueva receta</span><button class="modal-close" onclick="cerrarModal('modal-receta')">×</button></div>
     <div class="form-group"><label>Nombre del plato</label><input type="text" id="r-nombre"></div>
-    <div class="form-group"><label>Categoría</label><select id="r-categoria" style="color:var(--crema);background:var(--negro)"><option value="carta">Carta</option><option value="menu">Menú</option><option value="pincho">Pincho</option><option value="personal">Personal</option></select></div>
+    <div class="form-group"><label>Categoría</label><select id="r-categoria" style="color:var(--text);background:var(--bg)"><option value="carta">Carta</option><option value="menu">Menú</option><option value="pincho">Pincho</option><option value="personal">Personal</option></select></div>
     <div class="form-group"><label>Ingredientes</label><textarea id="r-ingredientes" rows="4" placeholder="500g de grelos&#10;1 lacón..."></textarea></div>
     <div class="form-group"><label>Elaboración</label><textarea id="r-elaboracion" rows="5" placeholder="Paso 1:..."></textarea></div>
     <div class="form-group"><label>Raciones</label><input type="number" id="r-raciones" min="1"></div>
@@ -827,8 +931,8 @@ function ahora() { return new Date().toISOString(); }
 function toast(msg, tipo) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.style.background = tipo === 'error' ? 'var(--rojo)' : tipo === 'verde' ? 'var(--verde)' : 'var(--oro)';
-  t.style.color = (tipo === 'error' || tipo === 'verde') ? 'white' : 'var(--negro)';
+  t.style.background = tipo === 'error' ? 'var(--rojo)' : tipo === 'verde' ? 'var(--verde)' : 'var(--accent)';
+  t.style.color = (tipo === 'error' || tipo === 'verde') ? 'white' : 'var(--bg)';
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
@@ -1116,15 +1220,15 @@ function initInicio() {
   if (alertasPedidos.length && esAdmin()) {
     bannerHtml += `<div style="background:rgba(212,112,58,.1);border:2px solid var(--naranja);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer" onclick="tab('pedidos',document.getElementById('nav-pedidos'))">
       <div style="font-weight:800;font-size:.95rem;color:var(--naranja)">🛒 ${alertasPedidos.length} solicitud${alertasPedidos.length>1?'es':''} de pedido pendiente${alertasPedidos.length>1?'s':''} de aprobar</div>
-      <div style="font-size:12px;color:var(--gris);margin-top:4px">Toca para revisar →</div>
+      <div style="font-size:12px;color:var(--text-3);margin-top:4px">Toca para revisar →</div>
     </div>`;
   }
 
   if (!bannerHtml) {
-    bannerHtml = `<div style="background:rgba(45,122,79,.1);border:2px solid var(--verde-m);border-radius:14px;padding:14px;text-align:center">
+    bannerHtml = `<div style="background:rgba(45,122,79,.1);border:2px solid var(--verde);border-radius:14px;padding:14px;text-align:center">
       <div style="font-size:1.4rem">✅</div>
-      <div style="font-weight:700;color:var(--verde-m);margin-top:4px">Todo en orden</div>
-      <div style="font-size:13px;color:var(--gris);margin-top:2px">Sin alertas hoy</div>
+      <div style="font-weight:700;color:var(--verde);margin-top:4px">Todo en orden</div>
+      <div style="font-size:13px;color:var(--text-3);margin-top:2px">Sin alertas hoy</div>
     </div>`;
   }
 
@@ -1287,7 +1391,7 @@ function renderStock() {
 
   const el = document.getElementById('stock-lista');
   if (!productos.length) {
-    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gris)"><div style="font-size:3rem">📦</div><div style="margin-top:8px">Sin productos.</div></div>';
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-3)"><div style="font-size:3rem">📦</div><div style="margin-top:8px">Sin productos.</div></div>';
     return;
   }
 
@@ -1298,39 +1402,39 @@ function renderStock() {
     const ubicLabel = UBIC_LABELS[p.ubicacion||''] || '';
 
     const lotesHtml = (p.lotes||[]).length === 0
-      ? `<div style="font-size:12px;color:var(--gris);padding:8px 0">Sin stock.${esAdmin()?' Añade un lote.':''}</div>`
+      ? `<div style="font-size:12px;color:var(--text-3);padding:8px 0">Sin stock.${esAdmin()?' Añade un lote.':''}</div>`
       : (p.lotes||[]).map((l, i) => {
           const d = diasHasta(l.caduca);
           let cadLabel = '';
           if (l.caduca) {
             const cs = d<=0?'rojo':d<=2?'amarillo':'verde';
-            const cc = {rojo:'#e05555', amarillo:'var(--amarillo)', verde:'var(--verde-m)'};
-            const cb = {rojo:'var(--rojo-c)', amarillo:'var(--amarillo-c)', verde:'var(--verde-c)'};
+            const cc = {rojo:'#e05555', amarillo:'var(--amarillo)', verde:'var(--verde)'};
+            const cb = {rojo:'var(--rojo-l)', amarillo:'var(--amarillo-l)', verde:'var(--verde-l)'};
             const ct = d<=0?`Caducado ${Math.abs(d)}d`:d===0?'¡HOY!':d<=2?`${d}d`:l.caduca;
             cadLabel = `<span style="background:${cb[cs]};color:${cc[cs]};padding:2px 7px;border-radius:8px;font-size:11px;font-weight:700">${ct}</span>`;
           }
-          const fifo = i===0 && (p.lotes||[]).length>1 ? `<span style="background:rgba(201,151,58,.2);color:var(--oro);padding:1px 6px;border-radius:6px;font-size:10px;font-weight:700;margin-left:4px">USA 1º</span>` : '';
+          const fifo = i===0 && (p.lotes||[]).length>1 ? `<span style="background:rgba(201,151,58,.2);color:var(--accent);padding:1px 6px;border-radius:6px;font-size:10px;font-weight:700;margin-left:4px">USA 1º</span>` : '';
           return `<div class="lote-row">
             <div style="flex:1">
               <div style="font-size:13px;font-weight:600">${l.cantidad} ${p.unidad}${fifo}</div>
-              <div style="margin-top:3px;display:flex;gap:5px;flex-wrap:wrap">${cadLabel}${l.notas?`<span style="font-size:11px;color:var(--gris)">${l.notas}</span>`:''}</div>
+              <div style="margin-top:3px;display:flex;gap:5px;flex-wrap:wrap">${cadLabel}${l.notas?`<span style="font-size:11px;color:var(--text-3)">${l.notas}</span>`:''}</div>
             </div>
-            <button onclick="consumirUnidad(${p.id},${l.id})" style="background:var(--rojo-c);color:#e05555;border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer">−1</button>
+            <button onclick="consumirUnidad(${p.id},${l.id})" style="background:var(--rojo-l);color:#e05555;border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer">−1</button>
           </div>`;
         }).join('');
 
     const adminBtns = esAdmin() ? `
-      <button onclick="abrirModalLote(${p.id})" style="background:var(--oro-c);color:var(--oro);border:none;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer">➕</button>
-      <button onclick="abrirModalProducto(${p.id})" style="background:none;border:1.5px solid var(--negro-m);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--gris)">✏️</button>
-      <button onclick="borrarProducto(${p.id})" style="background:none;border:1.5px solid var(--negro-m);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--gris)">🗑</button>` : '';
+      <button onclick="abrirModalLote(${p.id})" style="background:var(--accent-l);color:var(--accent);border:none;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer">➕</button>
+      <button onclick="abrirModalProducto(${p.id})" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-3)">✏️</button>
+      <button onclick="borrarProducto(${p.id})" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-3)">🗑</button>` : '';
 
     return `<div class="stock-card ${sem}">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <div style="font-size:1.2rem">${semIcon}</div>
         <div style="flex:1">
           <div style="font-weight:700;font-size:.95rem">${p.nombre}</div>
-          <div style="font-size:12px;color:var(--gris);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
-            <span>Total: <strong style="color:var(--crema)">${total} ${p.unidad}</strong></span>
+          <div style="font-size:12px;color:var(--text-3);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+            <span>Total: <strong style="color:var(--text)">${total} ${p.unidad}</strong></span>
             ${ubicLabel?`<span class="ubicacion-tag">${ubicLabel}</span>`:''}
           </div>
         </div>
@@ -1411,7 +1515,7 @@ function renderMermas() {
 
   const el = document.getElementById('mermas-lista');
   if (!mermas.length) {
-    el.innerHTML = '<div style="color:var(--gris);font-size:14px;padding:16px 0">Sin mermas en este período.</div>';
+    el.innerHTML = '<div style="color:var(--text-3);font-size:14px;padding:16px 0">Sin mermas en este período.</div>';
     document.getElementById('mermas-resumen').innerHTML = '';
     return;
   }
@@ -1420,8 +1524,8 @@ function renderMermas() {
   el.innerHTML = mermas.map(m => `<div class="merma-row">
     <div style="flex:1">
       <div style="font-weight:600;font-size:.9rem">${m.prodNombre}</div>
-      <div style="font-size:12px;color:var(--gris);margin-top:2px">${m.cantidad} ${m.unidad} · ${quienLabel[m.quien]||m.quien} · ${formatHora(m.cuando)}</div>
-      ${m.detalle?`<div style="font-size:12px;color:var(--crema-m);margin-top:3px;font-style:italic">"${m.detalle}"</div>`:''}
+      <div style="font-size:12px;color:var(--text-3);margin-top:2px">${m.cantidad} ${m.unidad} · ${quienLabel[m.quien]||m.quien} · ${formatHora(m.cuando)}</div>
+      ${m.detalle?`<div style="font-size:12px;color:var(--text-2);margin-top:3px;font-style:italic">"${m.detalle}"</div>`:''}
     </div>
     <span class="merma-motivo ${m.motivo}">${MOTIVO_LABELS[m.motivo]||m.motivo}</span>
   </div>`).join('');
@@ -1475,7 +1579,7 @@ function renderPedidos() {
   if (esMaria()) pedidos = pedidos.filter(p => p.quien === 'maria');
 
   const el = document.getElementById('pedidos-lista');
-  if (!pedidos.length) { el.innerHTML = '<div style="color:var(--gris);font-size:14px;padding:16px 0">Sin solicitudes.</div>'; return; }
+  if (!pedidos.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:14px;padding:16px 0">Sin solicitudes.</div>'; return; }
 
   const quienLabel = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
   el.innerHTML = pedidos.map(p => {
@@ -1489,10 +1593,10 @@ function renderPedidos() {
         <div style="font-weight:700;font-size:1rem">${p.producto}</div>
         <span class="pedido-estado ${p.estado}">${p.estado==='pendiente'?'⏳ Pendiente':'✅ Aprobada'}</span>
       </div>
-      ${p.cantidad?`<div style="font-size:13px;color:var(--gris);margin-top:4px">Cantidad: ${p.cantidad}</div>`:''}
-      <div style="font-size:13px;color:var(--crema-m);margin-top:6px;font-style:italic">"${p.justificacion}"</div>
-      <div style="font-size:11px;color:var(--gris);margin-top:6px">${quienLabel[p.quien]||p.quien} · ${formatHora(p.cuando)}${p.fechaNecesita?' · Para: '+p.fechaNecesita:''}</div>
-      ${p.aprobadoPor?`<div style="font-size:11px;color:var(--verde-m);margin-top:4px">✅ ${p.aprobadoPor} · ${formatHora(p.aprobadoCuando)}</div>`:''}
+      ${p.cantidad?`<div style="font-size:13px;color:var(--text-3);margin-top:4px">Cantidad: ${p.cantidad}</div>`:''}
+      <div style="font-size:13px;color:var(--text-2);margin-top:6px;font-style:italic">"${p.justificacion}"</div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:6px">${quienLabel[p.quien]||p.quien} · ${formatHora(p.cuando)}${p.fechaNecesita?' · Para: '+p.fechaNecesita:''}</div>
+      ${p.aprobadoPor?`<div style="font-size:11px;color:var(--verde);margin-top:4px">✅ ${p.aprobadoPor} · ${formatHora(p.aprobadoCuando)}</div>`:''}
       ${adminBtns}
     </div>`;
   }).join('');
@@ -1577,7 +1681,7 @@ function cargarCaja() {
   document.getElementById('caja-total-gastos').textContent = totalG.toFixed(2) + '€';
   const balEl = document.getElementById('caja-balance');
   balEl.textContent = (bal >= 0 ? '+' : '') + bal.toFixed(2) + '€';
-  balEl.style.color = bal >= 0 ? 'var(--verde-m)' : 'var(--rojo)';
+  balEl.style.color = bal >= 0 ? 'var(--verde)' : 'var(--rojo)';
 
   // alerta si gastos > ventas
   const alertEl = document.getElementById('caja-alerta-dia');
@@ -1597,12 +1701,12 @@ function cargarCaja() {
 
   const el = document.getElementById('caja-movimientos');
   if (!movs.length) {
-    el.innerHTML = '<div style="color:var(--gris);font-size:14px;text-align:center;padding:12px">Sin movimientos.</div>';
+    el.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin movimientos.</div>';
     return;
   }
   el.innerHTML = movs.map(m => {
     const esVenta = m._tipo === 'venta';
-    const color   = esVenta ? 'var(--verde-m)' : 'var(--rojo)';
+    const color   = esVenta ? 'var(--verde)' : 'var(--rojo)';
     const signo   = esVenta ? '+' : '-';
     const icon    = esVenta ? (TIPOICONS[m.tipo]||'💰') : (CATICONS[m.cat]||'📦');
     const etiq    = esVenta ? (m.tipo) : (m.cat);
@@ -1610,10 +1714,10 @@ function cargarCaja() {
     const puedeB  = esAdmin();
     return `<div class="item" style="border-left:3px solid ${color};padding-left:10px">
       <div class="item-body">
-        <div class="item-title" style="color:${color}">${icon} ${signo}${m.importe.toFixed(2)}€ <span style="font-size:11px;font-weight:400;color:var(--gris)">${etiq}</span></div>
+        <div class="item-title" style="color:${color}">${icon} ${signo}${m.importe.toFixed(2)}€ <span style="font-size:11px;font-weight:400;color:var(--text-3)">${etiq}</span></div>
         <div class="item-sub">${texto}${m.hora?' · '+m.hora:''}${m.quien?' · '+m.quien:''}</div>
       </div>
-      ${puedeB ? `<button style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px;padding:4px" onclick="borrarMovimiento('${fecha}','${m._tipo==='venta'?'ventas':'gastos'}',${m.id})">×</button>` : ''}
+      ${puedeB ? `<button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px;padding:4px" onclick="borrarMovimiento('${fecha}','${m._tipo==='venta'?'ventas':'gastos'}',${m.id})">×</button>` : ''}
     </div>`;
   }).join('');
 }
@@ -1635,19 +1739,19 @@ function renderCajaSemana() {
     filas.push({ f, dLabel, v, g, bal });
   }
   const el = document.getElementById('caja-semana');
-  if (!filas.length) { el.innerHTML='<div style="color:var(--gris);font-size:14px">Sin datos esta semana.</div>'; return; }
+  if (!filas.length) { el.innerHTML='<div style="color:var(--text-3);font-size:14px">Sin datos esta semana.</div>'; return; }
   el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
-    <thead><tr style="color:var(--gris);font-size:11px;text-transform:uppercase">
+    <thead><tr style="color:var(--text-3);font-size:11px;text-transform:uppercase">
       <th style="text-align:left;padding:4px 6px">Día</th>
-      <th style="text-align:right;padding:4px 6px;color:var(--verde-m)">Ventas</th>
+      <th style="text-align:right;padding:4px 6px;color:var(--verde)">Ventas</th>
       <th style="text-align:right;padding:4px 6px;color:var(--rojo)">Gastos</th>
       <th style="text-align:right;padding:4px 6px">Balance</th>
     </tr></thead>
-    <tbody>${filas.map(r => `<tr style="border-top:1px solid var(--negro-m);cursor:pointer" onclick="document.getElementById('caja-fecha').value='${r.f}';cargarCaja()">
-      <td style="padding:6px;color:var(--crema)">${r.dLabel}</td>
-      <td style="text-align:right;padding:6px;color:var(--verde-m)">+${r.v.toFixed(2)}€</td>
+    <tbody>${filas.map(r => `<tr style="border-top:1px solid var(--border);cursor:pointer" onclick="document.getElementById('caja-fecha').value='${r.f}';cargarCaja()">
+      <td style="padding:6px;color:var(--text)">${r.dLabel}</td>
+      <td style="text-align:right;padding:6px;color:var(--verde)">+${r.v.toFixed(2)}€</td>
       <td style="text-align:right;padding:6px;color:var(--rojo)">-${r.g.toFixed(2)}€</td>
-      <td style="text-align:right;padding:6px;font-weight:700;color:${r.bal>=0?'var(--verde-m)':'var(--rojo)'}">${r.bal>=0?'+':''}${r.bal.toFixed(2)}€</td>
+      <td style="text-align:right;padding:6px;font-weight:700;color:${r.bal>=0?'var(--verde)':'var(--rojo)'}">${r.bal>=0?'+':''}${r.bal.toFixed(2)}€</td>
     </tr>`).join('')}
     </tbody>
   </table>`;
@@ -1668,7 +1772,7 @@ function actualizarWidgetCaja() {
   document.getElementById('cw-gastos').textContent  = '-' + g.toFixed(2) + '€';
   const bEl = document.getElementById('cw-balance');
   bEl.textContent = (bal>=0?'+':'') + bal.toFixed(2) + '€';
-  bEl.style.color = bal >= 0 ? 'var(--verde-m)' : 'var(--rojo)';
+  bEl.style.color = bal >= 0 ? 'var(--verde)' : 'var(--rojo)';
   const aEl = document.getElementById('cw-alerta');
   if (bal < 0) {
     aEl.style.display = '';
@@ -1720,8 +1824,8 @@ function guardarMenu() {
 function renderPinchos() {
   const pinchos = cargar('pinchos',[]);
   const el = document.getElementById('pinchos-lista');
-  if (!pinchos.length) { el.innerHTML='<div style="color:var(--gris);font-size:14px">Sin pinchos añadidos.</div>'; return; }
-  el.innerHTML = pinchos.map((p,i) => `<div class="item"><div class="item-body"><div class="item-title">🥢 ${p}</div></div><button style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px" onclick="borrarPincho(${i})">×</button></div>`).join('');
+  if (!pinchos.length) { el.innerHTML='<div style="color:var(--text-3);font-size:14px">Sin pinchos añadidos.</div>'; return; }
+  el.innerHTML = pinchos.map((p,i) => `<div class="item"><div class="item-body"><div class="item-title">🥢 ${p}</div></div><button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px" onclick="borrarPincho(${i})">×</button></div>`).join('');
 }
 function addPincho() {
   const input = document.getElementById('pincho-nuevo');
@@ -1772,10 +1876,10 @@ function renderPersonalSemana() {
 
   // actualizar contadores
   document.getElementById('personal-gastado').textContent = gastado.toFixed(2) + '€';
-  document.getElementById('personal-gastado').style.color = presupuesto > 0 && gastado > presupuesto ? '#e05555' : 'var(--verde-m)';
+  document.getElementById('personal-gastado').style.color = presupuesto > 0 && gastado > presupuesto ? '#e05555' : 'var(--verde)';
   if (presupuesto > 0) {
     document.getElementById('personal-resto').textContent = resto >= 0 ? `Quedan ${resto.toFixed(2)}€` : `⚠️ Pasado ${Math.abs(resto).toFixed(2)}€`;
-    document.getElementById('personal-resto').style.color = resto >= 0 ? 'var(--gris)' : '#e05555';
+    document.getElementById('personal-resto').style.color = resto >= 0 ? 'var(--text-3)' : '#e05555';
   } else {
     document.getElementById('personal-resto').textContent = 'Sin presupuesto fijado';
   }
@@ -1785,24 +1889,24 @@ function renderPersonalSemana() {
   DIAS_ORD.forEach(d => {
     const entrada = semana[d];
     const tieneHoy = d === (['dom','lun','mar','mie','jue','vie','sab'][new Date().getDay()]);
-    html += `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--negro-m)">
-      <div style="width:36px;text-align:center;font-size:11px;font-weight:800;color:${tieneHoy ? 'var(--oro)' : 'var(--gris)'};text-transform:uppercase">${d.toUpperCase()}</div>
+    html += `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
+      <div style="width:36px;text-align:center;font-size:11px;font-weight:800;color:${tieneHoy ? 'var(--accent)' : 'var(--text-3)'};text-transform:uppercase">${d.toUpperCase()}</div>
       <div style="flex:1">`;
     if (entrada && entrada.plato) {
-      html += `<div style="font-size:.9rem;font-weight:600;color:var(--crema)">${entrada.plato}</div>`;
-      if (entrada.coste) html += `<div style="font-size:11px;color:var(--gris);margin-top:2px">${parseFloat(entrada.coste).toFixed(2)}€</div>`;
+      html += `<div style="font-size:.9rem;font-weight:600;color:var(--text)">${entrada.plato}</div>`;
+      if (entrada.coste) html += `<div style="font-size:11px;color:var(--text-3);margin-top:2px">${parseFloat(entrada.coste).toFixed(2)}€</div>`;
     } else {
-      html += `<div style="font-size:.85rem;color:var(--gris);opacity:.6">Sin anotar</div>`;
+      html += `<div style="font-size:.85rem;color:var(--text-3);opacity:.6">Sin anotar</div>`;
     }
     html += `</div>`;
     if (entrada && entrada.plato) {
-      html += `<button onclick="borrarPersonalDia('${d}')" style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px;padding:4px">×</button>`;
+      html += `<button onclick="borrarPersonalDia('${d}')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px;padding:4px">×</button>`;
     } else {
-      html += `<button onclick="seleccionarDiaPersonal('${d}')" style="background:none;border:none;color:var(--oro);cursor:pointer;font-size:18px;padding:4px">+</button>`;
+      html += `<button onclick="seleccionarDiaPersonal('${d}')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:18px;padding:4px">+</button>`;
     }
     html += `</div>`;
   });
-  el.innerHTML = html || '<div style="color:var(--gris);font-size:14px">Semana vacía.</div>';
+  el.innerHTML = html || '<div style="color:var(--text-3);font-size:14px">Semana vacía.</div>';
 }
 
 function seleccionarDiaPersonal(d) {
@@ -1847,13 +1951,13 @@ function renderPersonalPropuestas() {
   const recetas = cargar('recetas', []).filter(r => r.categoria === 'personal');
   const el = document.getElementById('personal-propuestas');
   if (!recetas.length) {
-    el.innerHTML = '<div style="color:var(--gris);font-size:13px">Aún no tienes recetas de personal guardadas.</div>';
+    el.innerHTML = '<div style="color:var(--text-3);font-size:13px">Aún no tienes recetas de personal guardadas.</div>';
     return;
   }
   el.innerHTML = recetas.map(r => `
     <button onclick="usarPropuestaPersonal('${r.nombre.replace(/'/g,"\\'")}','${r.costeRacion||0}')"
-      style="padding:7px 13px;border-radius:10px;border:1.5px solid var(--negro-m);background:var(--negro-c);color:var(--crema);font-size:13px;cursor:pointer;font-weight:600">
-      ${r.nombre}${r.costeRacion ? ` <span style="color:var(--gris);font-weight:400">${r.costeRacion}€</span>` : ''}
+      style="padding:7px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;font-weight:600">
+      ${r.nombre}${r.costeRacion ? ` <span style="color:var(--text-3);font-weight:400">${r.costeRacion}€</span>` : ''}
     </button>`).join('');
 }
 
@@ -1916,7 +2020,7 @@ function renderRecetas() {
   let recetas = cargar('recetas',[]);
   if (filtro) recetas = recetas.filter(r => r.categoria === filtro);
   const el = document.getElementById('recetas-lista');
-  if (!recetas.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--gris)"><div style="font-size:3rem">📖</div><div style="margin-top:8px">Sin recetas.</div></div>'; return; }
+  if (!recetas.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">📖</div><div style="margin-top:8px">Sin recetas.</div></div>'; return; }
   const CB = {carta:'badge-oro', menu:'badge-verde', pincho:'badge-naranja', personal:'badge-gris'};
   const CL = {carta:'Carta', menu:'Menú', pincho:'Pinchos', personal:'Personal'};
   el.innerHTML = recetas.map(r => {
@@ -1937,10 +2041,10 @@ function verReceta(id) {
   if (!r) return;
   document.getElementById('ver-receta-nombre').textContent = r.nombre;
   let html = '';
-  if (r.ingredientes) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:6px">Ingredientes</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.ingredientes}</div></div>`;
-  if (r.elaboracion) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:6px">Elaboración</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.elaboracion}</div></div>`;
-  if (r.notas) html += `<div style="background:var(--amarillo-c);padding:10px;border-radius:8px;font-size:13px;border:1px solid rgba(201,162,39,.3);margin-bottom:10px">${r.notas}</div>`;
-  if (r.coste||r.precio) { const m=r.coste&&r.precio?' · '+((r.precio-r.coste)/r.precio*100).toFixed(0)+'% margen':''; html+=`<div style="font-size:13px;color:var(--gris)">Coste: ${r.coste||'—'}€ · Venta: ${r.precio||'—'}€${m}</div>`; }
+  if (r.ingredientes) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:6px">Ingredientes</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.ingredientes}</div></div>`;
+  if (r.elaboracion) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:6px">Elaboración</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.elaboracion}</div></div>`;
+  if (r.notas) html += `<div style="background:var(--amarillo-l);padding:10px;border-radius:8px;font-size:13px;border:1px solid rgba(201,162,39,.3);margin-bottom:10px">${r.notas}</div>`;
+  if (r.coste||r.precio) { const m=r.coste&&r.precio?' · '+((r.precio-r.coste)/r.precio*100).toFixed(0)+'% margen':''; html+=`<div style="font-size:13px;color:var(--text-3)">Coste: ${r.coste||'—'}€ · Venta: ${r.precio||'—'}€${m}</div>`; }
   document.getElementById('ver-receta-contenido').innerHTML = html;
   document.getElementById('ver-receta-editar').onclick = () => { cerrarModal('modal-ver-receta'); abrirModalReceta(id); };
   document.getElementById('ver-receta-borrar').onclick = () => borrarReceta(id);
@@ -1986,14 +2090,14 @@ const PROV_EMOJIS = {'Cárnico':'🥩','Verduras':'🥬','Frutas':'🍊','Pescad
 function renderProveedores() {
   const el = document.getElementById('proveedores-lista');
   const proveedores = cargar('proveedores',[]);
-  if (!proveedores.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--gris)"><div style="font-size:3rem">🤝</div><div>Sin proveedores.</div></div>'; return; }
+  if (!proveedores.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">🤝</div><div>Sin proveedores.</div></div>'; return; }
   el.innerHTML = proveedores.map(p => `<div class="prov-card">
     <div class="prov-emoji">${PROV_EMOJIS[p.categoria]||'📦'}</div>
     <div style="flex:1">
       <div class="prov-nombre">${p.nombre}</div>
-      <div class="prov-datos">${p.categoria?`<span class="badge badge-oro">${p.categoria}</span> `:''}${p.telefono?`📞 ${p.telefono}<br>`:''}${p.dias?`📅 ${p.dias}<br>`:''}${p.notas?`<span style="color:var(--gris)">${p.notas}</span>`:''}</div>
+      <div class="prov-datos">${p.categoria?`<span class="badge badge-oro">${p.categoria}</span> `:''}${p.telefono?`📞 ${p.telefono}<br>`:''}${p.dias?`📅 ${p.dias}<br>`:''}${p.notas?`<span style="color:var(--text-3)">${p.notas}</span>`:''}</div>
     </div>
-    <button style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px" onclick="borrarProveedor(${p.id})">×</button>
+    <button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px" onclick="borrarProveedor(${p.id})">×</button>
   </div>`).join('');
 }
 
@@ -2009,7 +2113,7 @@ function renderHistorial() {
   if (tipo) h = h.filter(x => x.tipo===tipo);
   if (quien) h = h.filter(x => x.quien===quien);
   const el = document.getElementById('historial-lista');
-  if (!h.length) { el.innerHTML='<div style="color:var(--gris);font-size:14px;padding:16px 0">Sin movimientos.</div>'; return; }
+  if (!h.length) { el.innerHTML='<div style="color:var(--text-3);font-size:14px;padding:16px 0">Sin movimientos.</div>'; return; }
   el.innerHTML = h.slice(0,100).map(x => `<div class="hist-row">
     <div style="font-size:1.3rem;flex-shrink:0">${HIST_ICONS[x.tipo]||'📋'}</div>
     <div style="flex:1">
