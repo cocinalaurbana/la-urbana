@@ -13,633 +13,537 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  /* Paleta La Urbana — oscura, cálida, taberna */
-  --negro:#1a1209;
-  --negro-c:#231a0f;
-  --negro-m:#2e2215;
-  --oro:#c9973a;--oro-c:#2e2215;--oro-m:#e8b86d;
+  --negro:#1a1209;--negro-c:#231a0f;--negro-m:#2e2215;
+  --oro:#c9973a;--oro-c:#3a2c10;--oro-m:#e8b86d;
   --crema:#f5efe6;--crema-m:#e8ddd0;
   --rojo:#c1121f;--rojo-c:#2e1010;
+  --verde:#2d7a4f;--verde-c:#0d2e1a;--verde-m:#3da067;
   --naranja:#d4703a;--naranja-c:#2e1a0e;
   --amarillo:#c9a227;--amarillo-c:#2a2208;
-  --gris:#9e9689;--gris-c:#231a0f;--gris-m:#2e2518;
-  --texto:var(--crema);--blanco:var(--negro-c);
-  --sombra:0 2px 12px rgba(0,0,0,0.4);
+  --gris:#9e9689;--gris-m:#2e2518;
+  --sombra:0 2px 12px rgba(0,0,0,0.45);
   --radio:14px;
-  /* Alias compatibilidad */
-  --verde:var(--oro);--verde-c:var(--oro-c);--verde-m:var(--oro-m);
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--negro);color:var(--crema);font-size:16px;min-height:100vh}
+body.light{--negro:#f0ebe0;--negro-c:#fff;--negro-m:#e0d8c8;--crema:#1a1209;--crema-m:#3a2c10;--gris:#7a7060;--gris-m:#c8c0b0;--sombra:0 2px 12px rgba(0,0,0,0.12)}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--negro);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px}
+#login-screen img{height:64px;margin-bottom:24px}
+#login-screen h2{color:var(--oro);font-size:1.4rem;margin-bottom:8px;text-align:center}
+#login-screen p{color:var(--gris);font-size:14px;margin-bottom:28px;text-align:center}
+.login-btn{width:100%;max-width:320px;padding:16px;border-radius:14px;border:2px solid var(--negro-m);background:var(--negro-c);color:var(--crema);font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:12px;text-align:left;display:flex;align-items:center;gap:14px;transition:border-color .2s}
+.login-btn:hover{border-color:var(--oro)}
+.login-btn .role-emoji{font-size:2rem}
+.login-btn .role-name{font-size:1rem;font-weight:800}
+.login-btn .role-desc{font-size:12px;color:var(--gris);margin-top:2px}
 
 /* HEADER */
-header{background:var(--negro-c);color:var(--crema);padding:12px 20px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,0.5);border-bottom:1px solid var(--oro)}
-header .header-inner{display:flex;align-items:center;gap:12px}
-header img.logo{height:36px;width:auto;object-fit:contain}
-header h1{font-size:1.2rem;font-weight:800;letter-spacing:0.5px;color:var(--oro)}
-header .sub{font-size:0.72rem;opacity:0.65;margin-top:2px;color:var(--crema-m)}
+header{background:var(--negro-c);padding:10px 16px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,0.5);border-bottom:2px solid var(--oro);display:flex;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:10px}
+header img.logo{height:32px;width:auto;object-fit:contain}
+header h1{font-size:1.1rem;font-weight:800;color:var(--oro)}
+header .sub{font-size:0.7rem;opacity:0.6;color:var(--crema-m)}
+.header-right{display:flex;align-items:center;gap:8px}
+.role-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--oro-c);color:var(--oro);border:1px solid var(--oro)}
+.role-badge.maria{background:var(--verde-c);color:var(--verde-m);border-color:var(--verde)}
+.btn-theme{background:none;border:none;font-size:1.2rem;cursor:pointer;padding:4px}
+.btn-salir{background:none;border:none;color:var(--gris);cursor:pointer;font-size:13px}
 
 /* NAV */
-nav{display:flex;overflow-x:auto;background:var(--negro-c);border-bottom:1px solid var(--negro-m);scrollbar-width:none;position:sticky;top:62px;z-index:100}
+nav{display:flex;overflow-x:auto;background:var(--negro-c);border-bottom:1px solid var(--negro-m);scrollbar-width:none;position:sticky;top:57px;z-index:100}
 nav::-webkit-scrollbar{display:none}
-nav button{background:none;border:none;border-bottom:3px solid transparent;color:var(--gris);padding:12px 16px;font-size:13px;white-space:nowrap;cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s}
+nav button{background:none;border:none;border-bottom:3px solid transparent;color:var(--gris);padding:11px 14px;font-size:12px;white-space:nowrap;cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s}
 nav button.active{color:var(--oro);border-bottom-color:var(--oro)}
 nav button:hover{color:var(--oro)}
+nav button.oculto{display:none}
 
 /* TABS */
-.tab{display:none;padding:16px;max-width:700px;margin:0 auto;padding-bottom:60px}
+.tab{display:none;padding:14px;max-width:700px;margin:0 auto;padding-bottom:70px}
 .tab.active{display:block}
 
 /* CARDS */
 .card{background:var(--negro-c);border-radius:var(--radio);padding:16px;margin-bottom:14px;box-shadow:var(--sombra);border:1px solid var(--negro-m)}
 .card-title{font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--oro)}
-.card-title span{font-size:1.1rem}
 
-/* STATS GRID */
+/* STATS */
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
 .stat{background:var(--negro-c);border-radius:var(--radio);padding:14px;text-align:center;box-shadow:var(--sombra);border:1px solid var(--negro-m)}
 .stat .num{font-size:2rem;font-weight:800;color:var(--oro)}
-.stat .lbl{font-size:0.72rem;color:var(--gris);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.stat .lbl{font-size:0.7rem;color:var(--gris);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
 .stat.rojo .num{color:#e05555}
-.stat.naranja .num{color:var(--naranja)}
-.stat.oro .num{color:var(--oro)}
+.stat.verde .num{color:var(--verde-m)}
 
 /* SEMAFORO */
-.sema{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700}
-.sema.verde{background:rgba(40,100,60,.35);color:#5ec984;border:1px solid rgba(94,201,132,.3)}
+.sema{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700}
+.sema.verde{background:rgba(45,122,79,.3);color:#5ec984;border:1px solid rgba(94,201,132,.3)}
 .sema.amarillo{background:rgba(201,162,39,.2);color:var(--amarillo);border:1px solid rgba(201,162,39,.3)}
 .sema.rojo{background:rgba(193,18,31,.25);color:#e05555;border:1px solid rgba(224,85,85,.3)}
 
 /* ITEMS */
 .item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--negro-m)}
-.item:last-child{border-bottom:none;padding-bottom:0}
+.item:last-child{border-bottom:none}
 .item-body{flex:1}
 .item-title{font-weight:600;font-size:0.9rem;color:var(--crema)}
-.item-sub{font-size:0.78rem;color:var(--gris);margin-top:2px}
-.item-badge{font-size:12px;font-weight:700;padding:3px 8px;border-radius:10px}
+.item-sub{font-size:0.75rem;color:var(--gris);margin-top:2px}
 
 /* BOTONES */
 .btn{padding:10px 18px;border-radius:10px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
-.btn-verde{background:var(--oro);color:var(--negro)}
-.btn-verde:hover{background:var(--oro-m)}
+.btn-oro{background:var(--oro);color:var(--negro)}
+.btn-oro:hover{background:var(--oro-m)}
 .btn-outline{background:none;border:2px solid var(--negro-m);color:var(--gris)}
 .btn-outline:hover{border-color:var(--oro);color:var(--oro)}
-.btn-rojo{background:var(--rojo);color:white}
-.btn-sm{padding:7px 14px;font-size:13px}
+.btn-rojo{background:rgba(193,18,31,.8);color:white}
+.btn-verde{background:rgba(45,122,79,.8);color:white}
+.btn-sm{padding:7px 13px;font-size:13px}
 .btn-full{width:100%}
 
 /* FORM */
 .form-group{margin-bottom:12px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:var(--gris);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--gris);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
 .form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 12px;border:1.5px solid var(--negro-m);border-radius:10px;font-family:inherit;font-size:15px;color:var(--crema);background:var(--negro)}
 .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--oro)}
 .form-group textarea{resize:vertical;min-height:80px}
+.form-group select option{background:var(--negro-c)}
 
 /* BADGES */
-.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700}
-.badge-verde{background:rgba(40,100,60,.35);color:#5ec984}
+.badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:12px;font-weight:700}
+.badge-verde{background:rgba(45,122,79,.3);color:#5ec984}
 .badge-rojo{background:rgba(193,18,31,.25);color:#e05555}
 .badge-naranja{background:rgba(212,112,58,.25);color:var(--naranja)}
 .badge-oro{background:rgba(201,151,58,.2);color:var(--oro)}
 .badge-gris{background:var(--negro-m);color:var(--gris)}
 
 /* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:flex-end;justify-content:center}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:var(--negro-c);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;border-top:1px solid var(--oro)}
+.modal{background:var(--negro-c);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;border-top:2px solid var(--oro)}
 .modal-title{font-size:1.1rem;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;color:var(--oro)}
 .modal-close{background:var(--negro-m);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--crema)}
 
-/* RECETA CARD */
-.receta-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:10px;box-shadow:var(--sombra);cursor:pointer;border-left:4px solid var(--oro);border-top:1px solid var(--negro-m);border-right:1px solid var(--negro-m);border-bottom:1px solid var(--negro-m)}
+/* STOCK */
+.stock-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:12px;border:1px solid var(--negro-m);border-left:4px solid var(--negro-m);box-shadow:var(--sombra)}
+.stock-card.rojo{border-left-color:#e05555}
+.stock-card.amarillo{border-left-color:var(--amarillo)}
+.stock-card.verde{border-left-color:var(--verde-m)}
+.lote-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--negro-m)}
+.lote-row:last-child{border-bottom:none}
+.ubicacion-tag{font-size:11px;padding:2px 7px;border-radius:8px;background:rgba(201,151,58,.15);color:var(--oro);font-weight:600}
+
+/* MERMA */
+.merma-row{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--negro-m)}
+.merma-row:last-child{border-bottom:none}
+.merma-motivo{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap}
+.merma-motivo.cocinado{background:rgba(45,122,79,.25);color:var(--verde-m)}
+.merma-motivo.tirado{background:rgba(193,18,31,.25);color:#e05555}
+.merma-motivo.caducado{background:rgba(201,162,39,.2);color:var(--amarillo)}
+.merma-motivo.roto{background:rgba(212,112,58,.2);color:var(--naranja)}
+.merma-motivo.otro{background:var(--negro-m);color:var(--gris)}
+
+/* PEDIDO */
+.pedido-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:10px;border:1px solid var(--negro-m);border-left:4px solid var(--naranja)}
+.pedido-card.aprobado{border-left-color:var(--verde-m)}
+.pedido-estado{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.pedido-estado.pendiente{background:rgba(212,112,58,.2);color:var(--naranja)}
+.pedido-estado.aprobado{background:rgba(45,122,79,.25);color:var(--verde-m)}
+
+/* RECETAS */
+.receta-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:10px;cursor:pointer;border:1px solid var(--negro-m);border-left:4px solid var(--oro)}
+.receta-card.menu{border-left-color:var(--verde-m)}
 .receta-card.pincho{border-left-color:var(--naranja)}
-.receta-card.menu{border-left-color:var(--oro)}
 .receta-card.personal{border-left-color:var(--gris)}
 .receta-nombre{font-weight:700;font-size:1rem;color:var(--crema)}
-.receta-meta{font-size:12px;color:var(--gris);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+.receta-meta{font-size:12px;color:var(--gris);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
 
-/* STOCK ITEM */
-.stock-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--negro-m)}
-.stock-item:last-child{border-bottom:none}
-.stock-nombre{flex:1;font-weight:600;font-size:0.9rem;color:var(--crema)}
-.stock-cantidad{font-size:13px;color:var(--gris)}
-.stock-btns{display:flex;gap:6px}
-.btn-stock{width:32px;height:32px;border-radius:8px;border:none;font-size:18px;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center}
-.btn-stock.menos{background:rgba(193,18,31,.3);color:#e05555}
-.btn-stock.mas{background:rgba(201,151,58,.25);color:var(--oro)}
+/* MENÚ */
+.menu-dia{background:var(--negro-m);border-radius:var(--radio);padding:18px;margin-bottom:14px;border:1px solid var(--oro)}
+.menu-dia h2{font-size:1.1rem;font-weight:800;margin-bottom:4px;color:var(--oro)}
+.menu-plato{background:rgba(201,151,58,.08);border-radius:10px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(201,151,58,.2)}
+.menu-plato .tipo{font-size:11px;opacity:.65;text-transform:uppercase;letter-spacing:.5px;color:var(--oro)}
+.menu-plato .nombre{font-weight:700;font-size:.95rem;margin-top:2px;color:var(--crema)}
 
-/* INSTAGRAM CARD */
-.ig-week{background:var(--negro-c);border-radius:var(--radio);overflow:hidden;margin-bottom:14px;box-shadow:var(--sombra);border:1px solid var(--negro-m)}
-.ig-week-header{background:var(--negro-m);color:var(--oro);padding:12px 16px;font-weight:700;font-size:0.9rem;border-bottom:1px solid var(--oro)}
-.ig-post{padding:14px 16px;border-bottom:1px solid var(--negro-m)}
+/* HISTORIAL */
+.hist-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--negro-m)}
+.hist-row:last-child{border-bottom:none}
+.hist-who{font-size:11px;font-weight:700;color:var(--oro)}
+.hist-what{font-size:13px;color:var(--crema);margin-top:1px}
+.hist-when{font-size:11px;color:var(--gris);margin-top:2px}
+
+/* SPOTIFY */
+.sp-section{margin-bottom:16px}
+.sp-momento{font-size:13px;font-weight:700;color:#1ed760;margin-bottom:6px}
+.sp-link{display:flex;align-items:center;gap:10px;background:rgba(30,215,96,.08);border:1px solid rgba(30,215,96,.2);border-radius:12px;padding:10px 14px;text-decoration:none;margin-bottom:6px;transition:background .2s}
+.sp-link:hover{background:rgba(30,215,96,.15)}
+.sp-link-name{font-size:14px;font-weight:700;color:var(--crema)}
+.sp-link-desc{font-size:12px;color:var(--gris);margin-top:1px}
+.sp-open{font-size:12px;color:#1ed760;font-weight:700}
+
+/* INSTAGRAM */
+.ig-week{background:var(--negro-c);border-radius:var(--radio);overflow:hidden;margin-bottom:14px;border:1px solid var(--negro-m)}
+.ig-week-header{background:var(--negro-m);color:var(--oro);padding:10px 16px;font-weight:700;font-size:.85rem}
+.ig-post{padding:12px 16px;border-bottom:1px solid var(--negro-m)}
 .ig-post:last-child{border-bottom:none}
-.ig-post-dia{font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.ig-post-dia{font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:4px}
 .ig-post-tipo{font-size:12px;font-weight:700;margin-bottom:6px;color:var(--oro)}
 .ig-post-texto{font-size:13px;color:var(--crema);line-height:1.6;background:var(--negro);padding:10px;border-radius:8px;cursor:pointer;border:1px dashed var(--negro-m)}
 .ig-post-texto:hover{border-color:var(--oro)}
-.ig-post-copy{font-size:11px;color:var(--oro);margin-top:4px;font-weight:600}
 
-/* CONSEJO */
-.consejo{background:var(--negro);border-radius:10px;padding:12px;margin-bottom:8px;border-left:3px solid var(--oro)}
-.consejo-titulo{font-weight:700;font-size:0.85rem;margin-bottom:4px;color:var(--oro)}
-.consejo-texto{font-size:13px;color:var(--gris);line-height:1.5}
-
-/* PROVEEDOR */
-.prov-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:10px;box-shadow:var(--sombra);display:flex;gap:12px;align-items:flex-start;border:1px solid var(--negro-m)}
-.prov-emoji{font-size:2rem}
-.prov-info{flex:1}
+/* PROVEEDORES */
+.prov-card{background:var(--negro-c);border-radius:var(--radio);padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--negro-m)}
+.prov-emoji{font-size:1.8rem}
 .prov-nombre{font-weight:700;font-size:1rem;color:var(--crema)}
-.prov-datos{font-size:13px;color:var(--gris);margin-top:4px;line-height:1.6}
+.prov-datos{font-size:13px;color:var(--gris);margin-top:4px;line-height:1.7}
 
 /* TOAST */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--oro);color:var(--negro);padding:10px 20px;border-radius:20px;font-size:14px;font-weight:700;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--oro);color:var(--negro);padding:10px 20px;border-radius:20px;font-size:14px;font-weight:700;z-index:9990;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
 
-/* MENÚ DEL DÍA */
-.menu-dia{background:linear-gradient(135deg,var(--negro-m),var(--negro));border-radius:var(--radio);padding:18px;color:var(--crema);margin-bottom:14px;border:1px solid var(--oro)}
-.menu-dia h2{font-size:1.1rem;font-weight:800;margin-bottom:4px;color:var(--oro)}
-.menu-dia .fecha{font-size:12px;opacity:.65;margin-bottom:14px}
-.menu-plato{background:rgba(201,151,58,.08);border-radius:10px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(201,151,58,.2)}
-.menu-plato .tipo{font-size:11px;opacity:.65;text-transform:uppercase;letter-spacing:.5px;color:var(--oro)}
-.menu-plato .nombre{font-weight:700;font-size:1rem;margin-top:2px;color:var(--crema)}
-
-/* DIVIDER */
 .divider{border:none;border-top:1px solid var(--negro-m);margin:12px 0}
+.consejo{background:var(--negro);border-radius:10px;padding:12px;margin-bottom:8px;border-left:3px solid var(--oro)}
+.consejo-titulo{font-weight:700;font-size:.85rem;margin-bottom:4px;color:var(--oro)}
+.consejo-texto{font-size:13px;color:var(--gris);line-height:1.5}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
+<div id="login-screen">
+  <img src="https://laurbana.es/wp-content/uploads/2023/08/1-La%20urbana.png" alt="La Urbana" onerror="this.style.display='none'">
+  <h2>La Urbana</h2>
+  <p>¿Quién eres hoy?</p>
+  <button class="login-btn" onclick="iniciarSesion('lore')">
+    <div class="role-emoji">👩‍🍳</div>
+    <div><div class="role-name">Lore</div><div class="role-desc">Acceso completo · Gestión total</div></div>
+  </button>
+  <button class="login-btn" onclick="iniciarSesion('cesar')">
+    <div class="role-emoji">🧑‍💼</div>
+    <div><div class="role-name">César</div><div class="role-desc">Acceso completo · Propietario</div></div>
+  </button>
+  <button class="login-btn" onclick="iniciarSesion('maria')">
+    <div class="role-emoji">🧑‍🍳</div>
+    <div><div class="role-name">María</div><div class="role-desc">Stock del día · Mermas · Pedidos</div></div>
+  </button>
+</div>
+
+<!-- HEADER -->
 <header>
-  <div class="header-inner">
-    <img class="logo" src="https://laurbana.es/wp-content/uploads/2023/08/1-La%20urbana.png" alt="La Urbana" onerror="this.style.display='none'">
-    <div>
-      <h1>La Urbana</h1>
-      <div class="sub" id="header-fecha">Cargando...</div>
-    </div>
+  <div class="header-left">
+    <img class="logo" src="https://laurbana.es/wp-content/uploads/2023/08/1-La%20urbana.png" alt="" onerror="this.style.display='none'">
+    <div><h1>La Urbana</h1><div class="sub" id="header-fecha">—</div></div>
+  </div>
+  <div class="header-right">
+    <span class="role-badge" id="header-role">—</span>
+    <button class="btn-theme" id="btn-theme" onclick="toggleTheme()">🌙</button>
+    <button class="btn-salir" onclick="cerrarSesion()">Salir</button>
   </div>
 </header>
 
-<nav>
+<nav id="main-nav">
   <button class="active" onclick="tab('inicio',this)">🏠 Inicio</button>
-  <button onclick="tab('menu',this)">🍽️ Menú</button>
-  <button onclick="tab('recetas',this)">📖 Recetas</button>
-  <button onclick="tab('stock',this)">📦 Stock</button>
-  <button onclick="tab('proveedores',this)">🤝 Proveedores</button>
-  <button onclick="tab('instagram',this)">📱 Instagram</button>
+  <button onclick="tab('stock',this)" id="nav-stock">📦 Stock</button>
+  <button onclick="tab('mermas',this)" id="nav-mermas">📉 Mermas</button>
+  <button onclick="tab('pedidos',this)" id="nav-pedidos">🛒 Pedidos</button>
+  <button onclick="tab('menu',this)" id="nav-menu" class="oculto">🍽️ Menú</button>
+  <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">📖 Recetas</button>
+  <button onclick="tab('proveedores',this)" id="nav-proveedores" class="oculto">🤝 Proveedores</button>
+  <button onclick="tab('historial',this)" id="nav-historial" class="oculto">📋 Historial</button>
+  <button onclick="tab('spotify',this)" id="nav-spotify" class="oculto">🎵 Spotify</button>
+  <button onclick="tab('instagram',this)" id="nav-instagram" class="oculto">📱 Instagram</button>
 </nav>
 
-<!-- ═══════════════════════════════════════
-     INICIO
-═══════════════════════════════════════ -->
+<!-- INICIO -->
 <div id="tab-inicio" class="tab active">
-
   <div class="stats">
-    <div class="stat verde">
-      <div class="num" id="stat-recetas">0</div>
-      <div class="lbl">Recetas</div>
-    </div>
-    <div class="stat naranja">
-      <div class="num" id="stat-stock-bajo">0</div>
-      <div class="lbl">Stock bajo</div>
-    </div>
-    <div class="stat oro">
-      <div class="num" id="stat-pinchos">0</div>
-      <div class="lbl">Pinchos</div>
-    </div>
-    <div class="stat rojo">
-      <div class="num" id="stat-stock-critico">0</div>
-      <div class="lbl">Stock crítico</div>
-    </div>
+    <div class="stat verde"><div class="num" id="stat-ok">0</div><div class="lbl">Stock OK</div></div>
+    <div class="stat rojo"><div class="num" id="stat-critico">0</div><div class="lbl">Crítico</div></div>
+    <div class="stat" style="border-color:var(--amarillo)"><div class="num" style="color:var(--amarillo)" id="stat-mermas">0</div><div class="lbl">Mermas hoy</div></div>
+    <div class="stat" style="border-color:var(--naranja)"><div class="num" style="color:var(--naranja)" id="stat-pedidos">0</div><div class="lbl">Pedidos pend.</div></div>
   </div>
-
-  <!-- MENÚ HOY -->
-  <div class="menu-dia" id="inicio-menu">
+  <div class="menu-dia">
     <h2>🍽️ Menú de hoy</h2>
-    <div class="fecha" id="inicio-menu-fecha"></div>
-    <div id="inicio-menu-platos"><div style="opacity:.7;font-size:14px">Sin menú cargado para hoy. Ve a Menú para editarlo.</div></div>
+    <div style="font-size:12px;opacity:.6;margin-bottom:12px" id="inicio-menu-fecha"></div>
+    <div id="inicio-menu-platos"><div style="opacity:.6;font-size:14px">Sin menú para hoy.</div></div>
   </div>
-
-  <!-- STOCK CRÍTICO -->
-  <div class="card" id="inicio-alertas">
-    <div class="card-title"><span>🔴</span> Alertas de stock</div>
+  <div class="card">
+    <div class="card-title">🔴 Alertas</div>
     <div id="alertas-lista"><div style="color:var(--gris);font-size:14px">Sin alertas 🎉</div></div>
   </div>
-
-  <!-- ACCESOS RÁPIDOS -->
   <div class="card">
-    <div class="card-title"><span>⚡</span> Accesos rápidos</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <button class="btn btn-verde btn-sm" onclick="tab('menu',document.querySelector('nav button:nth-child(2)'))">✏️ Editar menú</button>
-      <button class="btn btn-outline btn-sm" onclick="abrirModalReceta()">➕ Nueva receta</button>
-      <button class="btn btn-outline btn-sm" onclick="tab('stock',document.querySelector('nav button:nth-child(4)'))">📦 Ver stock</button>
-      <button class="btn btn-outline btn-sm" onclick="tab('instagram',document.querySelector('nav button:nth-child(6)'))">📱 Instagram</button>
-    </div>
+    <div class="card-title">⚡ Accesos rápidos</div>
+    <div id="accesos-rapidos" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
   </div>
-
 </div>
 
-<!-- ═══════════════════════════════════════
-     MENÚ
-═══════════════════════════════════════ -->
-<div id="tab-menu" class="tab">
-
-  <div class="card">
-    <div class="card-title"><span>🍽️</span> Menú del día</div>
-    <div id="menu-fecha-display" style="font-size:13px;color:var(--gris);margin-bottom:12px"></div>
-
-    <div class="form-group">
-      <label>Fecha</label>
-      <input type="date" id="menu-fecha" oninput="cargarMenuFecha()">
-    </div>
-
-    <div class="form-group">
-      <label>Primero</label>
-      <input type="text" id="menu-p1" placeholder="ej. Caldo gallego">
-    </div>
-    <div class="form-group">
-      <label>Segundo</label>
-      <input type="text" id="menu-p2" placeholder="ej. Lomo con patatas">
-    </div>
-    <div class="form-group">
-      <label>Postre</label>
-      <input type="text" id="menu-postre" placeholder="ej. Tarta de Santiago">
-    </div>
-    <div class="form-group">
-      <label>Precio menú (€)</label>
-      <input type="number" id="menu-precio" placeholder="ej. 12" step="0.5">
-    </div>
-    <div class="form-group">
-      <label>Notas / Alérgenos</label>
-      <textarea id="menu-notas" placeholder="Sugerencias, alérgenos, disponibilidad..." rows="2"></textarea>
-    </div>
-    <button class="btn btn-verde btn-full" onclick="guardarMenu()">Guardar menú</button>
-  </div>
-
-  <!-- PINCHOS -->
-  <div class="card">
-    <div class="card-title"><span>🥢</span> Pinchos del mediodía</div>
-    <div style="font-size:12px;color:var(--gris);margin-bottom:10px">Viernes y sábados · 12:00–17:00</div>
-    <div id="pinchos-lista"></div>
-    <hr class="divider">
-    <div class="form-group" style="margin-top:8px">
-      <label>Nuevo pincho</label>
-      <input type="text" id="pincho-nuevo" placeholder="ej. Montadito de lacón..." onkeydown="if(event.key==='Enter')addPincho()">
-    </div>
-    <button class="btn btn-outline btn-sm" onclick="addPincho()">+ Añadir pincho</button>
-  </div>
-
-  <!-- PERSONAL -->
-  <div class="card">
-    <div class="card-title"><span>👨‍🍳</span> Plato de personal hoy</div>
-    <div class="form-group">
-      <input type="text" id="personal-plato" placeholder="¿Qué comemos hoy?">
-    </div>
-    <button class="btn btn-outline btn-sm" onclick="guardarPersonal()">Guardar</button>
-    <div id="personal-actual" style="font-size:14px;color:var(--verde);margin-top:8px;font-weight:600"></div>
-  </div>
-
-</div>
-
-<!-- ═══════════════════════════════════════
-     RECETAS
-═══════════════════════════════════════ -->
-<div id="tab-recetas" class="tab">
-
-  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-    <button class="btn btn-verde btn-sm" onclick="abrirModalReceta()">➕ Nueva receta</button>
-    <select id="filtro-receta" onchange="renderRecetas()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--gris-m);font-size:14px;color:var(--texto)">
-      <option value="">Todas</option>
-      <option value="carta">Carta</option>
-      <option value="menu">Menú del día</option>
-      <option value="pincho">Pinchos</option>
-      <option value="personal">Personal</option>
-    </select>
-  </div>
-
-  <div id="recetas-lista"></div>
-
-</div>
-
-<!-- ═══════════════════════════════════════
-     STOCK
-═══════════════════════════════════════ -->
+<!-- STOCK -->
 <div id="tab-stock" class="tab">
-
-  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
-    <button class="btn btn-verde btn-sm" onclick="abrirModalStock()">➕ Producto nuevo</button>
-    <select id="filtro-stock" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--gris-m);font-size:14px">
-      <option value="">Todo</option>
-      <option value="rojo">🔴 Urgente</option>
-      <option value="amarillo">🟡 Bajo</option>
-      <option value="verde">🟢 OK</option>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+    <button class="btn btn-oro btn-sm" id="btn-nuevo-prod" onclick="abrirModalProducto()">➕ Producto</button>
+    <select id="filtro-sem" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+      <option value="">Todo</option><option value="rojo">🔴 Urgente</option><option value="amarillo">🟡 Bajo</option><option value="verde">🟢 OK</option>
+    </select>
+    <select id="filtro-ubic" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+      <option value="">Todas ubicaciones</option>
+      <option value="nevera-columna">🧊 Nevera columna</option>
+      <option value="nevera-cesar">❄️ Nevera César</option>
+      <option value="nevera-rota">🔧 Nevera rota</option>
+      <option value="congelador">🧊 Congelador</option>
+      <option value="estanteria">📦 Estantería</option>
+      <option value="cocina">🍳 Cocina</option>
     </select>
   </div>
-
-  <!-- LEYENDA caducidad -->
-  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;font-size:12px">
-    <span style="background:#fff0f0;color:var(--rojo);padding:4px 10px;border-radius:20px;font-weight:600">🔴 Caduca hoy / ya</span>
-    <span style="background:#fff8e1;color:var(--amarillo);padding:4px 10px;border-radius:20px;font-weight:600">🟡 Caduca en 2 días</span>
-    <span style="background:#f0fdf4;color:var(--verde);padding:4px 10px;border-radius:20px;font-weight:600">🟢 OK</span>
-  </div>
-
   <div id="stock-lista"></div>
-
 </div>
 
-<!-- ═══════════════════════════════════════
-     PROVEEDORES
-═══════════════════════════════════════ -->
-<div id="tab-proveedores" class="tab">
-
-  <div style="margin-bottom:14px">
-    <button class="btn btn-verde btn-sm" onclick="abrirModalProveedor()">➕ Nuevo proveedor</button>
-  </div>
-
-  <div id="proveedores-lista">
-    <!-- Proveedores por defecto -->
-  </div>
-
-</div>
-
-<!-- ═══════════════════════════════════════
-     INSTAGRAM
-═══════════════════════════════════════ -->
-<div id="tab-instagram" class="tab">
-
-  <!-- BIO SUGERIDA -->
-  <div class="card" style="border-left:4px solid #E1306C">
-    <div class="card-title"><span>📝</span> Bio sugerida</div>
-    <div style="background:var(--gris-c);padding:12px;border-radius:10px;font-size:14px;line-height:1.8;cursor:pointer" onclick="copiarTexto(this,'Bio copiada ✓')">
-      🍽️ Cocina gallega de verdad<br>
-      📍 A Coruña · Tarde-noche + mediodía fin de semana<br>
-      🌈 Espacio seguro para todxs<br>
-      📞 [Teléfono]
-    </div>
-    <div style="font-size:11px;color:var(--verde);margin-top:6px;font-weight:600">Toca para copiar</div>
-  </div>
-
-  <!-- PLAN 4 SEMANAS -->
-  <div class="card-title" style="padding:0 0 8px"><span>📅</span> Plan 4 semanas</div>
-
-  <div class="ig-week">
-    <div class="ig-week-header">SEMANA 1 — "Aquí se come"</div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 1 · Lunes o Martes</div>
-      <div class="ig-post-tipo">📸 Foto plato del día</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">Cocina gallega sin complicaciones. [Nombre del plato], hecho hoy.
-Abrimos esta noche a partir de las [hora]. 📍 A Coruña
-
-#LaUrbana #CocinaGallega #ACoruña #DondeComereNCoruña</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 2 · Miércoles o Jueves</div>
-      <div class="ig-post-tipo">📸 Foto del espacio</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">Un sitio donde entrar sin prisa y quedarse.
-Buena comida, buena gente. Así de sencillo.
-
-#LaUrbana #BarGallego #ACoruña</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 3 · Viernes</div>
-      <div class="ig-post-tipo">📸 Mediodía del fin de semana</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">Este sábado abrimos a mediodía. Menú casero, producto gallego.
-De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
-
-#LaUrbana #MenuDelDia #CocinaGallega #ACoruña</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-  </div>
-
-  <div class="ig-week">
-    <div class="ig-week-header">SEMANA 2 — "Aquí somos nosotros"</div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 1 · Lunes o Martes</div>
-      <div class="ig-post-tipo">🤳 Foto del equipo (natural, no posada)</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">La Urbana la hacemos entre todos.
-César con la sala, Lore con la cocina.
-Construyendo algo con cariño, cada día.
-
-#LaUrbana #EquipoUrbana #ACoruña</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 2 · Miércoles</div>
-      <div class="ig-post-tipo">📸 Ingrediente gallego de temporada</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">Producto gallego porque sí.
-[Nombre del ingrediente] de [origen].
-Esta noche en carta. 🌿
-
-#ProductoGallego #CocinaGallega #LaUrbana</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 3 · Viernes</div>
-      <div class="ig-post-tipo">🎬 Reel corto (15-20 seg) — cocina en acción</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">Los viernes huelen a [nombre del plato]. Hasta luego. 🌿
-
-#LaUrbana #CocinaGallega #Reel</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-  </div>
-
-  <div class="ig-week">
-    <div class="ig-week-header">SEMANA 3 — "Aquí se viene a comer bien"</div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 1 · Lunes</div>
-      <div class="ig-post-tipo">📸 Mesa puesta para el mediodía</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">Menú de mediodía los fines de semana.
-Cocina gallega, precio justo, sin prisa.
-Sábado y domingo de 12 a 17h. 📍 A Coruña
-
-#LaUrbana #MenuDelDia #CocinaGallega #DondeComereNCoruña</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 2 · Miércoles</div>
-      <div class="ig-post-tipo">📸 Postre casero</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">El postre también lo hacemos aquí.
-[Nombre del postre]. Para los que se quedan hasta el final. 🍮
-
-#LaUrbana #PostreCasero #CocinaGallega</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 3 · Viernes</div>
-      <div class="ig-post-tipo">🖼️ Carrusel — el bar en tres momentos</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">La Urbana tiene tres vidas.
-La del mediodía tranquilo.
-La de la tarde con calma.
-La de la noche con ganas.
-¿Cuál es la tuya? 🌙
-
-#LaUrbana #BarGallego #ACoruña #LGBTfriendly</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-  </div>
-
-  <div class="ig-week">
-    <div class="ig-week-header">SEMANA 4 — "Aquí eres bienvenido"</div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 1 · Lunes</div>
-      <div class="ig-post-tipo">📸 Detalle del espacio + bandera</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">La Urbana lleva años siendo un espacio donde todo el mundo puede entrar, sentarse y estar.
-Sin más. 🌈
-
-#LaUrbana #LGBTfriendly #EspacioSeguro #ACoruña</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 2 · Miércoles</div>
-      <div class="ig-post-tipo">📸 Novedad en carta</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">Novedad en carta esta semana: [nombre del plato].
-[Una línea describiendo qué es].
-Esta noche lo tienes. 🍽️
-
-#LaUrbana #CocinaGallega #NuevosPlatos</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 3 · Viernes — cierre de mes</div>
-      <div class="ig-post-tipo">📸 Foto bonita del espacio</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Texto copiado ✓')">Un mes más. Gracias a los que venís, a los que repetís y a los que todavía no nos conocéis.
-Os esperamos. 🍃
-
-#LaUrbana #Gracias #ACoruña</div>
-      <div class="ig-post-copy">Toca para copiar</div>
-    </div>
-  </div>
-
-  <!-- CONSEJOS FOTO/VÍDEO -->
+<!-- MERMAS -->
+<div id="tab-mermas" class="tab">
   <div class="card">
-    <div class="card-title"><span>📸</span> Consejos foto y vídeo</div>
-
-    <div class="consejo">
-      <div class="consejo-titulo">La regla de oro</div>
-      <div class="consejo-texto">Luz natural + fondo limpio. Siempre. Pon el plato cerca de una ventana, luz de lado. Nunca flash.</div>
-    </div>
-    <div class="consejo">
-      <div class="consejo-titulo">Foto de platos — ángulos</div>
-      <div class="consejo-texto">Desde arriba (cenital) o a 45°. Esos dos ángulos funcionan siempre. Toca el plato en pantalla para enfocar.</div>
-    </div>
-    <div class="consejo">
-      <div class="consejo-titulo">Antes de disparar</div>
-      <div class="consejo-texto">Limpia el borde del plato con papel de cocina. Las manchas se ven todo. 2 segundos que cambian la foto.</div>
-    </div>
-    <div class="consejo">
-      <div class="consejo-titulo">Vídeos para Reels</div>
-      <div class="consejo-texto">15-30 segundos. Graba en vertical. Movimientos lentos. Lo que graba solo: el sofrito, el cuchillo, emplatar.</div>
-    </div>
-    <div class="consejo">
-      <div class="consejo-titulo">Música en Reels</div>
-      <div class="consejo-texto">La añades desde Instagram directamente. Busca "jazz" o "acoustic" en su librería. Gratis y legal.</div>
-    </div>
-    <div class="consejo">
-      <div class="consejo-titulo">Tu móvil (Redmi Note 15 Pro+)</div>
-      <div class="consejo-texto">Modo Retrato para platos de cerca. Mantén pulsado para bloquear foco. Activa "Anti-shake" en ajustes de vídeo. 1080p 30fps.</div>
-    </div>
-    <div class="consejo">
-      <div class="consejo-titulo">El único accesorio que necesitas</div>
-      <div class="consejo-texto">Trípode con pinza flexible, 8-10€ en Amazon. Te libera las manos para cocinar mientras grabas.</div>
-    </div>
-  </div>
-
-  <!-- CHECKLIST ANTES DE PUBLICAR -->
-  <div class="card">
-    <div class="card-title"><span>✅</span> Checklist antes de publicar</div>
-    <div id="checklist-ig"></div>
-    <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="resetChecklist()">🔄 Resetear</button>
-  </div>
-
-  <!-- LO QUE NO HACER -->
-  <div class="card" style="border-left:4px solid var(--rojo)">
-    <div class="card-title"><span>🚫</span> Lo que NO hacer</div>
-    <div style="font-size:14px;line-height:2;color:var(--gris)">
-      ✗ Hashtags de fiesta (#nightlife #copas #party)<br>
-      ✗ Etiquetar proveedores de alcohol<br>
-      ✗ Reels con música reggaeton/trap<br>
-      ✗ Sorteos de copas gratis<br>
-      ✗ Comprar seguidores
-    </div>
-  </div>
-
-</div>
-
-<!-- ═══════════════════════════════════════
-     MODALES
-═══════════════════════════════════════ -->
-
-<!-- MODAL RECETA -->
-<div class="modal-overlay" id="modal-receta">
-  <div class="modal">
-    <div class="modal-title">
-      <span id="modal-receta-titulo">Nueva receta</span>
-      <button class="modal-close" onclick="cerrarModal('modal-receta')">×</button>
-    </div>
+    <div class="card-title">📉 Registrar merma</div>
+    <div class="form-group"><label>Producto</label><select id="m-producto" style="color:var(--crema);background:var(--negro)"></select></div>
+    <div class="form-group"><label>Cantidad</label><input type="number" id="m-cantidad" placeholder="ej. 2" min="0.1" step="0.1"></div>
     <div class="form-group">
-      <label>Nombre del plato</label>
-      <input type="text" id="r-nombre" placeholder="ej. Caldo gallego">
-    </div>
-    <div class="form-group">
-      <label>Categoría</label>
-      <select id="r-categoria">
-        <option value="carta">Carta</option>
-        <option value="menu">Menú del día</option>
-        <option value="pincho">Pinchos</option>
-        <option value="personal">Personal</option>
+      <label>Motivo <span style="color:var(--rojo)">*obligatorio</span></label>
+      <select id="m-motivo" onchange="onMotivoChange()" style="color:var(--crema);background:var(--negro)">
+        <option value="">— Selecciona —</option>
+        <option value="cocinado">✅ Usado en cocina</option>
+        <option value="tirado">🗑 Tirado (no servido)</option>
+        <option value="caducado">⚠️ Caducado</option>
+        <option value="roto">💥 Roto / derramado</option>
+        <option value="otro">📝 Otro</option>
       </select>
     </div>
     <div class="form-group">
-      <label>Ingredientes (con cantidades)</label>
-      <textarea id="r-ingredientes" rows="4" placeholder="500g de grelos&#10;1 lacón&#10;2 chorizos gallegos&#10;Patatas al gusto"></textarea>
+      <label>Detalle <span id="detalle-req" style="color:var(--rojo);display:none">*obligatorio</span></label>
+      <textarea id="m-detalle" rows="2" placeholder="ej. Se tiró la burrata porque llevaba 2 días abierta sin usar..."></textarea>
     </div>
+    <button class="btn btn-rojo btn-full" onclick="guardarMerma()">Registrar merma</button>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Historial de mermas</div>
+    <select id="filtro-merma" onchange="renderMermas()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);margin-bottom:10px">
+      <option value="hoy">Hoy</option><option value="semana">Esta semana</option><option value="todo">Todo</option>
+    </select>
+    <div id="mermas-lista"></div>
+    <div id="mermas-resumen" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--negro-m);font-size:13px;color:var(--gris)"></div>
+  </div>
+</div>
+
+<!-- PEDIDOS -->
+<div id="tab-pedidos" class="tab">
+  <div class="card">
+    <div class="card-title">🛒 Solicitar producto</div>
+    <div class="form-group"><label>Producto</label><input type="text" id="p-producto" placeholder="ej. Burrata, Rúcula..."></div>
+    <div class="form-group"><label>Cantidad estimada</label><input type="text" id="p-cantidad" placeholder="ej. 6 uds, 2 bolsas..."></div>
     <div class="form-group">
-      <label>Elaboración</label>
-      <textarea id="r-elaboracion" rows="5" placeholder="Paso 1: ...&#10;Paso 2: ..."></textarea>
+      <label>¿Para qué lo necesitas? <span style="color:var(--rojo)">*obligatorio</span></label>
+      <textarea id="p-justificacion" rows="2" placeholder="ej. Para el menú del sábado, se agotó antes de tiempo porque..."></textarea>
     </div>
+    <div class="form-group"><label>¿Cuándo lo necesitas?</label><input type="date" id="p-fecha-necesita"></div>
+    <button class="btn btn-oro btn-full" onclick="guardarPedido()">Enviar solicitud</button>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Solicitudes</div>
+    <select id="filtro-pedido" onchange="renderPedidos()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);margin-bottom:10px">
+      <option value="pendiente">Pendientes</option><option value="aprobado">Aprobadas</option><option value="todo">Todas</option>
+    </select>
+    <div id="pedidos-lista"></div>
+  </div>
+</div>
+
+<!-- MENÚ -->
+<div id="tab-menu" class="tab">
+  <div class="card">
+    <div class="card-title">🍽️ Menú del día</div>
+    <div class="form-group"><label>Fecha</label><input type="date" id="menu-fecha" oninput="cargarMenuFecha()"></div>
+    <div class="form-group"><label>Primero</label><input type="text" id="menu-p1" placeholder="ej. Caldo gallego"></div>
+    <div class="form-group"><label>Segundo</label><input type="text" id="menu-p2" placeholder="ej. Lomo con patatas"></div>
+    <div class="form-group"><label>Postre</label><input type="text" id="menu-postre" placeholder="ej. Tarta de Santiago"></div>
+    <div class="form-group"><label>Precio (€)</label><input type="number" id="menu-precio" step="0.5"></div>
+    <div class="form-group"><label>Notas / Alérgenos</label><textarea id="menu-notas" rows="2"></textarea></div>
+    <button class="btn btn-oro btn-full" onclick="guardarMenu()">Guardar menú</button>
+  </div>
+  <div class="card">
+    <div class="card-title">🥢 Pinchos</div>
+    <div id="pinchos-lista"></div>
+    <hr class="divider">
+    <div class="form-group"><input type="text" id="pincho-nuevo" placeholder="Nuevo pincho..." onkeydown="if(event.key==='Enter')addPincho()"></div>
+    <button class="btn btn-outline btn-sm" onclick="addPincho()">+ Añadir</button>
+  </div>
+  <div class="card">
+    <div class="card-title">👨‍🍳 Comida del personal</div>
+    <div class="form-group"><input type="text" id="personal-plato" placeholder="¿Qué comemos hoy?"></div>
+    <button class="btn btn-outline btn-sm" onclick="guardarPersonal()">Guardar</button>
+    <div id="personal-actual" style="font-size:14px;color:var(--oro);margin-top:8px;font-weight:600"></div>
+  </div>
+</div>
+
+<!-- RECETAS -->
+<div id="tab-recetas" class="tab">
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="btn btn-oro btn-sm" onclick="abrirModalReceta()">➕ Nueva receta</button>
+    <select id="filtro-receta" onchange="renderRecetas()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+      <option value="">Todas</option><option value="carta">Carta</option><option value="menu">Menú</option><option value="pincho">Pinchos</option><option value="personal">Personal</option>
+    </select>
+  </div>
+  <div id="recetas-lista"></div>
+</div>
+
+<!-- PROVEEDORES -->
+<div id="tab-proveedores" class="tab">
+  <div style="margin-bottom:14px"><button class="btn btn-oro btn-sm" onclick="abrirModalProveedor()">➕ Nuevo proveedor</button></div>
+  <div id="proveedores-lista"></div>
+</div>
+
+<!-- HISTORIAL -->
+<div id="tab-historial" class="tab">
+  <div class="card">
+    <div class="card-title">📋 Movimientos</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <select id="filtro-hist-tipo" onchange="renderHistorial()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+        <option value="">Todo</option><option value="stock">Stock</option><option value="merma">Mermas</option><option value="pedido">Pedidos</option><option value="menu">Menú</option>
+      </select>
+      <select id="filtro-hist-quien" onchange="renderHistorial()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+        <option value="">Todos</option><option value="lore">Lore</option><option value="cesar">César</option><option value="maria">María</option>
+      </select>
+    </div>
+    <div id="historial-lista"></div>
+  </div>
+</div>
+
+<!-- SPOTIFY -->
+<div id="tab-spotify" class="tab">
+  <div class="card" style="background:linear-gradient(135deg,#0a1a0a,#0d2010);border-color:rgba(30,215,96,.3)">
+    <div class="card-title" style="color:#1ed760">🎵 Playlists del turno</div>
+    <div style="font-size:13px;color:var(--gris);margin-bottom:16px">La música adecuada para cada momento.</div>
+    <div class="sp-section">
+      <div class="sp-momento">🌅 Preparación / Mise en place</div>
+      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0" target="_blank"><div style="font-size:1.4rem">🎧</div><div style="flex:1"><div class="sp-link-name">Mood Booster</div><div class="sp-link-desc">Para activarse antes del turno</div></div><div class="sp-open">↗</div></a>
+      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DWXRqgorJj26U" target="_blank"><div style="font-size:1.4rem">🔊</div><div style="flex:1"><div class="sp-link-name">Power Hour</div><div class="sp-link-desc">Energía para el mise en place</div></div><div class="sp-open">↗</div></a>
+    </div>
+    <div class="sp-section">
+      <div class="sp-momento">☀️ Mediodía (12:00–17:00)</div>
+      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DWV7EzJMK2FUI" target="_blank"><div style="font-size:1.4rem">🎷</div><div style="flex:1"><div class="sp-link-name">Jazz Vibes</div><div class="sp-link-desc">Tranquilo y elegante para el servicio</div></div><div class="sp-open">↗</div></a>
+      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO" target="_blank"><div style="font-size:1.4rem">☀️</div><div style="flex:1"><div class="sp-link-name">Soft Jazz</div><div class="sp-link-desc">Ambiente de tarde relajado</div></div><div class="sp-open">↗</div></a>
+    </div>
+    <div class="sp-section">
+      <div class="sp-momento">🌙 Noche (19:00–00:00)</div>
+      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DX2SK4ytI2KAh" target="_blank"><div style="font-size:1.4rem">🌃</div><div style="flex:1"><div class="sp-link-name">Night Vibes</div><div class="sp-link-desc">Ambiente nocturno de bar</div></div><div class="sp-open">↗</div></a>
+      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DWY4xHQp97fN6" target="_blank"><div style="font-size:1.4rem">🎸</div><div style="flex:1"><div class="sp-link-name">Alternative Hits</div><div class="sp-link-desc">Para las noches con energía</div></div><div class="sp-open">↗</div></a>
+    </div>
+    <div class="sp-section">
+      <div class="sp-momento">🧹 Cierre</div>
+      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC" target="_blank"><div style="font-size:1.4rem">✨</div><div style="flex:1"><div class="sp-link-name">Feel Good</div><div class="sp-link-desc">Para terminar el turno con buen rollo</div></div><div class="sp-open">↗</div></a>
+    </div>
+    <hr class="divider">
+    <div class="card-title" style="margin-top:8px;color:#1ed760">➕ Tu playlist</div>
+    <div class="form-group"><label>Nombre</label><input type="text" id="sp-nombre" placeholder="ej. Sábados noche"></div>
+    <div class="form-group"><label>Enlace Spotify</label><input type="url" id="sp-url" placeholder="https://open.spotify.com/playlist/..."></div>
+    <div class="form-group"><label>Momento</label><input type="text" id="sp-momento-txt" placeholder="ej. Mediodía fin de semana"></div>
+    <button class="btn btn-sm" style="background:#1ed760;color:#000;font-weight:700" onclick="guardarPlaylist()">Guardar playlist</button>
+    <div id="sp-custom-lista" style="margin-top:14px"></div>
+  </div>
+</div>
+
+<!-- INSTAGRAM -->
+<div id="tab-instagram" class="tab">
+  <div class="card" style="border-left:4px solid #E1306C">
+    <div class="card-title">📝 Bio sugerida</div>
+    <div class="ig-post-texto" onclick="copiarTexto(this,'Bio copiada ✓')">🍽️ Cocina gallega de verdad<br>📍 A Coruña · Tarde-noche + mediodía fin de semana<br>🌈 Espacio seguro para todxs<br>📞 [Teléfono]</div>
+    <div style="font-size:11px;color:var(--oro);margin-top:6px;font-weight:600">Toca para copiar</div>
+  </div>
+  <div class="ig-week">
+    <div class="ig-week-header">SEMANA 1 — "Aquí se come"</div>
+    <div class="ig-post">
+      <div class="ig-post-dia">Post 1 · Lunes o Martes</div>
+      <div class="ig-post-tipo">📸 Foto plato del día</div>
+      <div class="ig-post-texto" onclick="copiarTexto(this,'Copiado ✓')">Cocina gallega sin complicaciones. [Nombre del plato], hecho hoy.
+Abrimos esta noche a partir de las [hora]. 📍 A Coruña
+
+#LaUrbana #CocinaGallega #ACoruña #DondeComereNCoruña</div>
+      <div style="font-size:11px;color:var(--oro);margin-top:4px">Toca para copiar</div>
+    </div>
+    <div class="ig-post">
+      <div class="ig-post-dia">Post 2 · Viernes</div>
+      <div class="ig-post-tipo">📸 Anuncio mediodía</div>
+      <div class="ig-post-texto" onclick="copiarTexto(this,'Copiado ✓')">Este sábado abrimos a mediodía. Menú casero, producto gallego.
+De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
+
+#LaUrbana #MenuDelDia #CocinaGallega #ACoruña</div>
+      <div style="font-size:11px;color:var(--oro);margin-top:4px">Toca para copiar</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📸 Consejos foto</div>
+    <div class="consejo"><div class="consejo-titulo">Regla de oro</div><div class="consejo-texto">Luz natural + fondo limpio. El plato cerca de la ventana, luz de lado. Nunca flash.</div></div>
+    <div class="consejo"><div class="consejo-titulo">Ángulos que funcionan</div><div class="consejo-texto">Desde arriba (cenital) o a 45°. Toca el plato en pantalla para enfocar.</div></div>
+    <div class="consejo"><div class="consejo-titulo">Antes de disparar</div><div class="consejo-texto">Limpia el borde del plato con papel. 2 segundos que cambian la foto.</div></div>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="modal-producto">
+  <div class="modal">
+    <div class="modal-title"><span id="modal-producto-titulo">Nuevo producto</span><button class="modal-close" onclick="cerrarModal('modal-producto')">×</button></div>
+    <div class="form-group"><label>Nombre</label><input type="text" id="s-nombre" placeholder="ej. Burrata"></div>
+    <div class="form-group"><label>Unidad</label><input type="text" id="s-unidad" placeholder="ej. ud, bolsa, brik"></div>
     <div class="form-group">
-      <label>Raciones</label>
-      <input type="number" id="r-raciones" placeholder="ej. 4" min="1">
+      <label>Ubicación</label>
+      <select id="s-ubicacion" style="color:var(--crema);background:var(--negro)">
+        <option value="">Sin especificar</option>
+        <option value="nevera-columna">🧊 Nevera columna</option>
+        <option value="nevera-cesar">❄️ Nevera César</option>
+        <option value="nevera-rota">🔧 Nevera rota</option>
+        <option value="congelador">🧊 Congelador</option>
+        <option value="estanteria">📦 Estantería</option>
+        <option value="cocina">🍳 Cocina</option>
+      </select>
     </div>
-    <div class="form-group">
-      <label>Coste aproximado (€)</label>
-      <input type="number" id="r-coste" placeholder="ej. 8.50" step="0.1">
+    <div class="form-group"><label>⚠️ Alerta cuando queden menos de</label><input type="number" id="s-minimo" placeholder="ej. 2" min="0"></div>
+    <div class="form-group"><label>🔴 Crítico cuando queden menos de</label><input type="number" id="s-critico" placeholder="ej. 1" min="0"></div>
+    <div class="form-group"><label>Vida útil (días desde entrada)</label><input type="number" id="s-vida" placeholder="ej. 7 para burrata" min="0"></div>
+    <input type="hidden" id="s-id">
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-oro" style="flex:1" onclick="guardarProducto()">Guardar</button>
+      <button class="btn btn-outline" onclick="cerrarModal('modal-producto')">Cancelar</button>
     </div>
-    <div class="form-group">
-      <label>Precio venta (€)</label>
-      <input type="number" id="r-precio" placeholder="ej. 14.50" step="0.5">
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-lote">
+  <div class="modal">
+    <div class="modal-title"><span id="modal-lote-titulo">Añadir lote</span><button class="modal-close" onclick="cerrarModal('modal-lote')">×</button></div>
+    <div class="form-group"><label>Cantidad</label><input type="number" id="l-cantidad" placeholder="ej. 4" min="0.1" step="0.1"><div id="l-unidad-label" style="font-size:12px;color:var(--oro);margin-top:4px;font-weight:600"></div></div>
+    <div class="form-group"><label>Caducidad</label><input type="date" id="l-caduca"></div>
+    <div class="form-group"><label>Notas</label><input type="text" id="l-notas" placeholder="ej. Pedido Mercadona 22 jul"></div>
+    <input type="hidden" id="l-prod-id">
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-oro" style="flex:1" onclick="guardarLote()">Añadir</button>
+      <button class="btn btn-outline" onclick="cerrarModal('modal-lote')">Cancelar</button>
     </div>
-    <div class="form-group">
-      <label>Notas / Alérgenos</label>
-      <textarea id="r-notas" rows="2" placeholder="Alérgenos, variaciones, trucos..."></textarea>
-    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-receta">
+  <div class="modal">
+    <div class="modal-title"><span id="modal-receta-titulo">Nueva receta</span><button class="modal-close" onclick="cerrarModal('modal-receta')">×</button></div>
+    <div class="form-group"><label>Nombre del plato</label><input type="text" id="r-nombre"></div>
+    <div class="form-group"><label>Categoría</label><select id="r-categoria" style="color:var(--crema);background:var(--negro)"><option value="carta">Carta</option><option value="menu">Menú</option><option value="pincho">Pincho</option><option value="personal">Personal</option></select></div>
+    <div class="form-group"><label>Ingredientes</label><textarea id="r-ingredientes" rows="4" placeholder="500g de grelos&#10;1 lacón..."></textarea></div>
+    <div class="form-group"><label>Elaboración</label><textarea id="r-elaboracion" rows="5" placeholder="Paso 1:..."></textarea></div>
+    <div class="form-group"><label>Raciones</label><input type="number" id="r-raciones" min="1"></div>
+    <div class="form-group"><label>Coste aprox. (€)</label><input type="number" id="r-coste" step="0.1"></div>
+    <div class="form-group"><label>Precio venta (€)</label><input type="number" id="r-precio" step="0.5"></div>
+    <div class="form-group"><label>Notas / Alérgenos</label><textarea id="r-notas" rows="2"></textarea></div>
     <input type="hidden" id="r-id">
     <div style="display:flex;gap:10px">
-      <button class="btn btn-verde" style="flex:1" onclick="guardarReceta()">Guardar</button>
+      <button class="btn btn-oro" style="flex:1" onclick="guardarReceta()">Guardar</button>
       <button class="btn btn-outline" onclick="cerrarModal('modal-receta')">Cancelar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL VER RECETA -->
 <div class="modal-overlay" id="modal-ver-receta">
   <div class="modal">
-    <div class="modal-title">
-      <span id="ver-receta-nombre">Receta</span>
-      <button class="modal-close" onclick="cerrarModal('modal-ver-receta')">×</button>
-    </div>
+    <div class="modal-title"><span id="ver-receta-nombre"></span><button class="modal-close" onclick="cerrarModal('modal-ver-receta')">×</button></div>
     <div id="ver-receta-contenido"></div>
     <div style="display:flex;gap:10px;margin-top:16px">
       <button class="btn btn-outline btn-sm" id="ver-receta-editar">✏️ Editar</button>
@@ -648,100 +552,16 @@ Os esperamos. 🍃
   </div>
 </div>
 
-<!-- MODAL STOCK — Producto (definición) -->
-<div class="modal-overlay" id="modal-stock">
-  <div class="modal">
-    <div class="modal-title">
-      <span id="modal-stock-titulo">Nuevo producto</span>
-      <button class="modal-close" onclick="cerrarModal('modal-stock')">×</button>
-    </div>
-    <div class="form-group">
-      <label>Producto</label>
-      <input type="text" id="s-nombre" placeholder="ej. Burrata, Rúcula, Raxo...">
-    </div>
-    <div class="form-group">
-      <label>Unidad de stock</label>
-      <input type="text" id="s-unidad" placeholder="ej. bolsa, ud, brik, pieza...">
-    </div>
-    <div class="form-group">
-      <label>⚠️ Alerta cuando queden menos de</label>
-      <input type="number" id="s-minimo" placeholder="ej. 2" min="1">
-    </div>
-    <div class="form-group">
-      <label>🔴 Crítico cuando queden menos de</label>
-      <input type="number" id="s-critico" placeholder="ej. 1" min="0">
-    </div>
-    <div class="form-group">
-      <label>¿Tiene caducidad? (días máx desde entrada)</label>
-      <input type="number" id="s-vida" placeholder="ej. 7 para burrata, 3 para raxo cortado" min="0">
-      <div style="font-size:11px;color:var(--gris);margin-top:4px">Deja vacío si no caduca pronto</div>
-    </div>
-    <input type="hidden" id="s-id">
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-verde" style="flex:1" onclick="guardarProductoStock()">Guardar</button>
-      <button class="btn btn-outline" onclick="cerrarModal('modal-stock')">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL LOTE — Añadir lote a producto existente -->
-<div class="modal-overlay" id="modal-lote">
-  <div class="modal">
-    <div class="modal-title">
-      <span id="modal-lote-titulo">➕ Añadir lote</span>
-      <button class="modal-close" onclick="cerrarModal('modal-lote')">×</button>
-    </div>
-    <div class="form-group">
-      <label>Cantidad que entra</label>
-      <input type="number" id="l-cantidad" placeholder="ej. 4" min="1">
-      <div id="l-unidad-label" style="font-size:12px;color:var(--verde);margin-top:4px;font-weight:600"></div>
-    </div>
-    <div class="form-group">
-      <label>Fecha de caducidad (si aplica)</label>
-      <input type="date" id="l-caduca">
-      <div style="font-size:11px;color:var(--gris);margin-top:4px">Mira la etiqueta del producto</div>
-    </div>
-    <div class="form-group">
-      <label>Notas (opcional)</label>
-      <input type="text" id="l-notas" placeholder="ej. Pedido Mercadona 22 jul">
-    </div>
-    <input type="hidden" id="l-prod-id">
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-verde" style="flex:1" onclick="guardarLote()">Añadir lote</button>
-      <button class="btn btn-outline" onclick="cerrarModal('modal-lote')">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL PROVEEDOR -->
 <div class="modal-overlay" id="modal-proveedor">
   <div class="modal">
-    <div class="modal-title">
-      <span>Nuevo proveedor</span>
-      <button class="modal-close" onclick="cerrarModal('modal-proveedor')">×</button>
-    </div>
-    <div class="form-group">
-      <label>Nombre</label>
-      <input type="text" id="pv-nombre" placeholder="ej. Mercado de Abastos">
-    </div>
-    <div class="form-group">
-      <label>Categoría</label>
-      <input type="text" id="pv-categoria" placeholder="ej. Frutas y verduras, Cárnico...">
-    </div>
-    <div class="form-group">
-      <label>Teléfono</label>
-      <input type="tel" id="pv-telefono" placeholder="ej. 981 000 000">
-    </div>
-    <div class="form-group">
-      <label>Días de pedido</label>
-      <input type="text" id="pv-dias" placeholder="ej. Lunes y jueves">
-    </div>
-    <div class="form-group">
-      <label>Notas</label>
-      <textarea id="pv-notas" rows="2" placeholder="Horarios, condiciones, contacto..."></textarea>
-    </div>
+    <div class="modal-title"><span>Proveedor</span><button class="modal-close" onclick="cerrarModal('modal-proveedor')">×</button></div>
+    <div class="form-group"><label>Nombre</label><input type="text" id="pv-nombre"></div>
+    <div class="form-group"><label>Categoría</label><input type="text" id="pv-categoria" placeholder="ej. Cárnico, Verduras..."></div>
+    <div class="form-group"><label>Teléfono</label><input type="tel" id="pv-telefono"></div>
+    <div class="form-group"><label>Días de pedido</label><input type="text" id="pv-dias"></div>
+    <div class="form-group"><label>Notas</label><textarea id="pv-notas" rows="2"></textarea></div>
     <div style="display:flex;gap:10px">
-      <button class="btn btn-verde" style="flex:1" onclick="guardarProveedor()">Guardar</button>
+      <button class="btn btn-oro" style="flex:1" onclick="guardarProveedor()">Guardar</button>
       <button class="btn btn-outline" onclick="cerrarModal('modal-proveedor')">Cancelar</button>
     </div>
   </div>
@@ -749,11 +569,10 @@ Os esperamos. 🍃
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK -->
+<!-- FIREBASE SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyCa9fjof6rywJwRzuAZs3tYQIbXZb3WSB4",
   authDomain: "cocina-urbana-b4f9e.firebaseapp.com",
@@ -762,206 +581,604 @@ const firebaseConfig = {
   messagingSenderId: "748093629089",
   appId: "1:748093629089:web:1edcfdf56507cafcec46e0"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// ── Cache local para acceso síncrono ──
 const _cache = {};
 
-async function cargarFirebase(k, def) {
+async function fbCargar(k, def) {
   try {
     const snap = await getDoc(doc(db, 'laurbana', k));
     const val = snap.exists() ? snap.data().v : def;
     _cache[k] = val;
     return val;
   } catch(e) {
-    console.warn('Firebase read error:', e);
     return _cache[k] !== undefined ? _cache[k] : def;
   }
 }
-
-async function guardarFirebase(k, v) {
+async function fbGuardar(k, v) {
   _cache[k] = v;
-  try {
-    await setDoc(doc(db, 'laurbana', k), { v });
-  } catch(e) {
-    console.warn('Firebase write error:', e);
-    // fallback a localStorage
-    localStorage.setItem('urbana_'+k, JSON.stringify(v));
-  }
+  try { await setDoc(doc(db, 'laurbana', k), { v }); }
+  catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
 }
 
-// Exponer globalmente
-window._db = db;
-window._cargarFirebase = cargarFirebase;
-window._guardarFirebase = guardarFirebase;
-window._cache = _cache;
+window._fbCache = _cache;
+window._fbCargar = fbCargar;
+window._fbGuardar = fbGuardar;
 
-// Cargar todos los datos al inicio
-async function inicializarDatos() {
-  const claves = ['stock_productos','proveedores','recetas','menu_hoy','pinchos'];
-  await Promise.all(claves.map(k => cargarFirebase(k, null)));
-  // Lanzar la app cuando los datos estén listos
+const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists'];
+Promise.all(CLAVES.map(k => fbCargar(k, null))).then(() => {
   window._firebaseReady = true;
-  if(window._appReady) window._appReady();
-}
-inicializarDatos();
+  if (window._appReady) window._appReady();
+});
 </script>
 
 <script>
 // ══════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════
+let USUARIO = null;
+const esAdmin = () => USUARIO === 'lore' || USUARIO === 'cesar';
+const esMaria = () => USUARIO === 'maria';
+
+// ══════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════
-
-// cargar/guardar — híbrido Firebase + localStorage
 function cargar(k, def) {
-  // Primero busca en cache Firebase
-  if(window._cache && window._cache[k] !== undefined && window._cache[k] !== null) {
-    return window._cache[k];
-  }
-  // Fallback localStorage
-  try { return JSON.parse(localStorage.getItem('urbana_'+k)) || def; } catch(e) { return def; }
+  const c = window._fbCache;
+  if (c && c[k] !== undefined && c[k] !== null) return c[k];
+  try { return JSON.parse(localStorage.getItem('urb_'+k)) ?? def; } catch(e) { return def; }
 }
-
 function guardar(k, v) {
-  // Guardar en cache local inmediatamente (para que la UI sea rápida)
-  if(window._cache) window._cache[k] = v;
-  // Guardar en localStorage como backup
-  localStorage.setItem('urbana_'+k, JSON.stringify(v));
-  // Guardar en Firebase en background
-  if(window._guardarFirebase) window._guardarFirebase(k, v);
+  if (window._fbCache) window._fbCache[k] = v;
+  localStorage.setItem('urb_'+k, JSON.stringify(v));
+  if (window._fbGuardar) window._fbGuardar(k, v);
 }
-function hoyStr(){return new Date().toISOString().slice(0,10);}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
-function cerrarModal(id){document.getElementById(id).classList.remove('open');}
-function abrirModal(id){document.getElementById(id).classList.add('open');}
+function hoy() { return new Date().toISOString().slice(0,10); }
+function ahora() { return new Date().toISOString(); }
 
-function formatFechaLarga(iso){
-  const d=new Date(iso+'T12:00:00');
-  return d.toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+function toast(msg, tipo) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = tipo === 'error' ? 'var(--rojo)' : tipo === 'verde' ? 'var(--verde)' : 'var(--oro)';
+  t.style.color = (tipo === 'error' || tipo === 'verde') ? 'white' : 'var(--negro)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
+function abrirModal(id) { document.getElementById(id).classList.add('open'); }
+function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
 
-function tab(id,btn){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  if(btn) btn.classList.add('active');
-  if(id==='inicio') initInicio();
-  if(id==='menu') initMenu();
-  if(id==='recetas') renderRecetas();
-  if(id==='stock') renderStock();
-  if(id==='proveedores') renderProveedores();
-  if(id==='instagram') initInstagram();
+function formatFecha(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'});
 }
-
-function copiarTexto(el, msg){
-  const texto = el.innerText;
-  navigator.clipboard.writeText(texto).then(()=>toast(msg||'Copiado ✓')).catch(()=>{
-    // fallback
-    const ta=document.createElement('textarea');
-    ta.value=texto; document.body.appendChild(ta);
-    ta.select(); document.execCommand('copy');
-    document.body.removeChild(ta); toast(msg||'Copiado ✓');
+function formatHora(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}) + ' · ' + d.toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+}
+function diasHasta(fechaStr) {
+  if (!fechaStr) return null;
+  const h = new Date(); h.setHours(0,0,0,0);
+  const f = new Date(fechaStr + 'T00:00:00');
+  return Math.round((f - h) / 86400000);
+}
+function getSemaforo(p) {
+  const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
+  if (total <= (p.critico||0)) return 'rojo';
+  if (total <= (p.minimo||1)) return 'amarillo';
+  return 'verde';
+}
+function copiarTexto(el, msg) {
+  const txt = el.innerText;
+  navigator.clipboard.writeText(txt).then(() => toast(msg||'Copiado ✓')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast(msg||'Copiado ✓');
   });
+}
+function addHistorial(tipo, desc) {
+  const h = cargar('historial', []);
+  h.unshift({id: Date.now(), tipo, descripcion: desc, quien: USUARIO, cuando: ahora()});
+  if (h.length > 300) h.splice(300);
+  guardar('historial', h);
+}
+
+// ══════════════════════════════════════════
+// TEMA
+// ══════════════════════════════════════════
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  document.getElementById('btn-theme').textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('urb_tema', isLight ? 'light' : 'dark');
+}
+function initTema() {
+  if (localStorage.getItem('urb_tema') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('btn-theme').textContent = '🌙';
+  }
+}
+
+// ══════════════════════════════════════════
+// LOGIN / ROLES
+// ══════════════════════════════════════════
+function iniciarSesion(rol) {
+  USUARIO = rol;
+  document.getElementById('login-screen').style.display = 'none';
+  const names = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
+  const badge = document.getElementById('header-role');
+  badge.textContent = names[rol];
+  if (rol === 'maria') badge.classList.add('maria');
+  else badge.classList.remove('maria');
+  aplicarPermisos();
+  arrancarApp();
+}
+function cerrarSesion() {
+  USUARIO = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('header-role').textContent = '—';
+}
+function aplicarPermisos() {
+  ['nav-menu','nav-recetas','nav-proveedores','nav-historial','nav-spotify','nav-instagram'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('oculto', esMaria());
+  });
+  const btn = document.getElementById('btn-nuevo-prod');
+  if (btn) btn.style.display = esAdmin() ? '' : 'none';
+  poblarSelectorProductos();
+}
+
+function tab(id, btn) {
+  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram'];
+  if (esMaria() && soloAdmin.includes(id)) { toast('No tienes acceso a esta sección', 'error'); return; }
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  const renders = {
+    inicio: initInicio, stock: renderStock,
+    mermas: () => { poblarSelectorProductos(); renderMermas(); },
+    pedidos: renderPedidos, menu: initMenu,
+    recetas: renderRecetas, proveedores: renderProveedores,
+    historial: renderHistorial, spotify: renderPlaylistsCustom
+  };
+  if (renders[id]) renders[id]();
 }
 
 // ══════════════════════════════════════════
 // HEADER
 // ══════════════════════════════════════════
-function initHeader(){
-  const d=new Date();
-  const dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-  const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  document.getElementById('header-fecha').textContent=`${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
+function initHeader() {
+  const d = new Date();
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  document.getElementById('header-fecha').textContent = `${dias[d.getDay()]} ${d.getDate()} ${meses[d.getMonth()]}`;
 }
 
 // ══════════════════════════════════════════
 // INICIO
 // ══════════════════════════════════════════
-function initInicio(){
-  // Menú de hoy
-  document.getElementById('inicio-menu-fecha').textContent = formatFechaLarga(hoyStr());
-  const menu = cargar('menu_'+hoyStr(), null);
-  const platoEl = document.getElementById('inicio-menu-platos');
-  if(menu && (menu.p1||menu.p2||menu.postre)){
-    let html='';
-    if(menu.p1) html+=`<div class="menu-plato"><div class="tipo">Primero</div><div class="nombre">${menu.p1}</div></div>`;
-    if(menu.p2) html+=`<div class="menu-plato"><div class="tipo">Segundo</div><div class="nombre">${menu.p2}</div></div>`;
-    if(menu.postre) html+=`<div class="menu-plato"><div class="tipo">Postre</div><div class="nombre">${menu.postre}</div></div>`;
-    if(menu.precio) html+=`<div style="margin-top:10px;font-size:13px;opacity:.8">Precio: ${menu.precio}€</div>`;
-    platoEl.innerHTML=html;
+function initInicio() {
+  document.getElementById('inicio-menu-fecha').textContent = formatFecha(hoy());
+  const menu = cargar('menu_' + hoy(), null);
+  const el = document.getElementById('inicio-menu-platos');
+  if (menu && (menu.p1 || menu.p2 || menu.postre)) {
+    let html = '';
+    if (menu.p1) html += `<div class="menu-plato"><div class="tipo">Primero</div><div class="nombre">${menu.p1}</div></div>`;
+    if (menu.p2) html += `<div class="menu-plato"><div class="tipo">Segundo</div><div class="nombre">${menu.p2}</div></div>`;
+    if (menu.postre) html += `<div class="menu-plato"><div class="tipo">Postre</div><div class="nombre">${menu.postre}</div></div>`;
+    if (menu.precio) html += `<div style="font-size:13px;opacity:.7;margin-top:6px">Precio: ${menu.precio}€</div>`;
+    el.innerHTML = html;
   } else {
-    platoEl.innerHTML='<div style="opacity:.7;font-size:14px">Sin menú para hoy. <span style="text-decoration:underline;cursor:pointer" onclick="tab(\'menu\',document.querySelector(\'nav button:nth-child(2)\'))">Editar →</span></div>';
+    el.innerHTML = '<div style="opacity:.6;font-size:14px">Sin menú para hoy.</div>';
   }
 
-  // Alertas — nuevo sistema lotes
-  const productos = cargar('stock_productos',[]);
-  // Alertas de cantidad
-  const alertasCant = productos.filter(p=>getSemaforo(p)!=='verde');
-  // Alertas de caducidad (lotes que caducan en ≤2 días)
-  const alertasCad = [];
-  productos.forEach(p=>{
-    (p.lotes||[]).forEach(l=>{
-      const d=diasHasta(l.caduca);
-      if(d!==null && d<=2) alertasCad.push({prod:p,lote:l,dias:d});
+  const productos = cargar('stock_productos', []);
+  const mermas = cargar('mermas', []);
+  const pedidos = cargar('pedidos', []);
+
+  document.getElementById('stat-ok').textContent = productos.filter(p => getSemaforo(p) === 'verde').length;
+  document.getElementById('stat-critico').textContent = productos.filter(p => getSemaforo(p) === 'rojo').length;
+  document.getElementById('stat-mermas').textContent = mermas.filter(m => m.cuando && m.cuando.startsWith(hoy())).length;
+  document.getElementById('stat-pedidos').textContent = pedidos.filter(p => p.estado === 'pendiente').length;
+
+  const alertas = [];
+  productos.forEach(p => {
+    const sem = getSemaforo(p);
+    const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
+    if (sem !== 'verde') {
+      alertas.push(`<div class="item"><div class="item-body"><div class="item-title">📦 ${p.nombre}</div><div class="item-sub">${total} ${p.unidad} disponibles</div></div><span class="sema ${sem}">${sem === 'rojo' ? '🔴 Urgente' : '🟡 Reponer'}</span></div>`);
+    }
+    (p.lotes||[]).forEach(l => {
+      const d = diasHasta(l.caduca);
+      if (d !== null && d <= 2) {
+        const txt = d <= 0 ? '¡Caducado!' : d === 0 ? 'Caduca HOY' : `Caduca en ${d}d`;
+        alertas.push(`<div class="item"><div class="item-body"><div class="item-title">⚠️ ${p.nombre}</div><div class="item-sub">${l.cantidad} ${p.unidad} · ${txt}</div></div><span class="sema rojo">🔴 Cad.</span></div>`);
+      }
     });
   });
+  document.getElementById('alertas-lista').innerHTML = alertas.length ? alertas.join('') : '<div style="color:var(--gris);font-size:14px">Sin alertas 🎉</div>';
 
-  const alertasEl = document.getElementById('alertas-lista');
-  const allAlertas = [];
-
-  alertasCad.forEach(({prod,lote,dias})=>{
-    const txt = dias<=0?'¡CADUCADO!':dias===0?'Caduca HOY':'Caduca en '+dias+' día'+(dias>1?'s':'');
-    allAlertas.push(`<div class="item">
-      <div class="item-body">
-        <div class="item-title">🧀 ${prod.nombre}</div>
-        <div class="item-sub">${lote.cantidad} ${prod.unidad} · ${txt}</div>
-      </div>
-      <span class="sema rojo">🔴 Cad.</span>
-    </div>`);
-  });
-
-  alertasCant.forEach(p=>{
-    const sem=getSemaforo(p);
-    const total=(p.lotes||[]).reduce((a,l)=>a+l.cantidad,0);
-    allAlertas.push(`<div class="item">
-      <div class="item-body">
-        <div class="item-title">📦 ${p.nombre}</div>
-        <div class="item-sub">${total} ${p.unidad} disponibles</div>
-      </div>
-      <span class="sema ${sem}">${sem==='rojo'?'🔴 Urgente':'🟡 Reponer'}</span>
-    </div>`);
-  });
-
-  alertasEl.innerHTML = allAlertas.length
-    ? allAlertas.join('')
-    : '<div style="color:var(--gris);font-size:14px">Sin alertas 🎉</div>';
-
-  // Stats
-  const recetas = cargar('recetas',[]);
-  document.getElementById('stat-recetas').textContent = recetas.length;
-  document.getElementById('stat-pinchos').textContent = recetas.filter(r=>r.categoria==='pincho').length;
-  document.getElementById('stat-stock-bajo').textContent = productos.filter(p=>getSemaforo(p)==='amarillo').length;
-  document.getElementById('stat-stock-critico').textContent = productos.filter(p=>getSemaforo(p)==='rojo').length;
+  const acc = document.getElementById('accesos-rapidos');
+  if (esAdmin()) {
+    acc.innerHTML = `
+      <button class="btn btn-oro btn-sm" onclick="tab('menu',document.getElementById('nav-menu'))">✏️ Editar menú</button>
+      <button class="btn btn-outline btn-sm" onclick="abrirModalReceta()">📖 Nueva receta</button>
+      <button class="btn btn-outline btn-sm" onclick="tab('stock',document.getElementById('nav-stock'))">📦 Stock</button>
+      <button class="btn btn-outline btn-sm" onclick="tab('historial',document.getElementById('nav-historial'))">📋 Historial</button>`;
+  } else {
+    acc.innerHTML = `
+      <button class="btn btn-oro btn-sm" onclick="tab('stock',document.getElementById('nav-stock'))">📦 Ver stock</button>
+      <button class="btn btn-rojo btn-sm" onclick="tab('mermas',document.getElementById('nav-mermas'))">📉 Anotar merma</button>
+      <button class="btn btn-outline btn-sm" onclick="tab('pedidos',document.getElementById('nav-pedidos'))">🛒 Pedir producto</button>`;
+  }
 }
 
 // ══════════════════════════════════════════
-// MENÚ DEL DÍA
+// STOCK
 // ══════════════════════════════════════════
-function initMenu(){
-  const input = document.getElementById('menu-fecha');
-  input.value = hoyStr();
+let productoEditId = null;
+const UBIC_LABELS = {
+  'nevera-columna':'🧊 Nevera columna','nevera-cesar':'❄️ Nevera César',
+  'nevera-rota':'🔧 Nevera rota','congelador':'🧊 Congelador',
+  'estanteria':'📦 Estantería','cocina':'🍳 Cocina',''  :''
+};
+
+function abrirModalProducto(id) {
+  if (!esAdmin()) { toast('Solo Lore o César pueden gestionar productos','error'); return; }
+  productoEditId = id || null;
+  document.getElementById('modal-producto-titulo').textContent = id ? 'Editar producto' : 'Nuevo producto';
+  ['s-nombre','s-unidad','s-minimo','s-critico','s-vida'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('s-ubicacion').value = '';
+  if (id) {
+    const p = cargar('stock_productos',[]).find(x => x.id === id);
+    if (p) {
+      document.getElementById('s-nombre').value = p.nombre||'';
+      document.getElementById('s-unidad').value = p.unidad||'';
+      document.getElementById('s-ubicacion').value = p.ubicacion||'';
+      document.getElementById('s-minimo').value = p.minimo||'';
+      document.getElementById('s-critico').value = p.critico||'';
+      document.getElementById('s-vida').value = p.vidaDias||'';
+    }
+  }
+  abrirModal('modal-producto');
+}
+
+function guardarProducto() {
+  const nombre = document.getElementById('s-nombre').value.trim();
+  if (!nombre) { toast('Pon el nombre del producto'); return; }
+  const prod = {
+    id: productoEditId || Date.now(),
+    nombre,
+    unidad: document.getElementById('s-unidad').value.trim() || 'ud',
+    ubicacion: document.getElementById('s-ubicacion').value,
+    minimo: parseFloat(document.getElementById('s-minimo').value) || 2,
+    critico: parseFloat(document.getElementById('s-critico').value) || 0,
+    vidaDias: parseFloat(document.getElementById('s-vida').value) || null,
+    lotes: productoEditId ? (cargar('stock_productos',[]).find(x => x.id === productoEditId)||{}).lotes||[] : []
+  };
+  let productos = cargar('stock_productos',[]);
+  if (productoEditId) {
+    productos = productos.map(p => p.id === productoEditId ? prod : p);
+    addHistorial('stock', `✏️ Editado: ${prod.nombre}`);
+  } else {
+    productos.push(prod);
+    addHistorial('stock', `➕ Nuevo producto: ${prod.nombre}`);
+  }
+  guardar('stock_productos', productos);
+  cerrarModal('modal-producto');
+  renderStock();
+  poblarSelectorProductos();
+  toast('Producto guardado ✓','verde');
+}
+
+function abrirModalLote(prodId) {
+  const p = cargar('stock_productos',[]).find(x => x.id === prodId);
+  if (!p) return;
+  document.getElementById('modal-lote-titulo').textContent = '➕ Lote — ' + p.nombre;
+  document.getElementById('l-unidad-label').textContent = 'Unidad: ' + p.unidad;
+  document.getElementById('l-cantidad').value = '';
+  document.getElementById('l-notas').value = '';
+  document.getElementById('l-prod-id').value = prodId;
+  if (p.vidaDias) {
+    const sug = new Date(); sug.setDate(sug.getDate() + p.vidaDias);
+    document.getElementById('l-caduca').value = sug.toISOString().slice(0,10);
+  } else {
+    document.getElementById('l-caduca').value = '';
+  }
+  abrirModal('modal-lote');
+}
+
+function guardarLote() {
+  const prodId = parseInt(document.getElementById('l-prod-id').value);
+  const cantidad = parseFloat(document.getElementById('l-cantidad').value);
+  if (isNaN(cantidad) || cantidad <= 0) { toast('Indica la cantidad'); return; }
+  const lote = {
+    id: Date.now(), cantidad,
+    caduca: document.getElementById('l-caduca').value || null,
+    notas: document.getElementById('l-notas').value.trim(),
+    entrada: hoy()
+  };
+  let productos = cargar('stock_productos',[]);
+  productos = productos.map(p => {
+    if (p.id !== prodId) return p;
+    const lotes = [...(p.lotes||[]), lote].sort((a,b) => {
+      if (!a.caduca && !b.caduca) return 0;
+      if (!a.caduca) return 1; if (!b.caduca) return -1;
+      return a.caduca.localeCompare(b.caduca);
+    });
+    return {...p, lotes};
+  });
+  const prod = productos.find(p => p.id === prodId);
+  guardar('stock_productos', productos);
+  addHistorial('stock', `📥 Lote: +${cantidad} ${prod?.unidad} de ${prod?.nombre}`);
+  cerrarModal('modal-lote');
+  renderStock();
+  toast('Lote añadido ✓','verde');
+}
+
+function consumirUnidad(prodId, loteId) {
+  let productos = cargar('stock_productos',[]);
+  let nombreProd = '';
+  productos = productos.map(p => {
+    if (p.id !== prodId) return p;
+    nombreProd = p.nombre;
+    const lotes = (p.lotes||[]).map(l => l.id === loteId ? {...l, cantidad: Math.max(0, l.cantidad-1)} : l).filter(l => l.cantidad > 0);
+    return {...p, lotes};
+  });
+  guardar('stock_productos', productos);
+  addHistorial('stock', `−1 ${nombreProd}`);
+  renderStock(); initInicio();
+  toast('−1 unidad ✓');
+}
+
+function borrarProducto(prodId) {
+  if (!esAdmin()) { toast('Solo admins pueden borrar','error'); return; }
+  if (!confirm('¿Borrar este producto y sus lotes?')) return;
+  const prod = cargar('stock_productos',[]).find(p => p.id === prodId);
+  guardar('stock_productos', cargar('stock_productos',[]).filter(p => p.id !== prodId));
+  addHistorial('stock', `🗑 Borrado: ${prod?.nombre}`);
+  renderStock();
+  toast('Producto borrado');
+}
+
+function renderStock() {
+  const filtroSem = document.getElementById('filtro-sem').value;
+  const filtroUbic = document.getElementById('filtro-ubic').value;
+  let productos = cargar('stock_productos',[]);
+  const orden = {rojo:0, amarillo:1, verde:2};
+  productos.sort((a,b) => orden[getSemaforo(a)] - orden[getSemaforo(b)]);
+  if (filtroSem) productos = productos.filter(p => getSemaforo(p) === filtroSem);
+  if (filtroUbic) productos = productos.filter(p => (p.ubicacion||'') === filtroUbic);
+
+  const el = document.getElementById('stock-lista');
+  if (!productos.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gris)"><div style="font-size:3rem">📦</div><div style="margin-top:8px">Sin productos.</div></div>';
+    return;
+  }
+
+  el.innerHTML = productos.map(p => {
+    const sem = getSemaforo(p);
+    const semIcon = {verde:'🟢', amarillo:'🟡', rojo:'🔴'}[sem];
+    const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
+    const ubicLabel = UBIC_LABELS[p.ubicacion||''] || '';
+
+    const lotesHtml = (p.lotes||[]).length === 0
+      ? `<div style="font-size:12px;color:var(--gris);padding:8px 0">Sin stock.${esAdmin()?' Añade un lote.':''}</div>`
+      : (p.lotes||[]).map((l, i) => {
+          const d = diasHasta(l.caduca);
+          let cadLabel = '';
+          if (l.caduca) {
+            const cs = d<=0?'rojo':d<=2?'amarillo':'verde';
+            const cc = {rojo:'#e05555', amarillo:'var(--amarillo)', verde:'var(--verde-m)'};
+            const cb = {rojo:'var(--rojo-c)', amarillo:'var(--amarillo-c)', verde:'var(--verde-c)'};
+            const ct = d<=0?`Caducado ${Math.abs(d)}d`:d===0?'¡HOY!':d<=2?`${d}d`:l.caduca;
+            cadLabel = `<span style="background:${cb[cs]};color:${cc[cs]};padding:2px 7px;border-radius:8px;font-size:11px;font-weight:700">${ct}</span>`;
+          }
+          const fifo = i===0 && (p.lotes||[]).length>1 ? `<span style="background:rgba(201,151,58,.2);color:var(--oro);padding:1px 6px;border-radius:6px;font-size:10px;font-weight:700;margin-left:4px">USA 1º</span>` : '';
+          return `<div class="lote-row">
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600">${l.cantidad} ${p.unidad}${fifo}</div>
+              <div style="margin-top:3px;display:flex;gap:5px;flex-wrap:wrap">${cadLabel}${l.notas?`<span style="font-size:11px;color:var(--gris)">${l.notas}</span>`:''}</div>
+            </div>
+            <button onclick="consumirUnidad(${p.id},${l.id})" style="background:var(--rojo-c);color:#e05555;border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer">−1</button>
+          </div>`;
+        }).join('');
+
+    const adminBtns = esAdmin() ? `
+      <button onclick="abrirModalLote(${p.id})" style="background:var(--oro-c);color:var(--oro);border:none;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer">➕</button>
+      <button onclick="abrirModalProducto(${p.id})" style="background:none;border:1.5px solid var(--negro-m);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--gris)">✏️</button>
+      <button onclick="borrarProducto(${p.id})" style="background:none;border:1.5px solid var(--negro-m);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--gris)">🗑</button>` : '';
+
+    return `<div class="stock-card ${sem}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="font-size:1.2rem">${semIcon}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:.95rem">${p.nombre}</div>
+          <div style="font-size:12px;color:var(--gris);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+            <span>Total: <strong style="color:var(--crema)">${total} ${p.unidad}</strong></span>
+            ${ubicLabel?`<span class="ubicacion-tag">${ubicLabel}</span>`:''}
+          </div>
+        </div>
+        <div style="display:flex;gap:5px">${adminBtns}</div>
+      </div>
+      ${lotesHtml}
+    </div>`;
+  }).join('');
+}
+
+function poblarSelectorProductos() {
+  const sel = document.getElementById('m-producto');
+  if (!sel) return;
+  const productos = cargar('stock_productos',[]);
+  sel.innerHTML = productos.length
+    ? productos.map(p => `<option value="${p.id}">${p.nombre} (${(p.lotes||[]).reduce((a,l)=>a+l.cantidad,0)} ${p.unidad})</option>`).join('')
+    : '<option value="">Sin productos registrados</option>';
+}
+
+// ══════════════════════════════════════════
+// MERMAS
+// ══════════════════════════════════════════
+function onMotivoChange() {
+  const motivo = document.getElementById('m-motivo').value;
+  const req = document.getElementById('detalle-req');
+  if (req) req.style.display = (motivo==='tirado'||motivo==='caducado') ? '' : 'none';
+}
+
+function guardarMerma() {
+  const prodId = parseInt(document.getElementById('m-producto').value);
+  const cantidad = parseFloat(document.getElementById('m-cantidad').value);
+  const motivo = document.getElementById('m-motivo').value;
+  const detalle = document.getElementById('m-detalle').value.trim();
+
+  if (!prodId) { toast('Selecciona un producto','error'); return; }
+  if (!cantidad || cantidad <= 0) { toast('Indica la cantidad','error'); return; }
+  if (!motivo) { toast('El motivo es obligatorio','error'); return; }
+  if ((motivo==='tirado'||motivo==='caducado') && !detalle) {
+    toast('Explica qué pasó — es obligatorio','error'); return;
+  }
+
+  const productos = cargar('stock_productos',[]);
+  const prod = productos.find(p => p.id === prodId);
+  if (!prod) { toast('Producto no encontrado','error'); return; }
+
+  let restante = cantidad;
+  const lotesActualizados = (prod.lotes||[]).map(l => {
+    if (restante <= 0) return l;
+    const consumido = Math.min(l.cantidad, restante);
+    restante -= consumido;
+    return {...l, cantidad: l.cantidad - consumido};
+  }).filter(l => l.cantidad > 0);
+
+  const productosActualizados = productos.map(p => p.id === prodId ? {...p, lotes: lotesActualizados} : p);
+  guardar('stock_productos', productosActualizados);
+
+  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidad:prod.unidad, cantidad, motivo, detalle, quien:USUARIO, cuando:ahora()};
+  const mermas = cargar('mermas',[]);
+  mermas.unshift(merma);
+  guardar('mermas', mermas);
+  addHistorial('merma', `📉 ${cantidad} ${prod.unidad} de ${prod.nombre} · ${motivo}${detalle?' — '+detalle:''}`);
+
+  document.getElementById('m-cantidad').value = '';
+  document.getElementById('m-motivo').value = '';
+  document.getElementById('m-detalle').value = '';
+  renderMermas(); renderStock(); initInicio();
+  toast('Merma registrada ✓','verde');
+}
+
+const MOTIVO_LABELS = {cocinado:'✅ Cocina', tirado:'🗑 Tirado', caducado:'⚠️ Caducado', roto:'💥 Roto', otro:'📝 Otro'};
+
+function renderMermas() {
+  const filtro = document.getElementById('filtro-merma').value;
+  let mermas = cargar('mermas',[]);
+  const semAtras = new Date(); semAtras.setDate(semAtras.getDate()-7);
+  if (filtro === 'hoy') mermas = mermas.filter(m => m.cuando && m.cuando.startsWith(hoy()));
+  else if (filtro === 'semana') mermas = mermas.filter(m => m.cuando && new Date(m.cuando) >= semAtras);
+
+  const el = document.getElementById('mermas-lista');
+  if (!mermas.length) {
+    el.innerHTML = '<div style="color:var(--gris);font-size:14px;padding:16px 0">Sin mermas en este período.</div>';
+    document.getElementById('mermas-resumen').innerHTML = '';
+    return;
+  }
+
+  const quienLabel = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
+  el.innerHTML = mermas.map(m => `<div class="merma-row">
+    <div style="flex:1">
+      <div style="font-weight:600;font-size:.9rem">${m.prodNombre}</div>
+      <div style="font-size:12px;color:var(--gris);margin-top:2px">${m.cantidad} ${m.unidad} · ${quienLabel[m.quien]||m.quien} · ${formatHora(m.cuando)}</div>
+      ${m.detalle?`<div style="font-size:12px;color:var(--crema-m);margin-top:3px;font-style:italic">"${m.detalle}"</div>`:''}
+    </div>
+    <span class="merma-motivo ${m.motivo}">${MOTIVO_LABELS[m.motivo]||m.motivo}</span>
+  </div>`).join('');
+
+  const resumen = {};
+  mermas.forEach(m => resumen[m.motivo] = (resumen[m.motivo]||0)+1);
+  const resStr = Object.entries(resumen).map(([k,v])=>`${MOTIVO_LABELS[k]}: ${v}`).join(' · ');
+  document.getElementById('mermas-resumen').innerHTML = `${resStr} · <strong>Total: ${mermas.length}</strong>`;
+}
+
+// ══════════════════════════════════════════
+// PEDIDOS
+// ══════════════════════════════════════════
+function guardarPedido() {
+  const producto = document.getElementById('p-producto').value.trim();
+  const cantidad = document.getElementById('p-cantidad').value.trim();
+  const justificacion = document.getElementById('p-justificacion').value.trim();
+  const fechaNecesita = document.getElementById('p-fecha-necesita').value;
+  if (!producto) { toast('Indica qué producto necesitas','error'); return; }
+  if (!justificacion) { toast('La justificación es obligatoria','error'); return; }
+  const pedido = {id:Date.now(), producto, cantidad, justificacion, fechaNecesita, quien:USUARIO, cuando:ahora(), estado:'pendiente'};
+  const pedidos = cargar('pedidos',[]);
+  pedidos.unshift(pedido);
+  guardar('pedidos', pedidos);
+  addHistorial('pedido', `🛒 Solicitud: ${producto} (${cantidad}) — "${justificacion}"`);
+  ['p-producto','p-cantidad','p-justificacion','p-fecha-necesita'].forEach(i => document.getElementById(i).value='');
+  renderPedidos(); initInicio();
+  toast('Solicitud enviada ✓','verde');
+}
+
+function aprobarPedido(id) {
+  if (!esAdmin()) { toast('Solo Lore o César pueden aprobar','error'); return; }
+  const pedidos = cargar('pedidos',[]).map(p => p.id===id ? {...p, estado:'aprobado', aprobadoPor:USUARIO, aprobadoCuando:ahora()} : p);
+  guardar('pedidos', pedidos);
+  const ped = pedidos.find(p => p.id===id);
+  addHistorial('pedido', `✅ Aprobado: ${ped?.producto}`);
+  renderPedidos();
+  toast('Pedido aprobado ✓','verde');
+}
+
+function borrarPedido(id) {
+  if (!confirm('¿Eliminar esta solicitud?')) return;
+  guardar('pedidos', cargar('pedidos',[]).filter(p => p.id!==id));
+  renderPedidos();
+}
+
+function renderPedidos() {
+  const filtro = document.getElementById('filtro-pedido').value;
+  let pedidos = cargar('pedidos',[]);
+  if (filtro !== 'todo') pedidos = pedidos.filter(p => p.estado === filtro);
+  if (esMaria()) pedidos = pedidos.filter(p => p.quien === 'maria');
+
+  const el = document.getElementById('pedidos-lista');
+  if (!pedidos.length) { el.innerHTML = '<div style="color:var(--gris);font-size:14px;padding:16px 0">Sin solicitudes.</div>'; return; }
+
+  const quienLabel = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
+  el.innerHTML = pedidos.map(p => {
+    const adminBtns = esAdmin() && p.estado==='pendiente'
+      ? `<div style="display:flex;gap:8px;margin-top:10px">
+           <button class="btn btn-verde btn-sm" onclick="aprobarPedido(${p.id})">✅ Aprobar</button>
+           <button class="btn btn-outline btn-sm" onclick="borrarPedido(${p.id})">🗑</button>
+         </div>` : '';
+    return `<div class="pedido-card ${p.estado}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div style="font-weight:700;font-size:1rem">${p.producto}</div>
+        <span class="pedido-estado ${p.estado}">${p.estado==='pendiente'?'⏳ Pendiente':'✅ Aprobada'}</span>
+      </div>
+      ${p.cantidad?`<div style="font-size:13px;color:var(--gris);margin-top:4px">Cantidad: ${p.cantidad}</div>`:''}
+      <div style="font-size:13px;color:var(--crema-m);margin-top:6px;font-style:italic">"${p.justificacion}"</div>
+      <div style="font-size:11px;color:var(--gris);margin-top:6px">${quienLabel[p.quien]||p.quien} · ${formatHora(p.cuando)}${p.fechaNecesita?' · Para: '+p.fechaNecesita:''}</div>
+      ${p.aprobadoPor?`<div style="font-size:11px;color:var(--verde-m);margin-top:4px">✅ ${p.aprobadoPor} · ${formatHora(p.aprobadoCuando)}</div>`:''}
+      ${adminBtns}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// MENÚ
+// ══════════════════════════════════════════
+function initMenu() {
+  document.getElementById('menu-fecha').value = hoy();
   cargarMenuFecha();
   renderPinchos();
-  const personal = cargar('personal_'+hoyStr(),'');
-  document.getElementById('personal-actual').textContent = personal ? '🍴 Hoy: ' + personal : '';
+  const personal = cargar('personal_'+hoy(),'');
+  document.getElementById('personal-actual').textContent = personal ? '🍴 Hoy: '+personal : '';
 }
-
-function cargarMenuFecha(){
+function cargarMenuFecha() {
   const fecha = document.getElementById('menu-fecha').value;
-  if(!fecha) return;
-  document.getElementById('menu-fecha-display').textContent = formatFechaLarga(fecha);
+  if (!fecha) return;
   const menu = cargar('menu_'+fecha, {});
   document.getElementById('menu-p1').value = menu.p1||'';
   document.getElementById('menu-p2').value = menu.p2||'';
@@ -969,10 +1186,9 @@ function cargarMenuFecha(){
   document.getElementById('menu-precio').value = menu.precio||'';
   document.getElementById('menu-notas').value = menu.notas||'';
 }
-
-function guardarMenu(){
+function guardarMenu() {
   const fecha = document.getElementById('menu-fecha').value;
-  if(!fecha){toast('Selecciona una fecha');return;}
+  if (!fecha) { toast('Selecciona fecha'); return; }
   const menu = {
     p1: document.getElementById('menu-p1').value.trim(),
     p2: document.getElementById('menu-p2').value.trim(),
@@ -981,87 +1197,69 @@ function guardarMenu(){
     notas: document.getElementById('menu-notas').value.trim()
   };
   guardar('menu_'+fecha, menu);
-  toast('Menú guardado ✓');
+  addHistorial('menu', `🍽️ Menú ${fecha}: ${[menu.p1,menu.p2,menu.postre].filter(Boolean).join(' · ')}`);
+  toast('Menú guardado ✓','verde');
 }
-
-// PINCHOS
-function renderPinchos(){
+function renderPinchos() {
   const pinchos = cargar('pinchos',[]);
   const el = document.getElementById('pinchos-lista');
-  if(!pinchos.length){el.innerHTML='<div style="color:var(--gris);font-size:14px">Sin pinchos. Añade los de esta semana.</div>';return;}
-  el.innerHTML = pinchos.map((p,i)=>`
-    <div class="item">
-      <div class="item-body"><div class="item-title">🥢 ${p}</div></div>
-      <button style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px" onclick="borrarPincho(${i})">×</button>
-    </div>
-  `).join('');
+  if (!pinchos.length) { el.innerHTML='<div style="color:var(--gris);font-size:14px">Sin pinchos añadidos.</div>'; return; }
+  el.innerHTML = pinchos.map((p,i) => `<div class="item"><div class="item-body"><div class="item-title">🥢 ${p}</div></div><button style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px" onclick="borrarPincho(${i})">×</button></div>`).join('');
 }
-
-function addPincho(){
+function addPincho() {
   const input = document.getElementById('pincho-nuevo');
   const val = input.value.trim();
-  if(!val){toast('Escribe un pincho');return;}
+  if (!val) { toast('Escribe un pincho'); return; }
   const pinchos = cargar('pinchos',[]);
   pinchos.push(val);
-  guardar('pinchos',pinchos);
-  input.value='';
-  renderPinchos();
-  toast('Pincho añadido ✓');
-}
-
-function borrarPincho(i){
-  const pinchos = cargar('pinchos',[]);
-  pinchos.splice(i,1);
-  guardar('pinchos',pinchos);
+  guardar('pinchos', pinchos);
+  input.value = '';
   renderPinchos();
 }
-
-function guardarPersonal(){
+function borrarPincho(i) {
+  const p = cargar('pinchos',[]);
+  p.splice(i,1);
+  guardar('pinchos',p);
+  renderPinchos();
+}
+function guardarPersonal() {
   const val = document.getElementById('personal-plato').value.trim();
-  if(!val){toast('¿Qué coméis hoy?');return;}
-  guardar('personal_'+hoyStr(), val);
+  if (!val) return;
+  guardar('personal_'+hoy(), val);
   document.getElementById('personal-actual').textContent = '🍴 Hoy: '+val;
-  document.getElementById('personal-plato').value='';
-  toast('Plato de personal guardado ✓');
+  document.getElementById('personal-plato').value = '';
+  toast('Guardado ✓');
 }
 
 // ══════════════════════════════════════════
 // RECETAS
 // ══════════════════════════════════════════
 let recetaEditId = null;
-
-const CAT_LABELS = {carta:'Carta',menu:'Menú',pincho:'Pinchos',personal:'Personal'};
-const CAT_COLORS = {carta:'verde',menu:'menu',pincho:'pincho',personal:'personal'};
-
-function abrirModalReceta(id){
+function abrirModalReceta(id) {
   recetaEditId = id || null;
   document.getElementById('modal-receta-titulo').textContent = id ? 'Editar receta' : 'Nueva receta';
-  if(id){
-    const r = cargar('recetas',[]).find(x=>x.id===id);
-    if(r){
-      document.getElementById('r-nombre').value=r.nombre;
-      document.getElementById('r-categoria').value=r.categoria;
-      document.getElementById('r-ingredientes').value=r.ingredientes;
-      document.getElementById('r-elaboracion').value=r.elaboracion;
-      document.getElementById('r-raciones').value=r.raciones||'';
-      document.getElementById('r-coste').value=r.coste||'';
-      document.getElementById('r-precio').value=r.precio||'';
-      document.getElementById('r-notas').value=r.notas||'';
+  ['r-nombre','r-ingredientes','r-elaboracion','r-raciones','r-coste','r-precio','r-notas'].forEach(i => document.getElementById(i).value='');
+  document.getElementById('r-categoria').value = 'carta';
+  if (id) {
+    const r = cargar('recetas',[]).find(x => x.id==id);
+    if (r) {
+      document.getElementById('r-nombre').value = r.nombre||'';
+      document.getElementById('r-categoria').value = r.categoria||'carta';
+      document.getElementById('r-ingredientes').value = r.ingredientes||'';
+      document.getElementById('r-elaboracion').value = r.elaboracion||'';
+      document.getElementById('r-raciones').value = r.raciones||'';
+      document.getElementById('r-coste').value = r.coste||'';
+      document.getElementById('r-precio').value = r.precio||'';
+      document.getElementById('r-notas').value = r.notas||'';
     }
-  } else {
-    ['r-nombre','r-ingredientes','r-elaboracion','r-raciones','r-coste','r-precio','r-notas'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('r-categoria').value='carta';
   }
-  document.getElementById('r-id').value=id||'';
   abrirModal('modal-receta');
 }
-
-function guardarReceta(){
+function guardarReceta() {
   const nombre = document.getElementById('r-nombre').value.trim();
-  if(!nombre){toast('Ponle nombre al plato');return;}
+  if (!nombre) { toast('Ponle nombre al plato'); return; }
   const receta = {
-    id: recetaEditId || Date.now(),
-    nombre,
+    id: recetaEditId || Date.now(), nombre,
     categoria: document.getElementById('r-categoria').value,
     ingredientes: document.getElementById('r-ingredientes').value.trim(),
     elaboracion: document.getElementById('r-elaboracion').value.trim(),
@@ -1071,300 +1269,68 @@ function guardarReceta(){
     notas: document.getElementById('r-notas').value.trim()
   };
   let recetas = cargar('recetas',[]);
-  if(recetaEditId){
-    recetas = recetas.map(r=>r.id===recetaEditId?receta:r);
-  } else {
-    recetas.unshift(receta);
-  }
-  guardar('recetas',recetas);
+  if (recetaEditId) recetas = recetas.map(r => r.id==recetaEditId ? receta : r);
+  else recetas.unshift(receta);
+  guardar('recetas', recetas);
+  addHistorial('menu', `📖 Receta ${recetaEditId?'editada':'nueva'}: ${nombre}`);
   cerrarModal('modal-receta');
   renderRecetas();
-  toast('Receta guardada ✓');
+  toast('Receta guardada ✓','verde');
 }
-
-function renderRecetas(){
+function renderRecetas() {
   const filtro = document.getElementById('filtro-receta').value;
   let recetas = cargar('recetas',[]);
-  if(filtro) recetas = recetas.filter(r=>r.categoria===filtro);
+  if (filtro) recetas = recetas.filter(r => r.categoria === filtro);
   const el = document.getElementById('recetas-lista');
-  if(!recetas.length){
-    el.innerHTML='<div style="text-align:center;padding:30px;color:var(--gris)"><div style="font-size:3rem">📖</div><div style="margin-top:8px">Sin recetas aún.<br>Toca ➕ para añadir la primera.</div></div>';
-    return;
-  }
-  el.innerHTML = recetas.map(r=>{
-    const margen = r.coste&&r.precio ? ((r.precio-r.coste)/r.precio*100).toFixed(0)+'% margen' : '';
-    return `<div class="receta-card ${r.categoria}" onclick="verReceta(${r.id})">
+  if (!recetas.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--gris)"><div style="font-size:3rem">📖</div><div style="margin-top:8px">Sin recetas.</div></div>'; return; }
+  const CB = {carta:'badge-oro', menu:'badge-verde', pincho:'badge-naranja', personal:'badge-gris'};
+  const CL = {carta:'Carta', menu:'Menú', pincho:'Pinchos', personal:'Personal'};
+  el.innerHTML = recetas.map(r => {
+    const m = r.coste&&r.precio ? ((r.precio-r.coste)/r.precio*100).toFixed(0)+'% margen' : '';
+    return `<div class="receta-card ${r.categoria}" onclick="verReceta(${JSON.stringify(r.id)})">
       <div class="receta-nombre">${r.nombre}</div>
       <div class="receta-meta">
-        <span class="badge badge-${r.categoria==='carta'?'verde':r.categoria==='pincho'?'naranja':r.categoria==='menu'?'oro':'gris'}">${CAT_LABELS[r.categoria]||r.categoria}</span>
-        ${r.raciones?`<span>${r.raciones} raciones</span>`:''}
+        <span class="badge ${CB[r.categoria]||'badge-gris'}">${CL[r.categoria]||r.categoria}</span>
+        ${r.raciones?`<span>${r.raciones} rac.</span>`:''}
         ${r.precio?`<span>${r.precio}€</span>`:''}
-        ${margen?`<span>${margen}</span>`:''}
+        ${m?`<span>${m}</span>`:''}
       </div>
     </div>`;
   }).join('');
 }
-
-function verReceta(id){
-  const r = cargar('recetas',[]).find(x=>x.id===id);
-  if(!r) return;
+function verReceta(id) {
+  const r = cargar('recetas',[]).find(x => x.id==id);
+  if (!r) return;
   document.getElementById('ver-receta-nombre').textContent = r.nombre;
   let html = '';
-  if(r.ingredientes) html+=`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:6px">Ingredientes</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.ingredientes}</div></div>`;
-  if(r.elaboracion) html+=`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:6px">Elaboración</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.elaboracion}</div></div>`;
-  if(r.notas) html+=`<div style="background:var(--amarillo-c);padding:10px;border-radius:8px;font-size:13px">${r.notas}</div>`;
-  const margen = r.coste&&r.precio ? ' · '+((r.precio-r.coste)/r.precio*100).toFixed(0)+'% margen' : '';
-  if(r.coste||r.precio) html+=`<div style="margin-top:12px;font-size:13px;color:var(--gris)">Coste: ${r.coste||'—'}€ · Precio: ${r.precio||'—'}€${margen}</div>`;
+  if (r.ingredientes) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:6px">Ingredientes</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.ingredientes}</div></div>`;
+  if (r.elaboracion) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:6px">Elaboración</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.elaboracion}</div></div>`;
+  if (r.notas) html += `<div style="background:var(--amarillo-c);padding:10px;border-radius:8px;font-size:13px;border:1px solid rgba(201,162,39,.3);margin-bottom:10px">${r.notas}</div>`;
+  if (r.coste||r.precio) { const m=r.coste&&r.precio?' · '+((r.precio-r.coste)/r.precio*100).toFixed(0)+'% margen':''; html+=`<div style="font-size:13px;color:var(--gris)">Coste: ${r.coste||'—'}€ · Venta: ${r.precio||'—'}€${m}</div>`; }
   document.getElementById('ver-receta-contenido').innerHTML = html;
-  document.getElementById('ver-receta-editar').onclick = ()=>{cerrarModal('modal-ver-receta');abrirModalReceta(id);};
-  document.getElementById('ver-receta-borrar').onclick = ()=>borrarReceta(id);
+  document.getElementById('ver-receta-editar').onclick = () => { cerrarModal('modal-ver-receta'); abrirModalReceta(id); };
+  document.getElementById('ver-receta-borrar').onclick = () => borrarReceta(id);
   abrirModal('modal-ver-receta');
 }
-
-function borrarReceta(id){
-  if(!confirm('¿Borrar esta receta?')) return;
-  guardar('recetas', cargar('recetas',[]).filter(r=>r.id!==id));
+function borrarReceta(id) {
+  if (!confirm('¿Borrar esta receta?')) return;
+  guardar('recetas', cargar('recetas',[]).filter(r => r.id!=id));
   cerrarModal('modal-ver-receta');
   renderRecetas();
   toast('Receta borrada');
 }
 
 // ══════════════════════════════════════════
-// STOCK — Sistema FIFO con lotes y caducidades
-// ══════════════════════════════════════════
-let stockEditId = null;
-
-// Días hasta caducidad de un lote
-function diasHasta(fechaStr){
-  if(!fechaStr) return null;
-  const hoy = new Date(); hoy.setHours(0,0,0,0);
-  const f = new Date(fechaStr+'T00:00:00');
-  return Math.round((f-hoy)/(1000*60*60*24));
-}
-
-// Semáforo de cantidad
-function getSemaforo(p){
-  const total = (p.lotes||[]).reduce((a,l)=>a+l.cantidad,0);
-  if(total <= (p.critico||0)) return 'rojo';
-  if(total <= (p.minimo||1)) return 'amarillo';
-  return 'verde';
-}
-
-// Semáforo de caducidad del lote más próximo
-function getSemaforoCad(lote){
-  const d = diasHasta(lote.caduca);
-  if(d===null) return null;
-  if(d<=0) return 'rojo';
-  if(d<=2) return 'amarillo';
-  return 'verde';
-}
-
-function abrirModalStock(id){
-  stockEditId = id || null;
-  document.getElementById('modal-stock-titulo').textContent = id ? 'Editar producto' : 'Nuevo producto';
-  if(id){
-    const p = cargar('stock_productos',[]).find(x=>x.id===id);
-    if(p){
-      document.getElementById('s-nombre').value=p.nombre;
-      document.getElementById('s-unidad').value=p.unidad||'';
-      document.getElementById('s-minimo').value=p.minimo||'';
-      document.getElementById('s-critico').value=p.critico||'';
-      document.getElementById('s-vida').value=p.vidaDias||'';
-    }
-  } else {
-    ['s-nombre','s-unidad','s-minimo','s-critico','s-vida'].forEach(i=>document.getElementById(i).value='');
-  }
-  document.getElementById('s-id').value=id||'';
-  abrirModal('modal-stock');
-}
-
-function guardarProductoStock(){
-  const nombre = document.getElementById('s-nombre').value.trim();
-  if(!nombre){toast('Pon el nombre del producto');return;}
-  const prod = {
-    id: stockEditId || Date.now(),
-    nombre,
-    unidad: document.getElementById('s-unidad').value.trim()||'ud',
-    minimo: parseFloat(document.getElementById('s-minimo').value)||2,
-    critico: parseFloat(document.getElementById('s-critico').value)||0,
-    vidaDias: parseFloat(document.getElementById('s-vida').value)||null,
-    lotes: stockEditId ? (cargar('stock_productos',[]).find(x=>x.id===stockEditId)||{}).lotes||[] : []
-  };
-  let productos = cargar('stock_productos',[]);
-  if(stockEditId){
-    productos = productos.map(p=>p.id===stockEditId?prod:p);
-  } else {
-    productos.push(prod);
-  }
-  guardar('stock_productos',productos);
-  cerrarModal('modal-stock');
-  renderStock();
-  toast('Producto guardado ✓');
-}
-
-function abrirModalLote(prodId){
-  const p = cargar('stock_productos',[]).find(x=>x.id===prodId);
-  if(!p) return;
-  document.getElementById('modal-lote-titulo').textContent='➕ '+p.nombre+' — nuevo lote';
-  document.getElementById('l-unidad-label').textContent='Unidad: '+p.unidad;
-  document.getElementById('l-cantidad').value='';
-  document.getElementById('l-caduca').value='';
-  document.getElementById('l-notas').value='';
-  document.getElementById('l-prod-id').value=prodId;
-  // Sugerir caducidad si el producto tiene vida configurada
-  if(p.vidaDias){
-    const sug = new Date();
-    sug.setDate(sug.getDate()+p.vidaDias);
-    document.getElementById('l-caduca').value=sug.toISOString().slice(0,10);
-  }
-  abrirModal('modal-lote');
-}
-
-function guardarLote(){
-  const prodId = parseInt(document.getElementById('l-prod-id').value);
-  const cantidad = parseFloat(document.getElementById('l-cantidad').value);
-  if(isNaN(cantidad)||cantidad<=0){toast('Indica la cantidad');return;}
-  const lote = {
-    id: Date.now(),
-    cantidad,
-    caduca: document.getElementById('l-caduca').value||null,
-    notas: document.getElementById('l-notas').value.trim(),
-    entrada: new Date().toISOString().slice(0,10)
-  };
-  let productos = cargar('stock_productos',[]);
-  productos = productos.map(p=>{
-    if(p.id===prodId){
-      const lotes = [...(p.lotes||[]), lote];
-      // Ordenar FIFO: primero los que caducan antes
-      lotes.sort((a,b)=>{
-        if(!a.caduca && !b.caduca) return 0;
-        if(!a.caduca) return 1;
-        if(!b.caduca) return -1;
-        return a.caduca.localeCompare(b.caduca);
-      });
-      return {...p, lotes};
-    }
-    return p;
-  });
-  guardar('stock_productos',productos);
-  cerrarModal('modal-lote');
-  renderStock();
-  initInicio();
-  toast('Lote añadido ✓');
-}
-
-function consumirLote(prodId, loteId){
-  // Descuenta 1 unidad del lote más próximo a caducar
-  let productos = cargar('stock_productos',[]);
-  productos = productos.map(p=>{
-    if(p.id!==prodId) return p;
-    let lotes = (p.lotes||[]).map(l=>{
-      if(l.id===loteId) return {...l, cantidad: Math.max(0,l.cantidad-1)};
-      return l;
-    }).filter(l=>l.cantidad>0);
-    return {...p, lotes};
-  });
-  guardar('stock_productos',productos);
-  renderStock();
-  initInicio();
-  toast('Consumida 1 unidad ✓');
-}
-
-function borrarProductoStock(prodId){
-  if(!confirm('¿Borrar este producto del stock?')) return;
-  guardar('stock_productos', cargar('stock_productos',[]).filter(p=>p.id!==prodId));
-  renderStock();
-  toast('Producto borrado');
-}
-
-function renderStock(){
-  const filtro = document.getElementById('filtro-stock').value;
-  let productos = cargar('stock_productos',[]);
-
-  // Ordenar: rojo primero
-  productos.sort((a,b)=>{
-    const ord={rojo:0,amarillo:1,verde:2};
-    return ord[getSemaforo(a)]-ord[getSemaforo(b)];
-  });
-
-  if(filtro) productos = productos.filter(p=>getSemaforo(p)===filtro);
-
-  const el = document.getElementById('stock-lista');
-  if(!productos.length){
-    el.innerHTML='<div style="text-align:center;padding:40px;color:var(--gris)"><div style="font-size:3rem">📦</div><div style="margin-top:8px">Sin productos.<br>Toca ➕ para añadir.</div></div>';
-    return;
-  }
-
-  el.innerHTML = productos.map(p=>{
-    const sem = getSemaforo(p);
-    const semIcon = {verde:'🟢',amarillo:'🟡',rojo:'🔴'}[sem];
-    const total = (p.lotes||[]).reduce((a,l)=>a+l.cantidad,0);
-
-    // Lotes FIFO — los primeros a consumir primero
-    const lotesHtml = (p.lotes||[]).length===0
-      ? `<div style="font-size:12px;color:var(--gris);padding:8px 0">Sin lotes. Toca ➕ lote para añadir stock.</div>`
-      : (p.lotes||[]).map((l,i)=>{
-          const d = diasHasta(l.caduca);
-          const cadSem = getSemaforoCad(l);
-          let cadLabel='';
-          if(l.caduca){
-            const cadColors={rojo:'var(--rojo)',amarillo:'var(--amarillo)',verde:'var(--verde)'};
-            const cadBg={rojo:'var(--rojo-c)',amarillo:'var(--amarillo-c)',verde:'var(--verde-c)'};
-            let cadTxt = d===0?'¡Caduca HOY!': d<0?`Caducado hace ${Math.abs(d)}d`:`Caduca en ${d}d (${l.caduca})`;
-            cadLabel=`<span style="background:${cadBg[cadSem]};color:${cadColors[cadSem]};padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${cadTxt}</span>`;
-          }
-          const fifoLabel = i===0&&(p.lotes||[]).length>1
-            ? `<span style="background:#e8f5e9;color:#2d6a4f;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;margin-left:4px">👆 USA PRIMERO</span>`
-            : '';
-          return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--gris-m)">
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600">${l.cantidad} ${p.unidad}${fifoLabel}</div>
-              <div style="margin-top:3px;display:flex;gap:6px;flex-wrap:wrap">${cadLabel}${l.notas?`<span style="font-size:11px;color:var(--gris)">${l.notas}</span>`:''}</div>
-            </div>
-            <button onclick="consumirLote(${p.id},${l.id})" style="background:var(--rojo-c);color:var(--rojo);border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer">−1</button>
-          </div>`;
-        }).join('');
-
-    return `<div class="card" style="margin-bottom:12px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="font-size:1.4rem">${semIcon}</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:1rem">${p.nombre}</div>
-          <div style="font-size:12px;color:var(--gris)">Total: ${total} ${p.unidad} · mín ${p.minimo} · crítico ${p.critico}</div>
-        </div>
-        <div style="display:flex;gap:6px">
-          <button onclick="abrirModalLote(${p.id})" style="background:var(--verde-c);color:var(--verde);border:none;border-radius:8px;padding:6px 11px;font-size:13px;font-weight:700;cursor:pointer">➕ lote</button>
-          <button onclick="abrirModalStock(${p.id})" style="background:none;border:1.5px solid var(--gris-m);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer">✏️</button>
-          <button onclick="borrarProductoStock(${p.id})" style="background:none;border:1.5px solid var(--gris-m);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer">🗑</button>
-        </div>
-      </div>
-      <div>${lotesHtml}</div>
-    </div>`;
-  }).join('');
-}
-
-// LEGACY — por si hay datos del sistema anterior
-function cambiarCantidad(id,delta){
-  // no-op en v2, por compatibilidad
-}
-
-// dummy para evitar errores si hay html viejo
-function guardarStock(){guardarProductoStock();}
-
-// ══════════════════════════════════════════
 // PROVEEDORES
 // ══════════════════════════════════════════
-function abrirModalProveedor(){
-  ['pv-nombre','pv-categoria','pv-telefono','pv-dias','pv-notas'].forEach(id=>document.getElementById(id).value='');
+function abrirModalProveedor() {
+  ['pv-nombre','pv-categoria','pv-telefono','pv-dias','pv-notas'].forEach(i => document.getElementById(i).value='');
   abrirModal('modal-proveedor');
 }
-
-function guardarProveedor(){
+function guardarProveedor() {
   const nombre = document.getElementById('pv-nombre').value.trim();
-  if(!nombre){toast('Nombre del proveedor');return;}
-  const prov = {
-    id: Date.now(),
-    nombre,
+  if (!nombre) { toast('Nombre del proveedor'); return; }
+  const prov = {id:Date.now(), nombre,
     categoria: document.getElementById('pv-categoria').value.trim(),
     telefono: document.getElementById('pv-telefono').value.trim(),
     dias: document.getElementById('pv-dias').value.trim(),
@@ -1372,278 +1338,144 @@ function guardarProveedor(){
   };
   const proveedores = cargar('proveedores',[]);
   proveedores.push(prov);
-  guardar('proveedores',proveedores);
+  guardar('proveedores', proveedores);
   cerrarModal('modal-proveedor');
   renderProveedores();
-  toast('Proveedor guardado ✓');
+  toast('Proveedor guardado ✓','verde');
 }
-
-function borrarProveedor(id){
-  if(!confirm('¿Borrar este proveedor?')) return;
-  guardar('proveedores', cargar('proveedores',[]).filter(p=>p.id!==id));
+function borrarProveedor(id) {
+  if (!confirm('¿Borrar?')) return;
+  guardar('proveedores', cargar('proveedores',[]).filter(p => p.id!==id));
   renderProveedores();
 }
-
 const PROV_EMOJIS = {'Cárnico':'🥩','Verduras':'🥬','Frutas':'🍊','Pescado':'🐟','Bebidas':'🍺','Panadería':'🍞','Lácteos':'🧀','General':'📦'};
-
-function renderProveedores(){
-  const proveedores = cargar('proveedores',[]);
+function renderProveedores() {
   const el = document.getElementById('proveedores-lista');
-  if(!proveedores.length){
-    el.innerHTML='<div style="text-align:center;padding:30px;color:var(--gris)"><div style="font-size:3rem">🤝</div><div style="margin-top:8px">Sin proveedores.<br>Toca ➕ para añadir el primero.</div></div>';
-    return;
-  }
-  el.innerHTML = proveedores.map(p=>{
-    const emoji = PROV_EMOJIS[p.categoria]||'📦';
-    return `<div class="prov-card">
-      <div class="prov-emoji">${emoji}</div>
-      <div class="prov-info">
-        <div class="prov-nombre">${p.nombre}</div>
-        <div class="prov-datos">
-          ${p.categoria?`<span class="badge badge-verde">${p.categoria}</span> `:''}
-          ${p.telefono?`📞 ${p.telefono}<br>`:''}
-          ${p.dias?`📅 Pedidos: ${p.dias}<br>`:''}
-          ${p.notas?`<span style="color:var(--gris)">${p.notas}</span>`:''}
-        </div>
-      </div>
-      <button style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px" onclick="borrarProveedor(${p.id})">×</button>
-    </div>`;
-  }).join('');
+  const proveedores = cargar('proveedores',[]);
+  if (!proveedores.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--gris)"><div style="font-size:3rem">🤝</div><div>Sin proveedores.</div></div>'; return; }
+  el.innerHTML = proveedores.map(p => `<div class="prov-card">
+    <div class="prov-emoji">${PROV_EMOJIS[p.categoria]||'📦'}</div>
+    <div style="flex:1">
+      <div class="prov-nombre">${p.nombre}</div>
+      <div class="prov-datos">${p.categoria?`<span class="badge badge-oro">${p.categoria}</span> `:''}${p.telefono?`📞 ${p.telefono}<br>`:''}${p.dias?`📅 ${p.dias}<br>`:''}${p.notas?`<span style="color:var(--gris)">${p.notas}</span>`:''}</div>
+    </div>
+    <button style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px" onclick="borrarProveedor(${p.id})">×</button>
+  </div>`).join('');
 }
 
 // ══════════════════════════════════════════
-// INSTAGRAM
+// HISTORIAL
 // ══════════════════════════════════════════
-const CHECKLIST_IG = [
-  'La foto está bien iluminada (luz natural)',
-  'El borde del plato está limpio',
-  'El texto está escrito (o copiado de esta guía)',
-  'Los hashtags están añadidos',
-  'He comprobado la ortografía',
-  'El horario/día está correcto si lo menciono',
-  'He seleccionado la ubicación A Coruña'
-];
-
-function initInstagram(){
-  renderChecklistIG();
-}
-
-function renderChecklistIG(){
-  const estado = cargar('checklist_ig',{});
-  const el = document.getElementById('checklist-ig');
-  el.innerHTML = CHECKLIST_IG.map((item,i)=>`
-    <label style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--gris-m);cursor:pointer;font-size:14px">
-      <input type="checkbox" ${estado[i]?'checked':''} onchange="toggleCheckIG(${i},this.checked)" style="width:18px;height:18px;accent-color:var(--verde)">
-      <span style="${estado[i]?'text-decoration:line-through;color:var(--gris)':''}">${item}</span>
-    </label>
-  `).join('');
-}
-
-function toggleCheckIG(i, val){
-  const estado = cargar('checklist_ig',{});
-  estado[i] = val;
-  guardar('checklist_ig',estado);
-  renderChecklistIG();
-}
-
-function resetChecklist(){
-  guardar('checklist_ig',{});
-  renderChecklistIG();
-  toast('Checklist reiniciado');
+const HIST_ICONS = {stock:'📦', merma:'📉', pedido:'🛒', menu:'🍽️'};
+const HIST_WHO = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
+function renderHistorial() {
+  const tipo = document.getElementById('filtro-hist-tipo').value;
+  const quien = document.getElementById('filtro-hist-quien').value;
+  let h = cargar('historial',[]);
+  if (tipo) h = h.filter(x => x.tipo===tipo);
+  if (quien) h = h.filter(x => x.quien===quien);
+  const el = document.getElementById('historial-lista');
+  if (!h.length) { el.innerHTML='<div style="color:var(--gris);font-size:14px;padding:16px 0">Sin movimientos.</div>'; return; }
+  el.innerHTML = h.slice(0,100).map(x => `<div class="hist-row">
+    <div style="font-size:1.3rem;flex-shrink:0">${HIST_ICONS[x.tipo]||'📋'}</div>
+    <div style="flex:1">
+      <div class="hist-who">${HIST_WHO[x.quien]||x.quien||'Sistema'}</div>
+      <div class="hist-what">${x.descripcion}</div>
+      <div class="hist-when">${formatHora(x.cuando)}</div>
+    </div>
+  </div>`).join('');
 }
 
 // ══════════════════════════════════════════
-// SEED — datos reales de Drive (solo si no hay datos previos)
+// SPOTIFY
 // ══════════════════════════════════════════
-function seedData(){
-
-  // ── RESET FORZADO por ?reset=1 en la URL ──
-  if(location.search.includes('reset=1')){
-    ['urbana_stock','urbana_stock_productos','urbana_proveedores','urbana_recetas',
-     'urbana_menu_hoy','urbana_pinchos'].forEach(k=>localStorage.removeItem(k));
-    // quitar el ?reset=1 de la URL sin recargar
-    history.replaceState(null,'',location.pathname);
-  }
-
-  // ── MIGRACIÓN: limpiar sistema viejo de stock ──
-  if(localStorage.getItem('urbana_stock') && !localStorage.getItem('urbana_stock_productos')){
-    localStorage.removeItem('urbana_stock');
-  }
-  try {
-    const pvTest = JSON.parse(localStorage.getItem('urbana_proveedores')||'[]');
-    if(pvTest.length && pvTest[0] && typeof pvTest[0].id === 'string' && pvTest[0].id.startsWith('pv')){
-      localStorage.removeItem('urbana_proveedores');
-    }
-  } catch(e){}
-
-  // ── PROVEEDORES ──────────────────────────
-  if(!localStorage.getItem('urbana_proveedores')){
-    const prov = [
-      {id:'pv1', nombre:'Elmar', categoria:'Cárnico', telefono:'', dias:'Lunes y Jueves', notas:'Pechuga pollo IQF bolsas 2,5kg'},
-      {id:'pv2', nombre:'Fructifera', categoria:'Verduras', telefono:'', dias:'Martes y Viernes', notas:'Patata pelada vacío, pimiento, zanahoria, ajo, perejil'},
-      {id:'pv3', nombre:'Armando Galves', categoria:'General', telefono:'', dias:'', notas:'Aceite girasol garrafa 15L'},
-      {id:'pv4', nombre:'Mercadona', categoria:'General', telefono:'', dias:'Según necesidad', notas:'Chorizo criollo, salsa soja, tahini, tequeños, croquetas, queso gallego'},
-      {id:'pv5', nombre:'Makro', categoria:'General', telefono:'', dias:'Según necesidad', notas:'Atún desmigado 1kg, coulant chocolate'},
-      {id:'pv6', nombre:'Gadis', categoria:'General', telefono:'', dias:'Según necesidad', notas:'Mayonesa Hellmann\'s cubo 4,6kg, nata cocinar'},
-      {id:'pv7', nombre:'DIS', categoria:'Bebidas', telefono:'', dias:'', notas:'Chorizo rojo ahumado'},
-    ];
-    guardar('proveedores', prov);
-  }
-
-  // ── STOCK ────────────────────────────────
-  // ── STOCK (nuevo sistema lotes) ───────────
-  if(!localStorage.getItem('urbana_stock_productos')){
-    const hoy = new Date().toISOString().slice(0,10);
-    const en = (d)=>{ const f=new Date(); f.setDate(f.getDate()+d); return f.toISOString().slice(0,10); };
-    const productos = [
-      // CRÍTICOS — caducidad corta
-      {id:1001, nombre:'Burrata', unidad:'ud', minimo:3, critico:1, vidaDias:7,
-        lotes:[{id:9001,cantidad:4,caduca:en(5),notas:'Mercadona',entrada:hoy}]},
-      {id:1002, nombre:'Rúcula', unidad:'bolsa', minimo:2, critico:0, vidaDias:3,
-        lotes:[{id:9002,cantidad:1,caduca:en(2),notas:'',entrada:hoy}]},
-      {id:1003, nombre:'Tomate ensalada', unidad:'kg', minimo:2, critico:0, vidaDias:5,
-        lotes:[{id:9003,cantidad:1,caduca:en(3),notas:'Fructifera',entrada:hoy}]},
-      {id:1004, nombre:'Raxo cortado (tupper)', unidad:'tupper', minimo:1, critico:0, vidaDias:3,
-        lotes:[]},
-      {id:1035, nombre:'Cinta de lomo (congelada)', unidad:'caja 5 uds', minimo:1, critico:0, vidaDias:null,
-        lotes:[], notas:'Congelado → descongelar → tupper raxo (3 días). Nunca recongelar.'},
-      {id:1005, nombre:'Ensaladilla preparada', unidad:'ración', minimo:4, critico:1, vidaDias:2,
-        lotes:[]},
-      // PROTEÍNAS
-      {id:1006, nombre:'Pechuga de pollo IQF', unidad:'bolsa 2,5kg', minimo:2, critico:0, vidaDias:null,
-        lotes:[{id:9006,cantidad:4,caduca:null,notas:'Elmar',entrada:hoy}]},
-      {id:1007, nombre:'Chorizo criollo blanco', unidad:'ud', minimo:4, critico:1, vidaDias:null,
-        lotes:[{id:9007,cantidad:8,caduca:null,notas:'Mercadona',entrada:hoy}]},
-      {id:1008, nombre:'Chorizo rojo ahumado', unidad:'ud', minimo:2, critico:0, vidaDias:null,
-        lotes:[]},
-      {id:1009, nombre:'Atún desmigado', unidad:'bote 1kg', minimo:1, critico:0, vidaDias:null,
-        lotes:[{id:9009,cantidad:1,caduca:null,notas:'Makro',entrada:hoy}]},
-      {id:1010, nombre:'Huevos', unidad:'docena', minimo:1, critico:0, vidaDias:null,
-        lotes:[]},
-      // VERDURAS / FRESCOS
-      {id:1011, nombre:'Patata pelada al vacío', unidad:'bolsa 5kg', minimo:2, critico:0, vidaDias:null,
-        lotes:[{id:9011,cantidad:3,caduca:null,notas:'Fructifera 8,75€',entrada:hoy}]},
-      {id:1012, nombre:'Pimiento rojo/verde', unidad:'kg', minimo:1, critico:0, vidaDias:7,
-        lotes:[{id:9012,cantidad:1,caduca:en(6),notas:'Fructifera',entrada:hoy}]},
-      {id:1013, nombre:'Zanahoria', unidad:'kg', minimo:1, critico:0, vidaDias:null,
-        lotes:[{id:9013,cantidad:1,caduca:null,notas:'Fructifera',entrada:hoy}]},
-      {id:1014, nombre:'Ajo (cabeza)', unidad:'ud', minimo:2, critico:0, vidaDias:null,
-        lotes:[{id:9014,cantidad:1,caduca:null,notas:'Fructifera',entrada:hoy}]},
-      {id:1015, nombre:'Perejil fresco', unidad:'manojo', minimo:1, critico:0, vidaDias:5,
-        lotes:[]},
-      {id:1016, nombre:'Espinaca baby', unidad:'bolsa', minimo:1, critico:0, vidaDias:4,
-        lotes:[]},
-      {id:1017, nombre:'Granada', unidad:'ud', minimo:2, critico:0, vidaDias:null,
-        lotes:[]},
-      // LÁCTEOS / QUESOS
-      {id:1018, nombre:'Queso gallego Arzúa-Ulloa', unidad:'pieza ~500g', minimo:1, critico:0, vidaDias:null,
-        lotes:[{id:9018,cantidad:2,caduca:null,notas:'Mercadona 7,21€',entrada:hoy}]},
-      {id:1019, nombre:'Queso parmesano', unidad:'pieza', minimo:1, critico:0, vidaDias:null,
-        lotes:[]},
-      {id:1020, nombre:'Queso feta', unidad:'bloque', minimo:1, critico:0, vidaDias:null,
-        lotes:[]},
-      {id:1021, nombre:'Nata para cocinar', unidad:'brik 200ml', minimo:2, critico:0, vidaDias:null,
-        lotes:[]},
-      {id:1022, nombre:'Mayonesa Hellmann\'s', unidad:'cubo 4,6kg', minimo:1, critico:0, vidaDias:null,
-        lotes:[]},
-      // DESPENSA
-      {id:1023, nombre:'Aceite de girasol', unidad:'garrafa 15L', minimo:1, critico:0, vidaDias:null,
-        lotes:[{id:9023,cantidad:1,caduca:null,notas:'Armando Galves 26,25€',entrada:hoy}]},
-      {id:1024, nombre:'Salsa de soja', unidad:'botella 1L', minimo:1, critico:0, vidaDias:null,
-        lotes:[{id:9024,cantidad:2,caduca:null,notas:'Mercadona 1,30€',entrada:hoy}]},
-      {id:1025, nombre:'Tahini', unidad:'bote 200g', minimo:1, critico:0, vidaDias:null,
-        lotes:[{id:9025,cantidad:1,caduca:null,notas:'Mercadona 3€',entrada:hoy}]},
-      {id:1026, nombre:'Pistachos pelados', unidad:'bolsa', minimo:1, critico:0, vidaDias:null,
-        lotes:[{id:9026,cantidad:1,caduca:null,notas:'Mercadona',entrada:hoy}]},
-      {id:1027, nombre:'Garbanzos cocidos', unidad:'bote', minimo:2, critico:0, vidaDias:null,
-        lotes:[{id:9027,cantidad:2,caduca:null,notas:'Mercadona',entrada:hoy}]},
-      {id:1028, nombre:'Tomate frito', unidad:'brik 400ml', minimo:2, critico:0, vidaDias:null,
-        lotes:[{id:9028,cantidad:1,caduca:null,notas:'',entrada:hoy}]},
-      {id:1029, nombre:'Vinagre de vino', unidad:'botella 1L', minimo:1, critico:0, vidaDias:null,
-        lotes:[]},
-      // CONGELADOS / SEMIELABORADOS
-      {id:1030, nombre:'Tequeños Hacendado', unidad:'bolsa 12ud', minimo:2, critico:0, vidaDias:null,
-        lotes:[{id:9030,cantidad:2,caduca:null,notas:'Mercadona 4,80€',entrada:hoy}]},
-      {id:1031, nombre:'Croquetas jamón Hacendado', unidad:'bolsa ~15ud', minimo:2, critico:1, vidaDias:null,
-        lotes:[{id:9031,cantidad:1,caduca:null,notas:'Mercadona 2,85€',entrada:hoy}]},
-      {id:1032, nombre:'Patatas bravas prefritas', unidad:'bolsa 5kg', minimo:1, critico:0, vidaDias:null,
-        lotes:[]},
-      {id:1033, nombre:'Coulant de chocolate', unidad:'ud', minimo:4, critico:1, vidaDias:null,
-        lotes:[]},
-      // VARIOS
-      {id:1034, nombre:'Aceitunas negras', unidad:'bote', minimo:1, critico:0, vidaDias:null,
-        lotes:[{id:9034,cantidad:1,caduca:null,notas:'',entrada:hoy}]},
-      {id:1035, nombre:'Pan mariñeira', unidad:'ud', minimo:10, critico:3, vidaDias:1,
-        lotes:[]},
-    ];
-    // Ordenar FIFO dentro de cada producto
-    productos.forEach(p=>{
-      p.lotes.sort((a,b)=>{
-        if(!a.caduca&&!b.caduca) return 0;
-        if(!a.caduca) return 1;
-        if(!b.caduca) return -1;
-        return a.caduca.localeCompare(b.caduca);
-      });
-    });
-    guardar('stock_productos', productos);
-  }
-
-  // ── RECETAS ──────────────────────────────
-  if(!localStorage.getItem('urbana_recetas')){
-    const recetas = [
-      {
-        id:'r01', nombre:'Ensalada Rúcula-Espinaca con Granada y Feta',
-        categoria:'carta', raciones:4, precio_venta:10.50,
-        ingredientes:'Rúcula, espinaca baby, granada (puñado generoso), pistachos pelados, queso feta, garbanzos cocidos, cebolla morada (opcional)',
-        elaboracion:'1. Mezclar rúcula y espinaca en bol grande.\n2. Añadir granos de granada, pistachos y feta desmenuzado.\n3. Vinagreta: 2 cdas aceite oliva + 1 cdita mostaza antigua + limón + sal + pimienta + 1/2 cdita ágave.\n4. Aliñar justo antes de servir.\nOPCIÓN CRUJIENTE: Garbanzos al horno 200°C 20-25 min con aceite, sal y pimentón.',
-        notas:'Funciona como plato principal con garbanzos. Los pistachos combinan muy bien con la granada y la mostaza antigua.'
-      },
-      {
-        id:'r02', nombre:'Ramen Gallego de Caldo de Grelos',
-        categoria:'menu', raciones:4, precio_venta:13.00,
-        ingredientes:'Lacón salado, costilla salada, oreja salada, chorizo, unto, alubias blancas, grelos frescos, patata pequeña (opcional), fideos udon/dangmyeon, gochujang o kimchi',
-        elaboracion:'1. Desalar lacón, costilla y oreja 8-12h.\n2. Cocer lacón + costilla + oreja + chorizo + unto + alubias 1-1,5h.\n3. Retirar carnes.\n4. En el mismo caldo cocer grelos y patata.\n5. Cocer fideos aparte.\n6. Montaje: caldo + fideos + grelos + lacón desmenuzado + oreja crujiente + chorizo.\n7. Añadir gochujang o kimchi al gusto.',
-        notas:'Desalar mínimo 8h. La oreja queda mejor si se fríe un poco al final para darle textura crujiente.'
-      },
-      {
-        id:'r03', nombre:'Ramen Gallego de Lacón con Grelos (sin habas)',
-        categoria:'menu', raciones:4, precio_venta:12.00,
-        ingredientes:'Lacón salado, oreja salada, chorizo, grelos frescos, patata pequeña (opcional), fideos udon o dangmyeon, aceite oliva (opcional), kimchi o gochujang',
-        elaboracion:'1. Desalar lacón y oreja 8-12h.\n2. Cocer lacón + oreja + chorizo ~1h.\n3. Retirar carnes.\n4. Cocer grelos (y patata si quieres espesar el caldo).\n5. Cocer fideos aparte.\n6. Montaje: caldo + fideos + lacón desmechado + oreja crujiente + chorizo.\n7. Chorrito de aceite opcional. Kimchi o gochujang en el bol.',
-        notas:'Versión más ligera que la de grelos. Muy gallega y con toque asiático.'
-      },
-      {
-        id:'r04', nombre:'Ramen Gallego de Repollo con Garbanzos',
-        categoria:'menu', raciones:4, precio_venta:11.50,
-        ingredientes:'Lacón salado, costilla salada, chorizo, unto (opcional), garbanzos, repollo, fideos dangmyeon o udon, salsa kimchi',
-        elaboracion:'1. Desalar lacón y costilla 8-12h.\n2. Cocer lacón + costilla + chorizo + garbanzos + unto.\n3. Retirar carnes.\n4. En el caldo cocer el repollo picado.\n5. Cocer fideos aparte.\n6. Montaje: caldo + fideos + repollo + lacón + costilla.\n7. 1 cucharadita kimchi en el bol.',
-        notas:'Versión más contundente. Los garbanzos dan cuerpo al caldo.'
-      },
-    ];
-    guardar('recetas', recetas);
-  }
-
+function guardarPlaylist() {
+  const nombre = document.getElementById('sp-nombre').value.trim();
+  const url = document.getElementById('sp-url').value.trim();
+  const momento = document.getElementById('sp-momento-txt').value.trim();
+  if (!nombre||!url) { toast('Nombre y enlace son obligatorios','error'); return; }
+  const pl = cargar('playlists',[]);
+  pl.push({id:Date.now(), nombre, url, momento});
+  guardar('playlists', pl);
+  ['sp-nombre','sp-url','sp-momento-txt'].forEach(i => document.getElementById(i).value='');
+  renderPlaylistsCustom();
+  toast('Playlist guardada ✓','verde');
+}
+function renderPlaylistsCustom() {
+  const pl = cargar('playlists',[]);
+  const el = document.getElementById('sp-custom-lista');
+  if (!pl.length) { el.innerHTML=''; return; }
+  el.innerHTML = '<div style="font-weight:700;color:#1ed760;margin-bottom:8px;font-size:13px">Tus playlists</div>'
+    + pl.map(p => `<a class="sp-link" href="${p.url}" target="_blank"><div style="font-size:1.4rem">🎵</div><div style="flex:1"><div class="sp-link-name">${p.nombre}</div><div class="sp-link-desc">${p.momento||''}</div></div><div class="sp-open">↗</div></a>`).join('');
 }
 
 // ══════════════════════════════════════════
-// INIT — esperar a Firebase antes de arrancar
+// SEED
+// ══════════════════════════════════════════
+function seedData() {
+  if (!cargar('proveedores', null)) {
+    guardar('proveedores', [
+      {id:1,nombre:'Elmar',categoria:'Cárnico',telefono:'',dias:'Lunes y Jueves',notas:'Pechuga pollo IQF bolsas 2,5kg'},
+      {id:2,nombre:'Fructifera',categoria:'Verduras',telefono:'',dias:'Martes y Viernes',notas:'Patata pelada vacío, pimiento, zanahoria, perejil'},
+      {id:3,nombre:'Armando Galves',categoria:'General',telefono:'',dias:'',notas:'Aceite girasol garrafa 15L'},
+      {id:4,nombre:'Mercadona',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Chorizo criollo, tequeños, croquetas, queso gallego'},
+      {id:5,nombre:'Makro',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Atún desmigado 1kg, coulant chocolate'},
+      {id:6,nombre:'Gadis',categoria:'General',telefono:'',dias:'Según necesidad',notas:"Mayonesa Hellmann's cubo 4,6kg, nata cocinar"},
+      {id:7,nombre:'DIS',categoria:'Bebidas',telefono:'',dias:'',notas:'Chorizo rojo ahumado'},
+    ]);
+  }
+
+  if (!cargar('stock_productos', null)) {
+    const h = hoy();
+    const en = (d) => { const f=new Date(); f.setDate(f.getDate()+d); return f.toISOString().slice(0,10); };
+    guardar('stock_productos', [
+      {id:1001,nombre:'Burrata',unidad:'ud',ubicacion:'nevera-columna',minimo:3,critico:1,vidaDias:7,lotes:[{id:9001,cantidad:4,caduca:en(5),notas:'Mercadona',entrada:h}]},
+      {id:1002,nombre:'Rúcula',unidad:'bolsa',ubicacion:'nevera-columna',minimo:2,critico:0,vidaDias:3,lotes:[{id:9002,cantidad:1,caduca:en(2),notas:'',entrada:h}]},
+      {id:1003,nombre:'Tomate ensalada',unidad:'kg',ubicacion:'nevera-columna',minimo:2,critico:0,vidaDias:5,lotes:[{id:9003,cantidad:1,caduca:en(3),notas:'Fructifera',entrada:h}]},
+      {id:1004,nombre:'Pechuga pollo IQF',unidad:'bolsa 2,5kg',ubicacion:'congelador',minimo:2,critico:0,vidaDias:null,lotes:[{id:9004,cantidad:4,caduca:null,notas:'Elmar',entrada:h}]},
+      {id:1005,nombre:'Chorizo criollo blanco',unidad:'ud',ubicacion:'nevera-cesar',minimo:4,critico:1,vidaDias:null,lotes:[{id:9005,cantidad:8,caduca:null,notas:'Mercadona',entrada:h}]},
+      {id:1006,nombre:'Atún desmigado',unidad:'bote 1kg',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9006,cantidad:1,caduca:null,notas:'Makro',entrada:h}]},
+      {id:1007,nombre:'Patata pelada vacío',unidad:'bolsa 5kg',ubicacion:'nevera-cesar',minimo:2,critico:0,vidaDias:null,lotes:[{id:9007,cantidad:3,caduca:null,notas:'Fructifera',entrada:h}]},
+      {id:1008,nombre:'Aceite girasol',unidad:'garrafa 15L',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9008,cantidad:1,caduca:null,notas:'Armando Galves',entrada:h}]},
+      {id:1009,nombre:'Tequeños',unidad:'bolsa 12ud',ubicacion:'congelador',minimo:2,critico:0,vidaDias:null,lotes:[{id:9009,cantidad:2,caduca:null,notas:'Mercadona',entrada:h}]},
+      {id:1010,nombre:'Croquetas jamón',unidad:'bolsa',ubicacion:'congelador',minimo:2,critico:1,vidaDias:null,lotes:[{id:9010,cantidad:1,caduca:null,notas:'Mercadona',entrada:h}]},
+      {id:1011,nombre:'Queso gallego Arzúa-Ulloa',unidad:'pieza ~500g',ubicacion:'nevera-columna',minimo:1,critico:0,vidaDias:null,lotes:[{id:9011,cantidad:2,caduca:null,notas:'Mercadona',entrada:h}]},
+      {id:1012,nombre:'Mayonesa Hellmann\'s',unidad:'cubo 4,6kg',ubicacion:'cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1013,nombre:'Coulant de chocolate',unidad:'ud',ubicacion:'congelador',minimo:4,critico:1,vidaDias:null,lotes:[]},
+      {id:1014,nombre:'Pan mariñeira',unidad:'ud',ubicacion:'cocina',minimo:10,critico:3,vidaDias:1,lotes:[]},
+    ]);
+  }
+
+  if (!cargar('recetas', null)) {
+    guardar('recetas', [
+      {id:'r01',nombre:'Ensalada Rúcula-Espinaca con Granada y Feta',categoria:'carta',raciones:4,precio:10.50,coste:4,
+       ingredientes:'Rúcula, espinaca baby, granada, pistachos pelados, queso feta, garbanzos cocidos, cebolla morada',
+       elaboracion:'1. Mezclar rúcula y espinaca.\n2. Añadir granada, pistachos y feta desmenuzado.\n3. Vinagreta: aceite oliva + mostaza antigua + limón + sal + pimienta + ágave.\n4. Aliñar justo antes de servir.',
+       notas:'Alérgenos: lácteos, frutos secos.'},
+      {id:'r02',nombre:'Ramen Gallego de Caldo de Grelos',categoria:'menu',raciones:4,precio:13,coste:5,
+       ingredientes:'Lacón salado, costilla salada, oreja salada, chorizo, unto, alubias blancas, grelos frescos, patata, fideos udon, kimchi',
+       elaboracion:'1. Desalar lacón, costilla y oreja 8-12h.\n2. Cocer todo junto 1-1,5h.\n3. Retirar carnes.\n4. Cocer grelos y patata en el caldo.\n5. Cocer fideos aparte.\n6. Montaje: caldo + fideos + carnes + kimchi al gusto.',
+       notas:'Desalar mínimo 8h. La oreja queda mejor frita al final.'},
+    ]);
+  }
+}
+
+// ══════════════════════════════════════════
+// INIT
 // ══════════════════════════════════════════
 function arrancarApp() {
   seedData();
   initHeader();
   initInicio();
 }
-
-// Si Firebase ya cargó, arrancar; si no, esperar
 window._appReady = arrancarApp;
-if(window._firebaseReady) {
-  arrancarApp();
-}
+if (window._firebaseReady) arrancarApp();
+initTema();
 </script>
-<!-- Service Worker para PWA -->
+
 <script>
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 </script>
 </body>
