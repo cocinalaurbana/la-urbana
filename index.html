@@ -322,6 +322,62 @@ nav button.oculto{display:none}
 .consejo{background:var(--accent-l);border-radius:var(--radio-s);padding:12px;margin-bottom:8px;border-left:3px solid var(--accent)}
 .consejo-titulo{font-weight:700;font-size:.85rem;margin-bottom:4px;color:var(--accent-d)}
 .consejo-texto{font-size:13px;color:var(--text-2);line-height:1.5}
+
+/* ─── APPCC ─── */
+.equipo-row{
+  display:flex;align-items:center;gap:12px;padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.equipo-row:last-child{border-bottom:none}
+.equipo-icono{font-size:2rem;min-width:36px;text-align:center}
+.equipo-nombre{font-weight:700;font-size:1rem;color:var(--text);flex:1}
+.equipo-rango{font-size:11px;color:var(--text-3);margin-top:2px}
+.equipo-input-wrap{display:flex;align-items:center;gap:6px}
+.equipo-input{
+  width:80px;padding:10px 8px;border-radius:10px;border:2px solid var(--border);
+  font-size:1.2rem;font-weight:800;text-align:center;color:var(--text);
+  background:var(--surface-2);font-family:inherit;
+  transition:border-color .2s;
+}
+.equipo-input:focus{outline:none;border-color:var(--accent)}
+.equipo-input.ok{border-color:var(--verde);background:var(--verde-l)}
+.equipo-input.warn{border-color:var(--amarillo);background:var(--amarillo-l)}
+.equipo-input.bad{border-color:var(--rojo);background:var(--rojo-l)}
+.equipo-grad{font-size:14px;color:var(--text-3)}
+.appcc-registro{padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.appcc-registro:last-child{border-bottom:none}
+.appcc-reg-hora{font-size:11px;font-weight:700;color:var(--text-3);min-width:38px}
+.appcc-reg-quien{font-size:11px;font-weight:700;color:var(--accent);min-width:40px}
+.appcc-reg-temps{font-size:13px;color:var(--text);flex:1;line-height:1.8}
+.temp-chip{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:8px;font-size:12px;font-weight:700;margin:1px}
+.temp-chip.ok{background:var(--verde-l);color:var(--verde)}
+.temp-chip.warn{background:var(--amarillo-l);color:var(--amarillo)}
+.temp-chip.bad{background:var(--rojo-l);color:var(--rojo)}
+
+/* ─── TURNO / CHECKLIST ─── */
+.tarea-item{
+  display:flex;align-items:center;gap:12px;padding:14px 0;
+  border-bottom:1px solid var(--border);cursor:pointer;
+}
+.tarea-item:last-child{border-bottom:none}
+.tarea-check{
+  width:28px;height:28px;border-radius:8px;border:2px solid var(--border-s);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .15s;background:var(--surface-2);
+}
+.tarea-check.done{background:var(--verde);border-color:var(--verde)}
+.tarea-check.done::after{content:'✓';color:white;font-size:16px;font-weight:800}
+.tarea-label{font-size:1rem;font-weight:600;color:var(--text);flex:1;line-height:1.3}
+.tarea-item.done .tarea-label{text-decoration:line-through;color:var(--text-3)}
+.tarea-critica .tarea-label::before{content:'🔴 ';font-size:.8rem}
+.tarea-meta{font-size:11px;color:var(--text-3);margin-top:2px}
+.turno-hist-row{padding:11px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.turno-hist-row:last-child{border-bottom:none}
+.turno-hist-tipo{font-size:12px;font-weight:800;padding:2px 9px;border-radius:10px;white-space:nowrap}
+.turno-hist-tipo.apertura{background:var(--amarillo-l);color:var(--amarillo)}
+.turno-hist-tipo.cierre{background:var(--surface-2);color:var(--text-2)}
+.turno-prog{height:6px;border-radius:4px;background:var(--border);margin-top:8px;overflow:hidden}
+.turno-prog-bar{height:100%;border-radius:4px;background:var(--verde);transition:width .3s}
 </style>
 </head>
 <body>
@@ -388,6 +444,8 @@ nav button.oculto{display:none}
 
 <nav id="main-nav">
   <button class="active" onclick="tab('inicio',this)">🏠 Inicio</button>
+  <button onclick="tab('appcc',this)" id="nav-appcc">🌡️ APPCC</button>
+  <button onclick="tab('turno',this)" id="nav-turno">✅ Turno</button>
   <button onclick="tab('stock',this)" id="nav-stock">📦 Stock</button>
   <button onclick="tab('mermas',this)" id="nav-mermas">📉 Mermas</button>
   <button onclick="tab('pedidos',this)" id="nav-pedidos">🛒 Pedidos</button>
@@ -444,6 +502,81 @@ nav button.oculto{display:none}
     <h2>🍽️ Menú de hoy</h2>
     <div style="font-size:12px;opacity:.6;margin-bottom:12px" id="inicio-menu-fecha"></div>
     <div id="inicio-menu-platos"><div style="opacity:.6;font-size:14px">Sin menú para hoy.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ APPCC ══ -->
+<div id="tab-appcc" class="tab">
+
+  <div class="card">
+    <div class="card-title">🌡️ Control de temperaturas</div>
+    <div style="font-size:13px;color:var(--text-3);margin-bottom:16px" id="appcc-fecha-txt"></div>
+
+    <!-- equipos -->
+    <div id="appcc-equipos"></div>
+
+    <button class="btn btn-oro btn-full" style="margin-top:8px" onclick="guardarAppcc()">Guardar registro</button>
+  </div>
+
+  <!-- historial del día / semana -->
+  <div class="card">
+    <div class="card-title">📋 Registros de hoy</div>
+    <div id="appcc-historial"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div></div>
+  </div>
+
+  <!-- alertas APPCC -->
+  <div id="appcc-alertas-card" class="card" style="display:none;border-left:3px solid var(--rojo)">
+    <div class="card-title" style="color:var(--rojo)">⚠️ Temperaturas fuera de rango</div>
+    <div id="appcc-alertas-lista"></div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════ TURNO ══ -->
+<div id="tab-turno" class="tab">
+
+  <!-- selector apertura / cierre -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+    <button class="btn btn-outline btn-full" id="turno-btn-apertura" onclick="setTipoTurno('apertura')">🌅 Apertura</button>
+    <button class="btn btn-outline btn-full" id="turno-btn-cierre"   onclick="setTipoTurno('cierre')">🌙 Cierre</button>
+  </div>
+
+  <div id="turno-contenido">
+
+    <!-- MISE EN PLACE / tareas fijas -->
+    <div class="card">
+      <div class="card-title" id="turno-titulo-mise">📋 Mise en place</div>
+      <div id="turno-tareas-lista"></div>
+      <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%" onclick="abrirNuevaTarea()">＋ Añadir tarea</button>
+    </div>
+
+    <!-- checklist de cierre (solo en turno cierre) -->
+    <div class="card" id="turno-cierre-card" style="display:none">
+      <div class="card-title">🔒 Checklist de cierre</div>
+      <div id="turno-cierre-lista"></div>
+    </div>
+
+    <!-- firma / guardar -->
+    <div class="card">
+      <div class="card-title">✍️ Quién cierra el turno</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="turno-firma-btns">
+        <button class="btn btn-outline" id="firma-lore"  onclick="setFirma('lore')">👩‍🍳 Lore</button>
+        <button class="btn btn-outline" id="firma-cesar" onclick="setFirma('cesar')">🧑‍💼 César</button>
+        <button class="btn btn-outline" id="firma-maria" onclick="setFirma('maria')">🧑‍🍳 María</button>
+      </div>
+      <div class="form-group">
+        <label>Observaciones (opcional)</label>
+        <textarea id="turno-obs" rows="2" placeholder="Incidencias, notas del turno..."></textarea>
+      </div>
+      <button class="btn btn-oro btn-full" onclick="guardarTurno()">Guardar turno</button>
+    </div>
+
+    <!-- historial de turnos de hoy -->
+    <div class="card">
+      <div class="card-title">🕐 Turnos registrados hoy</div>
+      <div id="turno-historial"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div></div>
+    </div>
+
   </div>
 </div>
 
@@ -1128,6 +1261,7 @@ function tab(id, btn) {
     inicio: initInicio, stock: renderStock,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
     pedidos: renderPedidos, caja: initCaja, menu: initMenu,
+    appcc: initAppcc, turno: initTurno,
     recetas: renderRecetas, proveedores: renderProveedores,
     historial: renderHistorial, spotify: renderPlaylistsCustom
   };
@@ -1601,6 +1735,314 @@ function renderPedidos() {
       <div style="font-size:11px;color:var(--text-3);margin-top:6px">${quienLabel[p.quien]||p.quien} · ${formatHora(p.cuando)}${p.fechaNecesita?' · Para: '+p.fechaNecesita:''}</div>
       ${p.aprobadoPor?`<div style="font-size:11px;color:var(--verde);margin-top:4px">✅ ${p.aprobadoPor} · ${formatHora(p.aprobadoCuando)}</div>`:''}
       ${adminBtns}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// APPCC — Control de temperaturas
+// ══════════════════════════════════════════
+
+const APPCC_EQUIPOS = [
+  { id:'congelador-columna', nombre:'Congelador columna', icono:'🧊', min:-25, max:-15, unidad:'°C' },
+  { id:'congelador-cocina',  nombre:'Congelador cocina',  icono:'❄️', min:-25, max:-15, unidad:'°C' },
+  { id:'nevera-blanca',      nombre:'Nevera blanca',      icono:'🔲', min:0,   max:5,   unidad:'°C' },
+  { id:'nevera-almacen',     nombre:'Nevera almacén',     icono:'📦', min:0,   max:5,   unidad:'°C' },
+  { id:'nevera-cocina',      nombre:'Nevera cocina',      icono:'🍳', min:0,   max:5,   unidad:'°C' },
+];
+
+function appccEstado(val, min, max) {
+  if (val === null || val === '') return 'empty';
+  const n = parseFloat(val);
+  if (isNaN(n)) return 'empty';
+  if (n <= max && n >= min) return 'ok';
+  if (n <= max + 2 && n >= min - 2) return 'warn';
+  return 'bad';
+}
+
+function initAppcc() {
+  const ahora = new Date();
+  document.getElementById('appcc-fecha-txt').textContent =
+    ahora.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}) +
+    ' — ' + ahora.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+
+  const cont = document.getElementById('appcc-equipos');
+  cont.innerHTML = APPCC_EQUIPOS.map(e => `
+    <div class="equipo-row">
+      <div class="equipo-icono">${e.icono}</div>
+      <div style="flex:1">
+        <div class="equipo-nombre">${e.nombre}</div>
+        <div class="equipo-rango">Rango correcto: ${e.min}°C a ${e.max}°C</div>
+      </div>
+      <div class="equipo-input-wrap">
+        <input class="equipo-input" type="number" step="0.5" id="appcc-${e.id}"
+          placeholder="—" oninput="colorearAppcc('${e.id}',${e.min},${e.max})">
+        <span class="equipo-grad">°C</span>
+      </div>
+    </div>`).join('');
+
+  renderAppccHistorial();
+}
+
+function colorearAppcc(id, min, max) {
+  const el = document.getElementById('appcc-' + id);
+  const estado = appccEstado(el.value, min, max);
+  el.className = 'equipo-input ' + (estado === 'empty' ? '' : estado);
+}
+
+function guardarAppcc() {
+  const registro = { ts: Date.now(), quien: USUARIO || 'desconocido', temps: {} };
+  let alguno = false;
+  const alertas = [];
+
+  APPCC_EQUIPOS.forEach(e => {
+    const el = document.getElementById('appcc-' + e.id);
+    const val = el.value.trim();
+    if (val === '') return;
+    const n = parseFloat(val);
+    registro.temps[e.id] = n;
+    alguno = true;
+    const estado = appccEstado(n, e.min, e.max);
+    if (estado === 'bad')  alertas.push({ nombre: e.nombre, val: n, min: e.min, max: e.max });
+    if (estado === 'warn') alertas.push({ nombre: e.nombre, val: n, min: e.min, max: e.max, warn: true });
+  });
+
+  if (!alguno) { toast('Introduce al menos una temperatura', 'error'); return; }
+
+  const key = 'appcc_' + hoy();
+  const lista = cargar(key, []);
+  lista.push(registro);
+  guardar(key, lista);
+
+  // limpiar inputs
+  APPCC_EQUIPOS.forEach(e => {
+    const el = document.getElementById('appcc-' + e.id);
+    el.value = ''; el.className = 'equipo-input';
+  });
+
+  // mostrar alertas
+  const alertCard = document.getElementById('appcc-alertas-card');
+  const alertLista = document.getElementById('appcc-alertas-lista');
+  if (alertas.length) {
+    alertCard.style.display = '';
+    alertLista.innerHTML = alertas.map(a =>
+      `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px">
+        ${a.warn ? '⚠️' : '🚨'} <strong>${a.nombre}</strong>: ${a.val}°C
+        <span style="color:var(--text-3);font-size:12px">(rango: ${a.min}–${a.max}°C)</span>
+      </div>`).join('');
+  } else { alertCard.style.display = 'none'; }
+
+  renderAppccHistorial();
+  toast(alertas.length ? '⚠️ Registrado — hay temperaturas fuera de rango' : '✅ Temperaturas registradas');
+}
+
+function renderAppccHistorial() {
+  const key = 'appcc_' + hoy();
+  const lista = cargar(key, []);
+  const cont = document.getElementById('appcc-historial');
+  if (!lista.length) {
+    cont.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div>';
+    return;
+  }
+  // más reciente primero
+  const ord = [...lista].reverse();
+  cont.innerHTML = ord.map(r => {
+    const hora = new Date(r.ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+    const chips = APPCC_EQUIPOS
+      .filter(e => r.temps[e.id] !== undefined)
+      .map(e => {
+        const v = r.temps[e.id];
+        const est = appccEstado(v, e.min, e.max);
+        return `<span class="temp-chip ${est}">${e.icono} ${v}°C</span>`;
+      }).join('');
+    return `<div class="appcc-registro">
+      <div class="appcc-reg-hora">${hora}</div>
+      <div class="appcc-reg-quien">${r.quien}</div>
+      <div class="appcc-reg-temps">${chips}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// TURNO — Checklist apertura/cierre + mise en place
+// ══════════════════════════════════════════
+
+const TURNO_TAREAS_DEFAULT = [
+  { id:'t1', label:'Sacar lomo del congelador',       tipo:'apertura', critica:true  },
+  { id:'t2', label:'Sacar pollo del congelador',       tipo:'apertura', critica:true  },
+  { id:'t3', label:'Comprobar huevos en cocina',       tipo:'apertura', critica:true  },
+  { id:'t4', label:'Stock alioli — reponer si falta',  tipo:'apertura', critica:true  },
+  { id:'t5', label:'Stock bravas — reponer si falta',  tipo:'apertura', critica:true  },
+  { id:'t6', label:'Stock chimichurri — reponer si falta', tipo:'apertura', critica:true },
+  { id:'t7', label:'Mise en place barra',              tipo:'apertura', critica:false },
+  { id:'t8', label:'Revisar neveras / temperaturas',   tipo:'apertura', critica:false },
+  { id:'t9', label:'Comprobar servilletas y cubiertos',tipo:'apertura', critica:false },
+];
+
+const CIERRE_CHECKLIST_DEFAULT = [
+  { id:'c1', label:'Cubrir y etiquetar todos los recipientes',  critica:true  },
+  { id:'c2', label:'Limpiar plancha y freidora',                critica:true  },
+  { id:'c3', label:'Vaciar y limpiar cubos de basura',          critica:false },
+  { id:'c4', label:'Revisar temperaturas neveras (APPCC)',       critica:true  },
+  { id:'c5', label:'Dejar mise en place para el siguiente turno', critica:false },
+  { id:'c6', label:'Apagar equipos no necesarios',              critica:false },
+  { id:'c7', label:'Cerrar cámaras y congeladores',             critica:true  },
+];
+
+let tipoTurno = 'apertura';
+let firmaActual = null;
+let tareasState = {}; // {id: done}
+let cierreState = {};
+
+function setTipoTurno(tipo) {
+  tipoTurno = tipo;
+  document.getElementById('turno-btn-apertura').className =
+    'btn btn-full ' + (tipo === 'apertura' ? 'btn-oro' : 'btn-outline');
+  document.getElementById('turno-btn-cierre').className =
+    'btn btn-full ' + (tipo === 'cierre' ? 'btn-oro' : 'btn-outline');
+  document.getElementById('turno-cierre-card').style.display = tipo === 'cierre' ? '' : 'none';
+  document.getElementById('turno-titulo-mise').textContent =
+    tipo === 'apertura' ? '🌅 Mise en place — Apertura' : '📋 Tareas del turno';
+  renderTurnoTareas();
+}
+
+function initTurno() {
+  tipoTurno = 'apertura';
+  tareasState = {};
+  cierreState = {};
+  firmaActual = USUARIO || null;
+  setTipoTurno('apertura');
+  if (firmaActual) setFirma(firmaActual);
+  renderTurnoHistorial();
+}
+
+function getTareas() {
+  return cargar('turno_tareas_custom', TURNO_TAREAS_DEFAULT);
+}
+function getCierreChecklist() {
+  return cargar('cierre_checklist_custom', CIERRE_CHECKLIST_DEFAULT);
+}
+
+function renderTurnoTareas() {
+  const tareas = getTareas();
+  const cont = document.getElementById('turno-tareas-lista');
+  cont.innerHTML = tareas.map(t => {
+    const done = !!tareasState[t.id];
+    return `<div class="tarea-item ${done?'done':''} ${t.critica?'tarea-critica':''}"
+      onclick="toggleTarea('${t.id}')">
+      <div class="tarea-check ${done?'done':''}"></div>
+      <div>
+        <div class="tarea-label">${t.label}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // progreso
+  const total = tareas.length;
+  const hechas = tareas.filter(t => tareasState[t.id]).length;
+  const pct = total ? Math.round(hechas/total*100) : 0;
+  const existeProg = document.getElementById('turno-prog');
+  const html = `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-3);margin-top:10px">
+    <span>${hechas}/${total} tareas</span><span>${pct}%</span></div>
+    <div class="turno-prog"><div class="turno-prog-bar" style="width:${pct}%"></div></div>`;
+  if (existeProg) existeProg.parentElement.innerHTML = html;
+  else cont.insertAdjacentHTML('afterend', html);
+
+  // cierre
+  if (tipoTurno === 'cierre') renderCierreChecklist();
+}
+
+function renderCierreChecklist() {
+  const lista = getCierreChecklist();
+  const cont = document.getElementById('turno-cierre-lista');
+  cont.innerHTML = lista.map(t => {
+    const done = !!cierreState[t.id];
+    return `<div class="tarea-item ${done?'done':''} ${t.critica?'tarea-critica':''}"
+      onclick="toggleCierre('${t.id}')">
+      <div class="tarea-check ${done?'done':''}"></div>
+      <div class="tarea-label">${t.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleTarea(id) {
+  tareasState[id] = !tareasState[id];
+  renderTurnoTareas();
+}
+function toggleCierre(id) {
+  cierreState[id] = !cierreState[id];
+  renderCierreChecklist();
+}
+
+function setFirma(rol) {
+  firmaActual = rol;
+  ['lore','cesar','maria'].forEach(r => {
+    const btn = document.getElementById('firma-' + r);
+    if (btn) btn.className = 'btn ' + (r === rol ? 'btn-oro' : 'btn-outline');
+  });
+}
+
+function abrirNuevaTarea() {
+  const label = prompt('Nueva tarea:');
+  if (!label || !label.trim()) return;
+  const tareas = getTareas();
+  tareas.push({ id: 't_' + Date.now(), label: label.trim(), tipo: tipoTurno, critica: false });
+  guardar('turno_tareas_custom', tareas);
+  renderTurnoTareas();
+  toast('Tarea añadida');
+}
+
+function guardarTurno() {
+  if (!firmaActual) { toast('Selecciona quién cierra el turno', 'error'); return; }
+  const tareas = getTareas();
+  const pendCriticas = tareas.filter(t => t.critica && !tareasState[t.id]);
+  if (pendCriticas.length && tipoTurno === 'cierre') {
+    const ok = confirm(`Hay ${pendCriticas.length} tarea(s) críticas sin completar:\n${pendCriticas.map(t=>t.label).join('\n')}\n\n¿Guardar igualmente?`);
+    if (!ok) return;
+  }
+
+  const registro = {
+    ts: Date.now(),
+    tipo: tipoTurno,
+    quien: firmaActual,
+    tareas: { ...tareasState },
+    cierre: { ...cierreState },
+    obs: document.getElementById('turno-obs').value.trim(),
+    total: tareas.length,
+    hechas: tareas.filter(t => tareasState[t.id]).length,
+  };
+
+  const key = 'turno_' + hoy();
+  const lista = cargar(key, []);
+  lista.push(registro);
+  guardar(key, lista);
+
+  // reset
+  tareasState = {}; cierreState = {};
+  document.getElementById('turno-obs').value = '';
+  renderTurnoTareas();
+  renderTurnoHistorial();
+  toast('✅ Turno guardado');
+}
+
+function renderTurnoHistorial() {
+  const key = 'turno_' + hoy();
+  const lista = cargar(key, []);
+  const cont = document.getElementById('turno-historial');
+  if (!lista.length) {
+    cont.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div>';
+    return;
+  }
+  cont.innerHTML = [...lista].reverse().map(r => {
+    const hora = new Date(r.ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+    const nombres = { lore:'Lore', cesar:'César', maria:'María' };
+    return `<div class="turno-hist-row">
+      <span class="turno-hist-tipo ${r.tipo}">${r.tipo === 'apertura' ? '🌅 Apertura' : '🌙 Cierre'}</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">${nombres[r.quien]||r.quien} — ${hora}</div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:2px">${r.hechas}/${r.total} tareas completadas${r.obs?' · '+r.obs:''}</div>
+      </div>
     </div>`;
   }).join('');
 }
