@@ -66,11 +66,21 @@ body.dark{
 /* ─── LOGIN ─── */
 #login-screen{
   position:fixed;inset:0;background:var(--surface);z-index:9999;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 20px 28px;
   overflow-y:auto;
 }
-#login-screen img{height:60px;margin-bottom:14px;object-fit:contain}
-#login-screen h2{color:var(--text);font-size:2rem;font-weight:800;margin-bottom:4px;text-align:center;letter-spacing:-.5px}
+#login-screen .login-logo-wrap{
+  width:100%;display:flex;justify-content:center;align-items:center;
+  padding-top:clamp(8px,5vw,40px);margin-bottom:20px;
+}
+#login-screen .login-logo-wrap img{
+  width:min(340px,80vw);height:auto;object-fit:contain;
+}
+#login-screen .login-logo-wrap .logo-fallback{
+  font-size:clamp(2.8rem,10vw,4.5rem);font-weight:900;letter-spacing:-1px;
+  color:var(--text);text-align:center;line-height:1;
+}
+#login-screen h2{display:none}
 #login-screen p{color:var(--text-3);font-size:1.1rem;margin-bottom:12px;text-align:center}
 .bourdain{
   font-size:13px;color:var(--text-3);font-style:italic;text-align:center;
@@ -384,7 +394,11 @@ nav button.oculto{display:none}
 
 <!-- LOGIN -->
 <div id="login-screen">
-  <img src="https://laurbana.es/wp-content/uploads/2023/08/1-La%20urbana.png" alt="La Urbana" onerror="this.style.display='none'">
+  <div class="login-logo-wrap">
+    <img src="https://urbana.3vases.com/wp-content/uploads/2023/08/urbana1A-1.png" alt="La Urbana"
+      onerror="this.src='https://laurbana.es/wp-content/uploads/2023/08/1-La%20urbana.png';this.onerror=function(){this.style.display='none';this.nextElementSibling.style.display='block'}">
+    <div class="logo-fallback" style="display:none">La Urbana</div>
+  </div>
   <h2>La Urbana</h2>
   <p>¿Quién eres hoy?</p>
   <div class="bourdain" id="bourdain-quote"></div>
@@ -502,6 +516,11 @@ nav button.oculto{display:none}
     <h2>🍽️ Menú de hoy</h2>
     <div style="font-size:12px;opacity:.6;margin-bottom:12px" id="inicio-menu-fecha"></div>
     <div id="inicio-menu-platos"><div style="opacity:.6;font-size:14px">Sin menú para hoy.</div></div>
+  </div>
+
+  <!-- WHATSAPP ALERTAS (solo admin) -->
+  <div class="card" id="wa-config-card" style="display:none">
+    <div id="wa-config-panel"></div>
   </div>
 </div>
 
@@ -1381,12 +1400,125 @@ function initInicio() {
       <button class="btn btn-outline btn-sm" onclick="abrirModalReceta()">📖 Nueva receta</button>
       <button class="btn btn-outline btn-sm" onclick="tab('stock',document.getElementById('nav-stock'))">📦 Stock</button>
       <button class="btn btn-outline btn-sm" onclick="tab('historial',document.getElementById('nav-historial'))">📋 Historial</button>`;
+    // panel WhatsApp
+    const waCard = document.getElementById('wa-config-card');
+    if (waCard) { waCard.style.display = ''; renderWaConfig(); }
   } else {
     acc.innerHTML = `
       <button class="btn btn-oro btn-sm" onclick="tab('stock',document.getElementById('nav-stock'))">📦 Ver stock</button>
       <button class="btn btn-rojo btn-sm" onclick="tab('mermas',document.getElementById('nav-mermas'))">📉 Anotar merma</button>
       <button class="btn btn-outline btn-sm" onclick="tab('pedidos',document.getElementById('nav-pedidos'))">🛒 Pedir producto</button>`;
+    const waCard = document.getElementById('wa-config-card');
+    if (waCard) waCard.style.display = 'none';
   }
+}
+
+// ══════════════════════════════════════════
+// ALERTAS WHATSAPP
+// ══════════════════════════════════════════
+
+const WA_CONFIG_KEY = 'wa_config';
+
+function getWaConfig() {
+  return cargar(WA_CONFIG_KEY, {
+    activo: true,
+    telefonos: ['34609888497'],
+    hora: '09:00',
+    ultima_alerta: null
+  });
+}
+
+function buildWaMensaje(alertasCad, alertasStock) {
+  const fecha = new Date().toLocaleDateString('es-ES', {weekday:'long',day:'numeric',month:'long'});
+  let msg = `🍽️ *La Urbana — Alertas ${fecha}*\n\n`;
+  if (alertasCad.length) {
+    msg += `⚠️ *CADUCIDADES*\n`;
+    alertasCad.forEach(a => { msg += `• ${a.nombre}: ${a.txt}\n`; });
+    msg += '\n';
+  }
+  if (alertasStock.length) {
+    const urgentes = alertasStock.filter(a => a.sem === 'rojo');
+    const bajos = alertasStock.filter(a => a.sem === 'amarillo');
+    if (urgentes.length) {
+      msg += `🔴 *STOCK CRÍTICO*\n`;
+      urgentes.forEach(a => { msg += `• ${a.nombre}: ${a.total} ${a.unidad}\n`; });
+      msg += '\n';
+    }
+    if (bajos.length) {
+      msg += `🟡 *STOCK BAJO*\n`;
+      bajos.forEach(a => { msg += `• ${a.nombre}: ${a.total} ${a.unidad}\n`; });
+      msg += '\n';
+    }
+  }
+  msg += `_Enviado desde La Urbana App_`;
+  return msg;
+}
+
+function enviarAlertaWa(forzar = false) {
+  const cfg = getWaConfig();
+  if (!cfg.activo && !forzar) return;
+
+  const productos = cargar('productos', []);
+  const alertasCad = [];
+  const alertasStock = [];
+
+  productos.forEach(p => {
+    const sem = getSemaforo(p);
+    const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
+    if (sem !== 'verde') alertasStock.push({nombre: p.nombre, total, unidad: p.unidad, sem});
+    (p.lotes||[]).forEach(l => {
+      const d = diasHasta(l.caduca);
+      if (d !== null && d <= 2) {
+        const txt = d < 0 ? '¡CADUCADO!' : d === 0 ? 'Caduca HOY' : 'Caduca mañana';
+        alertasCad.push({nombre: p.nombre, cantidad: l.cantidad, unidad: p.unidad, txt, urgente: d <= 0});
+      }
+    });
+  });
+
+  if (!alertasCad.length && !alertasStock.length && !forzar) return;
+
+  const msg = buildWaMensaje(alertasCad, alertasStock);
+  const encoded = encodeURIComponent(msg);
+  cfg.telefonos.forEach(tel => {
+    window.open(`https://wa.me/${tel}?text=${encoded}`, '_blank');
+  });
+
+  cfg.ultima_alerta = new Date().toISOString();
+  guardar(WA_CONFIG_KEY, cfg);
+  toast('📲 Alerta enviada por WhatsApp');
+}
+
+function renderWaConfig() {
+  const cfg = getWaConfig();
+  const el = document.getElementById('wa-config-panel');
+  if (!el) return;
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div>
+        <div style="font-weight:800;font-size:1rem">Alertas WhatsApp</div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:2px">Caducidades y stock crítico</div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <span style="font-size:13px;color:var(--text-3)">${cfg.activo ? 'Activo' : 'Pausado'}</span>
+        <div onclick="toggleWa()" style="width:44px;height:24px;border-radius:12px;background:${cfg.activo ? 'var(--verde)' : 'var(--border)'};position:relative;cursor:pointer;transition:background .2s">
+          <div style="position:absolute;top:3px;left:${cfg.activo ? '23px' : '3px'};width:18px;height:18px;border-radius:9px;background:white;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+        </div>
+      </label>
+    </div>
+    <div style="font-size:13px;color:var(--text-3);margin-bottom:10px">
+      📱 ${cfg.telefonos.map(t => '+'+t).join(', ')}
+      ${cfg.ultima_alerta ? `<br>Última alerta: ${new Date(cfg.ultima_alerta).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}` : ''}
+    </div>
+    <button class="btn btn-outline btn-sm btn-full" onclick="enviarAlertaWa(true)">📲 Enviar alerta ahora</button>
+  `;
+}
+
+function toggleWa() {
+  const cfg = getWaConfig();
+  cfg.activo = !cfg.activo;
+  guardar(WA_CONFIG_KEY, cfg);
+  renderWaConfig();
+  toast(cfg.activo ? '🔔 Alertas WhatsApp activadas' : '🔕 Alertas WhatsApp pausadas');
 }
 
 // ══════════════════════════════════════════
