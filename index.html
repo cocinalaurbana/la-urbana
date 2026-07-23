@@ -244,15 +244,24 @@ nav button.oculto{display:none}
 
 /* ─── STOCK ─── */
 .stock-card{
-  background:var(--surface);border-radius:var(--radio);padding:14px;margin-bottom:10px;
+  background:var(--surface);border-radius:var(--radio);padding:14px;margin-bottom:8px;
   border:1px solid var(--border);border-left:3px solid var(--border-s);box-shadow:var(--sombra-s);
+  transition: all .15s;
 }
+.stock-card.collapsed .stock-card-body { display:none }
+.stock-card.collapsed { padding:10px 14px; margin-bottom:5px; }
 .stock-card.rojo{border-left-color:var(--rojo)}
 .stock-card.amarillo{border-left-color:var(--amarillo)}
 .stock-card.verde{border-left-color:var(--verde)}
 .lote-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
 .lote-row:last-child{border-bottom:none}
 .ubicacion-tag{font-size:11px;padding:2px 8px;border-radius:8px;background:var(--accent-l);color:var(--accent-d);font-weight:600}
+/* filtros stock */
+.stock-fil-btn{padding:5px 11px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-3);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.stock-fil-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.stock-ubic-btn{padding:6px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-3);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.stock-ubic-btn.active{background:var(--surface-2);color:var(--text);border-color:var(--accent);font-weight:800}
+#stock-ubic-tabs::-webkit-scrollbar{display:none}
 
 /* ─── MERMA ─── */
 .merma-row{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)}
@@ -693,22 +702,40 @@ nav button.oculto{display:none}
 
 <!-- STOCK -->
 <div id="tab-stock" class="tab">
-  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
-    <button class="btn btn-oro btn-sm" id="btn-nuevo-prod" onclick="abrirModalProducto()">➕ Producto</button>
-    <select id="filtro-sem" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
-      <option value="">Todo</option><option value="rojo">🔴 Urgente</option><option value="amarillo">🟡 Bajo</option><option value="verde">🟢 OK</option>
-    </select>
-    <select id="filtro-ubic" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
-      <option value="">Todas ubicaciones</option>
-      <option value="congelador-columna">🧊 Congelador columna</option>
-      <option value="congelador-cocina">❄️ Congelador cocina</option>
-      <option value="nevera-blanca">🔲 Nevera blanca</option>
-      <option value="nevera-almacen">📦 Nevera almacén</option>
-      <option value="nevera-cocina">🍳 Nevera cocina</option>
-      <option value="estanteria">🗄️ Estantería</option>
-      <option value="cocina">🍳 Cocina seca</option>
-    </select>
+
+  <!-- Buscador -->
+  <div style="position:relative;margin-bottom:10px">
+    <input type="text" id="stock-buscar" placeholder="🔍 Buscar producto..." oninput="renderStock()"
+      style="width:100%;box-sizing:border-box;padding:11px 14px 11px 38px;border-radius:12px;border:1.5px solid var(--border);font-size:15px;color:var(--text);background:var(--surface)">
+    <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:.5">🔍</div>
+    <button id="stock-buscar-clear" onclick="document.getElementById('stock-buscar').value='';renderStock()" 
+      style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-3);line-height:1">×</button>
   </div>
+
+  <!-- Filtro semáforo + botón nuevo -->
+  <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap">
+    <button class="btn btn-oro btn-sm" id="btn-nuevo-prod" onclick="abrirModalProducto()">➕ Producto</button>
+    <div style="display:flex;gap:6px;flex:1;flex-wrap:wrap">
+      <button class="stock-fil-btn active" data-sem="" onclick="setFiltroSem(this,'')">Todos</button>
+      <button class="stock-fil-btn" data-sem="rojo" onclick="setFiltroSem(this,'rojo')">🔴 Urgente</button>
+      <button class="stock-fil-btn" data-sem="amarillo" onclick="setFiltroSem(this,'amarillo')">🟡 Bajo</button>
+      <button class="stock-fil-btn" data-sem="verde" onclick="setFiltroSem(this,'verde')">🟢 OK</button>
+    </div>
+  </div>
+
+  <!-- Pestañas de ubicación -->
+  <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:none" id="stock-ubic-tabs">
+    <button class="stock-ubic-btn active" data-ubic="" onclick="setFiltroUbic(this,'')">📋 Todo</button>
+    <button class="stock-ubic-btn" data-ubic="congelador-columna" onclick="setFiltroUbic(this,'congelador-columna')">🧊 Cong. columna</button>
+    <button class="stock-ubic-btn" data-ubic="congelador-cocina" onclick="setFiltroUbic(this,'congelador-cocina')">❄️ Cong. cocina</button>
+    <button class="stock-ubic-btn" data-ubic="nevera-blanca" onclick="setFiltroUbic(this,'nevera-blanca')">🔲 Nevera blanca</button>
+    <button class="stock-ubic-btn" data-ubic="nevera-almacen" onclick="setFiltroUbic(this,'nevera-almacen')">📦 Nev. almacén</button>
+    <button class="stock-ubic-btn" data-ubic="nevera-cocina" onclick="setFiltroUbic(this,'nevera-cocina')">🍳 Nev. cocina</button>
+    <button class="stock-ubic-btn" data-ubic="estanteria" onclick="setFiltroUbic(this,'estanteria')">🗄️ Estantería</button>
+    <button class="stock-ubic-btn" data-ubic="cocina" onclick="setFiltroUbic(this,'cocina')">🍳 Cocina seca</button>
+    <button class="stock-ubic-btn" data-ubic="embalaje" onclick="setFiltroUbic(this,'embalaje')">🥡 Para llevar</button>
+  </div>
+
   <div id="stock-lista"></div>
 </div>
 
@@ -956,7 +983,8 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
         <option value="nevera-almacen">📦 Nevera almacén</option>
         <option value="nevera-cocina">🍳 Nevera cocina</option>
         <option value="estanteria">🗄️ Estantería</option>
-        <option value="cocina">🍳 Cocina</option>
+        <option value="cocina">🍳 Cocina seca</option>
+        <option value="embalaje">🥡 Para llevar</option>
       </select>
     </div>
     <div class="form-group"><label>⚠️ Alerta cuando queden menos de</label><input type="number" id="s-minimo" placeholder="ej. 2" min="0"></div>
@@ -1575,7 +1603,7 @@ const UBIC_LABELS = {
   'congelador-columna':'🧊 Congelador columna','congelador-cocina':'❄️ Congelador cocina',
   'nevera-blanca':'🔲 Nevera blanca','nevera-almacen':'📦 Nevera almacén',
   'nevera-cocina':'🍳 Nevera cocina','estanteria':'🗄️ Estantería',
-  'cocina':'🍳 Cocina seca',''  :''
+  'cocina':'🍳 Cocina seca','embalaje':'🥡 Para llevar',''  :''
 };
 
 function abrirModalProducto(id) {
@@ -1699,14 +1727,41 @@ function borrarProducto(prodId) {
   toast('Producto borrado');
 }
 
+let _filtroSem = '';
+let _filtroUbic = '';
+let _stockExpandidos = new Set();
+
+function setFiltroSem(btn, val) {
+  _filtroSem = val;
+  document.querySelectorAll('.stock-fil-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStock();
+}
+function setFiltroUbic(btn, val) {
+  _filtroUbic = val;
+  document.querySelectorAll('.stock-ubic-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStock();
+}
+function toggleStockCard(id) {
+  if (_stockExpandidos.has(id)) _stockExpandidos.delete(id);
+  else _stockExpandidos.add(id);
+  renderStock();
+}
+
 function renderStock() {
-  const filtroSem = document.getElementById('filtro-sem').value;
-  const filtroUbic = document.getElementById('filtro-ubic').value;
+  // buscador
+  const busq = (document.getElementById('stock-buscar')?.value || '').toLowerCase().trim();
+  const clearBtn = document.getElementById('stock-buscar-clear');
+  if (clearBtn) clearBtn.style.display = busq ? '' : 'none';
+
   let productos = cargar('stock_productos',[]);
   const orden = {rojo:0, amarillo:1, verde:2};
   productos.sort((a,b) => orden[getSemaforo(a)] - orden[getSemaforo(b)]);
-  if (filtroSem) productos = productos.filter(p => getSemaforo(p) === filtroSem);
-  if (filtroUbic) productos = productos.filter(p => (p.ubicacion||'') === filtroUbic);
+
+  if (_filtroSem)  productos = productos.filter(p => getSemaforo(p) === _filtroSem);
+  if (_filtroUbic) productos = productos.filter(p => (p.ubicacion||'') === _filtroUbic);
+  if (busq)        productos = productos.filter(p => p.nombre.toLowerCase().includes(busq));
 
   const el = document.getElementById('stock-lista');
   if (!productos.length) {
@@ -1719,6 +1774,7 @@ function renderStock() {
     const semIcon = {verde:'🟢', amarillo:'🟡', rojo:'🔴'}[sem];
     const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
     const ubicLabel = UBIC_LABELS[p.ubicacion||''] || '';
+    const expandido = _stockExpandidos.has(p.id);
 
     const lotesHtml = (p.lotes||[]).length === 0
       ? `<div style="font-size:12px;color:var(--text-3);padding:8px 0">Sin stock.${esAdmin()?' Añade un lote.':''}</div>`
@@ -1738,28 +1794,47 @@ function renderStock() {
               <div style="font-size:13px;font-weight:600">${l.cantidad} ${p.unidad}${fifo}</div>
               <div style="margin-top:3px;display:flex;gap:5px;flex-wrap:wrap">${cadLabel}${l.notas?`<span style="font-size:11px;color:var(--text-3)">${l.notas}</span>`:''}</div>
             </div>
-            <button onclick="consumirUnidad(${p.id},${l.id})" style="background:var(--rojo-l);color:#e05555;border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer">−1</button>
+            <button onclick="event.stopPropagation();consumirUnidad(${p.id},${l.id})" style="background:var(--rojo-l);color:#e05555;border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer">−1</button>
           </div>`;
         }).join('');
 
     const adminBtns = esAdmin() ? `
-      <button onclick="abrirModalLote(${p.id})" style="background:var(--accent-l);color:var(--accent);border:none;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer">➕</button>
-      <button onclick="abrirModalProducto(${p.id})" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-3)">✏️</button>
-      <button onclick="borrarProducto(${p.id})" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-3)">🗑</button>` : '';
+      <button onclick="event.stopPropagation();abrirModalLote(${p.id})" style="background:var(--accent-l);color:var(--accent);border:none;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer">➕</button>
+      <button onclick="event.stopPropagation();abrirModalProducto(${p.id})" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-3)">✏️</button>
+      <button onclick="event.stopPropagation();borrarProducto(${p.id})" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-3)">🗑</button>` : '';
 
-    return `<div class="stock-card ${sem}">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="font-size:1.2rem">${semIcon}</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:.95rem">${p.nombre}</div>
-          <div style="font-size:12px;color:var(--text-3);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+    // caducidad más próxima para mostrar en compacto
+    const lotsConCad = (p.lotes||[]).filter(l=>l.caduca);
+    lotsConCad.sort((a,b)=>a.caduca.localeCompare(b.caduca));
+    let cadProxima = '';
+    if (lotsConCad.length) {
+      const d = diasHasta(lotsConCad[0].caduca);
+      if (d !== null && d <= 3) {
+        const cs = d<=0?'#e05555':d<=2?'var(--amarillo)':'var(--verde)';
+        const ct = d<=0?'¡Caducado!':d===0?'¡Caduca HOY!':d===1?'Caduca mañana':`Caduca en ${d}d`;
+        cadProxima = `<span style="color:${cs};font-size:11px;font-weight:700">⚠️ ${ct}</span>`;
+      }
+    }
+
+    return `<div class="stock-card ${sem}${expandido?'':' collapsed'}" onclick="toggleStockCard(${p.id})" style="cursor:pointer">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-size:1.1rem">${semIcon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.nombre}</div>
+          <div style="font-size:12px;color:var(--text-3);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;align-items:center">
             <span>Total: <strong style="color:var(--text)">${total} ${p.unidad}</strong></span>
             ${ubicLabel?`<span class="ubicacion-tag">${ubicLabel}</span>`:''}
+            ${!expandido && cadProxima ? cadProxima : ''}
           </div>
         </div>
-        <div style="display:flex;gap:5px">${adminBtns}</div>
+        <div style="display:flex;gap:5px;align-items:center">
+          ${expandido ? `<span style="font-size:16px;color:var(--text-3)">▲</span>` : `<span style="font-size:16px;color:var(--text-3)">▼</span>`}
+          ${adminBtns}
+        </div>
       </div>
-      ${lotesHtml}
+      <div class="stock-card-body" style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px">
+        ${lotesHtml}
+      </div>
     </div>`;
   }).join('');
 }
