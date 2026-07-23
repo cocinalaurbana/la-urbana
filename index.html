@@ -511,6 +511,15 @@ nav button.oculto{display:none}
     <div id="cw-alerta" style="margin-top:8px;font-size:12px;font-weight:700;display:none"></div>
   </div>
 
+  <!-- WIDGET TURNO HOY -->
+  <div id="turno-widget" style="display:none;background:var(--bg);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid var(--border);cursor:pointer" onclick="tab('turno',document.getElementById('nav-turno'))">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:13px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.4px">✅ Turno de hoy</div>
+      <div style="font-size:11px;color:var(--text-3)" id="turno-widget-info"></div>
+    </div>
+    <div id="turno-widget-detalle" style="font-size:13px;color:var(--text-2)"></div>
+  </div>
+
   <!-- MENÚ -->
   <div class="menu-dia">
     <h2>🍽️ Menú de hoy</h2>
@@ -539,7 +548,10 @@ nav button.oculto{display:none}
 
   <!-- historial del día / semana -->
   <div class="card">
-    <div class="card-title">📋 Registros de hoy</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-title" style="margin-bottom:0">📋 Registros de hoy</div>
+      <button class="btn btn-outline btn-sm" onclick="exportarAppccSemana()">📄 Exportar semana</button>
+    </div>
     <div id="appcc-historial"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div></div>
   </div>
 
@@ -687,12 +699,13 @@ nav button.oculto{display:none}
     </select>
     <select id="filtro-ubic" onchange="renderStock()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
       <option value="">Todas ubicaciones</option>
-      <option value="nevera-columna">🧊 Nevera columna</option>
-      <option value="nevera-cesar">❄️ Nevera César</option>
-      <option value="nevera-rota">🔧 Nevera rota</option>
-      <option value="congelador">🧊 Congelador</option>
-      <option value="estanteria">📦 Estantería</option>
-      <option value="cocina">🍳 Cocina</option>
+      <option value="congelador-columna">🧊 Congelador columna</option>
+      <option value="congelador-cocina">❄️ Congelador cocina</option>
+      <option value="nevera-blanca">🔲 Nevera blanca</option>
+      <option value="nevera-almacen">📦 Nevera almacén</option>
+      <option value="nevera-cocina">🍳 Nevera cocina</option>
+      <option value="estanteria">🗄️ Estantería</option>
+      <option value="cocina">🍳 Cocina seca</option>
     </select>
   </div>
   <div id="stock-lista"></div>
@@ -936,17 +949,19 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
       <label>Ubicación</label>
       <select id="s-ubicacion" style="color:var(--text);background:var(--bg)">
         <option value="">Sin especificar</option>
-        <option value="nevera-columna">🧊 Nevera columna</option>
-        <option value="nevera-cesar">❄️ Nevera César</option>
-        <option value="nevera-rota">🔧 Nevera rota</option>
-        <option value="congelador">🧊 Congelador</option>
-        <option value="estanteria">📦 Estantería</option>
+        <option value="congelador-columna">🧊 Congelador columna</option>
+        <option value="congelador-cocina">❄️ Congelador cocina</option>
+        <option value="nevera-blanca">🔲 Nevera blanca</option>
+        <option value="nevera-almacen">📦 Nevera almacén</option>
+        <option value="nevera-cocina">🍳 Nevera cocina</option>
+        <option value="estanteria">🗄️ Estantería</option>
         <option value="cocina">🍳 Cocina</option>
       </select>
     </div>
     <div class="form-group"><label>⚠️ Alerta cuando queden menos de</label><input type="number" id="s-minimo" placeholder="ej. 2" min="0"></div>
     <div class="form-group"><label>🔴 Crítico cuando queden menos de</label><input type="number" id="s-critico" placeholder="ej. 1" min="0"></div>
     <div class="form-group"><label>Vida útil (días desde entrada)</label><input type="number" id="s-vida" placeholder="ej. 7 para burrata" min="0"></div>
+    <div class="form-group"><label>💶 Precio coste unitario (€) <span style="font-size:11px;color:var(--text-3)">— para escandallo futuro</span></label><input type="number" id="s-coste" placeholder="ej. 1.20" min="0" step="0.01"></div>
     <input type="hidden" id="s-id">
     <div style="display:flex;gap:10px">
       <button class="btn btn-oro" style="flex:1" onclick="guardarProducto()">Guardar</button>
@@ -1411,6 +1426,29 @@ function initInicio() {
     const waCard = document.getElementById('wa-config-card');
     if (waCard) waCard.style.display = 'none';
   }
+
+  // widget turno hoy
+  actualizarWidgetTurno();
+}
+
+function actualizarWidgetTurno() {
+  const key = 'turno_' + hoy();
+  const lista = cargar(key, []);
+  const wid = document.getElementById('turno-widget');
+  const info = document.getElementById('turno-widget-info');
+  const det  = document.getElementById('turno-widget-detalle');
+  if (!wid) return;
+  if (!lista.length) { wid.style.display = 'none'; return; }
+  wid.style.display = '';
+  const nombres = { lore:'Lore', cesar:'César', maria:'María' };
+  const tipos = lista.map(r => r.tipo);
+  const tieneAp = tipos.includes('apertura');
+  const tieneCi = tipos.includes('cierre');
+  info.textContent = lista.length + ' registro' + (lista.length > 1 ? 's' : '') + ' hoy';
+  det.innerHTML = [
+    tieneAp ? `<span style="background:var(--amarillo-l);color:var(--amarillo);padding:2px 9px;border-radius:8px;font-weight:700;font-size:12px;margin-right:6px">🌅 Apertura ✓</span>` : `<span style="background:var(--rojo-l);color:var(--rojo);padding:2px 9px;border-radius:8px;font-weight:700;font-size:12px;margin-right:6px">🌅 Apertura pendiente</span>`,
+    tieneCi ? `<span style="background:var(--surface-2);color:var(--text-2);padding:2px 9px;border-radius:8px;font-weight:700;font-size:12px">🌙 Cierre ✓</span>` : ''
+  ].join('');
 }
 
 // ══════════════════════════════════════════
@@ -1526,16 +1564,17 @@ function toggleWa() {
 // ══════════════════════════════════════════
 let productoEditId = null;
 const UBIC_LABELS = {
-  'nevera-columna':'🧊 Nevera columna','nevera-cesar':'❄️ Nevera César',
-  'nevera-rota':'🔧 Nevera rota','congelador':'🧊 Congelador',
-  'estanteria':'📦 Estantería','cocina':'🍳 Cocina',''  :''
+  'congelador-columna':'🧊 Congelador columna','congelador-cocina':'❄️ Congelador cocina',
+  'nevera-blanca':'🔲 Nevera blanca','nevera-almacen':'📦 Nevera almacén',
+  'nevera-cocina':'🍳 Nevera cocina','estanteria':'🗄️ Estantería',
+  'cocina':'🍳 Cocina seca',''  :''
 };
 
 function abrirModalProducto(id) {
   if (!esAdmin()) { toast('Solo Lore o César pueden gestionar productos','error'); return; }
   productoEditId = id || null;
   document.getElementById('modal-producto-titulo').textContent = id ? 'Editar producto' : 'Nuevo producto';
-  ['s-nombre','s-unidad','s-minimo','s-critico','s-vida'].forEach(i => document.getElementById(i).value = '');
+  ['s-nombre','s-unidad','s-minimo','s-critico','s-vida','s-coste'].forEach(i => document.getElementById(i).value = '');
   document.getElementById('s-ubicacion').value = '';
   if (id) {
     const p = cargar('stock_productos',[]).find(x => x.id === id);
@@ -1546,6 +1585,7 @@ function abrirModalProducto(id) {
       document.getElementById('s-minimo').value = p.minimo||'';
       document.getElementById('s-critico').value = p.critico||'';
       document.getElementById('s-vida').value = p.vidaDias||'';
+      document.getElementById('s-coste').value = p.costeUnitario||'';
     }
   }
   abrirModal('modal-producto');
@@ -1554,6 +1594,7 @@ function abrirModalProducto(id) {
 function guardarProducto() {
   const nombre = document.getElementById('s-nombre').value.trim();
   if (!nombre) { toast('Pon el nombre del producto'); return; }
+  const costeVal = document.getElementById('s-coste').value;
   const prod = {
     id: productoEditId || Date.now(),
     nombre,
@@ -1562,6 +1603,7 @@ function guardarProducto() {
     minimo: parseFloat(document.getElementById('s-minimo').value) || 2,
     critico: parseFloat(document.getElementById('s-critico').value) || 0,
     vidaDias: parseFloat(document.getElementById('s-vida').value) || null,
+    costeUnitario: costeVal ? parseFloat(costeVal) : null,
     lotes: productoEditId ? (cargar('stock_productos',[]).find(x => x.id === productoEditId)||{}).lotes||[] : []
   };
   let productos = cargar('stock_productos',[]);
@@ -1996,6 +2038,69 @@ function renderAppccHistorial() {
   }).join('');
 }
 
+function exportarAppccSemana() {
+  // últimos 7 días
+  const dias = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    dias.push(d.toISOString().slice(0,10));
+  }
+
+  let html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>APPCC La Urbana — Control temperaturas</title>
+  <style>
+    body{font-family:Arial,sans-serif;font-size:13px;color:#111;padding:24px}
+    h1{font-size:18px;margin-bottom:4px}
+    h2{font-size:14px;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:4px}
+    table{width:100%;border-collapse:collapse;margin-bottom:12px}
+    th{background:#f0ebe0;text-align:left;padding:7px 10px;font-size:12px;border:1px solid #ddd}
+    td{padding:7px 10px;border:1px solid #ddd;font-size:12px}
+    .ok{color:green;font-weight:700} .bad{color:red;font-weight:700} .warn{color:orange;font-weight:700}
+    .no-data{color:#999;font-style:italic}
+    .firma{margin-top:40px;display:flex;gap:60px}
+    .firma-box{border-top:1px solid #333;width:200px;padding-top:6px;font-size:11px;color:#555}
+  </style></head><body>
+  <h1>🌡️ La Urbana — Registro APPCC Temperaturas</h1>
+  <div style="font-size:12px;color:#666;margin-bottom:16px">Semana del ${dias[0]} al ${dias[6]} · Generado: ${new Date().toLocaleString('es-ES')}</div>`;
+
+  dias.forEach(dia => {
+    const registros = cargar('appcc_' + dia, []);
+    const label = new Date(dia + 'T12:00:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+    html += `<h2>${label}</h2>`;
+    if (!registros.length) {
+      html += `<p class="no-data">Sin registros este día.</p>`;
+    } else {
+      html += `<table><tr><th>Hora</th><th>Registrado por</th>`;
+      APPCC_EQUIPOS.forEach(e => { html += `<th>${e.nombre}</th>`; });
+      html += `</tr>`;
+      registros.forEach(r => {
+        const hora = new Date(r.ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+        html += `<tr><td>${hora}</td><td>${r.quien}</td>`;
+        APPCC_EQUIPOS.forEach(e => {
+          const v = r.temps[e.id];
+          if (v === undefined) { html += `<td class="no-data">—</td>`; return; }
+          const est = appccEstado(v, e.min, e.max);
+          html += `<td class="${est}">${v}°C</td>`;
+        });
+        html += `</tr>`;
+      });
+      html += `</table>`;
+    }
+  });
+
+  html += `<div class="firma">
+    <div class="firma-box">Firma responsable</div>
+    <div class="firma-box">Fecha revisión</div>
+  </div></body></html>`;
+
+  const blob = new Blob([html], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'APPCC_LaUrbana_' + dias[0] + '_' + dias[6] + '.html';
+  a.click();
+  toast('📄 Informe APPCC generado');
+}
+
 // ══════════════════════════════════════════
 // TURNO — Checklist apertura/cierre + mise en place
 // ══════════════════════════════════════════
@@ -2075,8 +2180,9 @@ function renderTurnoTareas() {
     return `<div class="tarea-item ${done?'done':''} ${t.critica?'tarea-critica':''}"
       onclick="toggleTarea('${t.id}')">
       <div class="tarea-check ${done?'done':''}"></div>
-      <div>
+      <div style="flex:1">
         <div class="tarea-label">${t.label}</div>
+        ${t.critica ? '<div style="font-size:10px;color:var(--rojo);font-weight:700;margin-top:1px">OBLIGATORIO</div>' : ''}
       </div>
     </div>`;
   }).join('');
@@ -2084,13 +2190,22 @@ function renderTurnoTareas() {
   // progreso
   const total = tareas.length;
   const hechas = tareas.filter(t => tareasState[t.id]).length;
+  const criticas = tareas.filter(t => t.critica);
+  const criticasHechas = criticas.filter(t => tareasState[t.id]).length;
   const pct = total ? Math.round(hechas/total*100) : 0;
-  const existeProg = document.getElementById('turno-prog');
-  const html = `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-3);margin-top:10px">
-    <span>${hechas}/${total} tareas</span><span>${pct}%</span></div>
-    <div class="turno-prog"><div class="turno-prog-bar" style="width:${pct}%"></div></div>`;
-  if (existeProg) existeProg.parentElement.innerHTML = html;
-  else cont.insertAdjacentHTML('afterend', html);
+  const color = pct === 100 ? 'var(--verde)' : criticasHechas < criticas.length ? 'var(--rojo)' : 'var(--amarillo)';
+
+  const progId = 'turno-prog-wrap';
+  let progEl = document.getElementById(progId);
+  const progHtml = `<div id="${progId}" style="margin-top:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-3);margin-bottom:5px">
+      <span style="font-weight:700;color:${color}">${hechas}/${total} completadas</span>
+      <span>${criticasHechas}/${criticas.length} obligatorias · ${pct}%</span>
+    </div>
+    <div class="turno-prog"><div class="turno-prog-bar" style="width:${pct}%;background:${color}"></div></div>
+  </div>`;
+  if (progEl) progEl.outerHTML = progHtml;
+  else cont.insertAdjacentHTML('afterend', progHtml);
 
   // cierre
   if (tipoTurno === 'cierre') renderCierreChecklist();
@@ -2759,9 +2874,9 @@ function seedData() {
       {id:1002,nombre:'Rúcula',unidad:'bolsa',ubicacion:'nevera-columna',minimo:2,critico:0,vidaDias:3,lotes:[{id:9002,cantidad:1,caduca:en(2),notas:'',entrada:h}]},
       {id:1003,nombre:'Tomate ensalada',unidad:'kg',ubicacion:'nevera-columna',minimo:2,critico:0,vidaDias:5,lotes:[{id:9003,cantidad:1,caduca:en(3),notas:'Fructifera',entrada:h}]},
       {id:1004,nombre:'Pechuga pollo IQF',unidad:'bolsa 2,5kg',ubicacion:'congelador',minimo:2,critico:0,vidaDias:null,lotes:[{id:9004,cantidad:4,caduca:null,notas:'Elmar',entrada:h}]},
-      {id:1005,nombre:'Chorizo criollo blanco',unidad:'ud',ubicacion:'nevera-cesar',minimo:4,critico:1,vidaDias:null,lotes:[{id:9005,cantidad:8,caduca:null,notas:'Mercadona',entrada:h}]},
+      {id:1005,nombre:'Chorizo criollo blanco',unidad:'ud',ubicacion:'nevera-blanca',minimo:4,critico:1,vidaDias:null,lotes:[{id:9005,cantidad:8,caduca:null,notas:'Mercadona',entrada:h}]},
       {id:1006,nombre:'Atún desmigado',unidad:'bote 1kg',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9006,cantidad:1,caduca:null,notas:'Makro',entrada:h}]},
-      {id:1007,nombre:'Patata pelada vacío',unidad:'bolsa 5kg',ubicacion:'nevera-cesar',minimo:2,critico:0,vidaDias:null,lotes:[{id:9007,cantidad:3,caduca:null,notas:'Fructifera',entrada:h}]},
+      {id:1007,nombre:'Patata pelada vacío',unidad:'bolsa 5kg',ubicacion:'nevera-blanca',minimo:2,critico:0,vidaDias:null,lotes:[{id:9007,cantidad:3,caduca:null,notas:'Fructifera',entrada:h}]},
       {id:1008,nombre:'Aceite girasol',unidad:'garrafa 15L',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9008,cantidad:1,caduca:null,notas:'Armando Galves',entrada:h}]},
       {id:1009,nombre:'Tequeños',unidad:'bolsa 12ud',ubicacion:'congelador',minimo:2,critico:0,vidaDias:null,lotes:[{id:9009,cantidad:2,caduca:null,notas:'Mercadona',entrada:h}]},
       {id:1010,nombre:'Croquetas jamón',unidad:'bolsa',ubicacion:'congelador',minimo:2,critico:1,vidaDias:null,lotes:[{id:9010,cantidad:1,caduca:null,notas:'Mercadona',entrada:h}]},
