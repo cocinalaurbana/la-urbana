@@ -253,24 +253,25 @@ nav button.oculto{display:none}
 
 <!-- INICIO -->
 <div id="tab-inicio" class="tab active">
+  <!-- ALERTAS: lo primero -->
+  <div id="alertas-banner" style="display:none;margin-bottom:14px"></div>
+
+  <!-- ACCESOS RÁPIDOS -->
+  <div id="accesos-rapidos" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px"></div>
+
+  <!-- STATS -->
   <div class="stats">
     <div class="stat verde"><div class="num" id="stat-ok">0</div><div class="lbl">Stock OK</div></div>
     <div class="stat rojo"><div class="num" id="stat-critico">0</div><div class="lbl">Crítico</div></div>
     <div class="stat" style="border-color:var(--amarillo)"><div class="num" style="color:var(--amarillo)" id="stat-mermas">0</div><div class="lbl">Mermas hoy</div></div>
     <div class="stat" style="border-color:var(--naranja)"><div class="num" style="color:var(--naranja)" id="stat-pedidos">0</div><div class="lbl">Pedidos pend.</div></div>
   </div>
+
+  <!-- MENÚ -->
   <div class="menu-dia">
     <h2>🍽️ Menú de hoy</h2>
     <div style="font-size:12px;opacity:.6;margin-bottom:12px" id="inicio-menu-fecha"></div>
     <div id="inicio-menu-platos"><div style="opacity:.6;font-size:14px">Sin menú para hoy.</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title">🔴 Alertas</div>
-    <div id="alertas-lista"><div style="color:var(--gris);font-size:14px">Sin alertas 🎉</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title">⚡ Accesos rápidos</div>
-    <div id="accesos-rapidos" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
   </div>
 </div>
 
@@ -785,21 +786,73 @@ function initInicio() {
   document.getElementById('stat-pedidos').textContent = pedidos.filter(p => p.estado === 'pendiente').length;
 
   const alertas = [];
+  const alertasCad = [];
+  const alertasStock = [];
+  const alertasPedidos = pedidos.filter(p => p.estado === 'pendiente');
+
   productos.forEach(p => {
     const sem = getSemaforo(p);
     const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
     if (sem !== 'verde') {
-      alertas.push(`<div class="item"><div class="item-body"><div class="item-title">📦 ${p.nombre}</div><div class="item-sub">${total} ${p.unidad} disponibles</div></div><span class="sema ${sem}">${sem === 'rojo' ? '🔴 Urgente' : '🟡 Reponer'}</span></div>`);
+      alertasStock.push({nombre: p.nombre, total, unidad: p.unidad, sem});
     }
     (p.lotes||[]).forEach(l => {
       const d = diasHasta(l.caduca);
       if (d !== null && d <= 2) {
-        const txt = d <= 0 ? '¡Caducado!' : d === 0 ? 'Caduca HOY' : `Caduca en ${d}d`;
-        alertas.push(`<div class="item"><div class="item-body"><div class="item-title">⚠️ ${p.nombre}</div><div class="item-sub">${l.cantidad} ${p.unidad} · ${txt}</div></div><span class="sema rojo">🔴 Cad.</span></div>`);
+        const txt = d < 0 ? '¡CADUCADO!' : d === 0 ? 'Caduca HOY' : `Caduca mañana`;
+        alertasCad.push({nombre: p.nombre, cantidad: l.cantidad, unidad: p.unidad, txt, urgente: d <= 0});
       }
     });
   });
-  document.getElementById('alertas-lista').innerHTML = alertas.length ? alertas.join('') : '<div style="color:var(--gris);font-size:14px">Sin alertas 🎉</div>';
+
+  const banner = document.getElementById('alertas-banner');
+  let bannerHtml = '';
+
+  if (alertasCad.length) {
+    bannerHtml += `<div style="background:rgba(193,18,31,.12);border:2px solid #e05555;border-radius:14px;padding:14px;margin-bottom:10px">
+      <div style="font-weight:800;font-size:.95rem;color:#e05555;margin-bottom:8px">⚠️ ${alertasCad.length} producto${alertasCad.length>1?'s':''} con caducidad próxima</div>
+      ${alertasCad.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(224,85,85,.2)">
+        <span style="font-size:.9rem;font-weight:600">${a.nombre}</span>
+        <span style="font-size:12px;font-weight:700;padding:3px 9px;border-radius:10px;background:${a.urgente?'rgba(193,18,31,.3)':'rgba(201,162,39,.2)'};color:${a.urgente?'#e05555':'var(--amarillo)'}">${a.txt}</span>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  if (alertasStock.length) {
+    const urgentes = alertasStock.filter(a => a.sem === 'rojo');
+    const bajos = alertasStock.filter(a => a.sem === 'amarillo');
+    bannerHtml += `<div style="background:rgba(201,162,39,.1);border:2px solid var(--amarillo);border-radius:14px;padding:14px;margin-bottom:10px">
+      <div style="font-weight:800;font-size:.95rem;color:var(--amarillo);margin-bottom:8px">📦 Stock bajo${urgentes.length ? ` · ${urgentes.length} urgente${urgentes.length>1?'s':''}` : ''}</div>
+      ${urgentes.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(201,162,39,.2)">
+        <span style="font-size:.9rem;font-weight:600">${a.nombre}</span>
+        <span style="font-size:12px;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(193,18,31,.25);color:#e05555">🔴 ${a.total} ${a.unidad}</span>
+      </div>`).join('')}
+      ${bajos.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(201,162,39,.15)">
+        <span style="font-size:.9rem">${a.nombre}</span>
+        <span style="font-size:12px;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(201,162,39,.2);color:var(--amarillo)">🟡 ${a.total} ${a.unidad}</span>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  if (alertasPedidos.length && esAdmin()) {
+    bannerHtml += `<div style="background:rgba(212,112,58,.1);border:2px solid var(--naranja);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer" onclick="tab('pedidos',document.getElementById('nav-pedidos'))">
+      <div style="font-weight:800;font-size:.95rem;color:var(--naranja)">🛒 ${alertasPedidos.length} solicitud${alertasPedidos.length>1?'es':''} de pedido pendiente${alertasPedidos.length>1?'s':''} de aprobar</div>
+      <div style="font-size:12px;color:var(--gris);margin-top:4px">Toca para revisar →</div>
+    </div>`;
+  }
+
+  if (!bannerHtml) {
+    bannerHtml = `<div style="background:rgba(45,122,79,.1);border:2px solid var(--verde-m);border-radius:14px;padding:14px;text-align:center">
+      <div style="font-size:1.4rem">✅</div>
+      <div style="font-weight:700;color:var(--verde-m);margin-top:4px">Todo en orden</div>
+      <div style="font-size:13px;color:var(--gris);margin-top:2px">Sin alertas hoy</div>
+    </div>`;
+  }
+
+  banner.innerHTML = bannerHtml;
+  banner.style.display = 'block';
+
+  document.getElementById('alertas-lista') && (document.getElementById('alertas-lista').innerHTML = '');
 
   const acc = document.getElementById('accesos-rapidos');
   if (esAdmin()) {
