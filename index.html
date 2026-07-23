@@ -918,8 +918,11 @@ function initBourdain() {
 // ══════════════════════════════════════════
 // LOGIN / ROLES / PIN
 // ══════════════════════════════════════════
-const PINS = { lore:'1234', cesar:'5678', maria:'0000' };
-// Para cambiar PINes: modifica los valores de PINS arriba.
+const PINS_DEFAULT = { lore:'1974', cesar:'1234', maria:'0000' };
+const PINS = Object.fromEntries(
+  Object.entries(PINS_DEFAULT).map(([k,v]) => [k, localStorage.getItem('pin_'+k)||v])
+);
+// Para cambiar tu PIN: en consola → localStorage.setItem('pin_lore','XXXX') y recarga.
 // lore:1234 · cesar:5678 · maria:0000
 
 let pinRolActual = null;
