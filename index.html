@@ -284,6 +284,7 @@ nav button.oculto{display:none}
   <button onclick="tab('stock',this)" id="nav-stock">📦 Stock</button>
   <button onclick="tab('mermas',this)" id="nav-mermas">📉 Mermas</button>
   <button onclick="tab('pedidos',this)" id="nav-pedidos">🛒 Pedidos</button>
+  <button onclick="tab('caja',this)" id="nav-caja">💰 Caja</button>
   <button onclick="tab('menu',this)" id="nav-menu" class="oculto">🍽️ Menú</button>
   <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">📖 Recetas</button>
   <button onclick="tab('proveedores',this)" id="nav-proveedores" class="oculto">🤝 Proveedores</button>
@@ -308,12 +309,114 @@ nav button.oculto{display:none}
     <div class="stat" style="border-color:var(--naranja)"><div class="num" style="color:var(--naranja)" id="stat-pedidos">0</div><div class="lbl">Pedidos pend.</div></div>
   </div>
 
+  <!-- CAJA DEL DÍA: resumen en inicio -->
+  <div id="caja-widget" style="display:none;background:var(--negro);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid var(--negro-m);cursor:pointer" onclick="tab('caja',document.getElementById('nav-caja'))">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:800;color:var(--crema);text-transform:uppercase;letter-spacing:.4px">💰 Caja hoy</div>
+      <div style="font-size:11px;color:var(--gris)" id="caja-widget-fecha"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
+      <div>
+        <div style="font-size:11px;color:var(--gris);margin-bottom:2px">Ventas</div>
+        <div style="font-size:1.2rem;font-weight:800;color:var(--verde-m)" id="cw-ventas">—</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--gris);margin-bottom:2px">Gastos</div>
+        <div style="font-size:1.2rem;font-weight:800;color:var(--rojo)" id="cw-gastos">—</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--gris);margin-bottom:2px">Balance</div>
+        <div style="font-size:1.2rem;font-weight:800" id="cw-balance">—</div>
+      </div>
+    </div>
+    <div id="cw-alerta" style="margin-top:8px;font-size:12px;font-weight:700;display:none"></div>
+  </div>
+
   <!-- MENÚ -->
   <div class="menu-dia">
     <h2>🍽️ Menú de hoy</h2>
     <div style="font-size:12px;opacity:.6;margin-bottom:12px" id="inicio-menu-fecha"></div>
     <div id="inicio-menu-platos"><div style="opacity:.6;font-size:14px">Sin menú para hoy.</div></div>
   </div>
+</div>
+
+<!-- CAJA DIARIA -->
+<div id="tab-caja" class="tab">
+
+  <!-- selector de fecha + resumen del día -->
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <input type="date" id="caja-fecha" oninput="cargarCaja()" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:14px;color:var(--crema);background:var(--negro-c)">
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('caja-fecha').value=hoy();cargarCaja()">Hoy</button>
+    </div>
+    <!-- totales día -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-bottom:4px">
+      <div style="background:rgba(74,190,120,.08);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--gris);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Ventas</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--verde-m)" id="caja-total-ventas">0€</div>
+      </div>
+      <div style="background:rgba(224,85,85,.08);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--gris);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Gastos</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--rojo)" id="caja-total-gastos">0€</div>
+      </div>
+      <div style="background:rgba(201,151,58,.08);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--gris);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Balance</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--oro)" id="caja-balance">0€</div>
+      </div>
+    </div>
+    <div id="caja-alerta-dia" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:700;text-align:center"></div>
+  </div>
+
+  <!-- apuntar venta -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">📈 Apuntar venta</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input type="number" id="venta-importe" placeholder="Importe €" step="0.5" min="0"
+        style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:15px;color:var(--crema);background:var(--negro-c)">
+      <select id="venta-tipo" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+        <option value="efectivo">💵 Efectivo</option>
+        <option value="tarjeta">💳 Tarjeta</option>
+        <option value="mixto">🔀 Mixto</option>
+      </select>
+    </div>
+    <input type="text" id="venta-nota" placeholder="Nota opcional (ej. Menú mediodía x12)"
+      style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);margin-bottom:8px"
+      onkeydown="if(event.key==='Enter')guardarVenta()">
+    <button class="btn btn-oro btn-full" onclick="guardarVenta()">Guardar venta</button>
+  </div>
+
+  <!-- apuntar gasto -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">📉 Apuntar gasto</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input type="number" id="gasto-importe" placeholder="Importe €" step="0.5" min="0"
+        style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:15px;color:var(--crema);background:var(--negro-c)">
+      <select id="gasto-cat" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c)">
+        <option value="compra">🛒 Compra</option>
+        <option value="proveedor">🤝 Proveedor</option>
+        <option value="suministro">💡 Suministro</option>
+        <option value="personal">👨‍🍳 Personal</option>
+        <option value="otro">📦 Otro</option>
+      </select>
+    </div>
+    <input type="text" id="gasto-desc" placeholder="Descripción (ej. Verdura mercado)"
+      style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--negro-m);font-size:13px;color:var(--crema);background:var(--negro-c);margin-bottom:8px"
+      onkeydown="if(event.key==='Enter')guardarGasto()">
+    <button class="btn btn-rojo btn-full" onclick="guardarGasto()">Guardar gasto</button>
+  </div>
+
+  <!-- movimientos del día -->
+  <div class="card">
+    <div class="card-title">📋 Movimientos del día</div>
+    <div id="caja-movimientos"><div style="color:var(--gris);font-size:14px;text-align:center;padding:12px">Sin movimientos.</div></div>
+  </div>
+
+  <!-- resumen semanal (solo admin) -->
+  <div class="card" id="caja-semana-card" style="margin-top:14px">
+    <div class="card-title">📊 Esta semana</div>
+    <div id="caja-semana"></div>
+  </div>
+
 </div>
 
 <!-- STOCK -->
@@ -914,7 +1017,7 @@ function tab(id, btn) {
   const renders = {
     inicio: initInicio, stock: renderStock,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
-    pedidos: renderPedidos, menu: initMenu,
+    pedidos: renderPedidos, caja: initCaja, menu: initMenu,
     recetas: renderRecetas, proveedores: renderProveedores,
     historial: renderHistorial, spotify: renderPlaylistsCustom
   };
@@ -1393,8 +1496,186 @@ function renderPedidos() {
 }
 
 // ══════════════════════════════════════════
-// MENÚ
 // ══════════════════════════════════════════
+// CAJA DIARIA
+// ══════════════════════════════════════════
+function initCaja() {
+  document.getElementById('caja-fecha').value = hoy();
+  cargarCaja();
+  renderCajaSemana();
+}
+
+function cajaKey(fecha) { return 'caja_' + fecha; }
+
+function getCajaData(fecha) {
+  return cargar(cajaKey(fecha), { ventas: [], gastos: [] });
+}
+
+function guardarVenta() {
+  const importe = parseFloat(document.getElementById('venta-importe').value);
+  if (!importe || importe <= 0) { toast('Introduce un importe', 'error'); return; }
+  const tipo  = document.getElementById('venta-tipo').value;
+  const nota  = document.getElementById('venta-nota').value.trim();
+  const fecha = document.getElementById('caja-fecha').value;
+  const data  = getCajaData(fecha);
+  data.ventas.push({ id: Date.now(), importe, tipo, nota, hora: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}), quien: USUARIO });
+  guardar(cajaKey(fecha), data);
+  document.getElementById('venta-importe').value = '';
+  document.getElementById('venta-nota').value    = '';
+  addHistorial('caja', `💰 Venta ${importe.toFixed(2)}€ (${tipo})${nota?' — '+nota:''}`);
+  cargarCaja();
+  renderCajaSemana();
+  actualizarWidgetCaja();
+  toast('Venta guardada ✓', 'verde');
+}
+
+function guardarGasto() {
+  const importe = parseFloat(document.getElementById('gasto-importe').value);
+  if (!importe || importe <= 0) { toast('Introduce un importe', 'error'); return; }
+  const cat  = document.getElementById('gasto-cat').value;
+  const desc = document.getElementById('gasto-desc').value.trim();
+  if (!desc) { toast('Escribe una descripción', 'error'); return; }
+  const fecha = document.getElementById('caja-fecha').value;
+  const data  = getCajaData(fecha);
+  data.gastos.push({ id: Date.now(), importe, cat, desc, hora: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}), quien: USUARIO });
+  guardar(cajaKey(fecha), data);
+  document.getElementById('gasto-importe').value = '';
+  document.getElementById('gasto-desc').value    = '';
+  addHistorial('caja', `📉 Gasto ${importe.toFixed(2)}€ (${cat}) — ${desc}`);
+  cargarCaja();
+  renderCajaSemana();
+  actualizarWidgetCaja();
+  toast('Gasto guardado ✓', 'verde');
+}
+
+function borrarMovimiento(fecha, tipo, id) {
+  if (!confirm('¿Borrar este movimiento?')) return;
+  const data = getCajaData(fecha);
+  data[tipo] = data[tipo].filter(m => m.id !== id);
+  guardar(cajaKey(fecha), data);
+  cargarCaja();
+  renderCajaSemana();
+  actualizarWidgetCaja();
+  toast('Borrado ✓');
+}
+
+const CATICONS = { compra:'🛒', proveedor:'🤝', suministro:'💡', personal:'👨‍🍳', otro:'📦' };
+const TIPOICONS = { efectivo:'💵', tarjeta:'💳', mixto:'🔀' };
+
+function cargarCaja() {
+  const fecha = document.getElementById('caja-fecha').value;
+  if (!fecha) return;
+  const data = getCajaData(fecha);
+  const totalV = data.ventas.reduce((a,v) => a + v.importe, 0);
+  const totalG = data.gastos.reduce((a,g) => a + g.importe, 0);
+  const bal    = totalV - totalG;
+
+  document.getElementById('caja-total-ventas').textContent = totalV.toFixed(2) + '€';
+  document.getElementById('caja-total-gastos').textContent = totalG.toFixed(2) + '€';
+  const balEl = document.getElementById('caja-balance');
+  balEl.textContent = (bal >= 0 ? '+' : '') + bal.toFixed(2) + '€';
+  balEl.style.color = bal >= 0 ? 'var(--verde-m)' : 'var(--rojo)';
+
+  // alerta si gastos > ventas
+  const alertEl = document.getElementById('caja-alerta-dia');
+  if (bal < 0 && (totalV > 0 || totalG > 0)) {
+    alertEl.style.display  = '';
+    alertEl.style.background = 'rgba(224,85,85,.1)';
+    alertEl.style.color    = 'var(--rojo)';
+    alertEl.style.border   = '1.5px solid var(--rojo)';
+    alertEl.textContent    = '⚠️ Los gastos superan las ventas este día';
+  } else { alertEl.style.display = 'none'; }
+
+  // movimientos: ventas + gastos mezclados por hora
+  const movs = [
+    ...data.ventas.map(v => ({...v, _tipo:'venta'})),
+    ...data.gastos.map(g => ({...g, _tipo:'gasto'}))
+  ].sort((a,b) => b.id - a.id);
+
+  const el = document.getElementById('caja-movimientos');
+  if (!movs.length) {
+    el.innerHTML = '<div style="color:var(--gris);font-size:14px;text-align:center;padding:12px">Sin movimientos.</div>';
+    return;
+  }
+  el.innerHTML = movs.map(m => {
+    const esVenta = m._tipo === 'venta';
+    const color   = esVenta ? 'var(--verde-m)' : 'var(--rojo)';
+    const signo   = esVenta ? '+' : '-';
+    const icon    = esVenta ? (TIPOICONS[m.tipo]||'💰') : (CATICONS[m.cat]||'📦');
+    const etiq    = esVenta ? (m.tipo) : (m.cat);
+    const texto   = esVenta ? (m.nota||'Venta') : m.desc;
+    const puedeB  = esAdmin();
+    return `<div class="item" style="border-left:3px solid ${color};padding-left:10px">
+      <div class="item-body">
+        <div class="item-title" style="color:${color}">${icon} ${signo}${m.importe.toFixed(2)}€ <span style="font-size:11px;font-weight:400;color:var(--gris)">${etiq}</span></div>
+        <div class="item-sub">${texto}${m.hora?' · '+m.hora:''}${m.quien?' · '+m.quien:''}</div>
+      </div>
+      ${puedeB ? `<button style="background:none;border:none;color:var(--gris);cursor:pointer;font-size:18px;padding:4px" onclick="borrarMovimiento('${fecha}','${m._tipo==='venta'?'ventas':'gastos'}',${m.id})">×</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderCajaSemana() {
+  if (!esAdmin()) { document.getElementById('caja-semana-card').style.display='none'; return; }
+  document.getElementById('caja-semana-card').style.display = '';
+  // últimos 7 días
+  const filas = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const f = d.toISOString().slice(0,10);
+    const data  = getCajaData(f);
+    const v = data.ventas.reduce((a,x) => a+x.importe, 0);
+    const g = data.gastos.reduce((a,x) => a+x.importe, 0);
+    const bal = v - g;
+    const dLabel = d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+    if (v === 0 && g === 0) return;
+    filas.push({ f, dLabel, v, g, bal });
+  }
+  const el = document.getElementById('caja-semana');
+  if (!filas.length) { el.innerHTML='<div style="color:var(--gris);font-size:14px">Sin datos esta semana.</div>'; return; }
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead><tr style="color:var(--gris);font-size:11px;text-transform:uppercase">
+      <th style="text-align:left;padding:4px 6px">Día</th>
+      <th style="text-align:right;padding:4px 6px;color:var(--verde-m)">Ventas</th>
+      <th style="text-align:right;padding:4px 6px;color:var(--rojo)">Gastos</th>
+      <th style="text-align:right;padding:4px 6px">Balance</th>
+    </tr></thead>
+    <tbody>${filas.map(r => `<tr style="border-top:1px solid var(--negro-m);cursor:pointer" onclick="document.getElementById('caja-fecha').value='${r.f}';cargarCaja()">
+      <td style="padding:6px;color:var(--crema)">${r.dLabel}</td>
+      <td style="text-align:right;padding:6px;color:var(--verde-m)">+${r.v.toFixed(2)}€</td>
+      <td style="text-align:right;padding:6px;color:var(--rojo)">-${r.g.toFixed(2)}€</td>
+      <td style="text-align:right;padding:6px;font-weight:700;color:${r.bal>=0?'var(--verde-m)':'var(--rojo)'}">${r.bal>=0?'+':''}${r.bal.toFixed(2)}€</td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function actualizarWidgetCaja() {
+  const fecha = hoy();
+  const data  = getCajaData(fecha);
+  const v = data.ventas.reduce((a,x) => a+x.importe, 0);
+  const g = data.gastos.reduce((a,x) => a+x.importe, 0);
+  const bal = v - g;
+  const wid = document.getElementById('caja-widget');
+  if (v === 0 && g === 0) { wid.style.display = 'none'; return; }
+  wid.style.display = '';
+  const d = new Date();
+  document.getElementById('caja-widget-fecha').textContent = d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('cw-ventas').textContent  = '+' + v.toFixed(2) + '€';
+  document.getElementById('cw-gastos').textContent  = '-' + g.toFixed(2) + '€';
+  const bEl = document.getElementById('cw-balance');
+  bEl.textContent = (bal>=0?'+':'') + bal.toFixed(2) + '€';
+  bEl.style.color = bal >= 0 ? 'var(--verde-m)' : 'var(--rojo)';
+  const aEl = document.getElementById('cw-alerta');
+  if (bal < 0) {
+    aEl.style.display = '';
+    aEl.style.color   = 'var(--rojo)';
+    aEl.textContent   = '⚠️ Gastos superan ventas';
+  } else { aEl.style.display = 'none'; }
+}
+
+// ══════════════════════════════════════════
+// MENÚ
 function initMenu() {
   document.getElementById('menu-fecha').value = hoy();
   cargarMenuFecha();
@@ -1817,6 +2098,7 @@ function arrancarApp() {
   seedData();
   initHeader();
   initInicio();
+  actualizarWidgetCaja();
 }
 window._appReady = arrancarApp;
 if (window._firebaseReady) arrancarApp();
