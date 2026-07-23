@@ -1468,23 +1468,30 @@ function getWaConfig() {
 
 function buildWaMensaje(alertasCad, alertasStock) {
   const fecha = new Date().toLocaleDateString('es-ES', {weekday:'long',day:'numeric',month:'long'});
-  let msg = `🍽️ *La Urbana — Alertas ${fecha}*\n\n`;
+  let msg = `🍽️ *La Urbana — Resumen ${fecha}*\n\n`;
+
+  if (!alertasCad.length && !alertasStock.length) {
+    msg += `✅ *Todo en orden*\nNingún producto crítico ni próximo a caducar.\n\n`;
+    msg += `_Enviado desde La Urbana App_`;
+    return msg;
+  }
+
   if (alertasCad.length) {
-    msg += `⚠️ *CADUCIDADES*\n`;
-    alertasCad.forEach(a => { msg += `• ${a.nombre}: ${a.txt}\n`; });
+    msg += `⚠️ *CADUCIDADES PRÓXIMAS*\n`;
+    alertasCad.forEach(a => { msg += `• ${a.nombre} (${a.cantidad} ${a.unidad}): ${a.txt}\n`; });
     msg += '\n';
   }
   if (alertasStock.length) {
     const urgentes = alertasStock.filter(a => a.sem === 'rojo');
     const bajos = alertasStock.filter(a => a.sem === 'amarillo');
     if (urgentes.length) {
-      msg += `🔴 *STOCK CRÍTICO*\n`;
-      urgentes.forEach(a => { msg += `• ${a.nombre}: ${a.total} ${a.unidad}\n`; });
+      msg += `🔴 *STOCK CRÍTICO — reponer urgente*\n`;
+      urgentes.forEach(a => { msg += `• ${a.nombre}: quedan ${a.total} ${a.unidad}\n`; });
       msg += '\n';
     }
     if (bajos.length) {
       msg += `🟡 *STOCK BAJO*\n`;
-      bajos.forEach(a => { msg += `• ${a.nombre}: ${a.total} ${a.unidad}\n`; });
+      bajos.forEach(a => { msg += `• ${a.nombre}: quedan ${a.total} ${a.unidad}\n`; });
       msg += '\n';
     }
   }
@@ -1496,7 +1503,7 @@ function enviarAlertaWa(forzar = false) {
   const cfg = getWaConfig();
   if (!cfg.activo && !forzar) return;
 
-  const productos = cargar('productos', []);
+  const productos = cargar('stock_productos', []);
   const alertasCad = [];
   const alertasStock = [];
 
