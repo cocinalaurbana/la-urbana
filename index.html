@@ -177,12 +177,8 @@ nav button.oculto{display:none}
   }
   nav button.active{border-left-color:var(--accent);background:var(--accent-l)}
   #main-content { flex:1;overflow-x:hidden; }
-  .tab { max-width:none; }
+  .tab { max-width:none; padding:20px 28px; }
 }
-
-/* ─── TABS ─── */
-.tab{display:none;padding:16px;max-width:700px;margin:0 auto;padding-bottom:80px}
-.tab.active{display:block}
 
 /* ─── CARDS ─── */
 .card{
@@ -3334,6 +3330,13 @@ function seedData() {
 function arrancarApp() {
   seedData();
   initHeader();
+  // Forzar tab inicio activo y renderizar
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const tabInicio = document.getElementById('tab-inicio');
+  if (tabInicio) tabInicio.classList.add('active');
+  const btnInicio = document.querySelector('nav button[onclick*="inicio"]');
+  if (btnInicio) btnInicio.classList.add('active');
   initInicio();
   actualizarWidgetCaja();
 }
