@@ -158,6 +158,28 @@ nav button.active{color:var(--accent);border-bottom-color:var(--accent)}
 nav button:hover{color:var(--accent)}
 nav button.oculto{display:none}
 
+/* ─── LAYOUT TABLET: nav lateral derecha ─── */
+@media (min-width: 768px) {
+  #app-layout {
+    display:flex;flex-direction:row-reverse;min-height:calc(100vh - 57px);
+  }
+  nav {
+    flex-direction:column;overflow-x:visible;overflow-y:auto;
+    border-bottom:none;border-left:1px solid var(--border);
+    position:sticky;top:57px;height:calc(100vh - 57px);
+    width:160px;flex-shrink:0;padding:8px 0;
+    background:var(--surface);
+  }
+  nav button {
+    border-bottom:none;border-left:3px solid transparent;border-right:none;
+    text-align:left;padding:13px 18px;font-size:14px;width:100%;
+    display:flex;align-items:center;gap:8px;
+  }
+  nav button.active{border-left-color:var(--accent);background:var(--accent-l)}
+  #main-content { flex:1;overflow-x:hidden; }
+  .tab { max-width:none; }
+}
+
 /* ─── TABS ─── */
 .tab{display:none;padding:16px;max-width:700px;margin:0 auto;padding-bottom:80px}
 .tab.active{display:block}
@@ -483,6 +505,8 @@ nav button.oculto{display:none}
   <button onclick="tab('instagram',this)" id="nav-instagram" class="oculto">📱 Instagram</button>
 </nav>
 
+<div id="app-layout">
+<div id="main-content">
 <!-- INICIO -->
 <div id="tab-inicio" class="tab active">
   <!-- ALERTAS: lo primero -->
@@ -775,6 +799,15 @@ nav button.oculto{display:none}
 
 <!-- PEDIDOS -->
 <div id="tab-pedidos" class="tab">
+
+  <!-- Lista de la compra automática -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">🛍️ Lista de la compra</div>
+    <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Productos que han llegado al mínimo o están agotados</div>
+    <div id="lista-compra-auto"></div>
+    <button class="btn btn-outline btn-sm" style="margin-top:10px;width:100%" onclick="exportarListaCompra()">📋 Copiar lista</button>
+  </div>
+
   <div class="card">
     <div class="card-title">🛒 Solicitar producto</div>
     <div class="form-group"><label>Producto</label><input type="text" id="p-producto" placeholder="ej. Burrata, Rúcula..."></div>
@@ -1110,6 +1143,8 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
 </div>
 
 <div class="toast" id="toast"></div>
+</div><!-- /main-content -->
+</div><!-- /app-layout -->
 
 <!-- FIREBASE SDK -->
 <script type="module">
@@ -2021,7 +2056,57 @@ function borrarPedido(id) {
   renderPedidos();
 }
 
+function renderListaCompra() {
+  const el = document.getElementById('lista-compra-auto');
+  if (!el) return;
+  const productos = cargar('stock_productos',[]);
+  const criticos = productos.filter(p => {
+    const sem = getSemaforo(p);
+    return sem === 'rojo' || sem === 'amarillo';
+  }).sort((a,b) => {
+    const orden = {rojo:0, amarillo:1};
+    return (orden[getSemaforo(a)]||2) - (orden[getSemaforo(b)]||2);
+  });
+  if (!criticos.length) {
+    el.innerHTML = '<div style="color:var(--verde);font-size:14px;padding:8px 0">✅ Todo el stock está OK</div>';
+    return;
+  }
+  const proveedores = cargar('proveedores', PROVEEDORES_DEFAULT);
+  el.innerHTML = criticos.map(p => {
+    const sem = getSemaforo(p);
+    const semIcon = sem === 'rojo' ? '🔴' : '🟡';
+    const total = (p.lotes||[]).reduce((a,l) => a+l.cantidad, 0);
+    // buscar proveedor que suministre este producto
+    const prov = proveedores.find(pr => pr.productos && pr.productos.toLowerCase().split(',').some(pp => p.nombre.toLowerCase().includes(pp.trim())));
+    const btnPedir = prov && prov.telefono
+      ? `<a href="https://wa.me/34${prov.telefono.replace(/\D/g,'')}?text=${encodeURIComponent(`Hola, necesitaríamos ${p.nombre} para La Urbana. ¿Podéis suministrar?`)}" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:700">📲 ${prov.nombre}</a>`
+      : (prov ? `<span style="font-size:11px;color:var(--text-3)">${prov.nombre} (sin tel.)</span>` : '');
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div>
+        <span style="font-size:13px">${semIcon} <strong>${p.nombre}</strong></span>
+        <span style="font-size:12px;color:var(--text-3);margin-left:6px">${total} ${p.unidad} / mín. ${p.minimo||0}</span>
+        ${btnPedir ? `<div style="margin-top:3px">${btnPedir}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function exportarListaCompra() {
+  const productos = cargar('stock_productos',[]);
+  const criticos = productos.filter(p => getSemaforo(p) === 'rojo' || getSemaforo(p) === 'amarillo');
+  if (!criticos.length) { toast('No hay nada que pedir ✅','verde'); return; }
+  const fecha = new Date().toLocaleDateString('es-ES');
+  const texto = `🛍️ Lista de la compra La Urbana — ${fecha}\n\n` +
+    criticos.map(p => {
+      const sem = getSemaforo(p) === 'rojo' ? '🔴' : '🟡';
+      const total = (p.lotes||[]).reduce((a,l)=>a+l.cantidad,0);
+      return `${sem} ${p.nombre} (quedan ${total} ${p.unidad})`;
+    }).join('\n');
+  navigator.clipboard.writeText(texto).then(() => toast('Lista copiada 📋','verde')).catch(() => toast('No se pudo copiar','error'));
+}
+
 function renderPedidos() {
+  renderListaCompra();
   const filtro = document.getElementById('filtro-pedido').value;
   let pedidos = cargar('pedidos',[]);
   if (filtro !== 'todo') pedidos = pedidos.filter(p => p.estado === filtro);
