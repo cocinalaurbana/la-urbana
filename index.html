@@ -159,7 +159,7 @@ nav button:hover{color:var(--accent)}
 nav button.oculto{display:none}
 
 /* ─── LAYOUT TABLET: nav lateral derecha ─── */
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   #app-layout {
     display:flex;flex-direction:row-reverse;min-height:calc(100vh - 57px);
   }
@@ -1373,6 +1373,7 @@ function verificarPin() {
 function iniciarSesion(rol) {
   USUARIO = rol;
   document.getElementById('login-screen').style.display = 'none';
+  // reset panel para próxima vez
   volverLogin();
   const names = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
   const badge = document.getElementById('header-role');
@@ -1380,12 +1381,7 @@ function iniciarSesion(rol) {
   if (rol === 'maria') badge.classList.add('maria');
   else badge.classList.remove('maria');
   aplicarPermisos();
-  // Arrancar SIEMPRE con datos locales — no esperar a Firebase
   arrancarApp();
-  // Cuando Firebase termine (si no ha terminado aún), refrescar el inicio
-  if (!window._firebaseReady) {
-    window._appReady = () => { if (USUARIO) initInicio(); };
-  }
 }
 function cerrarSesion() {
   USUARIO = null;
@@ -3338,16 +3334,13 @@ function seedData() {
 function arrancarApp() {
   seedData();
   initHeader();
-  // Solo activar inicio si no hay ningún tab activo ya
-  const tabActivo = document.querySelector('.tab.active');
-  if (!tabActivo || tabActivo.id === 'tab-inicio') {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    const tabInicio = document.getElementById('tab-inicio');
-    if (tabInicio) tabInicio.classList.add('active');
-    const btnInicio = document.querySelector('nav button[onclick*="inicio"]');
-    if (btnInicio) btnInicio.classList.add('active');
-  }
+  // Forzar tab inicio activo y renderizar
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const tabInicio = document.getElementById('tab-inicio');
+  if (tabInicio) tabInicio.classList.add('active');
+  const btnInicio = document.querySelector('nav button[onclick*="inicio"]');
+  if (btnInicio) btnInicio.classList.add('active');
   initInicio();
   actualizarWidgetCaja();
 }
