@@ -625,9 +625,8 @@ nav button.oculto{display:none}
     <!-- firma / guardar -->
     <div class="card">
       <div class="card-title">✍️ Quién cierra el turno</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="turno-firma-btns">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px" id="turno-firma-btns">
         <button class="btn btn-outline" id="firma-lore"  onclick="setFirma('lore')">👩‍🍳 Lore</button>
-        <button class="btn btn-outline" id="firma-cesar" onclick="setFirma('cesar')">🧑‍💼 César</button>
         <button class="btn btn-outline" id="firma-maria" onclick="setFirma('maria')">🧑‍🍳 María</button>
       </div>
       <div class="form-group">
@@ -1146,47 +1145,46 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
 </div><!-- /main-content -->
 </div><!-- /app-layout -->
 
-<!-- FIREBASE SDK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyCa9fjof6rywJwRzuAZs3tYQIbXZb3WSB4",
-  authDomain: "cocina-urbana-b4f9e.firebaseapp.com",
-  projectId: "cocina-urbana-b4f9e",
-  storageBucket: "cocina-urbana-b4f9e.firebasestorage.app",
-  messagingSenderId: "748093629089",
-  appId: "1:748093629089:web:1edcfdf56507cafcec46e0"
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const _cache = {};
+<!-- FIREBASE SDK (compat — funciona en todos los navegadores) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+(function() {
+  const firebaseConfig = {
+    apiKey: "AIzaSyCa9fjof6rywJwRzuAZs3tYQIbXZb3WSB4",
+    authDomain: "cocina-urbana-b4f9e.firebaseapp.com",
+    projectId: "cocina-urbana-b4f9e",
+    storageBucket: "cocina-urbana-b4f9e.firebasestorage.app",
+    messagingSenderId: "748093629089",
+    appId: "1:748093629089:web:1edcfdf56507cafcec46e0"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const _cache = {};
 
-async function fbCargar(k, def) {
-  try {
-    const snap = await getDoc(doc(db, 'laurbana', k));
-    const val = snap.exists() ? snap.data().v : def;
-    _cache[k] = val;
-    return val;
-  } catch(e) {
-    return _cache[k] !== undefined ? _cache[k] : def;
-  }
-}
-async function fbGuardar(k, v) {
-  _cache[k] = v;
-  try { await setDoc(doc(db, 'laurbana', k), { v }); }
-  catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
-}
+  window._fbCache = _cache;
+  window._fbCargar = async function(k, def) {
+    try {
+      const snap = await db.collection('laurbana').doc(k).get();
+      const val = snap.exists ? snap.data().v : def;
+      _cache[k] = val;
+      return val;
+    } catch(e) {
+      return _cache[k] !== undefined ? _cache[k] : def;
+    }
+  };
+  window._fbGuardar = async function(k, v) {
+    _cache[k] = v;
+    try { await db.collection('laurbana').doc(k).set({ v }); }
+    catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
+  };
 
-window._fbCache = _cache;
-window._fbCargar = fbCargar;
-window._fbGuardar = fbGuardar;
-
-const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos'];
-Promise.all(CLAVES.map(k => fbCargar(k, null))).then(() => {
-  window._firebaseReady = true;
-  if (window._appReady) window._appReady();
-});
+  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos'];
+  Promise.all(CLAVES.map(k => window._fbCargar(k, null))).then(() => {
+    window._firebaseReady = true;
+    if (window._appReady) window._appReady();
+  });
+})();
 </script>
 
 <script>
@@ -2346,19 +2344,20 @@ const TURNO_TAREAS_DEFAULT = [
   { id:'t15',label:'🐔 Cortar pollo raxo',                                 tipo:'apertura', critica:true  },
   { id:'t16',label:'Mise en place barra',                                  tipo:'apertura', critica:false },
   { id:'t17',label:'Comprobar servilletas y cubiertos',                    tipo:'apertura', critica:false },
+  { id:'t18',label:'🍽️ Encender lavavajillas',                            tipo:'apertura', critica:true  },
 ];
 
 const CIERRE_CHECKLIST_DEFAULT = [
-  { id:'c1', label:'🍽️ Cubrir y etiquetar todos los recipientes',         critica:true  },
-  { id:'c2', label:'🔥 Limpiar plancha',                                   critica:true  },
-  { id:'c3', label:'🍟 Cambiar aceite freidora grande',                    critica:true  },
-  { id:'c4', label:'🍟 Cambiar aceite freidora pequeña',                   critica:true  },
-  { id:'c5', label:'🫧 Limpiar lavavajillas (filtro + bandeja)',            critica:true  },
-  { id:'c6', label:'🗑️ Vaciar y limpiar cubos de basura',                  critica:false },
-  { id:'c7', label:'🌡️ Revisar temperaturas neveras (APPCC)',              critica:true  },
-  { id:'c8', label:'📋 Dejar mise en place para el siguiente turno',       critica:false },
-  { id:'c9', label:'⚡ Apagar equipos no necesarios',                      critica:false },
-  { id:'c10',label:'🔒 Cerrar cámaras y congeladores',                     critica:true  },
+  { id:'c1', label:'🍽️ Cubrir y etiquetar todos los recipientes',              critica:true  },
+  { id:'c2', label:'🔥 Limpiar plancha',                                        critica:true  },
+  { id:'c3', label:'🍟 Freidora grande — cambiar aceite y limpiar',             critica:true  },
+  { id:'c4', label:'🍟 Freidora pequeña — cambiar aceite y limpiar',            critica:true  },
+  { id:'c5', label:'🍽️ Apagar lavavajillas — limpiar filtro y bandeja',        critica:true  },
+  { id:'c6', label:'🗑️ Vaciar y limpiar cubos de basura',                       critica:false },
+  { id:'c7', label:'🌡️ Revisar temperaturas neveras (APPCC)',                   critica:true  },
+  { id:'c8', label:'📋 Dejar mise en place para el siguiente turno',            critica:false },
+  { id:'c9', label:'⚡ Apagar equipos no necesarios',                            critica:false },
+  { id:'c10',label:'🔒 Cerrar cámaras y congeladores',                          critica:true  },
 ];
 
 let tipoTurno = 'apertura';
