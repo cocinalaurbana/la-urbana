@@ -1381,17 +1381,14 @@ function iniciarSesion(rol) {
   if (window._firebaseReady) {
     arrancarApp();
   } else {
-    // Mostrar spinner mientras carga Firebase
+    // Firebase aún cargando — mostrar tab inicio y esperar
     const tabInicio = document.getElementById('tab-inicio');
-    if (tabInicio) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tabInicio.classList.add('active');
-      tabInicio.innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-3)"><div style="font-size:2.5rem;margin-bottom:16px">⏳</div><div style="font-size:15px">Cargando datos...</div></div>';
-    }
-    window._appReady = () => {
-      if (tabInicio) tabInicio.innerHTML = '';
-      arrancarApp();
-    };
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    if (tabInicio) tabInicio.classList.add('active');
+    const btnInicio = document.querySelector('nav button[onclick*="inicio"]');
+    if (btnInicio) btnInicio.classList.add('active');
+    window._appReady = () => { arrancarApp(); };
   }
 }
 function cerrarSesion() {
