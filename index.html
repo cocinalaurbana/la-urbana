@@ -478,6 +478,7 @@ nav button.oculto{display:none}
   <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">📖 Recetas</button>
   <button onclick="tab('proveedores',this)" id="nav-proveedores" class="oculto">🤝 Proveedores</button>
   <button onclick="tab('historial',this)" id="nav-historial" class="oculto">📋 Historial</button>
+  <button onclick="tab('contabilidad',this)" id="nav-contabilidad" class="oculto">💶 Cuentas</button>
   <button onclick="tab('spotify',this)" id="nav-spotify" class="oculto">🎵 Spotify</button>
   <button onclick="tab('instagram',this)" id="nav-instagram" class="oculto">📱 Instagram</button>
 </nav>
@@ -897,6 +898,54 @@ nav button.oculto{display:none}
   </div>
 </div>
 
+<!-- CONTABILIDAD -->
+<div id="tab-contabilidad" class="tab">
+
+  <!-- Resumen rápido -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px" id="cont-resumen"></div>
+
+  <!-- Registrar gasto -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">➕ Registrar gasto</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      <input type="text" id="cont-concepto" placeholder="Concepto (ej. Pollo Elmar)" style="flex:2;min-width:140px">
+      <input type="number" id="cont-importe" placeholder="€" min="0" step="0.01" style="flex:1;min-width:80px">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      <select id="cont-categoria" style="flex:1;color:var(--text);background:var(--bg)">
+        <option value="proveedor">🛒 Proveedor</option>
+        <option value="suministro">💡 Suministro</option>
+        <option value="personal">👨‍🍳 Personal</option>
+        <option value="embalaje">🥡 Embalaje</option>
+        <option value="limpieza">🧹 Limpieza</option>
+        <option value="otro">📦 Otro</option>
+      </select>
+      <input type="date" id="cont-fecha" style="flex:1;color:var(--text);background:var(--bg)">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-oro btn-sm" onclick="abrirEscaner()">📷 Escanear tiquet</button>
+      <button class="btn btn-oro" style="flex:1" onclick="guardarGasto()">Guardar gasto</button>
+    </div>
+    <!-- Preview foto escaneada -->
+    <div id="cont-foto-preview" style="display:none;margin-top:10px">
+      <img id="cont-foto-img" style="max-width:100%;border-radius:10px;border:1px solid var(--border)">
+      <div id="cont-foto-leido" style="margin-top:6px;font-size:13px;color:var(--verde)"></div>
+    </div>
+    <input type="file" id="cont-foto-input" accept="image/*" capture="environment" style="display:none" onchange="procesarFoto(this)">
+    <input type="hidden" id="cont-foto-data">
+  </div>
+
+  <!-- Filtro periodo -->
+  <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
+    <div style="font-size:13px;color:var(--text-3);font-weight:600">Ver:</div>
+    <button class="stock-fil-btn active" onclick="setContPeriodo(this,'semana')">Esta semana</button>
+    <button class="stock-fil-btn" onclick="setContPeriodo(this,'mes')">Este mes</button>
+    <button class="stock-fil-btn" onclick="setContPeriodo(this,'todo')">Todo</button>
+  </div>
+
+  <div id="cont-lista"></div>
+</div>
+
 <!-- SPOTIFY -->
 <div id="tab-spotify" class="tab">
   <div class="card" style="background:linear-gradient(135deg,#0a1a0a,#0d2010);border-color:rgba(30,215,96,.3)">
@@ -1048,9 +1097,11 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
     <div class="modal-title"><span>Proveedor</span><button class="modal-close" onclick="cerrarModal('modal-proveedor')">×</button></div>
     <div class="form-group"><label>Nombre</label><input type="text" id="pv-nombre"></div>
     <div class="form-group"><label>Categoría</label><input type="text" id="pv-categoria" placeholder="ej. Cárnico, Verduras..."></div>
-    <div class="form-group"><label>Teléfono</label><input type="tel" id="pv-telefono"></div>
-    <div class="form-group"><label>Días de pedido</label><input type="text" id="pv-dias"></div>
+    <div class="form-group"><label>📞 Teléfono WhatsApp</label><input type="tel" id="pv-telefono" placeholder="ej. 600123456"></div>
+    <div class="form-group"><label>Productos que suministra</label><input type="text" id="pv-productos" placeholder="ej. Burrata, Pollo, Croquetas"></div>
+    <div class="form-group"><label>📅 Días / horario de pedido</label><input type="text" id="pv-dias" placeholder="ej. L-V antes de las 16:00"></div>
     <div class="form-group"><label>Notas</label><textarea id="pv-notas" rows="2"></textarea></div>
+    <input type="hidden" id="pv-id">
     <div style="display:flex;gap:10px">
       <button class="btn btn-oro" style="flex:1" onclick="guardarProveedor()">Guardar</button>
       <button class="btn btn-outline" onclick="cerrarModal('modal-proveedor')">Cancelar</button>
@@ -1096,7 +1147,7 @@ window._fbCache = _cache;
 window._fbCargar = fbCargar;
 window._fbGuardar = fbGuardar;
 
-const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists'];
+const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos'];
 Promise.all(CLAVES.map(k => fbCargar(k, null))).then(() => {
   window._firebaseReady = true;
   if (window._appReady) window._appReady();
@@ -1304,7 +1355,7 @@ function cerrarSesion() {
   initBourdain();
 }
 function aplicarPermisos() {
-  ['nav-menu','nav-recetas','nav-proveedores','nav-historial','nav-spotify','nav-instagram'].forEach(id => {
+  ['nav-menu','nav-recetas','nav-proveedores','nav-historial','nav-spotify','nav-instagram','nav-contabilidad'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('oculto', esMaria());
   });
@@ -1314,7 +1365,7 @@ function aplicarPermisos() {
 }
 
 function tab(id, btn) {
-  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram'];
+  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad'];
   if (esMaria() && soloAdmin.includes(id)) { toast('No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -1326,7 +1377,11 @@ function tab(id, btn) {
     pedidos: renderPedidos, caja: initCaja, menu: initMenu,
     appcc: initAppcc, turno: initTurno,
     recetas: renderRecetas, proveedores: renderProveedores,
-    historial: renderHistorial, spotify: renderPlaylistsCustom
+    historial: renderHistorial, spotify: renderPlaylistsCustom,
+    contabilidad: () => {
+      document.getElementById('cont-fecha').value = new Date().toISOString().split('T')[0];
+      renderContabilidad();
+    }
   };
   if (renders[id]) renders[id]();
 }
@@ -2847,33 +2902,82 @@ function borrarReceta(id) {
 // ══════════════════════════════════════════
 // PROVEEDORES
 // ══════════════════════════════════════════
-function abrirModalProveedor() {
-  ['pv-nombre','pv-categoria','pv-telefono','pv-dias','pv-notas'].forEach(i => document.getElementById(i).value='');
+
+const PROVEEDORES_DEFAULT = [
+  {id:1, nombre:'Fructífera', categoria:'Frutas y Verduras', telefono:'', productos:'Frutas, verduras', dias:'L-V', notas:''},
+  {id:2, nombre:'Pepe (Panadería)', categoria:'Panadería', telefono:'', productos:'Pan, bollería', dias:'Diario mañana', notas:''},
+  {id:3, nombre:'Gadis', categoria:'General', telefono:'', productos:'Varios, lácteos, conservas', dias:'', notas:'Pendiente facturas'},
+  {id:4, nombre:'Makro', categoria:'General', telefono:'', productos:'Atún, coulant, varios', dias:'', notas:'Pendiente facturas'},
+  {id:5, nombre:'Elmar', categoria:'Cárnico', telefono:'', productos:'Pollo', dias:'', notas:''},
+  {id:6, nombre:'DIS', categoria:'Cárnico', telefono:'', productos:'Chorizo rojo ahumado', dias:'', notas:'Pendiente precio y formato'},
+  {id:7, nombre:'Armando Galves', categoria:'Suministro', telefono:'', productos:'Aceite alto oleico', dias:'', notas:''},
+  {id:8, nombre:'Gas Bergondo', categoria:'Suministro', telefono:'', productos:'Bombonas de gas', dias:'', notas:''},
+  {id:9, nombre:'Restafresh', categoria:'Pescado', telefono:'630727805', productos:'Mejillón fresco (candidato)', dias:'Fines de semana', notas:'⭐ Candidato proveedor mejillón — pendiente confirmar'},
+];
+
+function initProveedoresDefault() {
+  const existentes = cargar('proveedores',[]);
+  if (existentes.length === 0) {
+    guardar('proveedores', PROVEEDORES_DEFAULT);
+  }
+}
+
+function abrirModalProveedor(id) {
+  ['pv-nombre','pv-categoria','pv-telefono','pv-productos','pv-dias','pv-notas'].forEach(i => {
+    const el = document.getElementById(i); if(el) el.value='';
+  });
+  document.getElementById('pv-id').value = '';
+  if (id) {
+    const p = cargar('proveedores',[]).find(x => x.id===id);
+    if (p) {
+      document.getElementById('pv-nombre').value = p.nombre||'';
+      document.getElementById('pv-categoria').value = p.categoria||'';
+      document.getElementById('pv-telefono').value = p.telefono||'';
+      document.getElementById('pv-productos').value = p.productos||'';
+      document.getElementById('pv-dias').value = p.dias||'';
+      document.getElementById('pv-notas').value = p.notas||'';
+      document.getElementById('pv-id').value = id;
+    }
+  }
   abrirModal('modal-proveedor');
 }
 function guardarProveedor() {
   const nombre = document.getElementById('pv-nombre').value.trim();
   if (!nombre) { toast('Nombre del proveedor'); return; }
-  const prov = {id:Date.now(), nombre,
+  const idEdit = parseInt(document.getElementById('pv-id').value)||null;
+  const prov = {
+    id: idEdit || Date.now(), nombre,
     categoria: document.getElementById('pv-categoria').value.trim(),
     telefono: document.getElementById('pv-telefono').value.trim(),
+    productos: document.getElementById('pv-productos').value.trim(),
     dias: document.getElementById('pv-dias').value.trim(),
     notas: document.getElementById('pv-notas').value.trim()
   };
-  const proveedores = cargar('proveedores',[]);
-  proveedores.push(prov);
+  let proveedores = cargar('proveedores',[]);
+  if (idEdit) proveedores = proveedores.map(p => p.id===idEdit ? prov : p);
+  else proveedores.push(prov);
   guardar('proveedores', proveedores);
   cerrarModal('modal-proveedor');
   renderProveedores();
   toast('Proveedor guardado ✓','verde');
 }
 function borrarProveedor(id) {
-  if (!confirm('¿Borrar?')) return;
+  if (!confirm('¿Borrar proveedor?')) return;
   guardar('proveedores', cargar('proveedores',[]).filter(p => p.id!==id));
   renderProveedores();
 }
-const PROV_EMOJIS = {'Cárnico':'🥩','Verduras':'🥬','Frutas':'🍊','Pescado':'🐟','Bebidas':'🍺','Panadería':'🍞','Lácteos':'🧀','General':'📦'};
+function pedirAProveedor(id) {
+  const p = cargar('proveedores',[]).find(x => x.id===id);
+  if (!p) return;
+  if (!p.telefono) { toast('Este proveedor no tiene teléfono guardado','error'); return; }
+  const tel = p.telefono.replace(/\D/g,'');
+  const telWA = tel.startsWith('34') ? tel : '34'+tel;
+  const msg = encodeURIComponent(`Hola, buenos días. Soy Lorena de La Urbana (A Coruña). Necesitaríamos hacer un pedido de ${p.productos||'productos'}. ¿Podéis confirmarnos disponibilidad y precio? Muchas gracias 🙏`);
+  window.open(`https://wa.me/${telWA}?text=${msg}`, '_blank');
+}
+const PROV_EMOJIS = {'Cárnico':'🥩','Verduras':'🥬','Frutas y Verduras':'🥬','Frutas':'🍊','Pescado':'🐟','Bebidas':'🍺','Panadería':'🍞','Lácteos':'🧀','Suministro':'💡','General':'📦'};
 function renderProveedores() {
+  initProveedoresDefault();
   const el = document.getElementById('proveedores-lista');
   const proveedores = cargar('proveedores',[]);
   if (!proveedores.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">🤝</div><div>Sin proveedores.</div></div>'; return; }
@@ -2881,10 +2985,165 @@ function renderProveedores() {
     <div class="prov-emoji">${PROV_EMOJIS[p.categoria]||'📦'}</div>
     <div style="flex:1">
       <div class="prov-nombre">${p.nombre}</div>
-      <div class="prov-datos">${p.categoria?`<span class="badge badge-oro">${p.categoria}</span> `:''}${p.telefono?`📞 ${p.telefono}<br>`:''}${p.dias?`📅 ${p.dias}<br>`:''}${p.notas?`<span style="color:var(--text-3)">${p.notas}</span>`:''}</div>
+      <div class="prov-datos">
+        ${p.categoria?`<span class="badge badge-oro">${p.categoria}</span> `:''}
+        ${p.productos?`<span style="font-size:12px;color:var(--text-2)">📦 ${p.productos}</span><br>`:''}
+        ${p.telefono?`📞 ${p.telefono} `:''}
+        ${p.dias?`<span style="font-size:11px;color:var(--text-3)">📅 ${p.dias}</span><br>`:''}
+        ${p.notas?`<span style="color:var(--text-3);font-size:11px">${p.notas}</span>`:''}
+      </div>
+      ${p.telefono?`<button class="btn btn-oro btn-sm" style="margin-top:8px" onclick="pedirAProveedor(${p.id})">📲 Pedir por WhatsApp</button>`:'<span style="font-size:11px;color:var(--text-3)">Sin teléfono — edita para añadir</span>'}
     </div>
-    <button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px" onclick="borrarProveedor(${p.id})">×</button>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:14px" onclick="abrirModalProveedor(${p.id})">✏️</button>
+      <button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px" onclick="borrarProveedor(${p.id})">×</button>
+    </div>
   </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// CONTABILIDAD
+// ══════════════════════════════════════════
+let _contPeriodo = 'semana';
+const CONT_CAT_ICONS = {proveedor:'🛒', suministro:'💡', personal:'👨‍🍳', embalaje:'🥡', limpieza:'🧹', otro:'📦'};
+
+function setContPeriodo(btn, val) {
+  _contPeriodo = val;
+  document.querySelectorAll('#tab-contabilidad .stock-fil-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderContabilidad();
+}
+
+function abrirEscaner() {
+  document.getElementById('cont-foto-input').click();
+}
+
+function procesarFoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const dataUrl = e.target.result;
+    document.getElementById('cont-foto-img').src = dataUrl;
+    document.getElementById('cont-foto-data').value = dataUrl;
+    document.getElementById('cont-foto-preview').style.display = '';
+    // Intentar leer importe con OCR básico — busca patrones de precio
+    intentarLeerImporte(dataUrl);
+  };
+  reader.readAsDataURL(file);
+}
+
+function intentarLeerImporte(dataUrl) {
+  // Usamos canvas para preparar, luego indicamos al usuario revisar
+  const label = document.getElementById('cont-foto-leido');
+  label.textContent = '📷 Foto guardada. Revisa el importe detectado o introdúcelo manualmente.';
+  label.style.color = 'var(--amarillo)';
+  // Si el navegador soporta la API de texto (futuro), aquí iría el OCR
+  // Por ahora la foto se guarda y el importe se introduce/confirma manual
+}
+
+function guardarGasto() {
+  const concepto = document.getElementById('cont-concepto').value.trim();
+  const importe = parseFloat(document.getElementById('cont-importe').value);
+  const categoria = document.getElementById('cont-categoria').value;
+  const fecha = document.getElementById('cont-fecha').value || new Date().toISOString().split('T')[0];
+  const foto = document.getElementById('cont-foto-data').value || null;
+
+  if (!concepto) { toast('Añade un concepto','error'); return; }
+  if (!importe || importe <= 0) { toast('Añade el importe','error'); return; }
+
+  const gasto = { id: Date.now(), concepto, importe, categoria, fecha, foto, quien: usuarioActual() };
+  const gastos = cargar('gastos',[]);
+  gastos.push(gasto);
+  guardar('gastos', gastos);
+
+  // Limpiar formulario
+  ['cont-concepto','cont-importe'].forEach(i => document.getElementById(i).value='');
+  document.getElementById('cont-foto-data').value='';
+  document.getElementById('cont-foto-preview').style.display='none';
+  document.getElementById('cont-fecha').value='';
+
+  toast('Gasto registrado ✓','verde');
+  registrarHistorial('gasto', `Gasto: ${concepto} — ${importe.toFixed(2)}€`);
+  renderContabilidad();
+}
+
+function borrarGasto(id) {
+  if (!confirm('¿Borrar este gasto?')) return;
+  guardar('gastos', cargar('gastos',[]).filter(g => g.id!==id));
+  renderContabilidad();
+}
+
+function renderContabilidad() {
+  let gastos = cargar('gastos',[]);
+  const hoy = new Date();
+
+  // Filtro periodo
+  if (_contPeriodo === 'semana') {
+    const lunes = new Date(hoy); lunes.setDate(hoy.getDate() - hoy.getDay() + 1); lunes.setHours(0,0,0,0);
+    gastos = gastos.filter(g => new Date(g.fecha) >= lunes);
+  } else if (_contPeriodo === 'mes') {
+    const ini = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    gastos = gastos.filter(g => new Date(g.fecha) >= ini);
+  }
+
+  // Totales por categoría
+  const totales = {};
+  let total = 0;
+  gastos.forEach(g => {
+    totales[g.categoria] = (totales[g.categoria]||0) + g.importe;
+    total += g.importe;
+  });
+
+  // Resumen
+  const resEl = document.getElementById('cont-resumen');
+  resEl.innerHTML = `
+    <div class="card" style="text-align:center;padding:14px">
+      <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:1px">Total gastos</div>
+      <div style="font-size:1.8rem;font-weight:900;color:var(--rojo)">−${total.toFixed(2)}€</div>
+      <div style="font-size:11px;color:var(--text-3)">${gastos.length} registros</div>
+    </div>
+    <div class="card" style="padding:14px">
+      <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Por categoría</div>
+      ${Object.entries(totales).sort((a,b)=>b[1]-a[1]).map(([cat,imp]) =>
+        `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
+          <span>${CONT_CAT_ICONS[cat]||'📦'} ${cat}</span>
+          <strong>${imp.toFixed(2)}€</strong>
+        </div>`
+      ).join('') || '<div style="color:var(--text-3);font-size:13px">Sin datos</div>'}
+    </div>`;
+
+  // Lista
+  const el = document.getElementById('cont-lista');
+  if (!gastos.length) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">💶</div><div style="margin-top:8px">Sin gastos registrados.</div></div>';
+    return;
+  }
+  const ordenados = [...gastos].sort((a,b) => new Date(b.fecha)-new Date(a.fecha));
+  el.innerHTML = ordenados.map(g => `
+    <div class="card" style="padding:12px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-size:1.5rem;flex-shrink:0">${CONT_CAT_ICONS[g.categoria]||'📦'}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:15px">${g.concepto}</div>
+          <div style="font-size:12px;color:var(--text-3)">${g.fecha} · <span class="badge badge-oro">${g.categoria}</span></div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:1.1rem;font-weight:900;color:var(--rojo)">−${g.importe.toFixed(2)}€</div>
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px">
+            ${g.foto?`<button style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-3)" onclick="verFoto('${g.id}')">🖼️</button>`:''}
+            <button style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-3)" onclick="borrarGasto(${g.id})">×</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function verFoto(id) {
+  const g = cargar('gastos',[]).find(x => x.id==id);
+  if (!g || !g.foto) return;
+  const w = window.open('','_blank');
+  w.document.write(`<html><body style="margin:0;background:#000"><img src="${g.foto}" style="max-width:100%;height:auto"></body></html>`);
 }
 
 // ══════════════════════════════════════════
