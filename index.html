@@ -2576,24 +2576,27 @@ function exportarAppccSemana() {
 // ══════════════════════════════════════════
 
 const TURNO_TAREAS_DEFAULT = [
-  { id:'t1', label:'🥩 Sacar lomo del congelador — descongelar',          tipo:'apertura', critica:true  },
-  { id:'t2', label:'🐔 Pollo Urbana — cortar y adobar',                    tipo:'apertura', critica:true  },
-  { id:'t3', label:'🐔 Raxo de pollo — cortar y adobar',                   tipo:'apertura', critica:true  },
-  { id:'t4', label:'🥗 Ensaladilla — chequear que está buena / hacer más', tipo:'apertura', critica:true  },
-  { id:'t5', label:'🥚 Comprobar huevos en cocina',                        tipo:'apertura', critica:true  },
-  { id:'t6', label:'🫙 Stock alioli — reponer si falta',                   tipo:'apertura', critica:true  },
-  { id:'t7', label:'🫙 Stock bravas — reponer si falta',                   tipo:'apertura', critica:true  },
-  { id:'t8', label:'🫙 Stock chimichurri — reponer si falta',              tipo:'apertura', critica:true  },
-  { id:'t9', label:'🌡️ Revisar neveras / temperaturas (APPCC)',            tipo:'apertura', critica:false },
-  { id:'t10',label:'🧅 Cortar cebolla',                                    tipo:'apertura', critica:false },
-  { id:'t11',label:'🥬 Cortar apio',                                       tipo:'apertura', critica:false },
-  { id:'t12',label:'🌿 Cortar puerro',                                     tipo:'apertura', critica:false },
-  { id:'t13',label:'🥩 Cortar lomo',                                       tipo:'apertura', critica:true  },
-  { id:'t14',label:'🐔 Cortar pollo Urbana',                               tipo:'apertura', critica:true  },
-  { id:'t15',label:'🐔 Cortar pollo raxo',                                 tipo:'apertura', critica:true  },
-  { id:'t16',label:'Mise en place barra',                                  tipo:'apertura', critica:false },
-  { id:'t17',label:'Comprobar servilletas y cubiertos',                    tipo:'apertura', critica:false },
-  { id:'t18',label:'🍽️ Encender lavavajillas',                            tipo:'apertura', critica:true  },
+  { id:'t2', label:'🐔 Pollo Urbana — cortar y adobar',                        tipo:'apertura', critica:true  },
+  { id:'t3', label:'🐷 Raxo de cerdo — cortar (si lo hay)',                    tipo:'apertura', critica:false },
+  { id:'t4', label:'🥗 Ensaladilla — chequear que está buena / hacer más',     tipo:'apertura', critica:true  },
+  { id:'t5', label:'🥚 Comprobar huevos en cocina',                            tipo:'apertura', critica:true  },
+  { id:'t6', label:'🫙 Stock alioli — reponer si falta',                       tipo:'apertura', critica:true  },
+  { id:'t7', label:'🫙 Stock bravas — reponer si falta',                       tipo:'apertura', critica:true  },
+  { id:'t8', label:'🫙 Stock chimichurri — reponer si falta',                  tipo:'apertura', critica:true  },
+  { id:'t9', label:'🌡️ Revisar neveras / temperaturas (APPCC)',                tipo:'apertura', critica:false },
+  { id:'t10',label:'🧅 Cortar cebolla',                                        tipo:'apertura', critica:false },
+  { id:'t11',label:'🥬 Cortar apio',                                           tipo:'apertura', critica:false },
+  { id:'t12',label:'🌿 Cortar puerro',                                         tipo:'apertura', critica:false },
+  { id:'t13',label:'🥩 Cortar lomo',                                           tipo:'apertura', critica:true  },
+  { id:'t19',label:'🍟 Pochar patata para tortilla y patata bastón',           tipo:'apertura', critica:true  },
+  { id:'t20',label:'🥔 Comprobar patata con piel (ensaladilla)',               tipo:'apertura', critica:false },
+  { id:'t21',label:'🍗 Comprobar croquetas (si hay stock)',                    tipo:'apertura', critica:false },
+  { id:'t22',label:'🫙 Biberones — comprobar que tienen aceite',               tipo:'apertura', critica:true  },
+  { id:'t23',label:'🏷️ Comprobar etiquetas de envasado en nevera',            tipo:'apertura', critica:true  },
+  { id:'t24',label:'📦 Envases take away: pequeño, grande, pizza M, pizza L',  tipo:'apertura', critica:true  },
+  { id:'t25',label:'🛍️ Bolsas take away',                                     tipo:'apertura', critica:false },
+  { id:'t16',label:'🍞 Cortar pan (o confirmar que barra lo hace)',            tipo:'apertura', critica:false },
+  { id:'t18',label:'🍽️ Encender lavavajillas',                                tipo:'apertura', critica:true  },
 ];
 
 const CIERRE_CHECKLIST_DEFAULT = [
@@ -2607,6 +2610,8 @@ const CIERRE_CHECKLIST_DEFAULT = [
   { id:'c8', label:'📋 Dejar mise en place para el siguiente turno',            critica:false },
   { id:'c9', label:'⚡ Apagar equipos no necesarios',                            critica:false },
   { id:'c10',label:'🔒 Cerrar cámaras y congeladores',                          critica:true  },
+  { id:'c11',label:'🧊 Sacar a descongelar para mañana (si procede)',           critica:true  },
+  { id:'c12',label:'📦 Recuento para pedido Fructífera (fruta, patata, bastón)',critica:false },
 ];
 
 let tipoTurno = 'apertura';
