@@ -955,7 +955,7 @@ nav button.oculto{display:none}
       <input type="date" id="cont-fecha" style="flex:1;color:var(--text);background:var(--bg)">
     </div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-oro btn-sm" onclick="abrirEscaner()">📷 Escanear tiquet</button>
+      <button class="btn btn-oro btn-sm" id="cont-btn-escanear" onclick="abrirEscaner()">📷 Escanear tiquet</button>
       <button class="btn btn-oro" style="flex:1" onclick="guardarGasto()">Guardar gasto</button>
     </div>
     <!-- Preview foto escaneada -->
@@ -1137,6 +1137,19 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
     <div style="display:flex;gap:10px">
       <button class="btn btn-oro" style="flex:1" onclick="guardarProveedor()">Guardar</button>
       <button class="btn btn-outline" onclick="cerrarModal('modal-proveedor')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ver foto de tiquet -->
+<div class="modal-overlay" id="modal-foto-ticket">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title"><span>📷 Tiquet</span><button class="modal-close" onclick="cerrarModal('modal-foto-ticket')">×</button></div>
+    <div id="foto-ticket-concepto" style="font-weight:700;font-size:15px;margin-bottom:4px"></div>
+    <div id="foto-ticket-fecha" style="font-size:12px;color:var(--text-3);margin-bottom:10px"></div>
+    <img id="foto-ticket-img" style="max-width:100%;border-radius:10px;border:1px solid var(--border)">
+    <div style="display:flex;gap:10px;margin-top:12px">
+      <button class="btn btn-outline" style="flex:1" onclick="cerrarModal('modal-foto-ticket')">Cerrar</button>
     </div>
   </div>
 </div>
@@ -3112,23 +3125,32 @@ function procesarFoto(input) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const dataUrl = e.target.result;
-    document.getElementById('cont-foto-img').src = dataUrl;
-    document.getElementById('cont-foto-data').value = dataUrl;
-    document.getElementById('cont-foto-preview').style.display = '';
-    // Intentar leer importe con OCR básico — busca patrones de precio
-    intentarLeerImporte(dataUrl);
+    // Redimensionar a máx 800px para no ocupar demasiado en storage
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+        else        { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById('cont-foto-img').src = dataUrl;
+      document.getElementById('cont-foto-data').value = dataUrl;
+      document.getElementById('cont-foto-preview').style.display = '';
+      const label = document.getElementById('cont-foto-leido');
+      label.textContent = '📷 Foto capturada (' + w + '×' + h + '). Introduce el importe manualmente.';
+      label.style.color = 'var(--verde)';
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
-}
-
-function intentarLeerImporte(dataUrl) {
-  // Usamos canvas para preparar, luego indicamos al usuario revisar
-  const label = document.getElementById('cont-foto-leido');
-  label.textContent = '📷 Foto guardada. Revisa el importe detectado o introdúcelo manualmente.';
-  label.style.color = 'var(--amarillo)';
-  // Si el navegador soporta la API de texto (futuro), aquí iría el OCR
-  // Por ahora la foto se guarda y el importe se introduce/confirma manual
+  // Reset input para permitir re-capturar la misma foto
+  input.value = '';
 }
 
 function guardarGasto() {
@@ -3141,7 +3163,7 @@ function guardarGasto() {
   if (!concepto) { toast('Añade un concepto','error'); return; }
   if (!importe || importe <= 0) { toast('Añade el importe','error'); return; }
 
-  const gasto = { id: Date.now(), concepto, importe, categoria, fecha, foto, quien: usuarioActual() };
+  const gasto = { id: Date.now(), concepto, importe, categoria, fecha, foto, quien: USUARIO || 'desconocido' };
   const gastos = cargar('gastos',[]);
   gastos.push(gasto);
   guardar('gastos', gastos);
@@ -3153,7 +3175,7 @@ function guardarGasto() {
   document.getElementById('cont-fecha').value='';
 
   toast('Gasto registrado ✓','verde');
-  registrarHistorial('gasto', `Gasto: ${concepto} — ${importe.toFixed(2)}€`);
+  addHistorial('stock', `💶 Gasto: ${concepto} — ${importe.toFixed(2)}€`);
   renderContabilidad();
 }
 
@@ -3166,6 +3188,10 @@ function borrarGasto(id) {
 function renderContabilidad() {
   let gastos = cargar('gastos',[]);
   const hoy = new Date();
+
+  // Control de acceso: solo admins pueden registrar/escanear
+  const btnEscanear = document.getElementById('cont-btn-escanear');
+  if (btnEscanear) btnEscanear.style.display = esAdmin() ? '' : 'none';
 
   // Filtro periodo
   if (_contPeriodo === 'semana') {
@@ -3220,7 +3246,7 @@ function renderContabilidad() {
         <div style="text-align:right">
           <div style="font-size:1.1rem;font-weight:900;color:var(--rojo)">−${g.importe.toFixed(2)}€</div>
           <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px">
-            ${g.foto?`<button style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-3)" onclick="verFoto('${g.id}')">🖼️</button>`:''}
+            ${g.foto?`<button style="background:none;border:none;cursor:pointer;font-size:16px" title="Ver tiquet" onclick="verFoto(${g.id})">📷</button>`:''}
             <button style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-3)" onclick="borrarGasto(${g.id})">×</button>
           </div>
         </div>
@@ -3231,8 +3257,11 @@ function renderContabilidad() {
 function verFoto(id) {
   const g = cargar('gastos',[]).find(x => x.id==id);
   if (!g || !g.foto) return;
-  const w = window.open('','_blank');
-  w.document.write(`<html><body style="margin:0;background:#000"><img src="${g.foto}" style="max-width:100%;height:auto"></body></html>`);
+  const modal = document.getElementById('modal-foto-ticket');
+  document.getElementById('foto-ticket-img').src = g.foto;
+  document.getElementById('foto-ticket-concepto').textContent = g.concepto + ' — ' + g.importe.toFixed(2) + '€';
+  document.getElementById('foto-ticket-fecha').textContent = g.fecha;
+  abrirModal('modal-foto-ticket');
 }
 
 // ══════════════════════════════════════════
