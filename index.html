@@ -778,10 +778,33 @@ nav button.oculto{display:none}
 
 <!-- MERMAS -->
 <div id="tab-mermas" class="tab">
+  <!-- Estadísticas del mes -->
+  <div class="card" id="mermas-stats-card" style="margin-bottom:14px">
+    <div class="card-title">📊 Estadísticas del mes</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-bottom:12px">
+      <div style="background:var(--rojo-l);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px">Coste mermas</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--rojo)" id="merma-stat-coste">0€</div>
+      </div>
+      <div style="background:var(--accent-l);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px">Más merma</div>
+        <div style="font-size:.85rem;font-weight:700;color:var(--accent-d);margin-top:4px" id="merma-stat-top">—</div>
+      </div>
+      <div style="background:var(--amarillo-l);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px">Registros</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--amarillo)" id="merma-stat-count">0</div>
+      </div>
+    </div>
+    <!-- Gráfico de barras por motivo -->
+    <div style="font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Mermas por motivo</div>
+    <div id="mermas-grafico"></div>
+  </div>
+
   <div class="card">
     <div class="card-title">📉 Registrar merma</div>
     <div class="form-group"><label>Producto</label><select id="m-producto" style="color:var(--text);background:var(--bg)"></select></div>
     <div class="form-group"><label>Cantidad</label><input type="number" id="m-cantidad" placeholder="ej. 2" min="0.1" step="0.1"></div>
+    <div id="merma-coste-info" style="display:none;font-size:13px;color:var(--text-3);margin-bottom:10px;padding:8px 10px;background:var(--surface-2);border-radius:8px"></div>
     <div class="form-group">
       <label>Motivo <span style="color:var(--rojo)">*obligatorio</span></label>
       <select id="m-motivo" onchange="onMotivoChange()" style="color:var(--text);background:var(--bg)">
@@ -1965,6 +1988,23 @@ function poblarSelectorProductos() {
   sel.innerHTML = productos.length
     ? productos.map(p => `<option value="${p.id}">${p.nombre} (${(p.lotes||[]).reduce((a,l)=>a+l.cantidad,0)} ${p.unidad})</option>`).join('')
     : '<option value="">Sin productos registrados</option>';
+  sel.onchange = actualizarMermaCosteInfo;
+  const cantInput = document.getElementById('m-cantidad');
+  if (cantInput) cantInput.oninput = actualizarMermaCosteInfo;
+}
+
+function actualizarMermaCosteInfo() {
+  const prodId = parseInt(document.getElementById('m-producto').value);
+  const cantidad = parseFloat(document.getElementById('m-cantidad').value);
+  const infoEl = document.getElementById('merma-coste-info');
+  if (!prodId || !cantidad || cantidad <= 0) { if (infoEl) infoEl.style.display = 'none'; return; }
+  const prod = cargar('stock_productos',[]).find(p => p.id === prodId);
+  if (!prod || !prod.costeUnitario) { if (infoEl) infoEl.style.display = 'none'; return; }
+  const coste = (prod.costeUnitario * cantidad).toFixed(2);
+  if (infoEl) {
+    infoEl.style.display = '';
+    infoEl.innerHTML = `💰 Coste estimado: <strong>${coste}€</strong> <span style="color:var(--text-3)">(${prod.costeUnitario.toFixed(2)}€/${prod.unidad})</span>`;
+  }
 }
 
 // ══════════════════════════════════════════
@@ -1993,6 +2033,10 @@ function guardarMerma() {
   const prod = productos.find(p => p.id === prodId);
   if (!prod) { toast('Producto no encontrado','error'); return; }
 
+  // Calcular coste aproximado si el producto tiene coste unitario
+  const costeUnit = prod.costeUnitario || null;
+  const costeTotal = costeUnit ? Math.round(costeUnit * cantidad * 100) / 100 : null;
+
   let restante = cantidad;
   const lotesActualizados = (prod.lotes||[]).map(l => {
     if (restante <= 0) return l;
@@ -2004,15 +2048,16 @@ function guardarMerma() {
   const productosActualizados = productos.map(p => p.id === prodId ? {...p, lotes: lotesActualizados} : p);
   guardar('stock_productos', productosActualizados);
 
-  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidad:prod.unidad, cantidad, motivo, detalle, quien:USUARIO, cuando:ahora()};
+  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidad:prod.unidad, cantidad, motivo, detalle, costeUnit, costeTotal, quien:USUARIO, cuando:ahora()};
   const mermas = cargar('mermas',[]);
   mermas.unshift(merma);
   guardar('mermas', mermas);
-  addHistorial('merma', `📉 ${cantidad} ${prod.unidad} de ${prod.nombre} · ${motivo}${detalle?' — '+detalle:''}`);
+  addHistorial('merma', `📉 ${cantidad} ${prod.unidad} de ${prod.nombre} · ${motivo}${detalle?' — '+detalle:''}${costeTotal?` (${costeTotal.toFixed(2)}€)`:''}`);
 
   document.getElementById('m-cantidad').value = '';
   document.getElementById('m-motivo').value = '';
   document.getElementById('m-detalle').value = '';
+  document.getElementById('merma-coste-info').style.display = 'none';
   renderMermas(); renderStock(); initInicio();
   toast('Merma registrada ✓','verde');
 }
@@ -2026,6 +2071,9 @@ function renderMermas() {
   if (filtro === 'hoy') mermas = mermas.filter(m => m.cuando && m.cuando.startsWith(hoy()));
   else if (filtro === 'semana') mermas = mermas.filter(m => m.cuando && new Date(m.cuando) >= semAtras);
 
+  // Renderizar estadísticas del mes siempre
+  renderMermasStats();
+
   const el = document.getElementById('mermas-lista');
   if (!mermas.length) {
     el.innerHTML = '<div style="color:var(--text-3);font-size:14px;padding:16px 0">Sin mermas en este período.</div>';
@@ -2037,7 +2085,7 @@ function renderMermas() {
   el.innerHTML = mermas.map(m => `<div class="merma-row">
     <div style="flex:1">
       <div style="font-weight:600;font-size:.9rem">${m.prodNombre}</div>
-      <div style="font-size:12px;color:var(--text-3);margin-top:2px">${m.cantidad} ${m.unidad} · ${quienLabel[m.quien]||m.quien} · ${formatHora(m.cuando)}</div>
+      <div style="font-size:12px;color:var(--text-3);margin-top:2px">${m.cantidad} ${m.unidad} · ${quienLabel[m.quien]||m.quien} · ${formatHora(m.cuando)}${m.costeTotal?` · 💰 ${m.costeTotal.toFixed(2)}€`:''}</div>
       ${m.detalle?`<div style="font-size:12px;color:var(--text-2);margin-top:3px;font-style:italic">"${m.detalle}"</div>`:''}
     </div>
     <span class="merma-motivo ${m.motivo}">${MOTIVO_LABELS[m.motivo]||m.motivo}</span>
@@ -2047,6 +2095,49 @@ function renderMermas() {
   mermas.forEach(m => resumen[m.motivo] = (resumen[m.motivo]||0)+1);
   const resStr = Object.entries(resumen).map(([k,v])=>`${MOTIVO_LABELS[k]}: ${v}`).join(' · ');
   document.getElementById('mermas-resumen').innerHTML = `${resStr} · <strong>Total: ${mermas.length}</strong>`;
+}
+
+// ─── Estadísticas de mermas del mes ───
+function renderMermasStats() {
+  const ahora = new Date();
+  const mesActual = ahora.toISOString().slice(0,7); // YYYY-MM
+  const mermasMes = cargar('mermas',[]).filter(m => m.cuando && m.cuando.startsWith(mesActual));
+
+  // Total coste
+  const totalCoste = mermasMes.reduce((a,m) => a + (m.costeTotal||0), 0);
+  document.getElementById('merma-stat-coste').textContent = totalCoste.toFixed(2) + '€';
+
+  // Producto más merma
+  const porProd = {};
+  mermasMes.forEach(m => { porProd[m.prodNombre] = (porProd[m.prodNombre]||0) + 1; });
+  const topProd = Object.entries(porProd).sort((a,b) => b[1]-a[1])[0];
+  document.getElementById('merma-stat-top').textContent = topProd ? topProd[0] : '—';
+
+  // Número de registros
+  document.getElementById('merma-stat-count').textContent = mermasMes.length;
+
+  // Gráfico de barras por motivo
+  const porMotivo = {};
+  mermasMes.forEach(m => { porMotivo[m.motivo] = (porMotivo[m.motivo]||0) + (m.costeTotal||0); });
+  const motivos = Object.keys(porMotivo);
+  const maxVal = Math.max(1, ...Object.values(porMotivo));
+  const colores = {cocinado:'var(--verde)', tirado:'var(--rojo)', caducado:'var(--amarillo)', roto:'var(--naranja)', otro:'var(--text-3)'};
+  const grafEl = document.getElementById('mermas-grafico');
+  if (!motivos.length) {
+    grafEl.innerHTML = '<div style="font-size:13px;color:var(--text-3);text-align:center;padding:8px">Sin mermas este mes.</div>';
+    return;
+  }
+  grafEl.innerHTML = motivos.map(m => {
+    const val = porMotivo[m];
+    const pct = Math.round(val / maxVal * 100);
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <div style="width:90px;font-size:12px;color:var(--text-2);flex-shrink:0">${MOTIVO_LABELS[m]||m}</div>
+      <div style="flex:1;background:var(--surface-2);border-radius:6px;height:22px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:${colores[m]||'var(--accent)'};border-radius:6px;transition:width .3s"></div>
+      </div>
+      <div style="width:60px;text-align:right;font-size:12px;font-weight:700;color:var(--text)">${val.toFixed(2)}€</div>
+    </div>`;
+  }).join('');
 }
 
 // ══════════════════════════════════════════
