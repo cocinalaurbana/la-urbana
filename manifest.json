@@ -1,22 +1,24 @@
 {
   "name": "La Urbana",
   "short_name": "La Urbana",
-  "description": "Gestión de cocina - La Urbana",
+  "description": "Gestión de cocina y barra",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#2d6a4f",
-  "theme_color": "#2d6a4f",
-  "orientation": "portrait",
+  "background_color": "#1a1a1a",
+  "theme_color": "#C9973A",
+  "orientation": "any",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
