@@ -499,10 +499,10 @@ nav button.oculto{display:none}
   <button onclick="tab('pedidos',this)" id="nav-pedidos">🛒 Pedidos</button>
   <button onclick="tab('caja',this)" id="nav-caja">💰 Caja</button>
   <button onclick="tab('menu',this)" id="nav-menu" class="oculto">🍽️ Menú</button>
-  <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">📖 Recetas</button>
   <button onclick="tab('proveedores',this)" id="nav-proveedores" class="oculto">🤝 Proveedores</button>
   <button onclick="tab('historial',this)" id="nav-historial" class="oculto">📋 Historial</button>
   <button onclick="tab('contabilidad',this)" id="nav-contabilidad" class="oculto">💶 Cuentas</button>
+  <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">📖 Recetas</button>
   <button onclick="tab('spotify',this)" id="nav-spotify" class="oculto">🎵 Spotify</button>
   <button onclick="tab('instagram',this)" id="nav-instagram" class="oculto">📱 Instagram</button>
 </nav>
@@ -614,7 +614,7 @@ nav button.oculto{display:none}
       <select id="elab-nombre" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:1rem;color:var(--text);background:var(--surface)">
         <option value="">— Selecciona elaborado —</option>
         <option value="Ensaladilla">🥗 Ensaladilla</option>
-        <option value="Alioli">🫙 Alioli (mayonesa Germán's + ajo + perejil)</option>
+        <option value="Alioli">🫙 Alioli (mayonesa Hellmann's + ajo + perejil)</option>
         <option value="Salsa bravas">🫙 Salsa bravas (tomate frito + zanahoria + cebolla)</option>
         <option value="Chimichurri">🫙 Chimichurri (aceite + especias)</option>
         <option value="Pollo Urbana adobado">🐔 Pollo Urbana adobado</option>
@@ -3905,9 +3905,17 @@ function seedData() {
       {id:1023,nombre:'Patata entera (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1024,nombre:'Patata entera con piel',unidad:'kg',ubicacion:'nevera-almacen',minimo:3,critico:0,vidaDias:null,lotes:[]},
       {id:1025,nombre:'Patata brava congelada',unidad:'bolsa',ubicacion:'congelador-croquetas',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1026,nombre:'Detergente ropa Marsella',unidad:'bote',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
+      {id:1027,nombre:'Estropajo',unidad:'ud',ubicacion:'limpieza',minimo:3,critico:1,categoria:'limpieza',vidaDias:null,lotes:[]},
+      {id:1028,nombre:'Fairy',unidad:'bote',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
+      {id:1029,nombre:'Friegasuelos',unidad:'garrafa',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
+      {id:1030,nombre:'Desengrasante',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
+      {id:1031,nombre:'Limpiador multiusos',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
+      {id:1032,nombre:'Insecticida',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
+      {id:1033,nombre:'Limpiacristales',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
       {id:1008,nombre:'Aceite girasol',unidad:'garrafa 15L',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9008,cantidad:1,caduca:null,notas:'Armando Galves',entrada:h}]},
       {id:1010,nombre:'Croquetas jamón',unidad:'bolsa',ubicacion:'congelador-croquetas',minimo:2,critico:1,vidaDias:null,lotes:[{id:9010,cantidad:1,caduca:null,notas:'Mercadona',entrada:h}]},
-      {id:1012,nombre:"Mayonesa Germán's",unidad:'cubo',ubicacion:'cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1012,nombre:"Mayonesa Hellmann's",unidad:'cubo',ubicacion:'cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1014,nombre:'Pan mariñeira',unidad:'ud',ubicacion:'cocina',minimo:10,critico:3,vidaDias:1,lotes:[]},
       {id:1015,nombre:'Parmesano',unidad:'pieza',ubicacion:'nevera-cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1016,nombre:'Pimiento rojo',unidad:'kg',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
