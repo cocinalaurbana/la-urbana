@@ -495,6 +495,7 @@ nav button.oculto{display:none}
   <button onclick="tab('appcc',this)" id="nav-appcc">🌡️ APPCC</button>
   <button onclick="tab('turno',this)" id="nav-turno">✅ Turno</button>
   <button onclick="tab('stock',this)" id="nav-stock">📦 Stock</button>
+  <button onclick="tab('raciones',this)" id="nav-raciones">🍽️ Raciones</button>
   <button onclick="tab('mermas',this)" id="nav-mermas">📉 Mermas</button>
   <button onclick="tab('pedidos',this)" id="nav-pedidos">🛒 Pedidos</button>
   <button onclick="tab('contabilidad',this)" id="nav-contabilidad" class="oculto">💶 Contabilidad</button>
@@ -811,6 +812,42 @@ nav button.oculto{display:none}
 </div>
 
 <!-- MERMAS -->
+<!-- ══════════════════════════════════ RACIONES ══ -->
+<div id="tab-raciones" class="tab">
+  <div class="card" style="margin-bottom:14px">
+    <div style="font-weight:800;font-size:1rem;margin-bottom:4px">🍽️ Raciones servidas hoy</div>
+    <div style="font-size:12px;color:var(--text-3)">Anota cuántas raciones de cada plato se han servido. El stock se descuenta automáticamente.</div>
+  </div>
+
+  <!-- Selector de plato -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="form-group">
+      <label>Plato</label>
+      <select id="rac-plato" onchange="actualizarFormRacion()" style="width:100%">
+        <option value="">— Selecciona plato —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Formato</label>
+      <select id="rac-formato" style="width:100%">
+        <option value="">— Selecciona formato —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Cantidad de raciones</label>
+      <input type="number" id="rac-cantidad" value="1" min="1" step="1" style="width:100%">
+    </div>
+    <div id="rac-desglose" style="font-size:12px;color:var(--text-3);margin-bottom:10px;padding:8px 10px;background:var(--surface-2);border-radius:8px;display:none"></div>
+    <button class="btn btn-oro btn-full" onclick="registrarRaciones()">✅ Registrar raciones</button>
+  </div>
+
+  <!-- Resumen del día -->
+  <div class="card">
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px">📊 Raciones de hoy</div>
+    <div id="raciones-lista-hoy"><div style="color:var(--text-3);font-size:13px">Sin raciones registradas hoy.</div></div>
+  </div>
+</div>
+
 <div id="tab-mermas" class="tab">
   <!-- Estadísticas del mes -->
   <div class="card" id="mermas-stats-card" style="margin-bottom:14px">
@@ -1243,7 +1280,7 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
     catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
   };
 
-  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos'];
+  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia'];
   Promise.all(CLAVES.map(k => window._fbCargar(k, null))).then(() => {
     window._firebaseReady = true;
     // No relanzar arrancarApp — ya arrancó sin esperar Firebase
@@ -1476,6 +1513,7 @@ function tab(id, btn) {
   const renders = {
     inicio: initInicio, stock: renderStock,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
+    raciones: () => { initRaciones(); },
     pedidos: renderPedidos, caja: initCaja, menu: initMenu,
     appcc: initAppcc, turno: initTurno,
     recetas: renderRecetas, proveedores: renderProveedores,
@@ -2137,6 +2175,209 @@ function guardarMerma() {
 }
 
 const MOTIVO_LABELS = {cocinado:'✅ Cocina', tirado:'🗑 Tirado', caducado:'⚠️ Caducado', roto:'💥 Roto', otro:'📝 Otro'};
+
+// ── ESCANDALLOS FIJOS LA URBANA ─────────────────────────────
+// Ingrediente: nombre debe coincidir con stock_productos para descontar
+const ESCANDALLOS = [
+  {
+    plato: 'Raxo con patatas', formatos: [
+      { nombre: 'Media ración', ingredientes: [
+        {nombre:'Lomo de cerdo', g:140}, {nombre:'Patata pelada al vacío', g:90},
+        {nombre:'Pimiento', g:50}, {nombre:'Salsa de soja', g:15},
+        {nombre:'Aceite de girasol', g:20}, {nombre:'Whisky (cocina)', g:15}
+      ]},
+      { nombre: 'Ración', ingredientes: [
+        {nombre:'Lomo de cerdo', g:250}, {nombre:'Patata pelada al vacío', g:175},
+        {nombre:'Pimiento', g:50}, {nombre:'Salsa de soja', g:15},
+        {nombre:'Aceite de girasol', g:20}, {nombre:'Whisky (cocina)', g:15}
+      ]}
+    ]
+  },
+  {
+    plato: 'Pollo Urbana', formatos: [
+      { nombre: 'Media ración', ingredientes: [
+        {nombre:'Pechuga de pollo IQF', g:240}, {nombre:'Patata pelada al vacío', g:64}
+      ]},
+      { nombre: 'Ración', ingredientes: [
+        {nombre:'Pechuga de pollo IQF', g:350}, {nombre:'Patata pelada al vacío', g:103}
+      ]}
+    ]
+  },
+  {
+    plato: 'Pollo Flambeado', formatos: [
+      { nombre: 'Media ración', ingredientes: [
+        {nombre:'Pechuga de pollo IQF', g:220}, {nombre:'Queso gallego (Arzúa-Ulloa)', g:25},
+        {nombre:'Queso parmesano', g:25}, {nombre:'Nata para cocinar', g:65},
+        {nombre:'Salsa de soja', g:15}, {nombre:'Aceite de girasol', g:20},
+        {nombre:'Whisky (cocina)', g:15}
+      ]},
+      { nombre: 'Ración', ingredientes: [
+        {nombre:'Pechuga de pollo IQF', g:320}, {nombre:'Queso gallego (Arzúa-Ulloa)', g:25},
+        {nombre:'Queso parmesano', g:25}, {nombre:'Nata para cocinar', g:65},
+        {nombre:'Salsa de soja', g:15}, {nombre:'Aceite de girasol', g:20},
+        {nombre:'Whisky (cocina)', g:15}
+      ]}
+    ]
+  },
+  {
+    plato: 'Ensaladilla rusa', formatos: [
+      { nombre: 'Tapa', ingredientes: [
+        {nombre:'Patata pelada al vacío', g:75}, {nombre:'Zanahoria', g:50},
+        {nombre:'Huevos', uds:1}, {nombre:'Atún desmigado 1kg', g:50},
+        {nombre:'Mayonesa Hellmann\'s', g:30}
+      ]},
+      { nombre: 'Ración', ingredientes: [
+        {nombre:'Patata pelada al vacío', g:120}, {nombre:'Zanahoria', g:80},
+        {nombre:'Huevos', uds:2}, {nombre:'Atún desmigado 1kg', g:80},
+        {nombre:'Mayonesa Hellmann\'s', g:50}
+      ]}
+    ]
+  },
+  {
+    plato: 'Tortilla', formatos: [
+      { nombre: 'Tapa (1/4 mediana)', ingredientes: [
+        {nombre:'Huevos', uds:1.5}, {nombre:'Patata pelada al vacío', g:188}
+      ]},
+      { nombre: 'Media (6 huevos)', ingredientes: [
+        {nombre:'Huevos', uds:6}, {nombre:'Patata pelada al vacío', g:750}
+      ]},
+      { nombre: 'Entera (12 huevos)', ingredientes: [
+        {nombre:'Huevos', uds:12}, {nombre:'Patata pelada al vacío', g:1500}
+      ]}
+    ]
+  },
+  {
+    plato: 'Patatas bravas', formatos: [
+      { nombre: 'Tapa', ingredientes: [
+        {nombre:'Patata pelada al vacío', g:300}, {nombre:'Tomate frito', g:20}
+      ]}
+    ]
+  },
+  {
+    plato: 'Criollo con patatas', formatos: [
+      { nombre: 'Tapa', ingredientes: [
+        {nombre:'Chorizo criollo blanco', uds:1}, {nombre:'Patata pelada al vacío', g:175}
+      ]}
+    ]
+  },
+  {
+    plato: 'Croquetas', formatos: [
+      { nombre: 'Tapa (3 uds)', ingredientes: [{nombre:'Croquetas jamón Hacendado', uds:3}] },
+      { nombre: 'Ración (8 uds)', ingredientes: [{nombre:'Croquetas jamón Hacendado', uds:8}] }
+    ]
+  }
+];
+
+function initRaciones() {
+  const sel = document.getElementById('rac-plato');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Selecciona plato —</option>' +
+    ESCANDALLOS.map(e => `<option value="${e.plato}">${e.plato}</option>`).join('');
+  renderRacionesHoy();
+}
+
+function actualizarFormRacion() {
+  const plato = document.getElementById('rac-plato').value;
+  const selFmt = document.getElementById('rac-formato');
+  const e = ESCANDALLOS.find(x => x.plato === plato);
+  if (!e) { selFmt.innerHTML = '<option value="">— Selecciona formato —</option>'; return; }
+  selFmt.innerHTML = e.formatos.map(f => `<option value="${f.nombre}">${f.nombre}</option>`).join('');
+  mostrarDesglose();
+}
+
+function mostrarDesglose() {
+  const plato = document.getElementById('rac-plato').value;
+  const fmt = document.getElementById('rac-formato').value;
+  const div = document.getElementById('rac-desglose');
+  const e = ESCANDALLOS.find(x => x.plato === plato);
+  const f = e && e.formatos.find(x => x.nombre === fmt);
+  if (!f) { div.style.display='none'; return; }
+  div.style.display = 'block';
+  div.innerHTML = '<strong>Descuenta del stock:</strong><br>' +
+    f.ingredientes.map(i => `• ${i.nombre}: ${i.g ? i.g+'g' : i.uds+' ud'+(i.uds!==1?'s':'')}`).join('<br>');
+}
+
+function registrarRaciones() {
+  const plato = document.getElementById('rac-plato').value;
+  const fmt = document.getElementById('rac-formato').value;
+  const cant = parseInt(document.getElementById('rac-cantidad').value) || 1;
+  if (!plato) { toast('Selecciona un plato','error'); return; }
+  if (!fmt) { toast('Selecciona el formato','error'); return; }
+
+  const e = ESCANDALLOS.find(x => x.plato === plato);
+  const f = e && e.formatos.find(x => x.nombre === fmt);
+  if (!f) { toast('Escandallo no encontrado','error'); return; }
+
+  // Descontar stock por cada ingrediente × cantidad de raciones
+  let productos = cargar('stock_productos', []);
+  const descuentos = [];
+  f.ingredientes.forEach(ing => {
+    const totalG = (ing.g || 0) * cant;
+    const totalUds = (ing.uds || 0) * cant;
+    const p = productos.find(x => x.nombre.toLowerCase().includes(ing.nombre.toLowerCase().split(' ')[0]));
+    if (!p) return;
+    // Convertir gramos a unidades según el producto
+    let consumo = 0;
+    if (totalUds > 0) {
+      consumo = totalUds;
+    } else if (totalG > 0 && p.unidad === 'kg') {
+      consumo = totalG / 1000;
+    } else if (totalG > 0 && p.unidad === 'g') {
+      consumo = totalG;
+    } else if (totalG > 0) {
+      consumo = totalG / 1000; // fallback a kg
+    }
+    if (consumo <= 0) return;
+    let restante = consumo;
+    p.lotes = (p.lotes||[]).map(l => {
+      if (restante <= 0) return l;
+      const usado = Math.min(l.cantidad, restante);
+      restante -= usado;
+      return {...l, cantidad: l.cantidad - usado};
+    }).filter(l => l.cantidad > 0);
+    descuentos.push(`${ing.nombre} -${totalG?totalG+'g':totalUds+'ud'}`);
+  });
+  guardar('stock_productos', productos);
+  window.PRODUCTOS_STOCK = productos;
+
+  // Guardar registro de raciones
+  const registro = {id:Date.now(), plato, formato:fmt, cantidad:cant, quien:USUARIO, cuando:ahora(), descuentos};
+  const lista = cargar('raciones_dia',[]);
+  lista.unshift(registro);
+  guardar('raciones_dia', lista);
+  addHistorial('raciones', `🍽️ ${cant}× ${plato} (${fmt}) — ${USUARIO}`);
+
+  document.getElementById('rac-cantidad').value = '1';
+  renderRacionesHoy();
+  renderStock();
+  toast(`${cant} ración${cant>1?'es':''} de ${plato} registrada${cant>1?'s':''} ✓`, 'verde');
+}
+
+function renderRacionesHoy() {
+  const el = document.getElementById('raciones-lista-hoy');
+  if (!el) return;
+  const lista = cargar('raciones_dia',[]).filter(r => r.cuando && r.cuando.startsWith(hoy()));
+  if (!lista.length) {
+    el.innerHTML = '<div style="color:var(--text-3);font-size:13px">Sin raciones registradas hoy.</div>';
+    return;
+  }
+  // Agrupar por plato+formato
+  const grupos = {};
+  lista.forEach(r => {
+    const k = r.plato + '|' + r.formato;
+    if (!grupos[k]) grupos[k] = {plato:r.plato, formato:r.formato, total:0};
+    grupos[k].total += r.cantidad;
+  });
+  el.innerHTML = Object.values(grupos).map(g =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-weight:600;font-size:.9rem">${g.plato}</div>
+        <div style="font-size:12px;color:var(--text-3)">${g.formato}</div>
+      </div>
+      <div style="font-size:1.3rem;font-weight:800;color:var(--accent)">${g.total}</div>
+    </div>`
+  ).join('');
+}
 
 function renderMermas() {
   const filtro = document.getElementById('filtro-merma').value;
