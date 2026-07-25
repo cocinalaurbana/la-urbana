@@ -615,12 +615,11 @@ nav button.oculto{display:none}
         <option value="">— Selecciona elaborado —</option>
         <option value="Ensaladilla">🥗 Ensaladilla</option>
         <option value="Alioli">🫙 Alioli (mayonesa Germán's + ajo + perejil)</option>
-        <option value="Salsa bravas">🫙 Salsa bravas</option>
-        <option value="Chimichurri">🫙 Chimichurri</option>
+        <option value="Salsa bravas">🫙 Salsa bravas (tomate frito + zanahoria + cebolla)</option>
+        <option value="Chimichurri">🫙 Chimichurri (aceite + especias)</option>
         <option value="Pollo Urbana adobado">🐔 Pollo Urbana adobado</option>
         <option value="Raxo adobado">🐷 Raxo adobado</option>
-        <option value="Croquetas formadas">🍡 Croquetas formadas</option>
-        <option value="Tortilla cuajada">🥚 Tortilla cuajada</option>
+        <option value="Tortilla cuajada">🥚 Tortilla cuajada (consumo mismo día)</option>
         <option value="Patata cocida">🥔 Patata cocida</option>
         <option value="Caldo base">🍵 Caldo base</option>
         <option value="Otro">📦 Otro</option>
@@ -2386,8 +2385,7 @@ const ELAB_CADUCIDADES = {
   'Chimichurri':          7,
   'Pollo Urbana adobado': 2,
   'Raxo adobado':         2,
-  'Croquetas formadas':   3,
-  'Tortilla cuajada':     2,
+  'Tortilla cuajada':     0,
   'Patata cocida':        3,
   'Caldo base':           3,
 };
@@ -2783,6 +2781,7 @@ const TURNO_TAREAS_DEFAULT = [
   { id:'t25',label:'🛍️ Bolsas take away',                                     tipo:'apertura', critica:false },
   { id:'t16',label:'🍞 Cortar pan (o confirmar que barra lo hace)',            tipo:'apertura', critica:false },
   { id:'t18',label:'🍽️ Encender lavavajillas',                                tipo:'apertura', critica:true  },
+  { id:'t26',label:'🧤 Comprobar guantes (stock disponible)',               tipo:'apertura', critica:true  },
 ];
 
 const CIERRE_CHECKLIST_DEFAULT = [
@@ -2798,6 +2797,8 @@ const CIERRE_CHECKLIST_DEFAULT = [
   { id:'c10',label:'🔒 Cerrar cámaras y congeladores',                          critica:true  },
   { id:'c11',label:'🧊 Sacar a descongelar para mañana (si procede)',           critica:true  },
   { id:'c12',label:'📦 Recuento para pedido Fructífera (fruta, patata, bastón)',critica:false },
+  { id:'c13',label:'🔁 FIFO — recolocar Fructífera en nevera (lo nuevo detrás)',critica:true  },
+  { id:'c14',label:'🌬️ Filtros campana — limpiar (cada 2 días)',              critica:false },
 ];
 
 let tipoTurno = 'apertura';
