@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Test Firefox</title></head>
+<body>
+<h2 id="res">Cargando...</h2>
+<div id="log"></div>
+<script>
+function log(msg, color) {
+  document.getElementById('log').innerHTML += '<p style="color:'+(color||'black')+'">'+msg+'</p>';
+}
+try {
+  document.getElementById('res').textContent = '✅ JS funciona';
+  log('✅ JavaScript OK');
+  
+  // Test localStorage
+  localStorage.setItem('test','ok');
+  log('✅ localStorage OK: ' + localStorage.getItem('test'));
+  
+  // Test template literals
+  const x = 5;
+  log(`✅ Template literals OK: ${x}`);
+  
+  // Test arrow functions
+  const fn = () => 'ok';
+  log('✅ Arrow functions OK: ' + fn());
+  
+  // Test optional chaining
+  const obj = {a: {b: 1}};
+  log('✅ Optional chaining OK: ' + obj?.a?.b);
+  
+  // Test nullish coalescing
+  const val = null ?? 'fallback';
+  log('✅ Nullish coalescing OK: ' + val);
+  
+  // Test fetch
+  log('✅ fetch disponible: ' + (typeof fetch !== 'undefined'));
+  
+  // Test si Firebase carga
+  log('Firebase definido: ' + (typeof firebase !== 'undefined'), typeof firebase !== 'undefined' ? 'green' : 'red');
+  
+} catch(e) {
+  document.getElementById('res').textContent = '❌ Error: ' + e.message;
+  log('❌ Error: ' + e.message + ' | ' + e.stack, 'red');
+}
+</script>
+</body>
+</html>
