@@ -614,7 +614,7 @@ nav button.oculto{display:none}
       <select id="elab-nombre" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:1rem;color:var(--text);background:var(--surface)">
         <option value="">— Selecciona elaborado —</option>
         <option value="Ensaladilla">🥗 Ensaladilla</option>
-        <option value="Alioli">🫙 Alioli</option>
+        <option value="Alioli">🫙 Alioli (mayonesa Germán's + ajo + perejil)</option>
         <option value="Salsa bravas">🫙 Salsa bravas</option>
         <option value="Chimichurri">🫙 Chimichurri</option>
         <option value="Pollo Urbana adobado">🐔 Pollo Urbana adobado</option>
@@ -3571,7 +3571,7 @@ const PROVEEDORES_DEFAULT = [
   {id:1, nombre:'Fructífera', categoria:'Frutas y Verduras', telefono:'', productos:'Frutas, verduras', dias:'L-V', notas:''},
   {id:2, nombre:'Pepe (Panadería)', categoria:'Panadería', telefono:'', productos:'Pan, bollería', dias:'Diario mañana', notas:''},
   {id:3, nombre:'Gadis', categoria:'General', telefono:'', productos:'Varios, lácteos, conservas', dias:'', notas:'Pendiente facturas'},
-  {id:4, nombre:'Makro', categoria:'General', telefono:'', productos:'Atún, coulant, varios', dias:'', notas:'Pendiente facturas'},
+  {id:4, nombre:'Makro', categoria:'General', telefono:'', productos:'Atún', dias:'', notas:'Pendiente facturas'},
   {id:5, nombre:'Elmar', categoria:'Cárnico', telefono:'', productos:'Pollo', dias:'', notas:''},
   {id:6, nombre:'DIS', categoria:'Cárnico', telefono:'', productos:'Chorizo rojo ahumado', dias:'', notas:'Pendiente precio y formato'},
   {id:7, nombre:'Armando Galves', categoria:'Suministro', telefono:'', productos:'Aceite alto oleico', dias:'', notas:''},
@@ -3881,8 +3881,8 @@ function seedData() {
       {id:1,nombre:'Elmar',categoria:'Cárnico',telefono:'',dias:'Lunes y Jueves',notas:'Pechuga pollo IQF bolsas 2,5kg'},
       {id:2,nombre:'Fructifera',categoria:'Verduras',telefono:'',dias:'Martes y Viernes',notas:'Patata pelada vacío, pimiento, zanahoria, perejil'},
       {id:3,nombre:'Armando Galves',categoria:'General',telefono:'',dias:'',notas:'Aceite girasol garrafa 15L'},
-      {id:4,nombre:'Mercadona',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Chorizo criollo, tequeños, croquetas, queso gallego'},
-      {id:5,nombre:'Makro',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Atún desmigado 1kg, coulant chocolate'},
+      {id:4,nombre:'Mercadona',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Chorizo criollo, croquetas'},
+      {id:5,nombre:'Makro',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Atún desmigado 1kg'},
       {id:6,nombre:'Gadis',categoria:'General',telefono:'',dias:'Según necesidad',notas:"Mayonesa Hellmann's cubo 4,6kg, nata cocinar"},
       {id:7,nombre:'DIS',categoria:'Bebidas',telefono:'',dias:'',notas:'Chorizo rojo ahumado'},
     ]);
@@ -3895,17 +3895,25 @@ function seedData() {
       {id:1001,nombre:'Burrata',unidad:'ud',ubicacion:'nevera-columna',minimo:3,critico:1,vidaDias:7,lotes:[{id:9001,cantidad:4,caduca:en(5),notas:'Mercadona',entrada:h}]},
       {id:1002,nombre:'Rúcula',unidad:'bolsa',ubicacion:'nevera-columna',minimo:2,critico:0,vidaDias:3,lotes:[{id:9002,cantidad:1,caduca:en(2),notas:'',entrada:h}]},
       {id:1003,nombre:'Tomate ensalada',unidad:'kg',ubicacion:'nevera-columna',minimo:2,critico:0,vidaDias:5,lotes:[{id:9003,cantidad:1,caduca:en(3),notas:'Fructifera',entrada:h}]},
-      {id:1004,nombre:'Pechuga pollo IQF',unidad:'bolsa 2,5kg',ubicacion:'congelador',minimo:2,critico:0,vidaDias:null,lotes:[{id:9004,cantidad:4,caduca:null,notas:'Elmar',entrada:h}]},
+      {id:1004,nombre:'Pechuga pollo IQF',unidad:'bolsa 2,5kg',ubicacion:'congelador-pollo',minimo:2,critico:0,vidaDias:null,lotes:[{id:9004,cantidad:4,caduca:null,notas:'Elmar',entrada:h}]},
       {id:1005,nombre:'Chorizo criollo blanco',unidad:'ud',ubicacion:'nevera-blanca',minimo:4,critico:1,vidaDias:null,lotes:[{id:9005,cantidad:8,caduca:null,notas:'Mercadona',entrada:h}]},
       {id:1006,nombre:'Atún desmigado',unidad:'bote 1kg',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9006,cantidad:1,caduca:null,notas:'Makro',entrada:h}]},
-      {id:1007,nombre:'Patata pelada vacío',unidad:'bolsa 5kg',ubicacion:'nevera-blanca',minimo:2,critico:0,vidaDias:null,lotes:[{id:9007,cantidad:3,caduca:null,notas:'Fructifera',entrada:h}]},
+      {id:1007,nombre:'Patata bastón (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:2,critico:0,vidaDias:null,lotes:[{id:9007,cantidad:3,caduca:null,notas:'Fructifera',entrada:h}]},
+      {id:1021,nombre:'Patata tortilla (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:2,critico:0,vidaDias:null,lotes:[]},
+      {id:1022,nombre:'Patata panadera (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1023,nombre:'Patata entera (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1024,nombre:'Patata entera con piel',unidad:'kg',ubicacion:'nevera-almacen',minimo:3,critico:0,vidaDias:null,lotes:[]},
+      {id:1025,nombre:'Patata brava congelada',unidad:'bolsa',ubicacion:'congelador-croquetas',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1008,nombre:'Aceite girasol',unidad:'garrafa 15L',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9008,cantidad:1,caduca:null,notas:'Armando Galves',entrada:h}]},
-      {id:1009,nombre:'Tequeños',unidad:'bolsa 12ud',ubicacion:'congelador',minimo:2,critico:0,vidaDias:null,lotes:[{id:9009,cantidad:2,caduca:null,notas:'Mercadona',entrada:h}]},
-      {id:1010,nombre:'Croquetas jamón',unidad:'bolsa',ubicacion:'congelador',minimo:2,critico:1,vidaDias:null,lotes:[{id:9010,cantidad:1,caduca:null,notas:'Mercadona',entrada:h}]},
-      {id:1011,nombre:'Queso gallego Arzúa-Ulloa',unidad:'pieza ~500g',ubicacion:'nevera-columna',minimo:1,critico:0,vidaDias:null,lotes:[{id:9011,cantidad:2,caduca:null,notas:'Mercadona',entrada:h}]},
-      {id:1012,nombre:'Mayonesa Hellmann\'s',unidad:'cubo 4,6kg',ubicacion:'cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
-      {id:1013,nombre:'Coulant de chocolate',unidad:'ud',ubicacion:'congelador',minimo:4,critico:1,vidaDias:null,lotes:[]},
+      {id:1010,nombre:'Croquetas jamón',unidad:'bolsa',ubicacion:'congelador-croquetas',minimo:2,critico:1,vidaDias:null,lotes:[{id:9010,cantidad:1,caduca:null,notas:'Mercadona',entrada:h}]},
+      {id:1012,nombre:"Mayonesa Germán's",unidad:'cubo',ubicacion:'cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1014,nombre:'Pan mariñeira',unidad:'ud',ubicacion:'cocina',minimo:10,critico:3,vidaDias:1,lotes:[]},
+      {id:1015,nombre:'Parmesano',unidad:'pieza',ubicacion:'nevera-cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1016,nombre:'Pimiento rojo',unidad:'kg',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1017,nombre:'Pimiento verde',unidad:'kg',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1018,nombre:'Cebolla',unidad:'kg',ubicacion:'nevera-almacen',minimo:2,critico:0,vidaDias:null,lotes:[]},
+      {id:1019,nombre:'Puerro',unidad:'ud',ubicacion:'nevera-almacen',minimo:2,critico:0,vidaDias:null,lotes:[]},
+      {id:1020,nombre:'Apio',unidad:'ud',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
     ]);
   }
 
