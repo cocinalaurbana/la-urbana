@@ -3038,15 +3038,16 @@ function guardarEntrada() {
   const fecha = document.getElementById('entrada-fecha').value || hoy();
   const nota  = document.getElementById('entrada-nota').value.trim();
 
-  const productos = window.PRODUCTOS_STOCK || [];
-  // Actualizar stock
+  // Leer siempre de la fuente canónica
+  const productos = cargar('stock_productos', []);
+  // Actualizar stock — sumar lotes por cada línea de entrada
   lineas.forEach(l => {
     const p = productos.find(x => x.id == l.productoId);
     if (!p) return;
     p.lotes = p.lotes || [];
     p.lotes.push({ id: Date.now() + Math.random(), cantidad: l.cantidad, fecha, quien: USUARIO });
   });
-  guardar('stock', productos);
+  guardar('stock_productos', productos);
   window.PRODUCTOS_STOCK = productos;
 
   // Guardar registro entrada
