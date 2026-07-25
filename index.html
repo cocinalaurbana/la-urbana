@@ -605,6 +605,51 @@ nav button.oculto{display:none}
     <div id="appcc-alertas-lista"></div>
   </div>
 
+  <!-- ── ELABORADOS ── -->
+  <div class="card">
+    <div class="card-title">🍲 Elaborados — Registro y caducidad</div>
+
+    <!-- Formulario nuevo elaborado -->
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+      <select id="elab-nombre" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:1rem;color:var(--text);background:var(--surface)">
+        <option value="">— Selecciona elaborado —</option>
+        <option value="Ensaladilla">🥗 Ensaladilla</option>
+        <option value="Alioli">🫙 Alioli</option>
+        <option value="Salsa bravas">🫙 Salsa bravas</option>
+        <option value="Chimichurri">🫙 Chimichurri</option>
+        <option value="Pollo Urbana adobado">🐔 Pollo Urbana adobado</option>
+        <option value="Raxo adobado">🐷 Raxo adobado</option>
+        <option value="Croquetas formadas">🍡 Croquetas formadas</option>
+        <option value="Tortilla cuajada">🥚 Tortilla cuajada</option>
+        <option value="Patata cocida">🥔 Patata cocida</option>
+        <option value="Caldo base">🍵 Caldo base</option>
+        <option value="Otro">📦 Otro</option>
+      </select>
+      <div id="elab-nombre-otro-wrap" style="display:none">
+        <input type="text" id="elab-nombre-otro" placeholder="Nombre del elaborado"
+          style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:1rem;color:var(--text);background:var(--surface)">
+      </div>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="elab-cantidad" placeholder="Cantidad" min="0" step="0.5"
+          style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:1rem;color:var(--text);background:var(--surface)">
+        <select id="elab-unidad" style="flex:1;padding:10px 8px;border-radius:10px;border:1.5px solid var(--border);font-size:1rem;color:var(--text);background:var(--surface)">
+          <option value="raciones">raciones</option>
+          <option value="kg">kg</option>
+          <option value="litros">litros</option>
+          <option value="unidades">unidades</option>
+          <option value="botes">botes</option>
+          <option value="bandejas">bandejas</option>
+        </select>
+      </div>
+      <input type="text" id="elab-notas" placeholder="Notas (opcional)"
+        style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:1rem;color:var(--text);background:var(--surface)">
+      <button class="btn btn-oro btn-full" onclick="guardarElaborado()">✅ Registrar elaborado</button>
+    </div>
+
+    <!-- Lista elaborados activos -->
+    <div id="elab-lista"><div style="color:var(--text-3);text-align:center;padding:12px">Sin elaborados registrados hoy.</div></div>
+  </div>
+
 </div>
 
 <!-- ══════════════════════════════════ TURNO ══ -->
@@ -1557,6 +1602,31 @@ function initInicio() {
   const banner = document.getElementById('alertas-banner');
   let bannerHtml = '';
 
+  // Alertas elaborados caducados/urgentes
+  var elaborados = cargar('elaborados', []).filter(function(e){ return !e.consumido; });
+  var elabAlertas = [];
+  var ahoraMs = new Date().getTime();
+  elaborados.forEach(function(e){
+    var diffMs = new Date(e.caduca) - ahoraMs;
+    var diffH  = Math.floor(diffMs / 3600000);
+    if (diffMs < 0) {
+      elabAlertas.push({nombre: e.nombre, txt: '⛔ CADUCADO', urgente: true});
+    } else if (diffH < 24) {
+      elabAlertas.push({nombre: e.nombre, txt: '⚠️ Caduca en ' + diffH + 'h', urgente: true});
+    } else if (diffH < 48) {
+      elabAlertas.push({nombre: e.nombre, txt: '🟡 Caduca mañana', urgente: false});
+    }
+  });
+  if (elabAlertas.length) {
+    bannerHtml += '<div style="background:rgba(193,18,31,.12);border:2px solid #e05555;border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer" onclick="tab(\'appcc\',document.getElementById(\'nav-appcc\'))">'
+      + '<div style="font-weight:800;font-size:.95rem;color:#e05555;margin-bottom:8px">🍲 ' + elabAlertas.length + ' elaborado' + (elabAlertas.length>1?'s':'') + ' — atención caducidad</div>'
+      + elabAlertas.map(function(a){ return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(224,85,85,.2)">'
+        + '<span style="font-size:.9rem;font-weight:600">' + a.nombre + '</span>'
+        + '<span style="font-size:12px;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(193,18,31,.3);color:#e05555">' + a.txt + '</span>'
+        + '</div>'; }).join('')
+      + '</div>';
+  }
+
   if (alertasCad.length) {
     bannerHtml += `<div style="background:rgba(193,18,31,.12);border:2px solid #e05555;border-radius:14px;padding:14px;margin-bottom:10px">
       <div style="font-weight:800;font-size:.95rem;color:#e05555;margin-bottom:8px">⚠️ ${alertasCad.length} producto${alertasCad.length>1?'s':''} con caducidad próxima</div>
@@ -2289,11 +2359,14 @@ function renderPedidos() {
 // ══════════════════════════════════════════
 
 const APPCC_EQUIPOS = [
-  { id:'congelador-columna', nombre:'Congelador columna', icono:'🧊', min:-25, max:-15, unidad:'°C' },
-  { id:'congelador-cocina',  nombre:'Congelador cocina',  icono:'❄️', min:-25, max:-15, unidad:'°C' },
-  { id:'nevera-blanca',      nombre:'Nevera blanca',      icono:'🔲', min:0,   max:5,   unidad:'°C' },
-  { id:'nevera-almacen',     nombre:'Nevera almacén',     icono:'📦', min:0,   max:5,   unidad:'°C' },
-  { id:'nevera-cocina',      nombre:'Nevera cocina',      icono:'🍳', min:0,   max:5,   unidad:'°C' },
+  { id:'congelador-columna',  nombre:'Congelador columna',                    icono:'🧊', min:-25, max:-15, unidad:'°C' },
+  { id:'congelador-pollo',    nombre:'Congelador pollo',                      icono:'🧊', min:-25, max:-15, unidad:'°C' },
+  { id:'congelador-croquetas',nombre:'Congelador croquetas',                  icono:'🧊', min:-25, max:-15, unidad:'°C' },
+  { id:'congelador-cocina',   nombre:'Congelador mini cocina',                icono:'❄️', min:-25, max:-15, unidad:'°C' },
+  { id:'nevera-blanca',       nombre:'Nevera blanca',                         icono:'🔲', min:0,   max:5,   unidad:'°C' },
+  { id:'nevera-almacen',      nombre:'Nevera almacén (sin elaborar)',         icono:'📦', min:0,   max:5,   unidad:'°C' },
+  { id:'nevera-cocina',       nombre:'Nevera cocina',                         icono:'🍳', min:0,   max:5,   unidad:'°C' },
+  { id:'rasho',               nombre:'Rasho / Abatidor',                      icono:'🌡️', min:-25, max:5,   unidad:'°C' },
 ];
 
 function appccEstado(val, min, max) {
@@ -2305,11 +2378,124 @@ function appccEstado(val, min, max) {
   return 'bad';
 }
 
+// ── ELABORADOS ──────────────────────────────────────────
+const ELAB_CADUCIDADES = {
+  'Ensaladilla':          2,
+  'Alioli':               3,
+  'Salsa bravas':         5,
+  'Chimichurri':          7,
+  'Pollo Urbana adobado': 2,
+  'Raxo adobado':         2,
+  'Croquetas formadas':   3,
+  'Tortilla cuajada':     2,
+  'Patata cocida':        3,
+  'Caldo base':           3,
+};
+
+function elabCaducidadDias(nombre) {
+  return ELAB_CADUCIDADES[nombre] || 3;
+}
+
+function guardarElaborado() {
+  var sel = document.getElementById('elab-nombre').value;
+  var nombre = sel === 'Otro'
+    ? (document.getElementById('elab-nombre-otro').value || '').trim()
+    : sel;
+  var cantidad = parseFloat(document.getElementById('elab-cantidad').value) || null;
+  var unidad   = document.getElementById('elab-unidad').value;
+  var notas    = document.getElementById('elab-notas').value.trim();
+
+  if (!nombre) { toast('Selecciona o escribe un elaborado', 'rojo'); return; }
+
+  var ahora  = new Date();
+  var cadDias = elabCaducidadDias(nombre);
+  var cadFecha = new Date(ahora.getTime() + cadDias * 86400000);
+
+  var lista = cargar('elaborados', []);
+  lista.push({
+    id:       Date.now(),
+    nombre:   nombre,
+    cantidad: cantidad,
+    unidad:   unidad,
+    notas:    notas,
+    fecha:    ahora.toISOString(),
+    caduca:   cadFecha.toISOString(),
+    quien:    USUARIO || 'Desconocido',
+    consumido: false
+  });
+  guardar('elaborados', lista);
+
+  // Reset form
+  document.getElementById('elab-nombre').value = '';
+  document.getElementById('elab-cantidad').value = '';
+  document.getElementById('elab-notas').value = '';
+  document.getElementById('elab-nombre-otro-wrap').style.display = 'none';
+
+  toast('✅ ' + nombre + ' registrado — caduca el ' + cadFecha.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'}), 'verde');
+  renderElaborados();
+  renderAlertasBanner();
+}
+
+function renderElaborados() {
+  var cont = document.getElementById('elab-lista');
+  if (!cont) return;
+  var lista = cargar('elaborados', []).filter(function(e){ return !e.consumido; });
+  if (!lista.length) {
+    cont.innerHTML = '<div style="color:var(--text-3);text-align:center;padding:12px">Sin elaborados activos.</div>';
+    return;
+  }
+  var ahora = new Date();
+  lista.sort(function(a,b){ return new Date(a.caduca)-new Date(b.caduca); });
+  cont.innerHTML = lista.map(function(e) {
+    var cad = new Date(e.caduca);
+    var diffMs = cad - ahora;
+    var diffH  = Math.floor(diffMs / 3600000);
+    var diffD  = Math.floor(diffMs / 86400000);
+    var caducado = diffMs < 0;
+    var urgente  = !caducado && diffH < 24;
+    var color = caducado ? 'var(--rojo)' : urgente ? 'var(--amarillo)' : 'var(--verde)';
+    var etiqueta = caducado
+      ? '⛔ CADUCADO'
+      : urgente
+        ? '⚠️ Caduca en ' + diffH + 'h'
+        : '✅ Caduca ' + cad.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+    var fechaElab = new Date(e.fecha).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    return '<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">'
+      + '<div style="flex:1">'
+      + '<div style="font-weight:700;font-size:1rem">' + e.nombre + (e.cantidad ? ' — ' + e.cantidad + ' ' + e.unidad : '') + '</div>'
+      + '<div style="font-size:0.8rem;color:var(--text-3);margin-top:2px">Elaborado: ' + fechaElab + ' · ' + e.quien + (e.notas?' · '+e.notas:'') + '</div>'
+      + '<div style="font-size:0.85rem;font-weight:700;color:' + color + ';margin-top:4px">' + etiqueta + '</div>'
+      + '</div>'
+      + '<button onclick="consumirElaborado(' + e.id + ')" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85rem;color:var(--text-3)">Consumido</button>'
+      + '</div>';
+  }).join('');
+}
+
+function consumirElaborado(id) {
+  var lista = cargar('elaborados', []);
+  lista = lista.map(function(e){ return e.id===id ? Object.assign({},e,{consumido:true}) : e; });
+  guardar('elaborados', lista);
+  renderElaborados();
+  renderAlertasBanner();
+  toast('Marcado como consumido', 'verde');
+}
+
+// Mostrar/ocultar campo "Otro"
+document.addEventListener('DOMContentLoaded', function() {
+  var sel = document.getElementById('elab-nombre');
+  if (sel) sel.addEventListener('change', function() {
+    var wrap = document.getElementById('elab-nombre-otro-wrap');
+    if (wrap) wrap.style.display = this.value === 'Otro' ? '' : 'none';
+  });
+});
+// ── FIN ELABORADOS ───────────────────────────────────────
+
 function initAppcc() {
-  const ahora = new Date();
+  var ahora = new Date();
   document.getElementById('appcc-fecha-txt').textContent =
     ahora.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}) +
     ' — ' + ahora.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  renderElaborados();
 
   const cont = document.getElementById('appcc-equipos');
   cont.innerHTML = APPCC_EQUIPOS.map(e => `
