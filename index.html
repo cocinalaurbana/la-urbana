@@ -1532,8 +1532,8 @@ function initInicio() {
     }
     (p.lotes||[]).forEach(l => {
       const d = diasHasta(l.caduca);
-      if (d !== null && d <= 2) {
-        const txt = d < 0 ? '¡CADUCADO!' : d === 0 ? 'Caduca HOY' : `Caduca mañana`;
+      if (d !== null && d <= 3) {
+        const txt = d < 0 ? `⚠️ CADUCADO hace ${Math.abs(d)} día${Math.abs(d)>1?'s':''}` : d === 0 ? '⚠️ Caduca HOY' : d === 1 ? '🟡 Caduca mañana' : `🟡 Caduca en ${d} días`;
         alertasCad.push({nombre: p.nombre, cantidad: l.cantidad, unidad: p.unidad, txt, urgente: d <= 0});
       }
     });
