@@ -167,17 +167,17 @@ nav button.oculto{display:none}
     flex-direction:column;overflow-x:visible;overflow-y:auto;
     border-bottom:none;border-left:1px solid var(--border);
     position:sticky;top:57px;height:calc(100vh - 57px);
-    width:160px;flex-shrink:0;padding:8px 0;
+    width:180px;flex-shrink:0;padding:8px 0;
     background:var(--surface);
   }
   nav button {
     border-bottom:none;border-left:3px solid transparent;border-right:none;
-    text-align:left;padding:13px 18px;font-size:14px;width:100%;
+    text-align:left;padding:13px 16px;font-size:15px;width:100%;
     display:flex;align-items:center;gap:8px;
   }
   nav button.active{border-left-color:var(--accent);background:var(--accent-l)}
-  #main-content { flex:1;overflow-x:hidden; }
-  .tab { max-width:none; padding:20px 28px; }
+  #main-content { flex:1;overflow-x:hidden;min-width:0; }
+  .tab { max-width:none; padding:16px 16px; }
 }
 
 /* ─── CARDS ─── */
@@ -488,6 +488,7 @@ nav button.oculto{display:none}
   </div>
 </header>
 
+<div id="app-layout">
 <nav id="main-nav">
   <button class="active" onclick="tab('inicio',this)">🏠 Inicio</button>
   <button onclick="tab('appcc',this)" id="nav-appcc">🌡️ APPCC</button>
@@ -504,8 +505,6 @@ nav button.oculto{display:none}
   <button onclick="tab('spotify',this)" id="nav-spotify" class="oculto">🎵 Spotify</button>
   <button onclick="tab('instagram',this)" id="nav-instagram" class="oculto">📱 Instagram</button>
 </nav>
-
-<div id="app-layout">
 <div id="main-content">
 <!-- INICIO -->
 <div id="tab-inicio" class="tab active">
