@@ -3863,6 +3863,7 @@ function arrancarApp() {
   const btnInicio = document.querySelector('nav button[onclick*="inicio"]');
   if (btnInicio) btnInicio.classList.add('active');
   initInicio();
+}
 function actualizarWidgetCaja() {
   const fecha = hoy();
   const entradas = cargar('entradas_mercancias', []).filter(e => e.fecha === fecha);
