@@ -4136,7 +4136,10 @@ initBourdain();
 
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
+  // Desregistrar cualquier service worker antiguo (Vercel) y no registrar ninguno nuevo
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
+  });
 }
 </script>
 </body>
