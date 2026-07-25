@@ -1276,7 +1276,7 @@ const esMaria = () => USUARIO === 'maria';
 function cargar(k, def) {
   const c = window._fbCache;
   if (c && c[k] !== undefined && c[k] !== null) return c[k];
-  try { return JSON.parse(localStorage.getItem('urb_'+k)) ?? def; } catch(e) { return def; }
+  try { const _v = JSON.parse(localStorage.getItem('urb_'+k)); return (_v !== null && _v !== undefined) ? _v : def; } catch(e) { return def; }
 }
 function guardar(k, v) {
   if (window._fbCache) window._fbCache[k] = v;
@@ -1863,7 +1863,7 @@ function guardarLote() {
   });
   const prod = productos.find(p => p.id === prodId);
   guardar('stock_productos', productos);
-  addHistorial('stock', `📥 Lote: +${cantidad} ${prod?.unidad} de ${prod?.nombre}`);
+  addHistorial('stock', `📥 Lote: +${cantidad} ${(prod ? prod.unidad : '')} de ${(prod ? prod.nombre : '')}`);
   cerrarModal('modal-lote');
   renderStock();
   toast('Lote añadido ✓','verde');
@@ -1889,7 +1889,7 @@ function borrarProducto(prodId) {
   if (!confirm('¿Borrar este producto y sus lotes?')) return;
   const prod = cargar('stock_productos',[]).find(p => p.id === prodId);
   guardar('stock_productos', cargar('stock_productos',[]).filter(p => p.id !== prodId));
-  addHistorial('stock', `🗑 Borrado: ${prod?.nombre}`);
+  addHistorial('stock', `🗑 Borrado: ${(prod ? prod.nombre : '')}`);
   renderStock();
   toast('Producto borrado');
 }
@@ -1918,7 +1918,7 @@ function toggleStockCard(id) {
 
 function renderStock() {
   // buscador
-  const busq = (document.getElementById('stock-buscar')?.value || '').toLowerCase().trim();
+  const busq = (document.getElementById('stock-buscar') ? (document.getElementById('stock-buscar').value || '') : '').toLowerCase().trim();
   const clearBtn = document.getElementById('stock-buscar-clear');
   if (clearBtn) clearBtn.style.display = busq ? '' : 'none';
 
@@ -2190,7 +2190,7 @@ function aprobarPedido(id) {
   const pedidos = cargar('pedidos',[]).map(p => p.id===id ? {...p, estado:'aprobado', aprobadoPor:USUARIO, aprobadoCuando:ahora()} : p);
   guardar('pedidos', pedidos);
   const ped = pedidos.find(p => p.id===id);
-  addHistorial('pedido', `✅ Aprobado: ${ped?.producto}`);
+  addHistorial('pedido', `✅ Aprobado: ${(ped ? ped.producto : '')}`);
   renderPedidos();
   toast('Pedido aprobado ✓','verde');
 }
