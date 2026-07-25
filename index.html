@@ -1208,6 +1208,18 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
 (function() {
+  // Fallback offline si Firebase no carga (Firefox con bloqueo de scripts externos)
+  if (typeof firebase === 'undefined') {
+    window._fbCargar = async function(k, def) {
+      try { const v = localStorage.getItem('urb_'+k); return v ? JSON.parse(v) : def; } catch(e) { return def; }
+    };
+    window._fbGuardar = async function(k, v) {
+      try { localStorage.setItem('urb_'+k, JSON.stringify(v)); } catch(e) {}
+    };
+    window._fbCache = {};
+    window._firebaseReady = true;
+    return;
+  }
   const firebaseConfig = {
     apiKey: "AIzaSyCa9fjof6rywJwRzuAZs3tYQIbXZb3WSB4",
     authDomain: "cocina-urbana-b4f9e.firebaseapp.com",
@@ -1216,7 +1228,7 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
     messagingSenderId: "748093629089",
     appId: "1:748093629089:web:1edcfdf56507cafcec46e0"
   };
-  firebase.initializeApp(firebaseConfig);
+  try { firebase.initializeApp(firebaseConfig); } catch(e) {}
   const db = firebase.firestore();
   const _cache = {};
 
