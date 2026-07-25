@@ -499,7 +499,7 @@ nav button.oculto{display:none}
   <button onclick="tab('pedidos',this)" id="nav-pedidos">🛒 Pedidos</button>
   <button onclick="tab('contabilidad',this)" id="nav-contabilidad" class="oculto">💶 Contabilidad</button>
   <button onclick="tab('caja',this)" id="nav-caja">📥 Entradas</button>
-  <button onclick="tab('menu',this)" id="nav-menu" class="oculto">🍽️ Menú</button>
+  <button onclick="tab('menu',this)" id="nav-menu">🍽️ Menú</button>
   <button onclick="tab('proveedores',this)" id="nav-proveedores" class="oculto">🤝 Proveedores</button>
   <button onclick="tab('historial',this)" id="nav-historial" class="oculto">📋 Historial</button>
   <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">📖 Recetas</button>
@@ -530,7 +530,7 @@ nav button.oculto{display:none}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
       <div>
-        <div style="font-size:11px;color:var(--text-3);margin-bottom:2px">Ventas</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:2px">Entradas</div>
         <div style="font-size:1.2rem;font-weight:800;color:var(--verde)" id="cw-ventas">—</div>
       </div>
       <div>
@@ -1051,39 +1051,6 @@ nav button.oculto{display:none}
 </div>
 
 <!-- SPOTIFY -->
-<div id="tab-spotify" class="tab">
-  <div class="card" style="background:linear-gradient(135deg,#0a1a0a,#0d2010);border-color:rgba(30,215,96,.3)">
-    <div class="card-title" style="color:#1ed760">🎵 Playlists del turno</div>
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:16px">La música adecuada para cada momento.</div>
-    <div class="sp-section">
-      <div class="sp-momento">🌅 Preparación / Mise en place</div>
-      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0" target="_blank"><div style="font-size:1.4rem">🎧</div><div style="flex:1"><div class="sp-link-name">Mood Booster</div><div class="sp-link-desc">Para activarse antes del turno</div></div><div class="sp-open">↗</div></a>
-      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DWXRqgorJj26U" target="_blank"><div style="font-size:1.4rem">🔊</div><div style="flex:1"><div class="sp-link-name">Power Hour</div><div class="sp-link-desc">Energía para el mise en place</div></div><div class="sp-open">↗</div></a>
-    </div>
-    <div class="sp-section">
-      <div class="sp-momento">☀️ Mediodía (12:00–17:00)</div>
-      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DWV7EzJMK2FUI" target="_blank"><div style="font-size:1.4rem">🎷</div><div style="flex:1"><div class="sp-link-name">Jazz Vibes</div><div class="sp-link-desc">Tranquilo y elegante para el servicio</div></div><div class="sp-open">↗</div></a>
-      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO" target="_blank"><div style="font-size:1.4rem">☀️</div><div style="flex:1"><div class="sp-link-name">Soft Jazz</div><div class="sp-link-desc">Ambiente de tarde relajado</div></div><div class="sp-open">↗</div></a>
-    </div>
-    <div class="sp-section">
-      <div class="sp-momento">🌙 Noche (19:00–00:00)</div>
-      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DX2SK4ytI2KAh" target="_blank"><div style="font-size:1.4rem">🌃</div><div style="flex:1"><div class="sp-link-name">Night Vibes</div><div class="sp-link-desc">Ambiente nocturno de bar</div></div><div class="sp-open">↗</div></a>
-      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DWY4xHQp97fN6" target="_blank"><div style="font-size:1.4rem">🎸</div><div style="flex:1"><div class="sp-link-name">Alternative Hits</div><div class="sp-link-desc">Para las noches con energía</div></div><div class="sp-open">↗</div></a>
-    </div>
-    <div class="sp-section">
-      <div class="sp-momento">🧹 Cierre</div>
-      <a class="sp-link" href="https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC" target="_blank"><div style="font-size:1.4rem">✨</div><div style="flex:1"><div class="sp-link-name">Feel Good</div><div class="sp-link-desc">Para terminar el turno con buen rollo</div></div><div class="sp-open">↗</div></a>
-    </div>
-    <hr class="divider">
-    <div class="card-title" style="margin-top:8px;color:#1ed760">➕ Tu playlist</div>
-    <div class="form-group"><label>Nombre</label><input type="text" id="sp-nombre" placeholder="ej. Sábados noche"></div>
-    <div class="form-group"><label>Enlace Spotify</label><input type="url" id="sp-url" placeholder="https://open.spotify.com/playlist/..."></div>
-    <div class="form-group"><label>Momento</label><input type="text" id="sp-momento-txt" placeholder="ej. Mediodía fin de semana"></div>
-    <button class="btn btn-sm" style="background:#1ed760;color:#000;font-weight:700" onclick="guardarPlaylist()">Guardar playlist</button>
-    <div id="sp-custom-lista" style="margin-top:14px"></div>
-  </div>
-</div>
-
 <!-- INSTAGRAM -->
 <div id="tab-instagram" class="tab">
   <div class="card" style="border-left:4px solid #E1306C">
@@ -1490,7 +1457,7 @@ function cerrarSesion() {
   initBourdain();
 }
 function aplicarPermisos() {
-  ['nav-menu','nav-recetas','nav-proveedores','nav-historial','nav-spotify','nav-instagram','nav-contabilidad'].forEach(id => {
+  ['nav-recetas','nav-proveedores','nav-historial','nav-instagram','nav-contabilidad'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('oculto', esMaria());
   });
@@ -1565,6 +1532,7 @@ function guardarPersonalHoy() {
 function initInicio() {
   try {
   renderPersonalHoyWidget();
+  actualizarWidgetCaja();
   document.getElementById('inicio-menu-fecha').textContent = formatFecha(hoy());
   const menu = cargar('menu_' + hoy(), null);
   const el = document.getElementById('inicio-menu-platos');
@@ -3895,9 +3863,29 @@ function arrancarApp() {
   const btnInicio = document.querySelector('nav button[onclick*="inicio"]');
   if (btnInicio) btnInicio.classList.add('active');
   initInicio();
-  actualizarWidgetCaja();
+function actualizarWidgetCaja() {
+  const fecha = hoy();
+  const entradas = cargar('entradas_mercancias', []).filter(e => e.fecha === fecha);
+  const gastos   = cargar('gastos_efectivo',    []).filter(g => g.fecha === fecha);
+  const wid = document.getElementById('caja-widget');
+  if (!entradas.length && !gastos.length) { if(wid) wid.style.display = 'none'; return; }
+  if(wid) wid.style.display = '';
+  const numEntradas = entradas.length;
+  const totalGastos = gastos.reduce((a,g) => a + g.importe, 0);
+  const d = new Date();
+  const fechaEl = document.getElementById('caja-widget-fecha');
+  if (fechaEl) fechaEl.textContent = d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+  const vEl = document.getElementById('cw-ventas');
+  if (vEl) vEl.textContent = numEntradas + (numEntradas===1?' entrada':' entradas');
+  const gEl = document.getElementById('cw-gastos');
+  if (gEl) gEl.textContent = totalGastos > 0 ? '-' + totalGastos.toFixed(2) + '€' : '0€';
+  const bEl = document.getElementById('cw-balance');
+  if (bEl) { bEl.textContent = ''; bEl.style.color = 'var(--text-3)'; }
+  const aEl = document.getElementById('cw-alerta');
+  if (aEl) aEl.style.display = 'none';
 }
-window._appReady = arrancarApp;
+
+
 // Arrancar siempre sin esperar Firebase — Firefox y Chrome
 arrancarApp();
 initTema();
