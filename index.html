@@ -3154,17 +3154,46 @@ function renderRecetas() {
   const CB = {carta:'badge-oro', menu:'badge-verde', pincho:'badge-naranja', personal:'badge-gris'};
   const CL = {carta:'Carta', menu:'Menú', pincho:'Pinchos', personal:'Personal'};
   el.innerHTML = recetas.map(r => {
-    const m = r.coste&&r.precio ? ((r.precio-r.coste)/r.precio*100).toFixed(0)+'% margen' : '';
+    const costeReal = calcularCosteReceta(r);
+    const costeFinal = costeReal !== null ? costeReal : (r.coste ? parseFloat(r.coste) : null);
+    const precio = r.precio ? parseFloat(r.precio) : null;
+    let margenHtml = '';
+    if (costeFinal !== null && precio && precio > 0) {
+      const margenPct = (precio - costeFinal) / precio * 100;
+      const margenEur = precio - costeFinal;
+      const color = margenPct > 60 ? 'var(--verde)' : margenPct >= 30 ? 'var(--amarillo)' : 'var(--rojo)';
+      margenHtml = `<span style="font-weight:700;color:${color}">📊 ${margenPct.toFixed(0)}% (${margenEur.toFixed(2)}€)</span>`;
+    }
     return `<div class="receta-card ${r.categoria}" onclick="verReceta(${JSON.stringify(r.id)})">
       <div class="receta-nombre">${r.nombre}</div>
       <div class="receta-meta">
         <span class="badge ${CB[r.categoria]||'badge-gris'}">${CL[r.categoria]||r.categoria}</span>
         ${r.raciones?`<span>${r.raciones} rac.</span>`:''}
-        ${r.precio?`<span>${r.precio}€</span>`:''}
-        ${m?`<span>${m}</span>`:''}
+        ${precio?`<span>💵 ${precio}€</span>`:''}
+        ${costeFinal?`<span>🏷️ ${costeFinal.toFixed(2)}€</span>`:''}
+        ${margenHtml}
       </div>
     </div>`;
   }).join('');
+}
+
+// Calcular coste real de una receta basado en ingredientes en stock
+function calcularCosteReceta(r) {
+  if (!r.ingredientes) return null;
+  const productos = cargar('stock_productos',[]);
+  const conPrecio = productos.filter(p => p.costeUnitario);
+  if (!conPrecio.length) return null;
+  const texto = r.ingredientes.toLowerCase();
+  let costeTotal = 0;
+  let encontroAlguno = false;
+  conPrecio.forEach(p => {
+    const nombre = p.nombre.toLowerCase();
+    if (texto.includes(nombre)) {
+      costeTotal += p.costeUnitario;
+      encontroAlguno = true;
+    }
+  });
+  return encontroAlguno ? Math.round(costeTotal * 100) / 100 : null;
 }
 function verReceta(id) {
   const r = cargar('recetas',[]).find(x => x.id==id);
@@ -3174,7 +3203,35 @@ function verReceta(id) {
   if (r.ingredientes) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:6px">Ingredientes</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.ingredientes}</div></div>`;
   if (r.elaboracion) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:6px">Elaboración</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.elaboracion}</div></div>`;
   if (r.notas) html += `<div style="background:var(--amarillo-l);padding:10px;border-radius:8px;font-size:13px;border:1px solid rgba(201,162,39,.3);margin-bottom:10px">${r.notas}</div>`;
-  if (r.coste||r.precio) { const m=r.coste&&r.precio?' · '+((r.precio-r.coste)/r.precio*100).toFixed(0)+'% margen':''; html+=`<div style="font-size:13px;color:var(--text-3)">Coste: ${r.coste||'—'}€ · Venta: ${r.precio||'—'}€${m}</div>`; }
+  // Escandallo / margen
+  const costeReal = calcularCosteReceta(r);
+  const costeManual = r.coste ? parseFloat(r.coste) : null;
+  const costeFinal = costeReal !== null ? costeReal : costeManual;
+  const precio = r.precio ? parseFloat(r.precio) : null;
+  if (costeFinal !== null || precio) {
+    html += `<div style="background:var(--surface-2);border-radius:10px;padding:12px;margin-bottom:10px">
+      <div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:8px">📊 Escandallo</div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px">
+        <span>Coste${costeReal!==null?' (calculado)':''}:</span>
+        <strong>${costeFinal!==null?costeFinal.toFixed(2)+'€':'—'}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px">
+        <span>Precio venta:</span>
+        <strong>${precio?precio.toFixed(2)+'€':'—'}</strong>
+      </div>`;
+    if (costeFinal !== null && precio && precio > 0) {
+      const margenPct = (precio - costeFinal) / precio * 100;
+      const margenEur = precio - costeFinal;
+      const color = margenPct > 60 ? 'var(--verde)' : margenPct >= 30 ? 'var(--amarillo)' : 'var(--rojo)';
+      const label = margenPct > 60 ? '✅ Buen margen' : margenPct >= 30 ? '⚠️ Margen ajustado' : '🚨 Margen bajo';
+      html += `<div style="display:flex;justify-content:space-between;font-size:14px;padding-top:8px;border-top:1px solid var(--border)">
+        <span>Margen:</span>
+        <strong style="color:${color}">${margenPct.toFixed(0)}% · ${margenEur.toFixed(2)}€</strong>
+      </div>
+      <div style="margin-top:6px;font-size:12px;font-weight:700;color:${color}">${label}</div>`;
+    }
+    html += `</div>`;
+  }
   document.getElementById('ver-receta-contenido').innerHTML = html;
   document.getElementById('ver-receta-editar').onclick = () => { cerrarModal('modal-ver-receta'); abrirModalReceta(id); };
   document.getElementById('ver-receta-borrar').onclick = () => borrarReceta(id);
