@@ -498,7 +498,7 @@ nav button.oculto{display:none}
   <button onclick="tab('mermas',this)" id="nav-mermas">📉 Mermas</button>
   <button onclick="tab('pedidos',this)" id="nav-pedidos">🛒 Pedidos</button>
   <button onclick="tab('contabilidad',this)" id="nav-contabilidad" class="oculto">💶 Contabilidad</button>
-  <button onclick="tab('caja',this)" id="nav-caja">💰 Caja</button>
+  <button onclick="tab('caja',this)" id="nav-caja">📥 Entradas</button>
   <button onclick="tab('menu',this)" id="nav-menu" class="oculto">🍽️ Menú</button>
   <button onclick="tab('proveedores',this)" id="nav-proveedores" class="oculto">🤝 Proveedores</button>
   <button onclick="tab('historial',this)" id="nav-historial" class="oculto">📋 Historial</button>
@@ -697,94 +697,56 @@ nav button.oculto{display:none}
   </div>
 </div>
 
-<!-- CAJA DIARIA -->
+<!-- ENTRADAS Y GASTOS -->
 <div id="tab-caja" class="tab">
 
-  <!-- selector de fecha + resumen del día -->
+  <!-- ENTRADAS DE MERCANCÍA -->
   <div class="card" style="margin-bottom:14px">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <input type="date" id="caja-fecha" oninput="cargarCaja()" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
-      <button class="btn btn-outline btn-sm" onclick="document.getElementById('caja-fecha').value=hoy();cargarCaja()">Hoy</button>
-    </div>
-    <!-- totales día -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-bottom:4px">
-      <div style="background:rgba(74,190,120,.08);border-radius:10px;padding:10px">
-        <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Ventas</div>
-        <div style="font-size:1.4rem;font-weight:800;color:var(--verde)" id="caja-total-ventas">0€</div>
-      </div>
-      <div style="background:rgba(224,85,85,.08);border-radius:10px;padding:10px">
-        <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Gastos</div>
-        <div style="font-size:1.4rem;font-weight:800;color:var(--rojo)" id="caja-total-gastos">0€</div>
-      </div>
-      <div style="background:rgba(201,151,58,.08);border-radius:10px;padding:10px">
-        <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Balance</div>
-        <div style="font-size:1.4rem;font-weight:800;color:var(--accent)" id="caja-balance">0€</div>
-      </div>
-    </div>
-    <div id="caja-alerta-dia" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:700;text-align:center"></div>
-  </div>
-
-  <!-- apuntar venta -->
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-title">📈 Apuntar venta</div>
+    <div class="card-title">📥 Nueva entrada de mercancía</div>
     <div style="display:flex;gap:8px;margin-bottom:8px">
-      <input type="number" id="venta-importe" placeholder="Importe €" step="0.5" min="0"
-        style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:15px;color:var(--text);background:var(--surface)">
-      <select id="venta-tipo" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
-        <option value="efectivo">💵 Efectivo</option>
-        <option value="tarjeta">💳 Tarjeta</option>
-        <option value="mixto">🔀 Mixto</option>
+      <select id="entrada-proveedor" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
+        <option value="">— Proveedor —</option>
+        <option value="Fructífera">🥬 Fructífera</option>
+        <option value="Elmar">🐔 Elmar (pollo)</option>
+        <option value="Gadis">🛒 Gadis</option>
+        <option value="Otro">📦 Otro</option>
       </select>
+      <input type="date" id="entrada-fecha" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
     </div>
-    <input type="text" id="venta-nota" placeholder="Nota opcional (ej. Menú mediodía x12)"
-      style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);margin-bottom:8px"
-      onkeydown="if(event.key==='Enter')guardarVenta()">
-    <button class="btn btn-oro btn-full" onclick="guardarVenta()">Guardar venta</button>
+    <div id="entrada-lineas" style="margin-bottom:8px"></div>
+    <button class="btn btn-outline btn-sm" style="width:100%;margin-bottom:8px" onclick="addLineaEntrada()">➕ Añadir producto</button>
+    <input type="text" id="entrada-nota" placeholder="Nota (opcional)" style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);margin-bottom:8px">
+    <button class="btn btn-verde btn-full" onclick="guardarEntrada()">✅ Guardar entrada</button>
   </div>
 
-  <!-- apuntar gasto -->
+  <!-- GASTOS EN EFECTIVO -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-title">📉 Apuntar gasto</div>
+    <div class="card-title">💸 Gasto en efectivo</div>
     <div style="display:flex;gap:8px;margin-bottom:8px">
-      <input type="number" id="gasto-importe" placeholder="Importe €" step="0.5" min="0"
+      <input type="number" id="gasto-importe" placeholder="Importe €" step="0.01" min="0"
         style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:15px;color:var(--text);background:var(--surface)">
       <select id="gasto-cat" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
         <option value="compra">🛒 Compra</option>
-        <option value="proveedor">🤝 Proveedor</option>
+        <option value="limpieza">🧹 Limpieza</option>
         <option value="suministro">💡 Suministro</option>
         <option value="personal">👨‍🍳 Personal</option>
         <option value="otro">📦 Otro</option>
       </select>
     </div>
-    <input type="text" id="gasto-desc" placeholder="Descripción (ej. Verdura mercado)"
+    <input type="text" id="gasto-desc" placeholder="Descripción (ej. Estropajos chino)"
       style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);margin-bottom:8px"
       onkeydown="if(event.key==='Enter')guardarGasto()">
     <button class="btn btn-rojo btn-full" onclick="guardarGasto()">Guardar gasto</button>
   </div>
 
-  <!-- movimientos del día -->
+  <!-- HISTORIAL DEL DÍA -->
   <div class="card">
-    <div class="card-title">📋 Movimientos del día</div>
-    <div id="caja-movimientos"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin movimientos.</div></div>
-  </div>
-
-  <!-- resumen semanal (solo admin) -->
-  <div class="card" id="caja-semana-card" style="margin-top:14px">
-    <div class="card-title">📊 Esta semana</div>
-    <div id="caja-semana"></div>
-  </div>
-
-  <!-- CIERRE DE CAJA (solo admin) -->
-  <div class="card" id="caja-cierre-card" style="margin-top:14px;display:none">
-    <div class="card-title">🔒 Cierre del día</div>
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:10px" id="caja-cierre-info">Guarda un resumen del día para tu historial.</div>
-    <button class="btn btn-oro btn-full" onclick="cerrarDiaCaja()">📋 Cerrar día y guardar resumen</button>
-    <div id="caja-cierre-status" style="margin-top:10px;font-size:13px;font-weight:700;display:none"></div>
-
-    <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
-      <div class="card-title" style="margin-bottom:10px">📜 Historial de cierres (30 días)</div>
-      <div id="caja-cierre-historial"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <div class="card-title" style="margin:0;flex:1">📋 Registro del día</div>
+      <input type="date" id="caja-fecha" oninput="cargarCaja()" style="padding:6px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('caja-fecha').value=hoy();cargarCaja()">Hoy</button>
     </div>
+    <div id="caja-movimientos"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div></div>
   </div>
 
 </div>
@@ -1046,7 +1008,7 @@ nav button.oculto{display:none}
       <button class="btn btn-oro btn-sm" id="cont-btn-escanear" onclick="abrirEscaner()" style="flex:1">📷 Escanear tiquet</button>
     </div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-oro" style="flex:1" onclick="guardarGasto()">Guardar gasto</button>
+      <button class="btn btn-oro" style="flex:1" onclick="guardarGastoContabilidad()">Guardar gasto</button>
     </div>
     <!-- Preview foto escaneada -->
     <div id="cont-foto-preview" style="display:none;margin-top:10px">
@@ -2969,267 +2931,157 @@ function renderTurnoHistorial() {
 
 // ══════════════════════════════════════════
 // ══════════════════════════════════════════
-// CAJA DIARIA
+// ENTRADAS DE MERCANCÍA Y GASTOS EFECTIVO
 // ══════════════════════════════════════════
+let _lineasEntrada = [];
+
 function initCaja() {
   document.getElementById('caja-fecha').value = hoy();
+  _lineasEntrada = [];
+  renderLineasEntrada();
   cargarCaja();
-  renderCajaSemana();
-  // Cierre de caja solo para admins
-  const cierreCard = document.getElementById('caja-cierre-card');
-  if (cierreCard) cierreCard.style.display = esAdmin() ? '' : 'none';
-  if (esAdmin()) renderCajaCierres();
 }
 
-function cajaKey(fecha) { return 'caja_' + fecha; }
-
-function getCajaData(fecha) {
-  return cargar(cajaKey(fecha), { ventas: [], gastos: [] });
+// ── Entradas de mercancía ──
+function addLineaEntrada() {
+  const productos = window.PRODUCTOS_STOCK || [];
+  const opts = productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+  const idx = _lineasEntrada.length;
+  _lineasEntrada.push({ productoId: '', cantidad: 1 });
+  renderLineasEntrada();
 }
 
-function guardarVenta() {
-  const importe = parseFloat(document.getElementById('venta-importe').value);
-  if (!importe || importe <= 0) { toast('Introduce un importe', 'error'); return; }
-  const tipo  = document.getElementById('venta-tipo').value;
-  const nota  = document.getElementById('venta-nota').value.trim();
-  const fecha = document.getElementById('caja-fecha').value;
-  const data  = getCajaData(fecha);
-  data.ventas.push({ id: Date.now(), importe, tipo, nota, hora: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}), quien: USUARIO });
-  guardar(cajaKey(fecha), data);
-  document.getElementById('venta-importe').value = '';
-  document.getElementById('venta-nota').value    = '';
-  addHistorial('caja', `💰 Venta ${importe.toFixed(2)}€ (${tipo})${nota?' — '+nota:''}`);
+function renderLineasEntrada() {
+  const productos = window.PRODUCTOS_STOCK || [];
+  const el = document.getElementById('entrada-lineas');
+  if (!_lineasEntrada.length) { el.innerHTML = ''; return; }
+  el.innerHTML = _lineasEntrada.map((l, i) => {
+    const opts = productos.map(p => `<option value="${p.id}" ${p.id==l.productoId?'selected':''}>${p.nombre}</option>`).join('');
+    return `<div style="display:flex;gap:6px;margin-bottom:6px;align-items:center">
+      <select onchange="_lineasEntrada[${i}].productoId=this.value"
+        style="flex:2;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
+        <option value="">— Producto —</option>${opts}
+      </select>
+      <input type="number" min="0" step="0.1" value="${l.cantidad}"
+        onchange="_lineasEntrada[${i}].cantidad=parseFloat(this.value)||0"
+        style="width:70px;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface);text-align:center">
+      <button onclick="_lineasEntrada.splice(${i},1);renderLineasEntrada()"
+        style="background:none;border:none;color:var(--rojo);font-size:20px;cursor:pointer;padding:2px 6px">×</button>
+    </div>`;
+  }).join('');
+}
+
+function guardarEntrada() {
+  const proveedor = document.getElementById('entrada-proveedor').value;
+  if (!proveedor) { toast('Selecciona un proveedor', 'error'); return; }
+  const lineas = _lineasEntrada.filter(l => l.productoId && l.cantidad > 0);
+  if (!lineas.length) { toast('Añade al menos un producto', 'error'); return; }
+  const fecha = document.getElementById('entrada-fecha').value || hoy();
+  const nota  = document.getElementById('entrada-nota').value.trim();
+
+  const productos = window.PRODUCTOS_STOCK || [];
+  // Actualizar stock
+  lineas.forEach(l => {
+    const p = productos.find(x => x.id == l.productoId);
+    if (!p) return;
+    p.lotes = p.lotes || [];
+    p.lotes.push({ id: Date.now() + Math.random(), cantidad: l.cantidad, fecha, quien: USUARIO });
+  });
+  guardar('stock', productos);
+  window.PRODUCTOS_STOCK = productos;
+
+  // Guardar registro entrada
+  const entradas = cargar('entradas_mercancias', []);
+  entradas.unshift({
+    id: Date.now(), fecha, proveedor, nota, quien: USUARIO,
+    hora: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),
+    lineas: lineas.map(l => {
+      const p = productos.find(x => x.id == l.productoId);
+      return { nombre: p ? p.nombre : l.productoId, cantidad: l.cantidad, productoId: l.productoId };
+    })
+  });
+  if (entradas.length > 200) entradas.splice(200);
+  guardar('entradas_mercancias', entradas);
+
+  addHistorial('entradas', `📥 Entrada ${proveedor}: ${lineas.length} producto(s)${nota?' — '+nota:''}`);
+
+  _lineasEntrada = [];
+  renderLineasEntrada();
+  document.getElementById('entrada-nota').value = '';
+  document.getElementById('entrada-proveedor').value = '';
+  if (typeof renderStock === 'function') renderStock();
   cargarCaja();
-  renderCajaSemana();
-  actualizarWidgetCaja();
-  toast('Venta guardada ✓', 'verde');
+  toast('Entrada guardada ✓', 'verde');
 }
 
+// ── Gastos en efectivo ──
 function guardarGasto() {
   const importe = parseFloat(document.getElementById('gasto-importe').value);
   if (!importe || importe <= 0) { toast('Introduce un importe', 'error'); return; }
   const cat  = document.getElementById('gasto-cat').value;
   const desc = document.getElementById('gasto-desc').value.trim();
   if (!desc) { toast('Escribe una descripción', 'error'); return; }
-  const fecha = document.getElementById('caja-fecha').value;
-  const data  = getCajaData(fecha);
-  data.gastos.push({ id: Date.now(), importe, cat, desc, hora: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}), quien: USUARIO });
-  guardar(cajaKey(fecha), data);
+  const fecha = hoy();
+  const gastos = cargar('gastos_efectivo', []);
+  gastos.unshift({ id: Date.now(), fecha, importe, cat, desc, quien: USUARIO,
+    hora: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}) });
+  if (gastos.length > 200) gastos.splice(200);
+  guardar('gastos_efectivo', gastos);
   document.getElementById('gasto-importe').value = '';
   document.getElementById('gasto-desc').value    = '';
-  addHistorial('caja', `📉 Gasto ${importe.toFixed(2)}€ (${cat}) — ${desc}`);
+  addHistorial('gastos', `💸 Efectivo ${importe.toFixed(2)}€ (${cat}) — ${desc}`);
   cargarCaja();
-  renderCajaSemana();
-  actualizarWidgetCaja();
   toast('Gasto guardado ✓', 'verde');
 }
 
-function borrarMovimiento(fecha, tipo, id) {
-  if (!confirm('¿Borrar este movimiento?')) return;
-  const data = getCajaData(fecha);
-  data[tipo] = data[tipo].filter(m => m.id !== id);
-  guardar(cajaKey(fecha), data);
-  cargarCaja();
-  renderCajaSemana();
-  actualizarWidgetCaja();
-  toast('Borrado ✓');
-}
-
-const CATICONS = { compra:'🛒', proveedor:'🤝', suministro:'💡', personal:'👨‍🍳', otro:'📦' };
-const TIPOICONS = { efectivo:'💵', tarjeta:'💳', mixto:'🔀' };
+// ── Registro del día ──
+const CATICONS_G = { compra:'🛒', limpieza:'🧹', suministro:'💡', personal:'👨‍🍳', otro:'📦' };
 
 function cargarCaja() {
-  const fecha = document.getElementById('caja-fecha').value;
-  if (!fecha) return;
-  const data = getCajaData(fecha);
-  const totalV = data.ventas.reduce((a,v) => a + v.importe, 0);
-  const totalG = data.gastos.reduce((a,g) => a + g.importe, 0);
-  const bal    = totalV - totalG;
-
-  document.getElementById('caja-total-ventas').textContent = totalV.toFixed(2) + '€';
-  document.getElementById('caja-total-gastos').textContent = totalG.toFixed(2) + '€';
-  const balEl = document.getElementById('caja-balance');
-  balEl.textContent = (bal >= 0 ? '+' : '') + bal.toFixed(2) + '€';
-  balEl.style.color = bal >= 0 ? 'var(--verde)' : 'var(--rojo)';
-
-  // alerta si gastos > ventas
-  const alertEl = document.getElementById('caja-alerta-dia');
-  if (bal < 0 && (totalV > 0 || totalG > 0)) {
-    alertEl.style.display  = '';
-    alertEl.style.background = 'rgba(224,85,85,.1)';
-    alertEl.style.color    = 'var(--rojo)';
-    alertEl.style.border   = '1.5px solid var(--rojo)';
-    alertEl.textContent    = '⚠️ Los gastos superan las ventas este día';
-  } else { alertEl.style.display = 'none'; }
-
-  // movimientos: ventas + gastos mezclados por hora
-  const movs = [
-    ...data.ventas.map(v => ({...v, _tipo:'venta'})),
-    ...data.gastos.map(g => ({...g, _tipo:'gasto'}))
-  ].sort((a,b) => b.id - a.id);
+  const fecha = document.getElementById('caja-fecha').value || hoy();
+  const entradas = cargar('entradas_mercancias', []).filter(e => e.fecha === fecha);
+  const gastos   = cargar('gastos_efectivo',    []).filter(g => g.fecha === fecha);
 
   const el = document.getElementById('caja-movimientos');
-  if (!movs.length) {
-    el.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin movimientos.</div>';
+  if (!entradas.length && !gastos.length) {
+    el.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div>';
     return;
   }
-  el.innerHTML = movs.map(m => {
-    const esVenta = m._tipo === 'venta';
-    const color   = esVenta ? 'var(--verde)' : 'var(--rojo)';
-    const signo   = esVenta ? '+' : '-';
-    const icon    = esVenta ? (TIPOICONS[m.tipo]||'💰') : (CATICONS[m.cat]||'📦');
-    const etiq    = esVenta ? (m.tipo) : (m.cat);
-    const texto   = esVenta ? (m.nota||'Venta') : m.desc;
-    const puedeB  = esAdmin();
-    return `<div class="item" style="border-left:3px solid ${color};padding-left:10px">
-      <div class="item-body">
-        <div class="item-title" style="color:${color}">${icon} ${signo}${m.importe.toFixed(2)}€ <span style="font-size:11px;font-weight:400;color:var(--text-3)">${etiq}</span></div>
-        <div class="item-sub">${texto}${m.hora?' · '+m.hora:''}${m.quien?' · '+m.quien:''}</div>
-      </div>
-      ${puedeB ? `<button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px;padding:4px" onclick="borrarMovimiento('${fecha}','${m._tipo==='venta'?'ventas':'gastos'}',${m.id})">×</button>` : ''}
-    </div>`;
+
+  const items = [
+    ...entradas.map(e => ({...e, _tipo:'entrada'})),
+    ...gastos.map(g => ({...g, _tipo:'gasto'}))
+  ].sort((a,b) => b.id - a.id);
+
+  el.innerHTML = items.map(m => {
+    if (m._tipo === 'entrada') {
+      const resumen = (m.lineas||[]).map(l => `${l.nombre} ×${l.cantidad}`).join(', ');
+      return `<div class="item" style="border-left:3px solid var(--verde);padding-left:10px">
+        <div class="item-body">
+          <div class="item-title">📥 ${m.proveedor}</div>
+          <div class="item-sub">${resumen}${m.nota?' · '+m.nota:''}${m.hora?' · '+m.hora:''}${m.quien?' · '+m.quien:''}</div>
+        </div>
+      </div>`;
+    } else {
+      return `<div class="item" style="border-left:3px solid var(--rojo);padding-left:10px">
+        <div class="item-body">
+          <div class="item-title" style="color:var(--rojo)">${CATICONS_G[m.cat]||'📦'} -${m.importe.toFixed(2)}€ <span style="font-size:11px;font-weight:400;color:var(--text-3)">${m.cat}</span></div>
+          <div class="item-sub">${m.desc}${m.hora?' · '+m.hora:''}${m.quien?' · '+m.quien:''}</div>
+        </div>
+        ${esAdmin()?`<button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px;padding:4px" onclick="borrarGastoEfectivo(${m.id})">×</button>`:''}
+      </div>`;
+    }
   }).join('');
 }
 
-function renderCajaSemana() {
-  if (!esAdmin()) { document.getElementById('caja-semana-card').style.display='none'; return; }
-  document.getElementById('caja-semana-card').style.display = '';
-  // últimos 7 días
-  const filas = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    const f = d.toISOString().slice(0,10);
-    const data  = getCajaData(f);
-    const v = data.ventas.reduce((a,x) => a+x.importe, 0);
-    const g = data.gastos.reduce((a,x) => a+x.importe, 0);
-    const bal = v - g;
-    const dLabel = d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
-    if (v === 0 && g === 0) return;
-    filas.push({ f, dLabel, v, g, bal });
-  }
-  const el = document.getElementById('caja-semana');
-  if (!filas.length) { el.innerHTML='<div style="color:var(--text-3);font-size:14px">Sin datos esta semana.</div>'; return; }
-  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
-    <thead><tr style="color:var(--text-3);font-size:11px;text-transform:uppercase">
-      <th style="text-align:left;padding:4px 6px">Día</th>
-      <th style="text-align:right;padding:4px 6px;color:var(--verde)">Ventas</th>
-      <th style="text-align:right;padding:4px 6px;color:var(--rojo)">Gastos</th>
-      <th style="text-align:right;padding:4px 6px">Balance</th>
-    </tr></thead>
-    <tbody>${filas.map(r => `<tr style="border-top:1px solid var(--border);cursor:pointer" onclick="document.getElementById('caja-fecha').value='${r.f}';cargarCaja()">
-      <td style="padding:6px;color:var(--text)">${r.dLabel}</td>
-      <td style="text-align:right;padding:6px;color:var(--verde)">+${r.v.toFixed(2)}€</td>
-      <td style="text-align:right;padding:6px;color:var(--rojo)">-${r.g.toFixed(2)}€</td>
-      <td style="text-align:right;padding:6px;font-weight:700;color:${r.bal>=0?'var(--verde)':'var(--rojo)'}">${r.bal>=0?'+':''}${r.bal.toFixed(2)}€</td>
-    </tr>`).join('')}
-    </tbody>
-  </table>`;
+function borrarGastoEfectivo(id) {
+  if (!confirm('¿Borrar este gasto?')) return;
+  const gastos = cargar('gastos_efectivo',[]).filter(g => g.id !== id);
+  guardar('gastos_efectivo', gastos);
+  cargarCaja();
+  toast('Borrado ✓');
 }
 
-function actualizarWidgetCaja() {
-  const fecha = hoy();
-  const data  = getCajaData(fecha);
-  const v = data.ventas.reduce((a,x) => a+x.importe, 0);
-  const g = data.gastos.reduce((a,x) => a+x.importe, 0);
-  const bal = v - g;
-  const wid = document.getElementById('caja-widget');
-  if (v === 0 && g === 0) { wid.style.display = 'none'; return; }
-  wid.style.display = '';
-  const d = new Date();
-  document.getElementById('caja-widget-fecha').textContent = d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('cw-ventas').textContent  = '+' + v.toFixed(2) + '€';
-  document.getElementById('cw-gastos').textContent  = '-' + g.toFixed(2) + '€';
-  const bEl = document.getElementById('cw-balance');
-  bEl.textContent = (bal>=0?'+':'') + bal.toFixed(2) + '€';
-  bEl.style.color = bal >= 0 ? 'var(--verde)' : 'var(--rojo)';
-  const aEl = document.getElementById('cw-alerta');
-  if (bal < 0) {
-    aEl.style.display = '';
-    aEl.style.color   = 'var(--rojo)';
-    aEl.textContent   = '⚠️ Gastos superan ventas';
-  } else { aEl.style.display = 'none'; }
-}
-
-// ─── CIERRE DE CAJA DIARIO ───
-function cerrarDiaCaja() {
-  const fecha = document.getElementById('caja-fecha').value || hoy();
-  const data = getCajaData(fecha);
-  const ventas = data.ventas.reduce((a,x) => a+x.importe, 0);
-  // Gastos del día: suma de caja + gastos de contabilidad con esa fecha
-  const gastosCaja = data.gastos.reduce((a,x) => a+x.importe, 0);
-  const gastosCont = cargar('gastos',[]).filter(g => g.fecha === fecha).reduce((a,g) => a+g.importe, 0);
-  const gastosTotal = gastosCaja + gastosCont;
-  const neto = ventas - gastosTotal;
-
-  const cierre = {
-    fecha,
-    ventas: parseFloat(ventas.toFixed(2)),
-    gastos: parseFloat(gastosTotal.toFixed(2)),
-    gastosCaja: parseFloat(gastosCaja.toFixed(2)),
-    gastosCont: parseFloat(gastosCont.toFixed(2)),
-    neto: parseFloat(neto.toFixed(2)),
-    quien: USUARIO || 'desconocido',
-    cuando: ahora()
-  };
-
-  const cierres = cargar('caja_cierres', []);
-  // Reemplazar si ya existe un cierre para esa fecha
-  const idx = cierres.findIndex(c => c.fecha === fecha);
-  if (idx >= 0) cierres[idx] = cierre;
-  else cierres.unshift(cierre);
-  // Mantener solo últimos 30
-  cierres.sort((a,b) => b.fecha.localeCompare(a.fecha));
-  if (cierres.length > 30) cierres.splice(30);
-  guardar('caja_cierres', cierres);
-
-  addHistorial('caja', `🔒 Cierre ${fecha}: V ${ventas.toFixed(2)}€ · G ${gastosTotal.toFixed(2)}€ · Neto ${neto>=0?'+':''}${neto.toFixed(2)}€`);
-
-  const status = document.getElementById('caja-cierre-status');
-  status.style.display = '';
-  status.style.color = neto >= 0 ? 'var(--verde)' : 'var(--rojo)';
-  status.textContent = `✅ Día cerrado: ${ventas.toFixed(2)}€ - ${gastosTotal.toFixed(2)}€ = ${neto>=0?'+':''}${neto.toFixed(2)}€ neto`;
-
-  renderCajaCierres();
-  toast('Día cerrado ✓', 'verde');
-}
-
-function renderCajaCierres() {
-  const cierres = cargar('caja_cierres', []);
-  const fechaActual = document.getElementById('caja-fecha').value || hoy();
-  const info = document.getElementById('caja-cierre-info');
-  const yaCerrado = cierres.find(c => c.fecha === fechaActual);
-  if (yaCerrado) {
-    info.innerHTML = `✅ <strong>Ya cerrado</strong> por ${HIST_WHO[yaCerrado.quien]||yaCerrado.quien} · Neto: <span style="color:${yaCerrado.neto>=0?'var(--verde)':'var(--rojo)'};font-weight:800">${yaCerrado.neto>=0?'+':''}${yaCerrado.neto.toFixed(2)}€</span>`;
-  } else {
-    info.textContent = 'Guarda un resumen del día para tu historial.';
-  }
-
-  const el = document.getElementById('caja-cierre-historial');
-  if (!cierres.length) {
-    el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:10px">Sin cierres guardados.</div>';
-    return;
-  }
-  el.innerHTML = `<table style="width:100%;font-size:12px;border-collapse:collapse">
-    <thead><tr style="color:var(--text-3);text-transform:uppercase;font-size:10px;letter-spacing:.5px">
-      <th style="text-align:left;padding:6px 4px">Fecha</th>
-      <th style="text-align:right;padding:6px 4px">Ventas</th>
-      <th style="text-align:right;padding:6px 4px">Gastos</th>
-      <th style="text-align:right;padding:6px 4px">Neto</th>
-    </tr></thead>
-    <tbody>${cierres.map(c => {
-      const d = new Date(c.fecha + 'T12:00:00');
-      const diaS = d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
-      return `<tr style="border-top:1px solid var(--border);cursor:pointer" onclick="document.getElementById('caja-fecha').value='${c.fecha}';cargarCaja();renderCajaCierres()">
-        <td style="padding:6px 4px">${diaS}${c.fecha===fechaActual?' ◀':''}</td>
-        <td style="text-align:right;padding:6px 4px;color:var(--verde)">+${c.ventas.toFixed(2)}</td>
-        <td style="text-align:right;padding:6px 4px;color:var(--rojo)">-${c.gastos.toFixed(2)}</td>
-        <td style="text-align:right;padding:6px 4px;font-weight:700;color:${c.neto>=0?'var(--verde)':'var(--rojo)'}">${c.neto>=0?'+':''}${c.neto.toFixed(2)}</td>
-      </tr>`;
-    }).join('')}</tbody>
-  </table>`;
-}
-
-// ══════════════════════════════════════════
 // MENÚ
 function initMenu() {
   document.getElementById('menu-fecha').value = hoy();
@@ -3715,9 +3567,7 @@ function procesarFoto(input) {
   input.value = '';
 }
 
-function guardarGasto() {
-  const concepto = document.getElementById('cont-concepto').value.trim();
-  const importe = parseFloat(document.getElementById('cont-importe').value);
+function guardarGastoContabilidad() {
   const categoria = document.getElementById('cont-categoria').value;
   const fecha = document.getElementById('cont-fecha').value || new Date().toISOString().split('T')[0];
   const foto = document.getElementById('cont-foto-data').value || null;
