@@ -160,6 +160,7 @@ nav button.oculto{display:none}
 
 /* ─── LAYOUT TABLET: nav lateral derecha ─── */
 @media (min-width: 600px) {
+  body { font-size:18px; }
   #app-layout {
     display:flex;flex-direction:row-reverse;min-height:calc(100vh - 57px);
   }
@@ -167,7 +168,7 @@ nav button.oculto{display:none}
     flex-direction:column;overflow-x:visible;overflow-y:auto;
     border-bottom:none;border-left:1px solid var(--border);
     position:sticky;top:57px;height:calc(100vh - 57px);
-    width:180px;flex-shrink:0;padding:8px 0;
+    width:190px;flex-shrink:0;padding:8px 0;
     background:var(--surface);
   }
   nav button {
@@ -998,8 +999,10 @@ nav button.oculto{display:none}
       </select>
       <input type="date" id="cont-fecha" style="flex:1;color:var(--text);background:var(--bg)">
     </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button class="btn btn-oro btn-sm" id="cont-btn-escanear" onclick="abrirEscaner()" style="flex:1">📷 Escanear tiquet</button>
+    </div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-oro btn-sm" id="cont-btn-escanear" onclick="abrirEscaner()">📷 Escanear tiquet</button>
       <button class="btn btn-oro" style="flex:1" onclick="guardarGasto()">Guardar gasto</button>
     </div>
     <!-- Preview foto escaneada -->
