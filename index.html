@@ -525,7 +525,7 @@ nav button.oculto{display:none}
   <!-- CAJA DEL DÍA: resumen en inicio -->
   <div id="caja-widget" style="display:none;background:var(--bg);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid var(--border);cursor:pointer" onclick="tab('caja',document.getElementById('nav-caja'))">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div style="font-size:13px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.4px">💰 Caja hoy</div>
+      <div style="font-size:13px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.4px">📥 Entradas hoy</div>
       <div style="font-size:11px;color:var(--text-3)" id="caja-widget-fecha"></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
@@ -543,6 +543,23 @@ nav button.oculto{display:none}
       </div>
     </div>
     <div id="cw-alerta" style="margin-top:8px;font-size:12px;font-weight:700;display:none"></div>
+  </div>
+
+  <!-- WIDGET COMIDA PERSONAL -->
+  <div style="background:var(--bg);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid var(--border)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.4px">👨‍🍳 Comida del personal</div>
+      <span id="personal-hoy-label" style="font-size:12px;color:var(--text-3)"></span>
+    </div>
+    <div id="personal-hoy-plato" style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Sin anotar hoy</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="text" id="personal-hoy-input" placeholder="¿Qué comemos hoy?"
+        style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)"
+        onkeydown="if(event.key==='Enter')guardarPersonalHoy()">
+      <input type="number" id="personal-hoy-coste" placeholder="€" step="0.5" min="0"
+        style="width:65px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
+      <button class="btn btn-oro btn-sm" onclick="guardarPersonalHoy()">✓</button>
+    </div>
   </div>
 
   <!-- WIDGET TURNO HOY -->
@@ -1517,8 +1534,37 @@ function initHeader() {
 // ══════════════════════════════════════════
 // INICIO
 // ══════════════════════════════════════════
+
+function renderPersonalHoyWidget() {
+  const datos = cargar('personal_hoy_' + hoy(), null);
+  const el = document.getElementById('personal-hoy-plato');
+  const lbl = document.getElementById('personal-hoy-label');
+  if (!el) return;
+  if (datos && datos.plato) {
+    el.textContent = datos.plato;
+    if (lbl) lbl.textContent = datos.coste ? datos.coste.toFixed(2) + '€' : '';
+  } else {
+    el.textContent = 'Sin anotar hoy';
+    if (lbl) lbl.textContent = '';
+  }
+}
+
+function guardarPersonalHoy() {
+  const inp = document.getElementById('personal-hoy-input');
+  const costeInp = document.getElementById('personal-hoy-coste');
+  const plato = inp.value.trim();
+  if (!plato) { toast('Escribe qué coméis', 'error'); return; }
+  const coste = parseFloat(costeInp.value) || 0;
+  guardar('personal_hoy_' + hoy(), { plato, coste, quien: USUARIO, ts: Date.now() });
+  inp.value = ''; costeInp.value = '';
+  addHistorial('personal', `👨‍🍳 Comida personal: ${plato}${coste?' — '+coste.toFixed(2)+'€':''}`);
+  renderPersonalHoyWidget();
+  toast('Anotado ✓', 'verde');
+}
+
 function initInicio() {
   try {
+  renderPersonalHoyWidget();
   document.getElementById('inicio-menu-fecha').textContent = formatFecha(hoy());
   const menu = cargar('menu_' + hoy(), null);
   const el = document.getElementById('inicio-menu-platos');
