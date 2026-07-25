@@ -1496,6 +1496,7 @@ function initHeader() {
 // INICIO
 // ══════════════════════════════════════════
 function initInicio() {
+  try {
   document.getElementById('inicio-menu-fecha').textContent = formatFecha(hoy());
   const menu = cargar('menu_' + hoy(), null);
   const el = document.getElementById('inicio-menu-platos');
@@ -1609,8 +1610,11 @@ function initInicio() {
 
   // widget turno hoy
   actualizarWidgetTurno();
+  } catch(e) {
+    const tab = document.getElementById('tab-inicio');
+    if (tab) tab.innerHTML = `<div style="padding:24px;color:#e05555;font-family:monospace;font-size:13px;background:#fff;border-radius:12px;margin:16px"><strong>Error Firefox (reportar a Zapia):</strong><br>${e.message}<br><br><small>${e.stack||''}</small></div>`;
+  }
 }
-
 function actualizarWidgetTurno() {
   const key = 'turno_' + hoy();
   const lista = cargar(key, []);
