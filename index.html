@@ -722,6 +722,19 @@ nav button.oculto{display:none}
     <div id="caja-semana"></div>
   </div>
 
+  <!-- CIERRE DE CAJA (solo admin) -->
+  <div class="card" id="caja-cierre-card" style="margin-top:14px;display:none">
+    <div class="card-title">🔒 Cierre del día</div>
+    <div style="font-size:13px;color:var(--text-3);margin-bottom:10px" id="caja-cierre-info">Guarda un resumen del día para tu historial.</div>
+    <button class="btn btn-oro btn-full" onclick="cerrarDiaCaja()">📋 Cerrar día y guardar resumen</button>
+    <div id="caja-cierre-status" style="margin-top:10px;font-size:13px;font-weight:700;display:none"></div>
+
+    <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
+      <div class="card-title" style="margin-bottom:10px">📜 Historial de cierres (30 días)</div>
+      <div id="caja-cierre-historial"></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- STOCK -->
@@ -2553,6 +2566,10 @@ function initCaja() {
   document.getElementById('caja-fecha').value = hoy();
   cargarCaja();
   renderCajaSemana();
+  // Cierre de caja solo para admins
+  const cierreCard = document.getElementById('caja-cierre-card');
+  if (cierreCard) cierreCard.style.display = esAdmin() ? '' : 'none';
+  if (esAdmin()) renderCajaCierres();
 }
 
 function cajaKey(fecha) { return 'caja_' + fecha; }
@@ -2722,6 +2739,85 @@ function actualizarWidgetCaja() {
     aEl.style.color   = 'var(--rojo)';
     aEl.textContent   = '⚠️ Gastos superan ventas';
   } else { aEl.style.display = 'none'; }
+}
+
+// ─── CIERRE DE CAJA DIARIO ───
+function cerrarDiaCaja() {
+  const fecha = document.getElementById('caja-fecha').value || hoy();
+  const data = getCajaData(fecha);
+  const ventas = data.ventas.reduce((a,x) => a+x.importe, 0);
+  // Gastos del día: suma de caja + gastos de contabilidad con esa fecha
+  const gastosCaja = data.gastos.reduce((a,x) => a+x.importe, 0);
+  const gastosCont = cargar('gastos',[]).filter(g => g.fecha === fecha).reduce((a,g) => a+g.importe, 0);
+  const gastosTotal = gastosCaja + gastosCont;
+  const neto = ventas - gastosTotal;
+
+  const cierre = {
+    fecha,
+    ventas: parseFloat(ventas.toFixed(2)),
+    gastos: parseFloat(gastosTotal.toFixed(2)),
+    gastosCaja: parseFloat(gastosCaja.toFixed(2)),
+    gastosCont: parseFloat(gastosCont.toFixed(2)),
+    neto: parseFloat(neto.toFixed(2)),
+    quien: USUARIO || 'desconocido',
+    cuando: ahora()
+  };
+
+  const cierres = cargar('caja_cierres', []);
+  // Reemplazar si ya existe un cierre para esa fecha
+  const idx = cierres.findIndex(c => c.fecha === fecha);
+  if (idx >= 0) cierres[idx] = cierre;
+  else cierres.unshift(cierre);
+  // Mantener solo últimos 30
+  cierres.sort((a,b) => b.fecha.localeCompare(a.fecha));
+  if (cierres.length > 30) cierres.splice(30);
+  guardar('caja_cierres', cierres);
+
+  addHistorial('caja', `🔒 Cierre ${fecha}: V ${ventas.toFixed(2)}€ · G ${gastosTotal.toFixed(2)}€ · Neto ${neto>=0?'+':''}${neto.toFixed(2)}€`);
+
+  const status = document.getElementById('caja-cierre-status');
+  status.style.display = '';
+  status.style.color = neto >= 0 ? 'var(--verde)' : 'var(--rojo)';
+  status.textContent = `✅ Día cerrado: ${ventas.toFixed(2)}€ - ${gastosTotal.toFixed(2)}€ = ${neto>=0?'+':''}${neto.toFixed(2)}€ neto`;
+
+  renderCajaCierres();
+  toast('Día cerrado ✓', 'verde');
+}
+
+function renderCajaCierres() {
+  const cierres = cargar('caja_cierres', []);
+  const fechaActual = document.getElementById('caja-fecha').value || hoy();
+  const info = document.getElementById('caja-cierre-info');
+  const yaCerrado = cierres.find(c => c.fecha === fechaActual);
+  if (yaCerrado) {
+    info.innerHTML = `✅ <strong>Ya cerrado</strong> por ${HIST_WHO[yaCerrado.quien]||yaCerrado.quien} · Neto: <span style="color:${yaCerrado.neto>=0?'var(--verde)':'var(--rojo)'};font-weight:800">${yaCerrado.neto>=0?'+':''}${yaCerrado.neto.toFixed(2)}€</span>`;
+  } else {
+    info.textContent = 'Guarda un resumen del día para tu historial.';
+  }
+
+  const el = document.getElementById('caja-cierre-historial');
+  if (!cierres.length) {
+    el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:10px">Sin cierres guardados.</div>';
+    return;
+  }
+  el.innerHTML = `<table style="width:100%;font-size:12px;border-collapse:collapse">
+    <thead><tr style="color:var(--text-3);text-transform:uppercase;font-size:10px;letter-spacing:.5px">
+      <th style="text-align:left;padding:6px 4px">Fecha</th>
+      <th style="text-align:right;padding:6px 4px">Ventas</th>
+      <th style="text-align:right;padding:6px 4px">Gastos</th>
+      <th style="text-align:right;padding:6px 4px">Neto</th>
+    </tr></thead>
+    <tbody>${cierres.map(c => {
+      const d = new Date(c.fecha + 'T12:00:00');
+      const diaS = d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+      return `<tr style="border-top:1px solid var(--border);cursor:pointer" onclick="document.getElementById('caja-fecha').value='${c.fecha}';cargarCaja();renderCajaCierres()">
+        <td style="padding:6px 4px">${diaS}${c.fecha===fechaActual?' ◀':''}</td>
+        <td style="text-align:right;padding:6px 4px;color:var(--verde)">+${c.ventas.toFixed(2)}</td>
+        <td style="text-align:right;padding:6px 4px;color:var(--rojo)">-${c.gastos.toFixed(2)}</td>
+        <td style="text-align:right;padding:6px 4px;font-weight:700;color:${c.neto>=0?'var(--verde)':'var(--rojo)'}">${c.neto>=0?'+':''}${c.neto.toFixed(2)}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
 }
 
 // ══════════════════════════════════════════
