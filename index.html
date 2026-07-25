@@ -1182,7 +1182,12 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
   const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos'];
   Promise.all(CLAVES.map(k => window._fbCargar(k, null))).then(() => {
     window._firebaseReady = true;
-    if (window._appReady) window._appReady();
+    // No relanzar arrancarApp — ya arrancó sin esperar Firebase
+    // Solo refrescar datos si ya hay usuario activo
+    if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
+      initInicio();
+      if (typeof actualizarWidgetCaja === 'function') actualizarWidgetCaja();
+    }
   });
 })();
 </script>
@@ -3344,7 +3349,8 @@ function arrancarApp() {
   actualizarWidgetCaja();
 }
 window._appReady = arrancarApp;
-if (window._firebaseReady) arrancarApp();
+// Arrancar siempre sin esperar Firebase — Firefox y Chrome
+arrancarApp();
 initTema();
 initBourdain();
 </script>
