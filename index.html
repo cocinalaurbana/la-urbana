@@ -590,6 +590,15 @@ nav button.oculto{display:none}
     <div id="appcc-historial"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div></div>
   </div>
 
+  <!-- Historial 7 días -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-title" style="margin-bottom:0">📜 Últimos 7 días</div>
+      <button class="btn btn-oro btn-sm" onclick="exportarAppccDia()">🖨️ Acta del día</button>
+    </div>
+    <div id="appcc-historial-7dias"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Cargando...</div></div>
+  </div>
+
   <!-- alertas APPCC -->
   <div id="appcc-alertas-card" class="card" style="display:none;border-left:3px solid var(--rojo)">
     <div class="card-title" style="color:var(--rojo)">⚠️ Temperaturas fuera de rango</div>
@@ -2300,6 +2309,7 @@ function initAppcc() {
     </div>`).join('');
 
   renderAppccHistorial();
+  renderAppcc7Dias();
 }
 
 function colorearAppcc(id, min, max) {
@@ -2351,6 +2361,7 @@ function guardarAppcc() {
   } else { alertCard.style.display = 'none'; }
 
   renderAppccHistorial();
+  renderAppcc7Dias();
   toast(alertas.length ? '⚠️ Registrado — hay temperaturas fuera de rango' : '✅ Temperaturas registradas');
 }
 
@@ -2379,6 +2390,104 @@ function renderAppccHistorial() {
       <div class="appcc-reg-temps">${chips}</div>
     </div>`;
   }).join('');
+}
+
+// Historial de los últimos 7 días
+function renderAppcc7Dias() {
+  const cont = document.getElementById('appcc-historial-7dias');
+  if (!cont) return;
+  const hoyStr = hoy();
+  let htmlDias = '';
+  let totalRegistros = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const fechaStr = d.toISOString().slice(0,10);
+    const lista = cargar('appcc_' + fechaStr, []);
+    const label = d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+    const esHoy = fechaStr === hoyStr;
+    if (lista.length) totalRegistros += lista.length;
+    htmlDias += `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:${esHoy?'800':'600'};font-size:13px;color:var(--text)">${esHoy?'📅 ':''}${label}</div>
+        <div style="font-size:12px;color:${lista.length?'var(--verde)':'var(--text-3)'}">${lista.length?lista.length+' registro(s)':'Sin registros'}</div>
+      </div>
+      ${lista.length ? lista.map(r => {
+        const hora = new Date(r.ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+        const chips = APPCC_EQUIPOS.filter(e => r.temps[e.id] !== undefined).map(e => {
+          const v = r.temps[e.id];
+          const est = appccEstado(v, e.min, e.max);
+          return `<span class="temp-chip ${est}">${e.icono} ${v}°C</span>`;
+        }).join('');
+        return `<div style="font-size:12px;color:var(--text-3);margin-top:4px;padding-left:8px">${hora} · ${r.quien} ${chips}</div>`;
+      }).join('') : ''}
+    </div>`;
+  }
+  cont.innerHTML = htmlDias || '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros en los últimos 7 días.</div>';
+}
+
+// Exportar acta del día (imprimible con window.print)
+function exportarAppccDia() {
+  const fecha = hoy();
+  const lista = cargar('appcc_' + fecha, []);
+  const d = new Date();
+  const fechaLabel = d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  let html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Acta APPCC — ${fecha}</title>
+  <style>
+    @media print { body { padding: 10px; } }
+    body{font-family:Arial,sans-serif;font-size:13px;color:#111;padding:30px;max-width:800px;margin:0 auto}
+    .header{text-align:center;border-bottom:2px solid #c17f3a;padding-bottom:14px;margin-bottom:20px}
+    .header h1{font-size:20px;margin-bottom:4px;color:#9a6228}
+    .header .sub{font-size:13px;color:#666}
+    .fecha{text-align:center;font-size:15px;font-weight:700;margin-bottom:20px}
+    table{width:100%;border-collapse:collapse;margin-bottom:20px}
+    th{background:#f5e9d5;text-align:left;padding:10px;font-size:12px;border:1px solid #d4ccc0;text-transform:uppercase;letter-spacing:.5px}
+    td{padding:10px;border:1px solid #d4ccc0;font-size:13px}
+    .ok{color:#2d7a4f;font-weight:700} .bad{color:#c0392b;font-weight:700} .warn{color:#b5861a;font-weight:700}
+    .firma{margin-top:40px;display:flex;justify-content:space-between}
+    .firma-box{border-top:1px solid #333;width:250px;padding-top:8px;font-size:12px;color:#555;text-align:center}
+    .sin-registros{text-align:center;padding:30px;color:#999;font-style:italic}
+  </style></head><body>
+  <div class="header">
+    <h1>LA URBANA — APPCC</h1>
+    <div class="sub">Autocontrol de Puntos de Control Crítico · Control de Temperaturas</div>
+  </div>
+  <div class="fecha">Acta del día: ${fechaLabel}</div>`;
+
+  if (!lista.length) {
+    html += `<div class="sin-registros">Sin registros de temperaturas para este día.</div>`;
+  } else {
+    html += `<table>
+      <tr><th>Hora</th><th>Registrado por</th>`;
+    APPCC_EQUIPOS.forEach(e => { html += `<th>${e.nombre}<br><small style="font-weight:400">${e.min}–${e.max}°C</small></th>`; });
+    html += `</tr>`;
+    lista.forEach(r => {
+      const hora = new Date(r.ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+      html += `<tr><td><strong>${hora}</strong></td><td>${r.quien}</td>`;
+      APPCC_EQUIPOS.forEach(e => {
+        const v = r.temps[e.id];
+        if (v === undefined) { html += `<td style="color:#ccc">—</td>`; return; }
+        const est = appccEstado(v, e.min, e.max);
+        html += `<td class="${est}">${v}°C</td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</table>`;
+  }
+
+  html += `<div class="firma">
+    <div class="firma-box">Firma del responsable</div>
+    <div class="firma-box">Fecha y hora de revisión</div>
+  </div>
+  <p style="margin-top:20px;font-size:11px;color:#999;text-align:center">Documento generado automáticamente por la app La Urbana · ${new Date().toLocaleString('es-ES')}</p>
+  </body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(() => { w.focus(); w.print(); }, 300);
+  toast('🖨️ Acta generada — usa el diálogo de impresión');
 }
 
 function exportarAppccSemana() {
