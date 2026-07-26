@@ -2515,21 +2515,52 @@ function renderListaCompra() {
     return;
   }
   const proveedores = cargar('proveedores', PROVEEDORES_DEFAULT);
-  el.innerHTML = criticos.map(p => {
-    const sem = getSemaforo(p);
-    const semIcon = sem === 'rojo' ? '🔴' : '🟡';
-    const total = (p.lotes||[]).reduce((a,l) => a+l.cantidad, 0);
-    // buscar proveedor que suministre este producto
+
+  // Agrupar productos por proveedor
+  const grupos = {}; // { nombreProveedor: { prov, items: [] } }
+  criticos.forEach(p => {
     const prov = proveedores.find(pr => pr.productos && pr.productos.toLowerCase().split(',').some(pp => p.nombre.toLowerCase().includes(pp.trim())));
-    const btnPedir = prov && prov.telefono
-      ? `<a href="https://wa.me/34${prov.telefono.replace(/\D/g,'')}?text=${encodeURIComponent(`Hola, necesitaríamos ${p.nombre} para La Urbana. ¿Podéis suministrar?`)}" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:700">📲 ${prov.nombre}</a>`
-      : (prov ? `<span style="font-size:11px;color:var(--text-3)">${prov.nombre} (sin tel.)</span>` : '');
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-      <div>
-        <span style="font-size:13px">${semIcon} <strong>${p.nombre}</strong></span>
-        <span style="font-size:12px;color:var(--text-3);margin-left:6px">${total} ${p.unidad} / mín. ${p.minimo||0}</span>
-        ${btnPedir ? `<div style="margin-top:3px">${btnPedir}</div>` : ''}
+    const key = prov ? prov.nombre : 'Sin proveedor asignado';
+    if (!grupos[key]) grupos[key] = { prov: prov || null, items: [] };
+    grupos[key].items.push(p);
+  });
+
+  // Ordenar: primero grupos con proveedor, luego "Sin proveedor"
+  const keys = Object.keys(grupos).sort((a,b) => {
+    if (a === 'Sin proveedor asignado') return 1;
+    if (b === 'Sin proveedor asignado') return -1;
+    return a.localeCompare(b);
+  });
+
+  el.innerHTML = keys.map(key => {
+    const { prov, items } = grupos[key];
+    const whatsappBtn = prov && prov.telefono
+      ? `<a href="https://wa.me/34${prov.telefono.replace(/\D/g,'')}?text=${encodeURIComponent('Hola, necesitamos hacer un pedido para La Urbana:\n\n' + items.map(p => `· ${p.nombre}`).join('\n') + '\n\n¿Podéis confirmar disponibilidad?')}" target="_blank" style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--accent-l);color:var(--accent-d);text-decoration:none;font-weight:700;white-space:nowrap">Pedir por WhatsApp</a>`
+      : '';
+    const filas = items.map(p => {
+      const sem = getSemaforo(p);
+      const badgeColor = sem === 'rojo' ? 'var(--coral)' : 'var(--mandarina)';
+      const badgeBg = sem === 'rojo' ? 'var(--coral-l)' : 'var(--mandarina-l)';
+      const badgeLabel = sem === 'rojo' ? 'Crítico' : 'Bajo';
+      const total = (p.lotes||[]).reduce((a,l) => a+l.cantidad, 0);
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <span style="font-size:13px;font-weight:600;color:var(--text)">${p.nombre}</span>
+          <span style="font-size:12px;color:var(--text-3);margin-left:6px">${total} ${p.unidad}</span>
+        </div>
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:${badgeBg};color:${badgeColor}">${badgeLabel}</span>
+      </div>`;
+    }).join('');
+
+    return `<div style="margin-bottom:16px;background:var(--surface);border-radius:14px;padding:14px;border:1.5px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <span style="font-size:13px;font-weight:700;color:var(--text);font-family:'Fraunces',serif">${key}</span>
+          <span style="font-size:11px;color:var(--text-3);margin-left:6px">${items.length} producto${items.length>1?'s':''}</span>
+        </div>
+        ${whatsappBtn}
       </div>
+      ${filas}
     </div>`;
   }).join('');
 }
@@ -2538,13 +2569,25 @@ function exportarListaCompra() {
   const productos = cargar('stock_productos',[]);
   const criticos = productos.filter(p => getSemaforo(p) === 'rojo' || getSemaforo(p) === 'amarillo');
   if (!criticos.length) { toast('No hay nada que pedir ✅','verde'); return; }
+  const proveedores = cargar('proveedores', PROVEEDORES_DEFAULT);
   const fecha = new Date().toLocaleDateString('es-ES');
-  const texto = `🛍️ Lista de la compra La Urbana — ${fecha}\n\n` +
-    criticos.map(p => {
+  const grupos = {};
+  criticos.forEach(p => {
+    const prov = proveedores.find(pr => pr.productos && pr.productos.toLowerCase().split(',').some(pp => p.nombre.toLowerCase().includes(pp.trim())));
+    const key = prov ? prov.nombre : 'Sin proveedor asignado';
+    if (!grupos[key]) grupos[key] = [];
+    grupos[key].push(p);
+  });
+  let texto = `🛍️ Lista de la compra La Urbana — ${fecha}\n\n`;
+  Object.keys(grupos).sort().forEach(key => {
+    texto += `📦 ${key.toUpperCase()}\n`;
+    grupos[key].forEach(p => {
       const sem = getSemaforo(p) === 'rojo' ? '🔴' : '🟡';
       const total = (p.lotes||[]).reduce((a,l)=>a+l.cantidad,0);
-      return `${sem} ${p.nombre} (quedan ${total} ${p.unidad})`;
-    }).join('\n');
+      texto += `  ${sem} ${p.nombre} (quedan ${total} ${p.unidad})\n`;
+    });
+    texto += '\n';
+  });
   navigator.clipboard.writeText(texto).then(() => toast('Lista copiada 📋','verde')).catch(() => toast('No se pudo copiar','error'));
 }
 
