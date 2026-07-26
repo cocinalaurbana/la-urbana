@@ -262,24 +262,23 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 .card-title-icon{width:14px;height:14px;opacity:.5}
 
 /* ─── STATS / MÉTRICAS ─── */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 .stat{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radio);padding:16px 14px;text-align:center;
+  border-radius:16px;padding:18px 12px;text-align:center;
 }
-.stat .num{font-size:1.8rem;font-weight:700;color:var(--text);line-height:1}
-.stat .lbl{font-size:10px;color:var(--text-3);margin-top:6px;text-transform:uppercase;letter-spacing:.6px}
+.stat .num{font-size:2.2rem;font-weight:800;color:var(--text);line-height:1}
+.stat .lbl{font-size:10px;color:var(--text-3);margin-top:7px;text-transform:uppercase;letter-spacing:.6px}
 .stat.verde .num{color:var(--olive)}
 .stat.rojo .num{color:var(--red)}
 .stat.amber .num{color:var(--amber)}
 
 /* ─── DASHBOARD HERO ─── */
 .dash-greeting{
-  display:flex;align-items:baseline;justify-content:space-between;
-  margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);
+  margin-bottom:24px;padding-bottom:0;border-bottom:none;
 }
-.dash-greeting h2{font-size:1rem;font-weight:600;color:var(--text);margin:0}
-.dash-greeting p{font-size:0.75rem;color:var(--text-3);margin:0;text-align:right}
+.dash-greeting h2{font-size:1.5rem;font-weight:700;color:var(--text);margin:0 0 2px 0}
+.dash-greeting p{font-size:0.8rem;color:var(--text-3);margin:0}
 .dash-line{display:none}
 
 /* Alertas banner rediseñado */
@@ -337,16 +336,23 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 
 
 /* Accesos rápidos rediseñados */
-#accesos-rapidos{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+#accesos-rapidos{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
 .acceso-card{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radio);padding:18px 16px;cursor:pointer;
-  transition:all .15s;text-align:left;
+  border-radius:16px;padding:18px 16px;cursor:pointer;
+  transition:all .15s;text-align:left;display:flex;align-items:center;gap:14px;
 }
-.acceso-card:hover{border-color:var(--amber);background:var(--surface-2)}
-.acceso-card .acceso-icon{font-size:1.2rem;margin-bottom:10px;display:block}
-.acceso-card .acceso-label{font-size:0.875rem;font-weight:600;color:var(--text);display:block}
-.acceso-card .acceso-desc{font-size:0.75rem;color:var(--text-3);margin-top:3px;display:block}
+.acceso-card:active{border-color:var(--amber);transform:scale(.98)}
+.acceso-icon-wrap{
+  width:44px;height:44px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:1.3rem;flex-shrink:0;
+}
+.acceso-icon-wrap.oro{background:rgba(196,160,90,.18)}
+.acceso-icon-wrap.rojo{background:rgba(220,90,80,.15)}
+.acceso-icon-wrap.verde{background:rgba(126,143,75,.18)}
+.acceso-icon-wrap.azul{background:rgba(100,140,200,.15)}
+.acceso-card .acceso-label{font-size:0.875rem;font-weight:700;color:var(--text);display:block;line-height:1.2}
+.acceso-card .acceso-desc{font-size:0.72rem;color:var(--text-3);margin-top:3px;display:block}
 
 /* ─── INVENTARIO CON BARRAS ─── */
 .stock-bar-item{
@@ -742,19 +748,47 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   </button>
 
   <div class="nav-separator"></div>
-  <div class="nav-section-label">Operaciones</div>
+  <div class="nav-section-label">Prioritario</div>
 
-  <button onclick="tab('stock',this)" id="nav-stock">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8h14M5 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>
-    Inventario
+  <button onclick="tab('appcc',this)" id="nav-appcc">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 0 0 1.946-.806 3.42 3.42 0 0 1 4.438 0 3.42 3.42 0 0 0 1.946.806 3.42 3.42 0 0 1 3.138 3.138 3.42 3.42 0 0 0 .806 1.946 3.42 3.42 0 0 1 0 4.438 3.42 3.42 0 0 0-.806 1.946 3.42 3.42 0 0 1-3.138 3.138 3.42 3.42 0 0 0-1.946.806 3.42 3.42 0 0 1-4.438 0 3.42 3.42 0 0 0-1.946-.806 3.42 3.42 0 0 1-3.138-3.138 3.42 3.42 0 0 0-.806-1.946 3.42 3.42 0 0 1 0-4.438 3.42 3.42 0 0 0 .806-1.946 3.42 3.42 0 0 1 3.138-3.138z"/></svg>
+    APPCC
   </button>
   <button onclick="tab('turno',this)" id="nav-turno">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
     Checklist
   </button>
+
+  <div class="nav-separator"></div>
+  <div class="nav-section-label">Operaciones</div>
+
   <button onclick="tab('produccion',this)" id="nav-produccion">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19.428 15.428a2 2 0 0 0-1.022-.547l-2.387-.477a6 6 0 0 0-3.86.517l-.318.158a6 6 0 0 1-3.86.517L6.05 15.21a2 2 0 0 0-1.806.547M8 4h8l-1 1v5.172a2 2 0 0 0 .586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 0 0 9 10.172V5L8 4z"/></svg>
     Producción
+  </button>
+  <button onclick="tab('mermas',this)" id="nav-mermas">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/></svg>
+    Mermas
+  </button>
+  <button onclick="tab('pedidos',this)" id="nav-pedidos">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9m-5-9v9m-4-9v9"/></svg>
+    Compras
+  </button>
+  <button onclick="tab('menu',this)" id="nav-menu">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>
+    Menú
+  </button>
+  <button onclick="tab('caja',this)" id="nav-caja">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+    Caja
+  </button>
+
+  <div class="nav-separator"></div>
+  <div class="nav-section-label">Inventario</div>
+
+  <button onclick="tab('stock',this)" id="nav-stock">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8h14M5 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>
+    Inventario
   </button>
   <button onclick="tab('raciones',this)" id="nav-raciones" class="oculto">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
@@ -763,30 +797,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
     Recetas
-  </button>
-  <button onclick="tab('pedidos',this)" id="nav-pedidos">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9m-5-9v9m-4-9v9"/></svg>
-    Compras
-  </button>
-  <button onclick="tab('mermas',this)" id="nav-mermas">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/></svg>
-    Mermas
-  </button>
-  <button onclick="tab('appcc',this)" id="nav-appcc">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 0 0 1.946-.806 3.42 3.42 0 0 1 4.438 0 3.42 3.42 0 0 0 1.946.806 3.42 3.42 0 0 1 3.138 3.138 3.42 3.42 0 0 0 .806 1.946 3.42 3.42 0 0 1 0 4.438 3.42 3.42 0 0 0-.806 1.946 3.42 3.42 0 0 1-3.138 3.138 3.42 3.42 0 0 0-1.946.806 3.42 3.42 0 0 1-4.438 0 3.42 3.42 0 0 0-1.946-.806 3.42 3.42 0 0 1-3.138-3.138 3.42 3.42 0 0 0-.806-1.946 3.42 3.42 0 0 1 0-4.438 3.42 3.42 0 0 0 .806-1.946 3.42 3.42 0 0 1 3.138-3.138z"/></svg>
-    APPCC
-  </button>
-
-  <div class="nav-separator"></div>
-  <div class="nav-section-label">Más</div>
-
-  <button onclick="tab('menu',this)" id="nav-menu">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>
-    Menú
-  </button>
-  <button onclick="tab('caja',this)" id="nav-caja">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
-    Caja
   </button>
   <button onclick="tab('contabilidad',this)" id="nav-contabilidad" class="oculto">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
@@ -815,11 +825,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <p id="header-fecha-dash">—</p>
   </div>
 
-  <!-- ALERTAS -->
-  <div id="alertas-banner"></div>
-
-  <div class="dash-line"></div>
-
   <!-- STATS -->
   <div class="stats" style="margin-bottom:20px">
     <div class="stat verde"><div class="num" id="stat-ok">0</div><div class="lbl">Stock OK</div></div>
@@ -828,8 +833,13 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div class="stat"><div class="num" style="color:var(--amber)" id="stat-pedidos">0</div><div class="lbl">Pedidos pend.</div></div>
   </div>
 
+  <!-- ALERTAS -->
+  <div id="alertas-banner" style="margin-bottom:4px"></div>
+
+  <div class="dash-line"></div>
+
   <!-- ACCESOS RÁPIDOS -->
-  <div id="accesos-rapidos" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px"></div>
+  <div id="accesos-rapidos"></div>
 
   <!-- CAJA DEL DÍA -->
   <div id="caja-widget" style="display:none" class="card" style="cursor:pointer" onclick="tab('caja',document.getElementById('nav-caja'))">
@@ -2120,18 +2130,42 @@ function initInicio() {
   const acc = document.getElementById('accesos-rapidos');
   if (esAdmin()) {
     acc.innerHTML = `
-      <button class="btn btn-oro btn-sm" onclick="tab('menu',document.getElementById('nav-menu'))">Editar menú</button>
-      <button class="btn btn-outline btn-sm" onclick="abrirModalReceta()">Nueva receta</button>
-      <button class="btn btn-outline btn-sm" onclick="tab('stock',document.getElementById('nav-stock'))">📦 Stock</button>
-      <button class="btn btn-outline btn-sm" onclick="tab('historial',document.getElementById('nav-historial'))">📋 Historial</button>`;
-    // panel WhatsApp
+      <div class="acceso-card" onclick="tab('appcc',document.getElementById('nav-appcc'))">
+        <div class="acceso-icon-wrap rojo">🌡️</div>
+        <div><span class="acceso-label">APPCC</span><span class="acceso-desc">Control de temp.</span></div>
+      </div>
+      <div class="acceso-card" onclick="tab('turno',document.getElementById('nav-turno'))">
+        <div class="acceso-icon-wrap verde">✅</div>
+        <div><span class="acceso-label">Checklist</span><span class="acceso-desc">Turno de hoy</span></div>
+      </div>
+      <div class="acceso-card" onclick="tab('mermas',document.getElementById('nav-mermas'))">
+        <div class="acceso-icon-wrap rojo">🗑️</div>
+        <div><span class="acceso-label">Mermas</span><span class="acceso-desc">Anotar pérdida</span></div>
+      </div>
+      <div class="acceso-card" onclick="tab('menu',document.getElementById('nav-menu'))">
+        <div class="acceso-icon-wrap oro">🍽️</div>
+        <div><span class="acceso-label">Menú del día</span><span class="acceso-desc">Editar platos</span></div>
+      </div>`;
     const waCard = document.getElementById('wa-config-card');
     if (waCard) { waCard.style.display = ''; renderWaConfig(); }
   } else {
     acc.innerHTML = `
-      <button class="btn btn-oro btn-sm" onclick="tab('stock',document.getElementById('nav-stock'))">Ver stock</button>
-      <button class="btn btn-rojo btn-sm" onclick="tab('mermas',document.getElementById('nav-mermas'))">Anotar merma</button>
-      <button class="btn btn-outline btn-sm" onclick="tab('pedidos',document.getElementById('nav-pedidos'))">Pedir producto</button>`;
+      <div class="acceso-card" onclick="tab('appcc',document.getElementById('nav-appcc'))">
+        <div class="acceso-icon-wrap rojo">🌡️</div>
+        <div><span class="acceso-label">APPCC</span><span class="acceso-desc">Control de temp.</span></div>
+      </div>
+      <div class="acceso-card" onclick="tab('turno',document.getElementById('nav-turno'))">
+        <div class="acceso-icon-wrap verde">✅</div>
+        <div><span class="acceso-label">Checklist</span><span class="acceso-desc">Turno de hoy</span></div>
+      </div>
+      <div class="acceso-card" onclick="tab('mermas',document.getElementById('nav-mermas'))">
+        <div class="acceso-icon-wrap rojo">🗑️</div>
+        <div><span class="acceso-label">Mermas</span><span class="acceso-desc">Anotar pérdida</span></div>
+      </div>
+      <div class="acceso-card" onclick="tab('pedidos',document.getElementById('nav-pedidos'))">
+        <div class="acceso-icon-wrap azul">📋</div>
+        <div><span class="acceso-label">Pedir</span><span class="acceso-desc">Solicitar producto</span></div>
+      </div>`;
     const waCard = document.getElementById('wa-config-card');
     if (waCard) waCard.style.display = 'none';
   }
