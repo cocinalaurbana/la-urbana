@@ -4127,8 +4127,8 @@ function renderRecetas() {
   if (filtro) recetas = recetas.filter(r => r.categoria === filtro);
   const el = document.getElementById('recetas-lista');
   if (!recetas.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">📖</div><div style="margin-top:8px">Sin recetas.</div></div>'; return; }
-  const CB = {carta:'badge-oro', menu:'badge-verde', postre:'badge-naranja', pincho:'badge-naranja', personal:'badge-gris'};
-  const CL = {carta:'Carta', menu:'Menú', postre:'Postre', pincho:'Pinchos', personal:'Personal'};
+  const CB = {carta:'badge-oro', menu:'badge-verde', postre:'badge-naranja', salsa:'badge-gris', pincho:'badge-naranja', personal:'badge-gris'};
+  const CL = {carta:'Carta', menu:'Menú', postre:'Postre', salsa:'Salsa/Elaboración', pincho:'Pinchos', personal:'Personal'};
   el.innerHTML = recetas.map(r => {
     // Soporta tanto estructura nueva (pvp_media/pvp_tapa) como antigua (precio)
     const pvp = r.pvp_media || r.pvp_tapa || r.pvp_racion || r.precio || null;
@@ -4609,50 +4609,48 @@ function seedData() {
         pvp_media:8.50, pvp_racion:15.00, coste_media:1.78, coste_racion:2.59,
         margen_media:77.0, margen_racion:81.0,
         ingredientes:[
-          {nombre:'Pechuga pollo IQF (media)',cantidad:'240g',coste:1.68},
-          {nombre:'Pechuga pollo IQF (ración)',cantidad:'350g',coste:2.45},
-          {nombre:'Chips de patata (media)',cantidad:'25g',coste:0.04},
-          {nombre:'Chips de patata (ración)',cantidad:'40g',coste:0.07},
-          {nombre:'Tahini (adobo)',cantidad:'~3-4g',coste:0.05},
-          {nombre:'Salsa de soja (adobo)',cantidad:'~60ml tanda',coste:0.01},
-          {nombre:'Pimienta negra, ajo, perejil',cantidad:'al gusto',coste:0},
+          {nombre:'Pechuga pollo IQF',cantidad:'240g (media) · 350g (ración)'},
+          {nombre:'Chips de patata',cantidad:'25g (media) · 40g (ración)'},
+          {nombre:'Tahini (adobo)',cantidad:'~15g por tanda 2,5kg'},
+          {nombre:'Salsa de soja (adobo)',cantidad:'~60ml por tanda'},
+          {nombre:'Pimienta negra molida',cantidad:'1 cda sopera'},
+          {nombre:'Ajo-perejil (adobo)',cantidad:'al gusto'},
+          {nombre:'Perejil seco + ajo seco',cantidad:'al gusto'},
         ],
-        elaboracion:'1. Adobar pollo: soja + tahini + pimienta + ajo-perejil (mínimo 1h).\n2. Freidora 5–6 min hasta dorado.\n3. Servir sobre chips de patata.',
-        notas:'Alérgenos: sésamo (tahini). Adobo preferiblemente de víspera.'
+        elaboracion:'1. Adobar pollo: soja + tahini + pimienta + ajo-perejil (mínimo 1h, mejor de víspera).\n2. Freidora 5–6 min hasta dorado.\n3. Servir sobre chips de patata.',
+        notas:'Alérgenos: sésamo (tahini).'
       },
       {
         id:'r02', nombre:'Pollo Flambeado', categoria:'carta',
         pvp_media:9.20, pvp_racion:16.70, coste_media:1.18, coste_racion:1.81,
         margen_media:85.8, margen_racion:88.1,
         ingredientes:[
-          {nombre:'Pechuga pollo (media)',cantidad:'220g',coste:1.54},
-          {nombre:'Pechuga pollo (ración)',cantidad:'320g',coste:2.24},
-          {nombre:'Queso gallego Arzúa-Ulloa',cantidad:'25g',coste:0.36},
-          {nombre:'Queso parmesano',cantidad:'25g',coste:0},
-          {nombre:'Nata para cocinar',cantidad:'65g',coste:0},
-          {nombre:'Salsa de soja',cantidad:'15g',coste:0.02},
-          {nombre:'Aceite de girasol',cantidad:'20g',coste:0.04},
-          {nombre:'Whisky (cocina)',cantidad:'15g',coste:0},
+          {nombre:'Pechuga de pollo',cantidad:'220g (media) · 320g (ración)'},
+          {nombre:'Queso gallego Arzúa-Ulloa',cantidad:'25g'},
+          {nombre:'Queso parmesano',cantidad:'25g'},
+          {nombre:'Nata para cocinar',cantidad:'65g'},
+          {nombre:'Salsa de soja',cantidad:'15g'},
+          {nombre:'Ajo-aceite',cantidad:'10g'},
+          {nombre:'Whisky (cocina)',cantidad:'15g'},
+          {nombre:'Aceite de girasol',cantidad:'20g'},
         ],
-        elaboracion:'1. Marcar pechuga en plancha con aceite y ajo.\n2. Añadir nata, queso gallego y parmesano.\n3. Flambear con whisky.\n4. Ajustar con soja.',
-        notas:'⚠️ Coste pendiente de completar (nata, parmesano, whisky sin precio confirmado).'
+        elaboracion:'1. Marcar pechuga en plancha con aceite y ajo.\n2. Añadir nata, queso gallego y parmesano.\n3. Flambear con whisky.\n4. Ajustar sabor con soja.',
+        notas:'⚠️ Coste pendiente: nata, parmesano y whisky sin precio confirmado.'
       },
       {
         id:'r03', nombre:'Raxo con patatas', categoria:'carta',
         pvp_media:8.50, pvp_racion:15.00, coste_media:0.21, coste_racion:0.36,
         margen_media:97.3, margen_racion:97.4,
         ingredientes:[
-          {nombre:'Lomo de cerdo en dados (media)',cantidad:'140g',coste:0},
-          {nombre:'Lomo de cerdo en dados (ración)',cantidad:'250g',coste:0},
-          {nombre:'Patata cocida (media)',cantidad:'90g',coste:0.16},
-          {nombre:'Patata cocida (ración)',cantidad:'175g',coste:0.31},
-          {nombre:'Pimiento rojo/verde',cantidad:'50g',coste:0},
-          {nombre:'Salsa de soja',cantidad:'15g',coste:0.02},
-          {nombre:'Ajo-aceite',cantidad:'10g',coste:0.02},
-          {nombre:'Whisky (cocina)',cantidad:'15g',coste:0},
-          {nombre:'Aceite de girasol',cantidad:'20g',coste:0.04},
+          {nombre:'Lomo de cerdo en dados',cantidad:'140g (media) · 250g (ración)'},
+          {nombre:'Patata cocida',cantidad:'90g (media) · 175g (ración)'},
+          {nombre:'Pimiento rojo/verde',cantidad:'50g (igual en ambas)'},
+          {nombre:'Salsa de soja',cantidad:'15g (igual en ambas)'},
+          {nombre:'Ajo-aceite',cantidad:'10g (igual en ambas)'},
+          {nombre:'Whisky (cocina)',cantidad:'15g (igual en ambas)'},
+          {nombre:'Aceite de girasol',cantidad:'20g (igual en ambas)'},
         ],
-        elaboracion:'1. Cortar lomo en dados. Marcar en plancha fuerte.\n2. Cocer patata al vapor o hervida.\n3. Saltear pimiento.\n4. Mezclar todo con soja + whisky + ajo-aceite.\n5. Servir caliente.',
+        elaboracion:'1. Cortar lomo en dados. Marcar en plancha fuerte.\n2. Cocer patata al vapor o hervida.\n3. Saltear pimiento.\n4. Mezclar con soja + whisky + ajo-aceite.\n5. Servir caliente.',
         notas:'⚠️ Coste incompleto: precio lomo y pimiento pendientes de factura.'
       },
       {
@@ -4660,88 +4658,124 @@ function seedData() {
         pvp_tapa:4.70, pvp_racion:8.50, coste_tapa:0.15, coste_racion:0.24,
         margen_tapa:96.5, margen_racion:96.9,
         ingredientes:[
-          {nombre:'Ensaladilla (tapa)',cantidad:'215g',coste:0.15},
-          {nombre:'Ensaladilla (ración)',cantidad:'340g',coste:0.24},
-          {nombre:'Aceitunas negras',cantidad:'2 uds',coste:0},
-          {nombre:'Mariñeira o picos',cantidad:'1 ud / 2 picos',coste:0},
-          {nombre:'— TANDA: Patata cruda',cantidad:'10–12 uds',coste:0},
-          {nombre:'— TANDA: Zanahoria',cantidad:'7–8 uds',coste:0},
-          {nombre:'— TANDA: Huevos cocidos',cantidad:'10 uds',coste:0},
-          {nombre:'— TANDA: Atún desmigado',cantidad:'1 kg bote',coste:0},
-          {nombre:'— TANDA: Mayonesa Hellmann\'s',cantidad:'~3 cucharones',coste:0},
+          {nombre:'Ensaladilla terminada',cantidad:'215g (tapa) · 340g (ración)'},
+          {nombre:'Aceitunas negras',cantidad:'2 uds (todas las raciones)'},
+          {nombre:'Pan (mariñeira o picos)',cantidad:'1 mariñeira o 2 picos (tapa) · 2 mariñeiras o 3 picos (ración)'},
+          {nombre:'— TANDA — Patata cruda',cantidad:'10–12 uds'},
+          {nombre:'— TANDA — Zanahoria',cantidad:'7–8 uds'},
+          {nombre:'— TANDA — Huevos cocidos',cantidad:'10 uds'},
+          {nombre:'— TANDA — Atún desmigado',cantidad:'1 kg (bote entero)'},
+          {nombre:'— TANDA — Mayonesa Hellmann\'s',cantidad:'~3 cucharones'},
         ],
         elaboracion:'1. Cocer patata y zanahoria. Enfriar y cortar en dados pequeños.\n2. Cocer huevos, pelar y picar.\n3. Mezclar todo con atún y mayonesa.\n4. Emplatar con aceitunas y pan.',
-        notas:'Hacer tanda para servicio completo. Mantener refrigerada.'
+        notas:'Hacer tanda completa para servicio. Mantener en frío.'
       },
       {
         id:'r05', nombre:'Tortilla de patatas', categoria:'carta',
         pvp_tapa:3.20, pvp_media:12.00, pvp_entera:23.00, coste_tapa:0.28,
         margen_tapa:90.5,
         ingredientes:[
-          {nombre:'Huevos (mediana)',cantidad:'6 uds',coste:0},
-          {nombre:'Huevos (grande)',cantidad:'12 uds',coste:0},
-          {nombre:'Patata cruda (mediana)',cantidad:'750g → 630g pochada',coste:1.31},
-          {nombre:'Patata cruda (grande)',cantidad:'1.5kg → 1.26kg pochada',coste:2.63},
-          {nombre:'Aceite de girasol',cantidad:'para pochar',coste:0.18},
-          {nombre:'Sal',cantidad:'al gusto',coste:0},
+          {nombre:'Huevos',cantidad:'6 uds (mediana) · 12 uds (grande)'},
+          {nombre:'Patata cruda',cantidad:'750g → 630g pochada (mediana) · 1,5kg → 1,26kg (grande)'},
+          {nombre:'Aceite de girasol',cantidad:'para pochar'},
+          {nombre:'Sal',cantidad:'al gusto'},
         ],
-        elaboracion:'1. Pelar y laminar patata. Pochar en aceite abundante (merma 16%).\n2. Batir huevos con sal. Mezclar con patata pochada.\n3. Cuajar en sartén antiadherente 2 vueltas.\n4. Mediana → 4 tapas. Grande → 8 tapas.',
-        notas:'⚠️ Precio huevos pendiente. Merma patata: 16%.'
+        elaboracion:'1. Pelar y laminar patata. Pochar en aceite abundante (merma 16%).\n2. Batir huevos con sal. Mezclar con patata pochada y escurrida.\n3. Cuajar en sartén antiadherente, dar 2 vueltas.\n4. Mediana → 4 tapas. Grande → 8 tapas.',
+        notas:'⚠️ Precio huevos pendiente. Merma patata cocción: 16%.'
       },
       {
         id:'r06', nombre:'Croquetas', categoria:'carta',
         pvp_tapa:3.20, pvp_racion:8.50, coste_tapa:0.57, coste_racion:1.52,
         margen_tapa:80.4, margen_racion:82.1,
         ingredientes:[
-          {nombre:'Croquetas jamón Hacendado (tapa)',cantidad:'3 uds',coste:0.57},
-          {nombre:'Croquetas jamón Hacendado (ración)',cantidad:'8 uds',coste:1.52},
+          {nombre:'Croquetas jamón Hacendado',cantidad:'3 uds (tapa) · 8 uds (ración)'},
         ],
         elaboracion:'1. Freidora a 180°C.\n2. Freír 3–4 min hasta doradas.\n3. Escurrir y servir inmediatamente.',
-        notas:'Producto Mercadona 0,19€/ud. Sin elaboración propia.'
+        notas:'Mercadona 0,19€/ud. Producto sin elaboración propia.'
       },
       {
-        id:'r07', nombre:'Tequeños de queso', categoria:'carta',
-        pvp_tapa:4.70, coste_tapa:1.20,
-        margen_tapa:74.5,
+        id:'r07', nombre:'Patatas bravas', categoria:'carta',
+        pvp_tapa:4.70,
         ingredientes:[
-          {nombre:'Tequeños Hacendado (tapa)',cantidad:'3 uds',coste:1.20},
+          {nombre:'Patatas bravas prefritas',cantidad:'300g'},
+          {nombre:'Salsa bravas',cantidad:'20g'},
+          {nombre:'Alioli',cantidad:'20g'},
         ],
-        elaboracion:'1. Freidora a 180°C.\n2. Freír 3–4 min hasta dorados.\n3. Servir calientes.',
-        notas:'Producto Mercadona 0,40€/ud. Sin elaboración propia.'
+        elaboracion:'1. Freidora a 180°C hasta crujientes.\n2. Escurrir bien.\n3. Servir con bravas y alioli aparte o por encima.',
+        notas:'⚠️ Precios de patata y salsas pendientes.'
       },
       {
-        id:'r08', nombre:'Patatas bravas', categoria:'carta',
-        pvp_tapa:4.70, coste_tapa:0.00,
-        margen_tapa:100,
+        id:'r08', nombre:'Criollo con patatas', categoria:'carta',
+        pvp_tapa:4.50, coste_tapa:1.16,
+        margen_tapa:74.2,
         ingredientes:[
-          {nombre:'Patatas bravas prefritas',cantidad:'300g',coste:0},
-          {nombre:'Salsa bravas',cantidad:'20g',coste:0},
-          {nombre:'Alioli',cantidad:'20g',coste:0},
+          {nombre:'Chorizo criollo blanco',cantidad:'1 ud (80g)'},
+          {nombre:'Patata cocida',cantidad:'175g'},
+          {nombre:'Chimichurri',cantidad:'20g'},
         ],
-        elaboracion:'1. Freidora a 180°C hasta crujientes.\n2. Escurrir. Servir con bravas y alioli.',
-        notas:'⚠️ Precios de patata bravas y salsas pendientes.'
+        elaboracion:'1. Marcar chorizo entero al inicio del servicio.\n2. Enfriar y cortar en rodajas.\n3. Al pedido: terminar en plancha ~1,5 min.\n4. Servir sobre patata cocida con chimichurri.',
+        notas:'Se puede preparar con antelación y terminar rápido al pase.'
       },
       {
-        id:'r09', nombre:'Criollo con patatas', categoria:'carta',
-        pvp_tapa:4.50, coste_tapa:0.41,
-        margen_tapa:90.0,
+        id:'s01', nombre:'Chimichurri', categoria:'salsa',
         ingredientes:[
-          {nombre:'Chorizo criollo blanco',cantidad:'1 ud (80g)',coste:0.85},
-          {nombre:'Patata cocida',cantidad:'175g',coste:0.31},
-          {nombre:'Chimichurri',cantidad:'20g',coste:0},
+          {nombre:'Comino en polvo',cantidad:'1 cda postre (media si en grano)'},
+          {nombre:'Orégano',cantidad:'2 cdas'},
+          {nombre:'Tomillo',cantidad:'1 cda'},
+          {nombre:'Perejil',cantidad:'1 cda'},
+          {nombre:'Aceite de girasol',cantidad:'300ml'},
+          {nombre:'Vinagre de vino',cantidad:'200ml'},
+          {nombre:'Dientes de ajo',cantidad:'4 uds'},
+          {nombre:'Pimentón picante',cantidad:'1 cda postre rasa'},
+          {nombre:'Pimentón dulce',cantidad:'1 cda postre rasa'},
+          {nombre:'Cayena',cantidad:'al gusto'},
         ],
-        elaboracion:'1. Marcar chorizo al inicio del servicio.\n2. Enfriar y cortar en rodajas.\n3. Al pedido: terminar en plancha ~1,5 min.\n4. Servir sobre patata con chimichurri.',
-        notas:'Ventaja: se puede preparar con antelación y terminar rápido.'
+        elaboracion:'1. Tostar en sartén seca: comino, orégano, tomillo, perejil.\n2. Enfriar completamente.\n3. Mezclar en frío con aceite, vinagre, ajo, pimentones y cayena.\n4. Triturar.',
+        notas:'Caducidad: 7 días en frío.'
       },
       {
-        id:'r10', nombre:'Coulant de chocolate', categoria:'postre',
-        pvp_tapa:4.50, coste_tapa:0.00,
-        margen_tapa:100,
+        id:'s02', nombre:'Miel-mostaza', categoria:'salsa',
         ingredientes:[
-          {nombre:'Coulant chocolate Makro',cantidad:'1 ud',coste:0},
+          {nombre:'Mayonesa Hellmann\'s',cantidad:'600ml'},
+          {nombre:'Miel',cantidad:'1 cda sopera'},
+          {nombre:'Mostaza',cantidad:'1 cda sopera'},
+          {nombre:'Lima o limón',cantidad:'1 chorro'},
         ],
-        elaboracion:'1. Horno según instrucciones del fabricante.\n2. Servir caliente con helado opcional.',
-        notas:'⚠️ Precio Makro pendiente de confirmar.'
+        elaboracion:'1. Mezclar todos los ingredientes.\n2. Ajustar acidez con lima/limón.\n3. Reservar en frío.',
+        notas:'Caducidad: 7–10 días en frío.'
+      },
+      {
+        id:'s03', nombre:'Salsa bravas', categoria:'salsa',
+        ingredientes:[
+          {nombre:'Cebolla dulce',cantidad:'200g'},
+          {nombre:'Zanahoria',cantidad:'1 ud'},
+          {nombre:'Pimentón picante',cantidad:'1 cda sopera'},
+          {nombre:'Pimentón dulce',cantidad:'1 cda sopera'},
+          {nombre:'Tomate frito',cantidad:'500g'},
+        ],
+        elaboracion:'1. Pochar cebolla y zanahoria.\n2. Añadir pimentones y tomate frito.\n3. Cocer 10 min. Triturar y colar.',
+        notas:'Caducidad: 4–5 días en frío.'
+      },
+      {
+        id:'s04', nombre:'Alioli', categoria:'salsa',
+        ingredientes:[
+          {nombre:'Ajos gordos',cantidad:'6 dientes'},
+          {nombre:'Ajo-aceite',cantidad:'3 cdas soperas'},
+          {nombre:'Salsa ajo-perejil',cantidad:'al gusto'},
+          {nombre:'Mayonesa Hellmann\'s',cantidad:'1 kg'},
+        ],
+        elaboracion:'1. Triturar ajos con ajo-aceite.\n2. Mezclar con mayonesa y salsa ajo-perejil.\n3. Ajustar sabor.',
+        notas:'Caducidad: ~5–7 días en frío (provisional).'
+      },
+      {
+        id:'s05', nombre:'Salsa ajo-perejil', categoria:'salsa',
+        ingredientes:[
+          {nombre:'Perejil fresco',cantidad:'1 manojo'},
+          {nombre:'Ajos',cantidad:'1 cabeza'},
+          {nombre:'Aceite de girasol',cantidad:'600ml'},
+        ],
+        elaboracion:'Triturar todo en frío hasta emulsionar.',
+        notas:'Caducidad: ~4–5 días en frío (provisional).'
       },
     ]);
   }
