@@ -878,38 +878,40 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div id="cw-alerta" style="margin-top:8px;font-size:12px;font-weight:600;display:none"></div>
   </div>
 
-  <!-- COMIDA DEL PERSONAL -->
-  <div class="card">
-    <div class="card-title">Comida del personal</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div style="font-size:1rem;font-weight:600;color:var(--text)" id="personal-hoy-plato">Sin anotar hoy</div>
-      <span id="personal-hoy-label" style="font-size:11px;color:var(--text-3)"></span>
+  <!-- FILA INFERIOR: comida personal + menú del día -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+
+    <!-- COMIDA DEL PERSONAL -->
+    <div class="card" style="margin:0">
+      <div class="card-title" style="margin-bottom:10px">🧑‍🍳 Personal</div>
+      <div style="font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:10px" id="personal-hoy-plato">Sin anotar</div>
+      <span id="personal-hoy-label" style="font-size:11px;color:var(--text-3);display:block;margin-bottom:8px"></span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input type="text" id="personal-hoy-input" placeholder="¿Qué comemos?"
+          style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter')guardarPersonalHoy()">
+        <input type="number" id="personal-hoy-coste" placeholder="€" step="0.5" min="0" style="width:52px;font-size:13px">
+        <button class="btn btn-primary btn-sm" onclick="guardarPersonalHoy()">✓</button>
+      </div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <input type="text" id="personal-hoy-input" placeholder="¿Qué comemos hoy?"
-        style="flex:1" onkeydown="if(event.key==='Enter')guardarPersonalHoy()">
-      <input type="number" id="personal-hoy-coste" placeholder="€" step="0.5" min="0" style="width:65px">
-      <button class="btn btn-primary btn-sm" onclick="guardarPersonalHoy()">✓</button>
+
+    <!-- MENÚ DEL DÍA -->
+    <div class="card" style="margin:0;border-left:3px solid var(--amber);cursor:pointer" onclick="tab('menu',document.getElementById('nav-menu'))">
+      <div class="card-title" style="margin-bottom:10px">🍽️ Menú hoy</div>
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:8px" id="inicio-menu-fecha"></div>
+      <div id="inicio-menu-platos"><div style="opacity:.6;font-size:13px">Sin menú para hoy.</div></div>
     </div>
+
   </div>
 
   <!-- TURNO HOY -->
-  <div id="turno-widget" style="display:none" class="card" onclick="tab('turno',document.getElementById('nav-turno'))" style="cursor:pointer">
+  <div id="turno-widget" style="display:none;margin-top:12px" class="card" onclick="tab('turno',document.getElementById('nav-turno'))" style="cursor:pointer">
     <div class="card-title">Turno de hoy</div>
-      <div style="font-size:11px;color:var(--text-3)" id="turno-widget-info"></div>
-    </div>
+    <div style="font-size:11px;color:var(--text-3)" id="turno-widget-info"></div>
     <div id="turno-widget-detalle" style="font-size:13px;color:var(--text-2)"></div>
   </div>
 
-  <!-- MENÚ -->
-  <div class="menu-dia">
-    <h2>🍽️ Menú de hoy</h2>
-    <div style="font-size:12px;opacity:.6;margin-bottom:12px" id="inicio-menu-fecha"></div>
-    <div id="inicio-menu-platos"><div style="opacity:.6;font-size:14px">Sin menú para hoy.</div></div>
-  </div>
-
   <!-- WHATSAPP ALERTAS (solo admin) -->
-  <div class="card" id="wa-config-card" style="display:none">
+  <div class="card" id="wa-config-card" style="display:none;margin-top:12px">
     <div id="wa-config-panel"></div>
   </div>
 </div>
