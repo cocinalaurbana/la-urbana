@@ -1052,6 +1052,19 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 <!-- ENTRADAS Y GASTOS -->
 <div id="tab-caja" class="tab">
 
+  <!-- EXPORTAR A SHEETS -->
+  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#0f4c35,#1a6b4a);color:#fff;border:none">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:2rem">📊</div>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:.95rem">Exportar todo a Google Sheets</div>
+        <div style="font-size:12px;opacity:.7;margin-top:2px">Stock · Raciones · Mermas · Caja · Entradas · Elaborados</div>
+      </div>
+      <button onclick="exportarASheets()" id="btn-sheets-export" style="background:rgba(255,255,255,.2);color:#fff;border:none;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">🚀 Exportar</button>
+    </div>
+    <div id="sheets-export-status" style="font-size:12px;margin-top:8px;opacity:.8;display:none"></div>
+  </div>
+
   <!-- ENTRADAS DE MERCANCÍA -->
   <div class="card" style="margin-bottom:14px">
     <div class="card-title">📥 Nueva entrada de mercancía</div>
@@ -3866,6 +3879,116 @@ function renderAppcc7Dias() {
   }
   cont.innerHTML = htmlDias || '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros en los últimos 7 días.</div>';
 }
+
+// ── EXPORTAR A GOOGLE SHEETS ──────────────────────────
+const SHEETS_WEBHOOK = ''; // ← URL del Apps Script (se rellena tras publicar)
+
+async function exportarASheets() {
+  const btn = document.getElementById('btn-sheets-export');
+  const status = document.getElementById('sheets-export-status');
+
+  if (!SHEETS_WEBHOOK) {
+    toast('⚠️ Aún no hay URL de conexión configurada', 'rojo');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Exportando...';
+  status.style.display = 'block';
+  status.textContent = 'Preparando datos...';
+
+  try {
+    const ts = new Date().toISOString();
+    const resultados = [];
+
+    // ── STOCK ────────────────────────────────────────
+    const stock = cargar('stock_productos', []);
+    if (stock.length) {
+      const filas = stock.map(p => [
+        hoy(), p.nombre||'', p.categoria||'', p.cantidad||0, p.unidad||'', p.proveedor||''
+      ]);
+      await enviarASheets('STOCK', filas);
+      resultados.push(`Stock: ${filas.length} productos`);
+      status.textContent = 'Stock ✓ — Procesando raciones...';
+    }
+
+    // ── RACIONES ─────────────────────────────────────
+    const raciones = cargar('raciones_dia', []);
+    if (raciones.length) {
+      const filas = raciones.map(r => [
+        r.fecha||hoy(), r.turno||'', r.plato||'', r.tipo||'', r.cantidad||1, r.precio||0, r.usuario||''
+      ]);
+      await enviarASheets('RACIONES', filas);
+      resultados.push(`Raciones: ${filas.length} registros`);
+      status.textContent = 'Raciones ✓ — Procesando mermas...';
+    }
+
+    // ── MERMAS ────────────────────────────────────────
+    const mermas = cargar('mermas', []);
+    if (mermas.length) {
+      const filas = mermas.map(m => [
+        m.fecha||hoy(), m.producto||m.nombre||'', m.cantidad||0, m.unidad||'', m.motivo||''
+      ]);
+      await enviarASheets('MERMAS', filas);
+      resultados.push(`Mermas: ${filas.length} registros`);
+      status.textContent = 'Mermas ✓ — Procesando caja...';
+    }
+
+    // ── CAJA / GASTOS ─────────────────────────────────
+    const gastos = cargar('gastos', []);
+    const gastosEfectivo = cargar('gastos_efectivo', []);
+    if (gastos.length || gastosEfectivo.length) {
+      const filas = gastos.map(g => [
+        g.fecha||hoy(), g.turno||'', g.ingresos||0, g.gastos_efectivo||0, g.gastos_total||0, g.balance||0
+      ]);
+      if (filas.length) await enviarASheets('CAJA', filas);
+      resultados.push(`Caja: ${filas.length} registros`);
+      status.textContent = 'Caja ✓ — Procesando entradas...';
+    }
+
+    // ── ENTRADAS MERCANCÍA ────────────────────────────
+    const entradas = cargar('entradas_mercancias', []);
+    if (entradas.length) {
+      const filas = entradas.map(e => [
+        e.fecha||hoy(), e.producto||e.nombre||'', e.cantidad||0, e.unidad||'', e.proveedor||''
+      ]);
+      await enviarASheets('ENTRADAS', filas);
+      resultados.push(`Entradas: ${filas.length} registros`);
+      status.textContent = 'Entradas ✓ — Procesando elaborados...';
+    }
+
+    // ── ELABORADOS ────────────────────────────────────
+    const elaborados = cargar('elaborados', []);
+    if (elaborados.length) {
+      const filas = elaborados.map(e => [
+        e.fecha||hoy(), e.turno||'', e.plato||e.nombre||'', e.cantidad||0, e.consumido?'Sí':'No', e.hora||''
+      ]);
+      await enviarASheets('ELABORADOS', filas);
+      resultados.push(`Elaborados: ${filas.length} registros`);
+    }
+
+    status.textContent = '✅ ' + (resultados.length ? resultados.join(' · ') : 'Sin datos nuevos');
+    toast('📊 Exportado a Google Sheets ✓', 'verde');
+
+  } catch(err) {
+    status.textContent = '❌ Error: ' + err.message;
+    toast('Error al exportar: ' + err.message, 'rojo');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🚀 Exportar';
+  }
+}
+
+async function enviarASheets(tipo, filas) {
+  const res = await fetch(SHEETS_WEBHOOK, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' }, // Apps Script requiere text/plain para evitar preflight
+    body: JSON.stringify({ tipo, filas })
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status} en ${tipo}`);
+  return res.json();
+}
+// ── FIN EXPORTAR A SHEETS ─────────────────────────────
 
 // Exportar acta del día (imprimible con window.print)
 function exportarAppccDia() {
