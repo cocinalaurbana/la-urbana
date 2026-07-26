@@ -1454,19 +1454,64 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
 </div>
 
 <div class="modal-overlay" id="modal-receta">
-  <div class="modal">
+  <div class="modal" style="max-width:520px">
     <div class="modal-title"><span id="modal-receta-titulo">Nueva receta</span><button class="modal-close" onclick="cerrarModal('modal-receta')">×</button></div>
-    <div class="form-group"><label>Nombre del plato</label><input type="text" id="r-nombre"></div>
-    <div class="form-group"><label>Categoría</label><select id="r-categoria" style="color:var(--text);background:var(--bg)"><option value="carta">Carta</option><option value="menu">Menú</option><option value="pincho">Pincho</option><option value="personal">Personal</option></select></div>
-    <div class="form-group"><label>Ingredientes</label><textarea id="r-ingredientes" rows="4" placeholder="500g de grelos&#10;1 lacón..."></textarea></div>
-    <div class="form-group"><label>Elaboración</label><textarea id="r-elaboracion" rows="5" placeholder="Paso 1:..."></textarea></div>
-    <div class="form-group"><label>Raciones</label><input type="number" id="r-raciones" min="1"></div>
-    <div class="form-group"><label>Coste aprox. (€)</label><input type="number" id="r-coste" step="0.1"></div>
-    <div class="form-group"><label>Precio venta (€)</label><input type="number" id="r-precio" step="0.5"></div>
-    <div class="form-group"><label>Notas / Alérgenos</label><textarea id="r-notas" rows="2"></textarea></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group" style="margin:0"><label>Nombre del plato</label><input type="text" id="r-nombre"></div>
+      <div class="form-group" style="margin:0"><label>Categoría</label>
+        <select id="r-categoria">
+          <option value="carta">Carta</option><option value="menu">Menú</option>
+          <option value="pincho">Pincho</option><option value="personal">Personal</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px">
+      <div class="form-group" style="margin:0"><label>Raciones</label><input type="number" id="r-raciones" min="1" placeholder="ej. 4"></div>
+      <div class="form-group" style="margin:0"><label>Precio venta (€)</label><input type="number" id="r-precio" step="0.5" oninput="actualizarEscandalloModal()"></div>
+      <div class="form-group" style="margin:0">
+        <label>Coste total (€)</label>
+        <input type="number" id="r-coste" step="0.01" placeholder="auto" oninput="actualizarEscandalloModal()">
+      </div>
+    </div>
+
+    <!-- Escandallo en vivo -->
+    <div id="r-escandallo-preview" style="display:none;background:var(--surface-2);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:13px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="color:var(--text-3)">Coste por ración</span>
+        <strong id="r-coste-racion">—</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="color:var(--text-3)">Margen</span>
+        <strong id="r-margen-pct">—</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span style="color:var(--text-3)">Beneficio por ración</span>
+        <strong id="r-margen-eur">—</strong>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:10px">
+      <label>Ingredientes
+        <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:6px">— una línea por ingrediente</span>
+      </label>
+      <textarea id="r-ingredientes" rows="4" placeholder="500g de grelos&#10;1 lacón&#10;200g de patatas&#10;Sal, pimentón"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Elaboración</label>
+      <textarea id="r-elaboracion" rows="4" placeholder="Paso 1: ...&#10;Paso 2: ..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Notas / Alérgenos</label>
+      <textarea id="r-notas" rows="2"></textarea>
+    </div>
+
     <input type="hidden" id="r-id">
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-oro" style="flex:1" onclick="guardarReceta()">Guardar</button>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-oro" style="flex:1" onclick="guardarReceta()">Guardar receta</button>
       <button class="btn btn-outline" onclick="cerrarModal('modal-receta')">Cancelar</button>
     </div>
   </div>
@@ -4061,6 +4106,7 @@ function abrirModalReceta(id) {
   document.getElementById('modal-receta-titulo').textContent = id ? 'Editar receta' : 'Nueva receta';
   ['r-nombre','r-ingredientes','r-elaboracion','r-raciones','r-coste','r-precio','r-notas'].forEach(i => document.getElementById(i).value='');
   document.getElementById('r-categoria').value = 'carta';
+  document.getElementById('r-escandallo-preview').style.display = 'none';
   if (id) {
     const r = cargar('recetas',[]).find(x => x.id==id);
     if (r) {
@@ -4072,10 +4118,28 @@ function abrirModalReceta(id) {
       document.getElementById('r-coste').value = r.coste||'';
       document.getElementById('r-precio').value = r.precio||'';
       document.getElementById('r-notas').value = r.notas||'';
+      actualizarEscandalloModal();
     }
   }
   abrirModal('modal-receta');
 }
+
+function actualizarEscandalloModal() {
+  const coste  = parseFloat(document.getElementById('r-coste').value) || 0;
+  const precio = parseFloat(document.getElementById('r-precio').value) || 0;
+  const raciones = parseInt(document.getElementById('r-raciones').value) || 1;
+  const preview = document.getElementById('r-escandallo-preview');
+  if (!coste && !precio) { preview.style.display = 'none'; return; }
+  preview.style.display = '';
+  const costeRac = coste > 0 ? coste / raciones : null;
+  const margenPct = (coste > 0 && precio > 0) ? (precio - costeRac) / precio * 100 : null;
+  const margenEur = (costeRac !== null && precio > 0) ? precio - costeRac : null;
+  const color = margenPct === null ? 'var(--text)' : margenPct > 60 ? 'var(--olive)' : margenPct >= 30 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('r-coste-racion').textContent = costeRac !== null ? costeRac.toFixed(2) + ' €' : '—';
+  document.getElementById('r-margen-pct').innerHTML = margenPct !== null ? `<span style="color:${color}">${margenPct.toFixed(0)}%</span>` : '—';
+  document.getElementById('r-margen-eur').innerHTML = margenEur !== null ? `<span style="color:${color}">${margenEur.toFixed(2)} €</span>` : '—';
+}
+
 function guardarReceta() {
   const nombre = document.getElementById('r-nombre').value.trim();
   if (!nombre) { toast('Ponle nombre al plato'); return; }
