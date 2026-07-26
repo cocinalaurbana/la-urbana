@@ -1058,10 +1058,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div style="display:flex;gap:8px;margin-bottom:8px">
       <select id="entrada-proveedor" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
         <option value="">— Proveedor —</option>
-        <option value="Fructífera">🥬 Fructífera</option>
-        <option value="Elmar">🐔 Elmar (pollo)</option>
-        <option value="Gadis">🛒 Gadis</option>
-        <option value="Otro">📦 Otro</option>
       </select>
       <input type="date" id="entrada-fecha" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
     </div>
@@ -1568,6 +1564,11 @@ De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
     <div class="form-group"><label>🔴 Crítico cuando queden menos de</label><input type="number" id="s-critico" placeholder="ej. 1" min="0"></div>
     <div class="form-group"><label>Vida útil (días desde entrada)</label><input type="number" id="s-vida" placeholder="ej. 7 para burrata" min="0"></div>
     <div class="form-group"><label>💶 Precio coste unitario (€) <span style="font-size:11px;color:var(--text-3)">— para escandallo futuro</span></label><input type="number" id="s-coste" placeholder="ej. 1.20" min="0" step="0.01"></div>
+    <div class="form-group"><label>🚚 Proveedor</label>
+      <select id="s-proveedor" style="color:var(--text);background:var(--bg)">
+        <option value="">Sin asignar</option>
+      </select>
+    </div>
     <input type="hidden" id="s-id">
     <div style="display:flex;gap:10px">
       <button class="btn btn-oro" style="flex:1" onclick="guardarProducto()">Guardar</button>
@@ -2359,6 +2360,14 @@ function abrirModalProducto(id) {
   document.getElementById('modal-producto-titulo').textContent = id ? 'Editar producto' : 'Nuevo producto';
   ['s-nombre','s-unidad','s-minimo','s-critico','s-vida','s-coste'].forEach(i => document.getElementById(i).value = '');
   document.getElementById('s-ubicacion').value = '';
+  // Poblar select de proveedores
+  const selProv = document.getElementById('s-proveedor');
+  if (selProv) {
+    const provs = cargar('proveedores', PROVEEDORES_DEFAULT);
+    selProv.innerHTML = '<option value="">Sin asignar</option>'
+      + provs.map(p => `<option value="${p.nombre}">${p.nombre}</option>`).join('');
+    selProv.value = '';
+  }
   if (id) {
     const p = cargar('stock_productos',[]).find(x => x.id === id);
     if (p) {
@@ -2369,6 +2378,7 @@ function abrirModalProducto(id) {
       document.getElementById('s-critico').value = p.critico||'';
       document.getElementById('s-vida').value = p.vidaDias||'';
       document.getElementById('s-coste').value = p.costeUnitario||'';
+      if (selProv) selProv.value = p.proveedor||'';
     }
   }
   abrirModal('modal-producto');
@@ -2378,6 +2388,7 @@ function guardarProducto() {
   const nombre = document.getElementById('s-nombre').value.trim();
   if (!nombre) { toast('Pon el nombre del producto'); return; }
   const costeVal = document.getElementById('s-coste').value;
+  const provVal = document.getElementById('s-proveedor') ? document.getElementById('s-proveedor').value : '';
   const prod = {
     id: productoEditId || Date.now(),
     nombre,
@@ -2387,6 +2398,7 @@ function guardarProducto() {
     critico: parseFloat(document.getElementById('s-critico').value) || 0,
     vidaDias: parseFloat(document.getElementById('s-vida').value) || null,
     costeUnitario: costeVal ? parseFloat(costeVal) : null,
+    proveedor: provVal || null,
     lotes: productoEditId ? (cargar('stock_productos',[]).find(x => x.id === productoEditId)||{}).lotes||[] : []
   };
   let productos = cargar('stock_productos',[]);
@@ -2515,6 +2527,13 @@ function toggleStockCard(id) {
 }
 
 function renderStock() {
+  // Poblar select de proveedor en entrada de mercancía
+  const selEnt = document.getElementById('entrada-proveedor');
+  if (selEnt && selEnt.options.length <= 1) {
+    const provs = cargar('proveedores', PROVEEDORES_DEFAULT);
+    selEnt.innerHTML = '<option value="">— Proveedor —</option>'
+      + provs.map(p => `<option value="${p.nombre}">${p.nombre}</option>`).join('');
+  }
   // buscador
   const busq = (document.getElementById('stock-buscar') ? (document.getElementById('stock-buscar').value || '') : '').toLowerCase().trim();
   const clearBtn = document.getElementById('stock-buscar-clear');
@@ -2589,6 +2608,7 @@ function renderStock() {
           <div style="font-size:12px;color:var(--text-3);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;align-items:center">
             <span>Total: <strong style="color:var(--text)">${total} ${p.unidad}</strong></span>
             ${ubicLabel?`<span class="ubicacion-tag">${ubicLabel}</span>`:''}
+            ${p.proveedor?`<span style="font-size:10px;color:var(--text-3);background:var(--surface-3);padding:1px 7px;border-radius:8px">🚚 ${p.proveedor}</span>`:''}
             ${!expandido && cadProxima ? cadProxima : ''}
           </div>
           <div class="stock-progress"><div class="stock-progress-fill ${sem}" style="width:${Math.min(100,p.minimo>0?Math.round(total/Math.max(p.minimo*2,1)*100):total>0?100:0)}%"></div></div>
@@ -4426,6 +4446,7 @@ const PROVEEDORES_DEFAULT = [
   {id:7, nombre:'Armando Galves', categoria:'Suministro', telefono:'', productos:'Aceite alto oleico', dias:'', notas:''},
   {id:8, nombre:'Gas Bergondo', categoria:'Suministro', telefono:'', productos:'Bombonas de gas', dias:'', notas:''},
   {id:9, nombre:'Restafresh', categoria:'Pescado', telefono:'630727805', productos:'Mejillón fresco (candidato)', dias:'Fines de semana', notas:'⭐ Candidato proveedor mejillón — pendiente confirmar'},
+  {id:10, nombre:'Carrefour', categoria:'General', telefono:'', productos:'Varios', dias:'', notas:''},
 ];
 
 function initProveedoresDefault() {
