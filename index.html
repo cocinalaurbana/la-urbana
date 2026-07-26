@@ -827,8 +827,8 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     Historial
   </button>
   <button onclick="tab('instagram',this)" id="nav-instagram" class="oculto">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
-    Instagram
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0z"/></svg>
+    Marketing
   </button>
 </nav>
 <div id="main-content">
@@ -1509,38 +1509,288 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 <!-- SPOTIFY -->
 <!-- INSTAGRAM -->
 <div id="tab-instagram" class="tab">
-  <div class="card" style="border-left:4px solid #E1306C">
-    <div class="card-title">📝 Bio sugerida</div>
-    <div class="ig-post-texto" onclick="copiarTexto(this,'Bio copiada ✓')">🍽️ Cocina gallega de verdad<br>📍 A Coruña · Tarde-noche + mediodía fin de semana<br>🌈 Espacio seguro para todxs<br>📞 [Teléfono]</div>
-    <div style="font-size:11px;color:var(--accent);margin-top:6px;font-weight:600">Toca para copiar</div>
-  </div>
-  <div class="ig-week">
-    <div class="ig-week-header">SEMANA 1 — "Aquí se come"</div>
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 1 · Lunes o Martes</div>
-      <div class="ig-post-tipo">📸 Foto plato del día</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Copiado ✓')">Cocina gallega sin complicaciones. [Nombre del plato], hecho hoy.
-Abrimos esta noche a partir de las [hora]. 📍 A Coruña
 
-#LaUrbana #CocinaGallega #ACoruña #DondeComereNCoruña</div>
-      <div style="font-size:11px;color:var(--accent);margin-top:4px">Toca para copiar</div>
+  <!-- HEADER -->
+  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;border:none">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <div style="font-size:2rem">📣</div>
+      <div>
+        <div style="font-weight:800;font-size:1.1rem">Marketing · La Urbana</div>
+        <div style="font-size:12px;opacity:.7">@laurbanabar · Cocina gallega con alma</div>
+      </div>
     </div>
-    <div class="ig-post">
-      <div class="ig-post-dia">Post 2 · Viernes</div>
-      <div class="ig-post-tipo">📸 Anuncio mediodía</div>
-      <div class="ig-post-texto" onclick="copiarTexto(this,'Copiado ✓')">Este sábado abrimos a mediodía. Menú casero, producto gallego.
-De 12 a 17h. Sin reserva, ven cuando quieras. 🍽️
-
-#LaUrbana #MenuDelDia #CocinaGallega #ACoruña</div>
-      <div style="font-size:11px;color:var(--accent);margin-top:4px">Toca para copiar</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <a href="https://www.instagram.com/laurbanabar" target="_blank" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;text-decoration:none">📸 Instagram</a>
+      <button onclick="mkTab('estrategia')" id="mk-btn-estrategia" class="mk-tab-btn active" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">🎯 Estrategia</button>
+      <button onclick="mkTab('calendario')" id="mk-btn-calendario" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">📅 Calendario</button>
+      <button onclick="mkTab('ideas')" id="mk-btn-ideas" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">💡 Ideas</button>
+      <button onclick="mkTab('guia')" id="mk-btn-guia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">📸 Guía foto</button>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title">📸 Consejos foto</div>
-    <div class="consejo"><div class="consejo-titulo">Regla de oro</div><div class="consejo-texto">Luz natural + fondo limpio. El plato cerca de la ventana, luz de lado. Nunca flash.</div></div>
-    <div class="consejo"><div class="consejo-titulo">Ángulos que funcionan</div><div class="consejo-texto">Desde arriba (cenital) o a 45°. Toca el plato en pantalla para enfocar.</div></div>
-    <div class="consejo"><div class="consejo-titulo">Antes de disparar</div><div class="consejo-texto">Limpia el borde del plato con papel. 2 segundos que cambian la foto.</div></div>
+
+  <!-- ESTRATEGIA -->
+  <div id="mk-estrategia">
+
+    <!-- PILARES -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:12px">🎯 Los 5 pilares de contenido</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--verde-l);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:var(--verde)">🍽️ Plato del día</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Foto del plato antes del servicio + texto corto. Mínimo 3 veces/semana. El mejor contenido que podéis hacer.</div>
+        </div>
+        <div style="background:var(--accent-l);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:var(--accent-d)">🥢 Pinchos del finde</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Viernes antes de abrir: foto de los pinchos del fin de semana. Genera expectativa y tráfico.</div>
+        </div>
+        <div style="background:var(--amarillo-l);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:#b8860b">🍹 Terraza & Cócteles</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Propuesta de planes para la terraza. Cócteles de temporada, tardes de verano. Muy visual y compartible.</div>
+        </div>
+        <div style="background:var(--rojo-l);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:var(--rojo)">🎥 Cocina en vídeo</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Reels cortos: elaboración de un plato, el mercado, detrás del mostrador. Sin guion, auténtico. El formato que más crece ahora.</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:var(--text)">🤝 Comunidad & Momentos</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Gente disfrutando, el equipo, un cliente habitual (con permiso), el barrio. Humaniza el local.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROYECTO QR -->
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">⭐ Proyecto estrella: Menú abanico + QR</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6">
+        El menú llega en un abanico físico. Cada plato tiene un QR. El cliente lo escanea y entra en un vídeo corto (con humor) donde se explica el plato: qué es, de dónde viene el producto, cómo se hace.<br><br>
+        <strong>Por qué funciona:</strong> es diferenciador, es compartible en redes, genera conversación y refuerza la identidad del local.<br><br>
+        <strong>Siguientes pasos:</strong>
+      </div>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="background:var(--accent-l);color:var(--accent-d);padding:2px 8px;border-radius:8px;font-weight:700;font-size:11px">1</span> Definir los platos fijos del abanico (3-5 máximo)</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="background:var(--accent-l);color:var(--accent-d);padding:2px 8px;border-radius:8px;font-weight:700;font-size:11px">2</span> Grabar los vídeos (móvil, sin producción, con personalidad)</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="background:var(--accent-l);color:var(--accent-d);padding:2px 8px;border-radius:8px;font-weight:700;font-size:11px">3</span> Subir a YouTube sin listar o a una página simple</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="background:var(--accent-l);color:var(--accent-d);padding:2px 8px;border-radius:8px;font-weight:700;font-size:11px">4</span> Generar QR (gratis, sin app) y añadir al abanico</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="background:var(--accent-l);color:var(--accent-d);padding:2px 8px;border-radius:8px;font-weight:700;font-size:11px">5</span> Publicar el making-of en Instagram → contenido gratis</div>
+      </div>
+    </div>
+
+    <!-- FRECUENCIA -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:12px">📆 Frecuencia realista</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">3-4</div>
+          <div style="font-size:11px;color:var(--text-3)">posts/semana</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Instagram feed</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">5-7</div>
+          <div style="font-size:11px;color:var(--text-3)">stories/semana</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Más espontáneas</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">1-2</div>
+          <div style="font-size:11px;color:var(--text-3)">reels/semana</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Máximo alcance</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:var(--verde)">✓</div>
+          <div style="font-size:11px;color:var(--text-3)">constancia</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Mejor que cantidad</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BIO -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:10px">✍️ Bio para Instagram</div>
+      <div style="background:var(--surface-2);border-radius:10px;padding:12px;font-size:13px;line-height:1.7;color:var(--text)" onclick="copiarTexto(this,'Bio copiada ✓')" id="bio-urbana">🥘 Cocina gallega de verdad
+📍 Rúa Pastoriza 10 · A Coruña
+🌿 Producto local · Hecho aquí
+📞 881 884 875</div>
+      <div style="font-size:11px;color:var(--accent);margin-top:6px;font-weight:600">Toca para copiar</div>
+    </div>
+
+    <!-- HASHTAGS -->
+    <div class="card">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:10px">#️⃣ Hashtags base</div>
+      <div style="background:var(--surface-2);border-radius:10px;padding:12px;font-size:12px;line-height:1.8;color:var(--text-2)" onclick="copiarTexto(this,'Hashtags copiados ✓')">#LaUrbana #CocinaGallega #ACoruña #GastronomiaGallega #ComidaGallega #BarCoruña #DondeComereEnCoruña #ProductoGalego #CocinaDeTemporada #GaliciaCalidade #TapaCoruña #MenúDelDía #PinchoCoruña</div>
+      <div style="font-size:11px;color:var(--accent);margin-top:6px;font-weight:600">Toca para copiar</div>
+    </div>
   </div>
+
+  <!-- CALENDARIO -->
+  <div id="mk-calendario" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:12px">📅 Calendario editorial</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;margin-bottom:8px">
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);padding:4px">L</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);padding:4px">M</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);padding:4px">X</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);padding:4px">J</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);padding:4px">V</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);padding:4px">S</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);padding:4px">D</div>
+      </div>
+      <!-- Plantilla semanal fija -->
+      <div style="display:flex;flex-direction:column;gap:8px" id="mk-semana-plan">
+        <div style="background:var(--verde-l);border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:12px;color:var(--verde)">Lunes — Arranque de semana</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">📸 Foto menú del día · Story horario de la semana</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:12px">Martes — Producto</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">📷 Ingrediente estrella de la semana · De dónde viene, quién lo trae</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:12px">Miércoles — Descanso o reel</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">🎥 Reel de elaboración o día libre de publicación</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:12px">Jueves — Adelanto del finde</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">💬 Story: "Este finde en La Urbana..." · Pinchos, cócteles, terraza</div>
+        </div>
+        <div style="background:var(--amarillo-l);border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:12px;color:#b8860b">Viernes — Pinchos & Terraza</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">📸 Foto pinchos del finde · Post terraza si hay plan especial</div>
+        </div>
+        <div style="background:var(--accent-l);border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:12px;color:var(--accent-d)">Sábado — En vivo</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">📱 Stories desde el servicio · Ambiente, momentos, platos saliendo</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:12px">Domingo — Menú mediodía</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">🍽️ Foto menú del domingo · Cierre de semana</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUBLICACIONES REGISTRADAS -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-weight:800;font-size:.95rem">📋 Seguimiento</div>
+        <button class="btn btn-oro btn-sm" onclick="abrirNuevaPub()">➕ Añadir</button>
+      </div>
+      <div id="mk-pubs-lista"></div>
+    </div>
+  </div>
+
+  <!-- IDEAS -->
+  <div id="mk-ideas" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:10px">💡 Banco de ideas</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="text" id="mk-idea-input" placeholder="Escribe una idea..." style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--bg)">
+        <button class="btn btn-oro" onclick="addIdea()" style="white-space:nowrap">➕ Añadir</button>
+      </div>
+      <div id="mk-ideas-lista"></div>
+    </div>
+
+    <!-- IDEAS PRECARGADAS -->
+    <div class="card">
+      <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;color:var(--text-3)">⭐ Ideas ya apuntadas</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--accent-l);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🎴 Menú en abanico físico con QR en cada plato → vídeo con humor explicando el plato</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🍹 Día de cócteles en la terraza — propuesta temática</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🥢 Pinchos del fin de semana — anuncio el viernes</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🍽️ Especialidad del día — foto antes del servicio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUÍA FOTO -->
+  <div id="mk-guia" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:12px">📸 Guía de fotografía</div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--verde-l);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:var(--verde)">☀️ Luz — Lo más importante</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.6">
+            • Usa siempre luz natural. El plato cerca de la ventana, luz entrando de lado (no de frente).<br>
+            • Nunca flash — aplana el plato y quita el apetito.<br>
+            • Si es de noche: pon el plato bajo la lámpara más cálida del local.
+          </div>
+        </div>
+
+        <div style="background:var(--accent-l);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:var(--accent-d)">📐 Ángulos que funcionan</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.6">
+            • <strong>Cenital (desde arriba):</strong> para platos con mucho color o textura. Perfecto para pinchos y tapas.<br>
+            • <strong>45°:</strong> para caldos, sopas, platos con altura. Muestra el volumen.<br>
+            • <strong>A ras de mesa:</strong> para bebidas y cócteles. Muy impactante.
+          </div>
+        </div>
+
+        <div style="background:var(--amarillo-l);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:#b8860b">✨ Antes de disparar</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.6">
+            • Limpia el borde del plato con papel. Siempre.<br>
+            • Quita lo que sobre de la mesa. Fondo limpio = plato protagonista.<br>
+            • Toca el plato en pantalla para enfocar bien.<br>
+            • Saca 5-6 fotos seguidas. Te quedas con la mejor.
+          </div>
+        </div>
+
+        <div style="background:var(--surface-2);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem">🎨 Estética del perfil</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.6">
+            • Colores cálidos: madera, piedra, verde, crema. El rollo La Urbana.<br>
+            • Fondos: la encimera de piedra, la madera de las mesas, una pizarra.<br>
+            • Evita platos de plástico o desechables en foto. Si son necesarios, córtalos del encuadre.<br>
+            • Consistencia: que todas las fotos parezcan del mismo sitio.
+          </div>
+        </div>
+
+        <div style="background:var(--rojo-l);border-radius:12px;padding:12px 14px">
+          <div style="font-weight:700;font-size:.9rem;color:var(--rojo)">🎥 Para los vídeos (Reels)</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.6">
+            • Formato vertical (9:16). El móvil en vertical, siempre.<br>
+            • Duración: 15-30 segundos. Más corto, mejor.<br>
+            • Los primeros 2 segundos son clave — empieza en lo más visual.<br>
+            • Sin guion: espontáneo y real gana siempre a producción perfecta.<br>
+            • Música: en la app de Instagram hay mucha libre de derechos.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COPIES LISTOS -->
+    <div class="card">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:12px">✍️ Copies listos para usar</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:4px;text-transform:uppercase">Plato del día</div>
+          <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:12px;line-height:1.6" onclick="copiarTexto(this,'Copiado ✓')">[Nombre del plato], hecho hoy. Cocina gallega sin complicaciones.
+Abrimos esta noche a las [hora]. 📍 A Coruña
+
+#LaUrbana #CocinaGallega #ACoruña</div>
+          <div style="font-size:10px;color:var(--accent);margin-top:3px">Toca para copiar</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:4px;text-transform:uppercase">Pinchos del finde</div>
+          <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:12px;line-height:1.6" onclick="copiarTexto(this,'Copiado ✓')">Este fin de semana en La Urbana 🥢
+[Lista de pinchos]
+Viernes y sábado noche · Domingo mediodía
+Sin reserva.
+
+#PinchosCoruña #LaUrbana #FinDeSemanaCocinaGallega</div>
+          <div style="font-size:10px;color:var(--accent);margin-top:3px">Toca para copiar</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:4px;text-transform:uppercase">Terraza & Cócteles</div>
+          <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:12px;line-height:1.6" onclick="copiarTexto(this,'Copiado ✓')">Terraza + tarde de [día] + cócteles = plan perfecto 🍹
+De [hora] a [hora]. Ven con quien quieras.
+📍 Rúa Pastoriza 10 · A Coruña
+
+#TerrazaCoruña #CóctelesCoruña #LaUrbana</div>
+          <div style="font-size:10px;color:var(--accent);margin-top:3px">Toca para copiar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- MODALES -->
@@ -1830,6 +2080,85 @@ function copiarTexto(el, msg) {
     ta.value = txt; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
     toast(msg||'Copiado ✓');
+
+// ── MARKETING ──────────────────────────────────────────
+function mkTab(name) {
+  ['estrategia','calendario','ideas','guia'].forEach(t => {
+    const el = document.getElementById('mk-'+t);
+    const btn = document.getElementById('mk-btn-'+t);
+    if (!el || !btn) return;
+    const active = t === name;
+    el.style.display = active ? '' : 'none';
+    btn.style.background = active ? 'rgba(255,255,255,.15)' : 'transparent';
+    btn.style.color = active ? '#fff' : 'rgba(255,255,255,.6)';
+  });
+  if (name === 'calendario') renderMkPubs();
+  if (name === 'ideas') renderMkIdeas();
+}
+
+function addIdea() {
+  const inp = document.getElementById('mk-idea-input');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const ideas = cargar('mk_ideas', []);
+  ideas.unshift({id: Date.now(), texto: txt, fecha: hoy()});
+  guardar('mk_ideas', ideas);
+  inp.value = '';
+  renderMkIdeas();
+  toast('Idea guardada 💡', 'verde');
+}
+
+function renderMkIdeas() {
+  const el = document.getElementById('mk-ideas-lista');
+  if (!el) return;
+  const ideas = cargar('mk_ideas', []);
+  if (!ideas.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px">Sin ideas aún. ¡Apunta la primera!</div>'; return; }
+  el.innerHTML = ideas.map(i => `
+    <div style="display:flex;align-items:flex-start;gap:8px;background:var(--surface-2);border-radius:10px;padding:10px;margin-bottom:8px">
+      <div style="flex:1;font-size:13px;color:var(--text)">${i.texto}</div>
+      <div style="font-size:10px;color:var(--text-3);white-space:nowrap">${i.fecha||''}</div>
+      <button onclick="borrarIdea(${i.id})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px;padding:0 4px">×</button>
+    </div>`).join('');
+}
+
+function borrarIdea(id) {
+  guardar('mk_ideas', cargar('mk_ideas',[]).filter(i => i.id !== id));
+  renderMkIdeas();
+}
+
+function abrirNuevaPub() {
+  const plato = prompt('¿Qué publicaste? (título o descripción)');
+  if (!plato) return;
+  const red = prompt('¿En qué red? (Instagram, TikTok, Facebook...)') || 'Instagram';
+  const pubs = cargar('mk_pubs', []);
+  pubs.unshift({id: Date.now(), titulo: plato, red, fecha: hoy(), quien: USUARIO});
+  guardar('mk_pubs', pubs);
+  renderMkPubs();
+  toast('Publicación registrada ✓', 'verde');
+}
+
+function renderMkPubs() {
+  const el = document.getElementById('mk-pubs-lista');
+  if (!el) return;
+  const pubs = cargar('mk_pubs', []);
+  if (!pubs.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px">Sin publicaciones registradas aún.</div>'; return; }
+  const redIcon = r => r === 'Instagram' ? '📸' : r === 'TikTok' ? '🎵' : r === 'Facebook' ? '👥' : '📣';
+  el.innerHTML = pubs.map(p => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:1.3rem">${redIcon(p.red)}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${p.titulo}</div>
+        <div style="font-size:11px;color:var(--text-3)">${p.red} · ${p.fecha} · ${p.quien||''}</div>
+      </div>
+      <button onclick="borrarPub(${p.id})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px">×</button>
+    </div>`).join('');
+}
+
+function borrarPub(id) {
+  guardar('mk_pubs', cargar('mk_pubs',[]).filter(p => p.id !== id));
+  renderMkPubs();
+}
+// ── FIN MARKETING ───────────────────────────────────────
   });
 }
 function addHistorial(tipo, desc) {
