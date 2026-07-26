@@ -4906,6 +4906,153 @@ function actualizarWidgetCaja() {
 arrancarApp();
 initTema();
 initBourdain();
+
+// ══════════════════════════════════════════
+// DICTADO POR VOZ — Web Speech API
+// ══════════════════════════════════════════
+(function initDictado() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) return; // navegador no soportado
+
+  let recActivo = null; // input actualmente grabando
+
+  // Idioma según usuario logueado
+  function getLang() {
+    // USUARIO es la variable global del rol activo
+    if (typeof USUARIO !== 'undefined') {
+      if (USUARIO === 'maria') return 'ro-RO';
+      if (USUARIO === 'lore' || USUARIO === 'cesar') return 'es-ES';
+    }
+    return 'es-ES';
+  }
+
+  // Crea el botón de micrófono para un campo
+  function crearBtnMic(el) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative;display:flex;align-items:center;width:100%';
+
+    // Clonar el elemento dentro del wrapper
+    el.parentNode.insertBefore(wrap, el);
+    wrap.appendChild(el);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.innerHTML = '🎙️';
+    btn.title = 'Dictar';
+    btn.style.cssText = [
+      'position:absolute;right:8px;top:50%;transform:translateY(-50%)',
+      'background:none;border:none;cursor:pointer',
+      'font-size:1.1rem;padding:4px;border-radius:6px',
+      'opacity:0.5;transition:opacity .15s,background .15s',
+      'line-height:1;z-index:2'
+    ].join(';');
+
+    btn.addEventListener('pointerenter', () => btn.style.opacity = '1');
+    btn.addEventListener('pointerleave', () => { if (recActivo !== el) btn.style.opacity = '0.5'; });
+
+    btn.addEventListener('click', () => toggleMic(el, btn));
+    wrap.appendChild(btn);
+
+    // Añadir padding-right para que el texto no quede bajo el botón
+    const isTA = el.tagName === 'TEXTAREA';
+    el.style.paddingRight = isTA ? '38px' : '38px';
+    el._micBtn = btn;
+  }
+
+  function toggleMic(el, btn) {
+    if (recActivo === el) {
+      // Parar
+      el._rec && el._rec.stop();
+      return;
+    }
+    if (recActivo) {
+      // Parar el anterior
+      recActivo._rec && recActivo._rec.stop();
+    }
+
+    const rec = new SpeechRec();
+    rec.lang = getLang();
+    rec.continuous = false;
+    rec.interimResults = true;
+    rec.maxAlternatives = 1;
+
+    el._rec = rec;
+    recActivo = el;
+
+    btn.innerHTML = '⏹️';
+    btn.style.opacity = '1';
+    btn.style.background = 'rgba(220,50,50,.15)';
+    btn.style.borderRadius = '6px';
+
+    let baseVal = el.value; // texto previo al dictado
+
+    rec.onresult = (e) => {
+      let interim = '';
+      let final = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      el.value = baseVal + (final || interim);
+      // Disparar evento input para que los listeners reaccionen
+      el.dispatchEvent(new Event('input', {bubbles:true}));
+      if (final) baseVal = el.value;
+    };
+
+    rec.onerror = () => resetBtn(el, btn);
+    rec.onend   = () => resetBtn(el, btn);
+
+    rec.start();
+  }
+
+  function resetBtn(el, btn) {
+    recActivo = null;
+    btn.innerHTML = '🎙️';
+    btn.style.opacity = '0.5';
+    btn.style.background = 'none';
+  }
+
+  // Inyectar en todos los inputs de texto y textareas visibles,
+  // y también observar cambios del DOM (modales, tabs) para inyectar los nuevos
+  function inyectarMics(root) {
+    const campos = root.querySelectorAll(
+      'input[type="text"]:not([data-nomic]), input[type="number"]:not([data-nomic]), textarea:not([data-nomic])'
+    );
+    campos.forEach(el => {
+      if (el._micBtn) return; // ya tiene micrófono
+      // Excluir campos de PIN y búsqueda de stock
+      if (el.id === 'pin-input' || el.id === 'stock-buscar') return;
+      // Solo si ya tiene parent
+      if (!el.parentNode) return;
+      crearBtnMic(el);
+    });
+  }
+
+  // Inyección inicial (DOM ya cargado)
+  inyectarMics(document);
+
+  // Observar el DOM para campos que aparecen dinámicamente (modales, renders)
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(m => {
+      m.addedNodes.forEach(node => {
+        if (node.nodeType === 1) {
+          inyectarMics(node);
+          // También el propio nodo si es un input
+          if ((node.tagName === 'INPUT' || node.tagName === 'TEXTAREA') && !node._micBtn) {
+            if (node.type === 'text' || node.tagName === 'TEXTAREA') {
+              if (node.id !== 'pin-input' && node.id !== 'stock-buscar') {
+                crearBtnMic(node);
+              }
+            }
+          }
+        }
+      });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+})();
+
 </script>
 
 <script>
