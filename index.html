@@ -403,6 +403,7 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 .sema.verde{background:var(--olive-l);color:var(--olive)}
 .sema.amarillo{background:var(--amber-l);color:var(--amber)}
 .sema.rojo{background:var(--red-l);color:var(--red)}
+.sema.gris{background:var(--surface-2);color:var(--text-3)}
 
 /* ─── BOTONES ─── */
 .btn{
@@ -1773,6 +1774,10 @@ function diasHasta(fechaStr) {
 }
 function getSemaforo(p) {
   const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
+  const tieneMinimo = (p.minimo || 0) > 0 || (p.critico || 0) > 0;
+  const tuvoStock = p.tuvoStock || false;
+  // Si nunca se definió un mínimo y nunca tuvo stock, no alertar
+  if (!tieneMinimo && !tuvoStock && total === 0) return 'gris';
   if (total <= (p.critico||0)) return 'rojo';
   if (total <= (p.minimo||1)) return 'amarillo';
   return 'verde';
@@ -2045,7 +2050,7 @@ function initInicio() {
   productos.forEach(p => {
     const sem = getSemaforo(p);
     const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
-    if (sem !== 'verde') {
+    if (sem !== 'verde' && sem !== 'gris') {
       alertasStock.push({nombre: p.nombre, total, unidad: p.unidad, sem});
     }
     (p.lotes||[]).forEach(l => {
@@ -2441,7 +2446,7 @@ function renderStock() {
 
   el.innerHTML = productos.map(p => {
     const sem = getSemaforo(p);
-    const semIcon = {verde:'🟢', amarillo:'🟡', rojo:'🔴'}[sem];
+    const semIcon = {verde:'🟢', amarillo:'🟡', rojo:'🔴', gris:'⚪'}[sem] || '⚪';
     const total = (p.lotes||[]).reduce((a,l) => a + l.cantidad, 0);
     const ubicLabel = UBIC_LABELS[p.ubicacion||''] || '';
     const expandido = _stockExpandidos.has(p.id);
