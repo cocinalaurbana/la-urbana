@@ -266,7 +266,9 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 .stat{
   background:var(--surface);border:1px solid var(--border);
   border-radius:16px;padding:18px 12px;text-align:center;
+  transition:border-color .15s, transform .1s;
 }
+.stat[onclick]:active{transform:scale(.96);border-color:var(--border-s)}
 .stat .num{font-size:2.2rem;font-weight:800;color:var(--text);line-height:1}
 .stat .lbl{font-size:10px;color:var(--text-3);margin-top:7px;text-transform:uppercase;letter-spacing:.6px}
 .stat.verde .num{color:var(--olive)}
@@ -282,7 +284,21 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 .dash-line{display:none}
 
 /* Alertas banner rediseñado */
-#alertas-banner{margin-bottom:16px}
+#alertas-banner{margin-bottom:8px}
+#alertas-detalle{margin-bottom:16px}
+.alerta-resumen{
+  display:flex;align-items:center;gap:8px;padding:12px 16px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radio);margin-bottom:0;
+}
+.alerta-resumen.ok{border-left:3px solid var(--olive)}
+.alerta-resumen.ok span{font-size:0.875rem;font-weight:500;color:var(--olive)}
+.alerta-pill{
+  font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;
+}
+.alerta-pill.red{background:var(--red-l);color:var(--red)}
+.alerta-pill.amber{background:var(--amber-l);color:var(--amber)}
+.alerta-chevron{margin-left:auto;font-size:10px;color:var(--text-3)}
 .alerta-item{
   display:flex;align-items:center;gap:12px;padding:14px 16px;
   background:var(--surface);border:1px solid var(--border);
@@ -827,14 +843,15 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
   <!-- STATS -->
   <div class="stats" style="margin-bottom:20px">
-    <div class="stat verde"><div class="num" id="stat-ok">0</div><div class="lbl">Stock OK</div></div>
-    <div class="stat rojo"><div class="num" id="stat-critico">0</div><div class="lbl">Crítico</div></div>
-    <div class="stat amber"><div class="num" id="stat-mermas">0</div><div class="lbl">Mermas hoy</div></div>
-    <div class="stat"><div class="num" style="color:var(--amber)" id="stat-pedidos">0</div><div class="lbl">Pedidos pend.</div></div>
+    <div class="stat verde" onclick="irAStock('rojo')" style="cursor:pointer" title="Ver críticos"><div class="num" id="stat-ok">0</div><div class="lbl">Stock OK</div></div>
+    <div class="stat rojo" onclick="irAStock('rojo')" style="cursor:pointer" title="Ver críticos"><div class="num" id="stat-critico">0</div><div class="lbl">Crítico</div></div>
+    <div class="stat amber" onclick="tab('mermas',document.getElementById('nav-mermas'))" style="cursor:pointer"><div class="num" id="stat-mermas">0</div><div class="lbl">Mermas hoy</div></div>
+    <div class="stat" onclick="tab('pedidos',document.getElementById('nav-pedidos'))" style="cursor:pointer"><div class="num" style="color:var(--amber)" id="stat-pedidos">0</div><div class="lbl">Pedidos pend.</div></div>
   </div>
 
-  <!-- ALERTAS -->
+  <!-- ALERTAS colapsables -->
   <div id="alertas-banner" style="margin-bottom:4px"></div>
+  <div id="alertas-detalle" style="display:none"></div>
 
   <div class="dash-line"></div>
 
@@ -2081,6 +2098,7 @@ function initInicio() {
   });
 
   const banner = document.getElementById('alertas-banner');
+  const detalle = document.getElementById('alertas-detalle');
   let alertItems = [];
 
   var elaborados = cargar('elaborados', []).filter(function(e){ return !e.consumido; });
@@ -2088,41 +2106,51 @@ function initInicio() {
   elaborados.forEach(function(e){
     var diffMs = new Date(e.caduca) - ahoraMs;
     var diffH  = Math.floor(diffMs / 3600000);
-    if (diffMs < 0)      alertItems.push({tipo:'red',  icon:'⛔', txt: e.nombre + ' — CADUCADO', sec:'appcc'});
-    else if (diffH < 24) alertItems.push({tipo:'red',  icon:'⚠', txt: e.nombre + ' — caduca en ' + diffH + 'h', sec:'appcc'});
-    else if (diffH < 48) alertItems.push({tipo:'amber',icon:'○', txt: e.nombre + ' — caduca mañana', sec:'appcc'});
+    if (diffMs < 0)      alertItems.push({tipo:'red',  txt: e.nombre + ' — CADUCADO', sec:'appcc'});
+    else if (diffH < 24) alertItems.push({tipo:'red',  txt: e.nombre + ' — caduca en ' + diffH + 'h', sec:'appcc'});
+    else if (diffH < 48) alertItems.push({tipo:'amber',txt: e.nombre + ' — caduca mañana', sec:'appcc'});
   });
 
   alertasCad.forEach(function(a){
-    alertItems.push({ tipo: a.urgente ? 'red' : 'amber', icon: a.urgente ? '⚠' : '○',
+    alertItems.push({ tipo: a.urgente ? 'red' : 'amber',
       txt: a.nombre + ' — ' + a.txt.replace(/^[⚠️🟡⛔ ]+/,''), sec:'stock' });
   });
 
   var urgentes = alertasStock.filter(function(a){ return a.sem === 'rojo'; });
   var bajos    = alertasStock.filter(function(a){ return a.sem === 'amarillo'; });
   urgentes.forEach(function(a){
-    alertItems.push({tipo:'red', icon:'□', txt: a.nombre + ' — sin stock', sec:'stock'});
+    alertItems.push({tipo:'red', txt: a.nombre + ' — sin stock', sec:'stock'});
   });
   if (bajos.length) {
-    alertItems.push({tipo:'amber', icon:'□', txt: bajos.length + ' producto' + (bajos.length>1?'s':'') + ' con stock bajo', sec:'stock'});
+    alertItems.push({tipo:'amber', txt: bajos.length + ' producto' + (bajos.length>1?'s':'') + ' con stock bajo', sec:'stock'});
   }
   if (alertasPedidos.length && esAdmin()) {
-    alertItems.push({tipo:'amber', icon:'◎', txt: alertasPedidos.length + ' pedido pendiente de aprobar', sec:'pedidos'});
+    alertItems.push({tipo:'amber', txt: alertasPedidos.length + ' pedido pendiente de aprobar', sec:'pedidos'});
   }
 
+  // — Renderizar banner colapsable —
   if (!alertItems.length) {
-    banner.innerHTML = '<div class="alerta-item" style="border-left:3px solid var(--olive)">'
-      + '<div class="alerta-dot olive"></div>'
-      + '<span class="alerta-txt" style="color:var(--olive)">Todo en orden</span></div>';
+    banner.innerHTML = '<div class="alerta-resumen ok"><span>✅ Todo en orden</span></div>';
+    if (detalle) detalle.style.display = 'none';
   } else {
-    banner.innerHTML = alertItems.map(function(a){
-      var navId = 'nav-' + a.sec;
-      var onclick = "tab('" + a.sec + "',document.getElementById('" + navId + "'))";
-      return '<div class="alerta-item' + (a.tipo==='red'?' critica':' warning') + '" onclick="' + onclick + '">'
-        + '<div class="alerta-dot ' + a.tipo + '"></div>'
-        + '<span class="alerta-txt">' + a.txt + '</span>'
-        + '<span class="alerta-arrow">›</span></div>';
-    }).join('');
+    const rojas  = alertItems.filter(function(a){ return a.tipo === 'red'; }).length;
+    const ambar  = alertItems.filter(function(a){ return a.tipo === 'amber'; }).length;
+    const abierto = detalle && detalle.style.display !== 'none';
+    const resumenTxt = (rojas ? '<span class="alerta-pill red">⚠ ' + rojas + ' urgente' + (rojas>1?'s':'') + '</span>' : '')
+      + (ambar  ? '<span class="alerta-pill amber">○ ' + ambar  + ' aviso'   + (ambar >1?'s':'') + '</span>' : '');
+    banner.innerHTML = '<div class="alerta-resumen" onclick="toggleAlertas()" style="cursor:pointer">'
+      + resumenTxt
+      + '<span class="alerta-chevron">' + (abierto ? '▲' : '▼') + '</span></div>';
+    if (detalle) {
+      detalle.innerHTML = alertItems.map(function(a){
+        var navId = 'nav-' + a.sec;
+        var onclick = "tab('" + a.sec + "',document.getElementById('" + navId + "'))";
+        return '<div class="alerta-item' + (a.tipo==='red'?' critica':' warning') + '" onclick="' + onclick + '">'
+          + '<div class="alerta-dot ' + a.tipo + '"></div>'
+          + '<span class="alerta-txt">' + a.txt + '</span>'
+          + '<span class="alerta-arrow">›</span></div>';
+      }).join('');
+    }
   }
 
   document.getElementById('alertas-lista') && (document.getElementById('alertas-lista').innerHTML = '');
@@ -2453,6 +2481,24 @@ function setFiltroSem(btn, val) {
   document.querySelectorAll('.stock-fil-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderStock();
+}
+
+function irAStock(sem) {
+  tab('stock', document.getElementById('nav-stock'));
+  _filtroSem = sem;
+  document.querySelectorAll('.stock-fil-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.sem === sem);
+  });
+  renderStock();
+}
+
+function toggleAlertas() {
+  const det = document.getElementById('alertas-detalle');
+  const chev = document.querySelector('.alerta-chevron');
+  if (!det) return;
+  const abierto = det.style.display !== 'none';
+  det.style.display = abierto ? 'none' : 'block';
+  if (chev) chev.textContent = abierto ? '▼' : '▲';
 }
 function setFiltroUbic(btn, val) {
   _filtroUbic = val;
