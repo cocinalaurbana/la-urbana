@@ -1239,14 +1239,17 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <div class="card" style="margin-bottom:12px">
     <div class="form-group">
       <label>Plato</label>
-      <select id="rac-plato" onchange="actualizarFormRacion()" style="width:100%">
+      <select id="rac-plato" onchange="actualizarFormRacion()" style="width:100%;color:var(--text);background:var(--bg)">
         <option value="">— Selecciona plato —</option>
       </select>
     </div>
     <div class="form-group">
       <label>Formato</label>
-      <select id="rac-formato" style="width:100%">
+      <select id="rac-formato" style="width:100%;color:var(--text);background:var(--bg)">
         <option value="">— Selecciona formato —</option>
+        <option value="Tapa">🥄 Tapa</option>
+        <option value="½ Ración">🍽️ ½ Ración</option>
+        <option value="Ración">🍽️🍽️ Ración</option>
       </select>
     </div>
     <div class="form-group">
@@ -2901,17 +2904,32 @@ function eliminarTarea(id) {
 function initRaciones() {
   const sel = document.getElementById('rac-plato');
   if (!sel) return;
-  sel.innerHTML = '<option value="">— Selecciona plato —</option>' +
-    ESCANDALLOS.map(e => `<option value="${e.plato}">${e.plato}</option>`).join('');
+  // Platos del menú de hoy + pinchos de la carta
+  const menu = cargar('menu_' + hoy(), {});
+  const platosMenu = [menu.p1, menu.p2, menu.postre].filter(Boolean);
+  const pinchos = cargar('pinchos', []);
+  const escandalloNombres = ESCANDALLOS.map(e => e.plato);
+  // Unión sin duplicados
+  const todos = [...new Set([...platosMenu, ...pinchos, ...escandalloNombres])];
+  if (todos.length) {
+    sel.innerHTML = '<option value="">— Selecciona plato —</option>'
+      + todos.map(p => `<option value="${p}">${p}</option>`).join('');
+  } else {
+    sel.innerHTML = '<option value="">— Sin platos en el menú de hoy —</option>';
+  }
   renderRacionesHoy();
 }
 
 function actualizarFormRacion() {
   const plato = document.getElementById('rac-plato').value;
   const selFmt = document.getElementById('rac-formato');
-  const e = ESCANDALLOS.find(x => x.plato === plato);
-  if (!e) { selFmt.innerHTML = '<option value="">— Selecciona formato —</option>'; return; }
-  selFmt.innerHTML = e.formatos.map(f => `<option value="${f.nombre}">${f.nombre}</option>`).join('');
+  if (!plato) { selFmt.innerHTML = '<option value="">— Selecciona formato —</option>'; return; }
+  selFmt.innerHTML = `
+    <option value="">— Selecciona formato —</option>
+    <option value="Tapa">🥄 Tapa</option>
+    <option value="½ Ración">🍽️ ½ Ración</option>
+    <option value="Ración">🍽️🍽️ Ración</option>
+  `;
   mostrarDesglose();
 }
 
@@ -2936,11 +2954,11 @@ function registrarRaciones() {
 
   const e = ESCANDALLOS.find(x => x.plato === plato);
   const f = e && e.formatos.find(x => x.nombre === fmt);
-  if (!f) { toast('Escandallo no encontrado','error'); return; }
 
-  // Descontar stock por cada ingrediente × cantidad de raciones
+  // Descontar stock por cada ingrediente × cantidad de raciones (solo si hay escandallo)
   let productos = cargar('stock_productos', []);
   const descuentos = [];
+  if (f && f.ingredientes) {
   f.ingredientes.forEach(ing => {
     const totalG = (ing.g || 0) * cant;
     const totalUds = (ing.uds || 0) * cant;
@@ -2967,6 +2985,7 @@ function registrarRaciones() {
     }).filter(l => l.cantidad > 0);
     descuentos.push(`${ing.nombre} -${totalG?totalG+'g':totalUds+'ud'}`);
   });
+  } // fin if (f && f.ingredientes)
   guardar('stock_productos', productos);
   window.PRODUCTOS_STOCK = productos;
 
