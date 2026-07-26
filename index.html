@@ -4127,26 +4127,27 @@ function renderRecetas() {
   if (filtro) recetas = recetas.filter(r => r.categoria === filtro);
   const el = document.getElementById('recetas-lista');
   if (!recetas.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">📖</div><div style="margin-top:8px">Sin recetas.</div></div>'; return; }
-  const CB = {carta:'badge-oro', menu:'badge-verde', pincho:'badge-naranja', personal:'badge-gris'};
-  const CL = {carta:'Carta', menu:'Menú', pincho:'Pinchos', personal:'Personal'};
+  const CB = {carta:'badge-oro', menu:'badge-verde', postre:'badge-naranja', pincho:'badge-naranja', personal:'badge-gris'};
+  const CL = {carta:'Carta', menu:'Menú', postre:'Postre', pincho:'Pinchos', personal:'Personal'};
   el.innerHTML = recetas.map(r => {
-    const costeReal = calcularCosteReceta(r);
-    const costeFinal = costeReal !== null ? costeReal : (r.coste ? parseFloat(r.coste) : null);
-    const precio = r.precio ? parseFloat(r.precio) : null;
+    // Soporta tanto estructura nueva (pvp_media/pvp_tapa) como antigua (precio)
+    const pvp = r.pvp_media || r.pvp_tapa || r.pvp_racion || r.precio || null;
+    const coste = r.coste_media || r.coste_tapa || r.coste || null;
+    const margen = r.margen_media || r.margen_tapa || null;
     let margenHtml = '';
-    if (costeFinal !== null && precio && precio > 0) {
-      const margenPct = (precio - costeFinal) / precio * 100;
-      const margenEur = precio - costeFinal;
-      const color = margenPct > 60 ? 'var(--verde)' : margenPct >= 30 ? 'var(--amarillo)' : 'var(--rojo)';
-      margenHtml = `<span style="font-weight:700;color:${color}">📊 ${margenPct.toFixed(0)}% (${margenEur.toFixed(2)}€)</span>`;
+    if (margen) {
+      const color = margen > 60 ? 'var(--olive)' : margen >= 30 ? 'var(--amber)' : 'var(--rojo)';
+      margenHtml = `<span style="font-weight:700;color:${color}">${margen.toFixed(0)}% margen</span>`;
     }
+    // Advertencia si hay ingredientes pendientes
+    const tieneIngArray = Array.isArray(r.ingredientes);
+    const hayPendiente = tieneIngArray && r.ingredientes.some(i => i.coste === 0 && i.nombre.includes('⚠️') === false && i.nombre.startsWith('—') === false);
     return `<div class="receta-card ${r.categoria}" onclick="verReceta(${JSON.stringify(r.id)})">
       <div class="receta-nombre">${r.nombre}</div>
       <div class="receta-meta">
         <span class="badge ${CB[r.categoria]||'badge-gris'}">${CL[r.categoria]||r.categoria}</span>
-        ${r.raciones?`<span>${r.raciones} rac.</span>`:''}
-        ${precio?`<span>💵 ${precio}€</span>`:''}
-        ${costeFinal?`<span>🏷️ ${costeFinal.toFixed(2)}€</span>`:''}
+        ${pvp ? `<span>💵 desde ${pvp}€</span>` : ''}
+        ${coste ? `<span>🏷️ coste ${coste.toFixed(2)}€</span>` : ''}
         ${margenHtml}
       </div>
     </div>`;
@@ -4176,38 +4177,58 @@ function verReceta(id) {
   if (!r) return;
   document.getElementById('ver-receta-nombre').textContent = r.nombre;
   let html = '';
-  if (r.ingredientes) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:6px">Ingredientes</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.ingredientes}</div></div>`;
-  if (r.elaboracion) html += `<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:6px">Elaboración</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.elaboracion}</div></div>`;
-  if (r.notas) html += `<div style="background:var(--amarillo-l);padding:10px;border-radius:8px;font-size:13px;border:1px solid rgba(201,162,39,.3);margin-bottom:10px">${r.notas}</div>`;
-  // Escandallo / margen
-  const costeReal = calcularCosteReceta(r);
-  const costeManual = r.coste ? parseFloat(r.coste) : null;
-  const costeFinal = costeReal !== null ? costeReal : costeManual;
-  const precio = r.precio ? parseFloat(r.precio) : null;
-  if (costeFinal !== null || precio) {
-    html += `<div style="background:var(--surface-2);border-radius:10px;padding:12px;margin-bottom:10px">
-      <div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;margin-bottom:8px">📊 Escandallo</div>
-      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px">
-        <span>Coste${costeReal!==null?' (calculado)':''}:</span>
-        <strong>${costeFinal!==null?costeFinal.toFixed(2)+'€':'—'}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px">
-        <span>Precio venta:</span>
-        <strong>${precio?precio.toFixed(2)+'€':'—'}</strong>
+
+  // Escandallo por formato (nueva estructura)
+  const formatos = [];
+  if (r.pvp_tapa != null)   formatos.push({label:'Tapa',    pvp:r.pvp_tapa,   coste:r.coste_tapa,   margen:r.margen_tapa});
+  if (r.pvp_media != null)  formatos.push({label:'½ ración',pvp:r.pvp_media,  coste:r.coste_media,  margen:r.margen_media});
+  if (r.pvp_racion != null) formatos.push({label:'Ración',  pvp:r.pvp_racion, coste:r.coste_racion, margen:r.margen_racion});
+  if (r.pvp_entera != null) formatos.push({label:'Entera',  pvp:r.pvp_entera, coste:r.coste_entera, margen:null});
+  // Estructura antigua
+  if (!formatos.length && r.precio) formatos.push({label:'Precio', pvp:parseFloat(r.precio), coste:r.coste?parseFloat(r.coste):null, margen:null});
+
+  if (formatos.length) {
+    html += `<div style="background:var(--surface-2);border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">📊 Escandallo</div>
+      <div style="display:grid;grid-template-columns:repeat(${formatos.length},1fr);gap:8px">`;
+    formatos.forEach(f => {
+      const mg = f.margen || (f.pvp && f.coste ? (f.pvp - f.coste) / f.pvp * 100 : null);
+      const color = mg ? (mg > 60 ? 'var(--olive)' : mg >= 30 ? 'var(--amber)' : 'var(--rojo)') : 'var(--text-3)';
+      html += `<div style="text-align:center;background:var(--surface);border-radius:8px;padding:10px">
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">${f.label}</div>
+        <div style="font-size:1.1rem;font-weight:700">${f.pvp}€</div>
+        ${f.coste ? `<div style="font-size:11px;color:var(--text-3)">coste ${f.coste.toFixed(2)}€</div>` : ''}
+        ${mg ? `<div style="font-size:12px;font-weight:700;color:${color};margin-top:2px">${mg.toFixed(0)}%</div>` : ''}
       </div>`;
-    if (costeFinal !== null && precio && precio > 0) {
-      const margenPct = (precio - costeFinal) / precio * 100;
-      const margenEur = precio - costeFinal;
-      const color = margenPct > 60 ? 'var(--verde)' : margenPct >= 30 ? 'var(--amarillo)' : 'var(--rojo)';
-      const label = margenPct > 60 ? '✅ Buen margen' : margenPct >= 30 ? '⚠️ Margen ajustado' : '🚨 Margen bajo';
-      html += `<div style="display:flex;justify-content:space-between;font-size:14px;padding-top:8px;border-top:1px solid var(--border)">
-        <span>Margen:</span>
-        <strong style="color:${color}">${margenPct.toFixed(0)}% · ${margenEur.toFixed(2)}€</strong>
-      </div>
-      <div style="margin-top:6px;font-size:12px;font-weight:700;color:${color}">${label}</div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // Ingredientes
+  if (r.ingredientes) {
+    html += `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Ingredientes</div>`;
+    if (Array.isArray(r.ingredientes)) {
+      html += `<div style="display:flex;flex-direction:column;gap:6px">`;
+      r.ingredientes.forEach(ing => {
+        const esPendiente = ing.coste === 0 && !ing.nombre.startsWith('—');
+        html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--surface-2);border-radius:8px;font-size:13px">
+          <span>${ing.nombre}</span>
+          <span style="color:var(--text-3);white-space:nowrap;margin-left:8px">${ing.cantidad}${esPendiente ? ' <span style="color:var(--amber)">⚠️</span>' : ''}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.ingredientes}</div>`;
     }
     html += `</div>`;
   }
+
+  // Elaboración
+  if (r.elaboracion) html += `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Elaboración</div><div style="font-size:14px;line-height:1.8;white-space:pre-line">${r.elaboracion}</div></div>`;
+
+  // Notas
+  if (r.notas) html += `<div style="background:rgba(199,155,71,.1);padding:12px;border-radius:8px;font-size:13px;border:1px solid rgba(199,155,71,.25);margin-bottom:10px">${r.notas}</div>`;
+
   document.getElementById('ver-receta-contenido').innerHTML = html;
   document.getElementById('ver-receta-editar').onclick = () => { cerrarModal('modal-ver-receta'); abrirModalReceta(id); };
   document.getElementById('ver-receta-borrar').onclick = () => borrarReceta(id);
@@ -4583,14 +4604,145 @@ function seedData() {
 
   if (!cargar('recetas', null)) {
     guardar('recetas', [
-      {id:'r01',nombre:'Ensalada Rúcula-Espinaca con Granada y Feta',categoria:'carta',raciones:4,precio:10.50,coste:4,
-       ingredientes:'Rúcula, espinaca baby, granada, pistachos pelados, queso feta, garbanzos cocidos, cebolla morada',
-       elaboracion:'1. Mezclar rúcula y espinaca.\n2. Añadir granada, pistachos y feta desmenuzado.\n3. Vinagreta: aceite oliva + mostaza antigua + limón + sal + pimienta + ágave.\n4. Aliñar justo antes de servir.',
-       notas:'Alérgenos: lácteos, frutos secos.'},
-      {id:'r02',nombre:'Ramen Gallego de Caldo de Grelos',categoria:'menu',raciones:4,precio:13,coste:5,
-       ingredientes:'Lacón salado, costilla salada, oreja salada, chorizo, unto, alubias blancas, grelos frescos, patata, fideos udon, kimchi',
-       elaboracion:'1. Desalar lacón, costilla y oreja 8-12h.\n2. Cocer todo junto 1-1,5h.\n3. Retirar carnes.\n4. Cocer grelos y patata en el caldo.\n5. Cocer fideos aparte.\n6. Montaje: caldo + fideos + carnes + kimchi al gusto.',
-       notas:'Desalar mínimo 8h. La oreja queda mejor frita al final.'},
+      {
+        id:'r01', nombre:'Pollo Urbana', categoria:'carta',
+        pvp_media:8.50, pvp_racion:15.00, coste_media:1.78, coste_racion:2.59,
+        margen_media:77.0, margen_racion:81.0,
+        ingredientes:[
+          {nombre:'Pechuga pollo IQF (media)',cantidad:'240g',coste:1.68},
+          {nombre:'Pechuga pollo IQF (ración)',cantidad:'350g',coste:2.45},
+          {nombre:'Chips de patata (media)',cantidad:'25g',coste:0.04},
+          {nombre:'Chips de patata (ración)',cantidad:'40g',coste:0.07},
+          {nombre:'Tahini (adobo)',cantidad:'~3-4g',coste:0.05},
+          {nombre:'Salsa de soja (adobo)',cantidad:'~60ml tanda',coste:0.01},
+          {nombre:'Pimienta negra, ajo, perejil',cantidad:'al gusto',coste:0},
+        ],
+        elaboracion:'1. Adobar pollo: soja + tahini + pimienta + ajo-perejil (mínimo 1h).\n2. Freidora 5–6 min hasta dorado.\n3. Servir sobre chips de patata.',
+        notas:'Alérgenos: sésamo (tahini). Adobo preferiblemente de víspera.'
+      },
+      {
+        id:'r02', nombre:'Pollo Flambeado', categoria:'carta',
+        pvp_media:9.20, pvp_racion:16.70, coste_media:1.18, coste_racion:1.81,
+        margen_media:85.8, margen_racion:88.1,
+        ingredientes:[
+          {nombre:'Pechuga pollo (media)',cantidad:'220g',coste:1.54},
+          {nombre:'Pechuga pollo (ración)',cantidad:'320g',coste:2.24},
+          {nombre:'Queso gallego Arzúa-Ulloa',cantidad:'25g',coste:0.36},
+          {nombre:'Queso parmesano',cantidad:'25g',coste:0},
+          {nombre:'Nata para cocinar',cantidad:'65g',coste:0},
+          {nombre:'Salsa de soja',cantidad:'15g',coste:0.02},
+          {nombre:'Aceite de girasol',cantidad:'20g',coste:0.04},
+          {nombre:'Whisky (cocina)',cantidad:'15g',coste:0},
+        ],
+        elaboracion:'1. Marcar pechuga en plancha con aceite y ajo.\n2. Añadir nata, queso gallego y parmesano.\n3. Flambear con whisky.\n4. Ajustar con soja.',
+        notas:'⚠️ Coste pendiente de completar (nata, parmesano, whisky sin precio confirmado).'
+      },
+      {
+        id:'r03', nombre:'Raxo con patatas', categoria:'carta',
+        pvp_media:8.50, pvp_racion:15.00, coste_media:0.21, coste_racion:0.36,
+        margen_media:97.3, margen_racion:97.4,
+        ingredientes:[
+          {nombre:'Lomo de cerdo en dados (media)',cantidad:'140g',coste:0},
+          {nombre:'Lomo de cerdo en dados (ración)',cantidad:'250g',coste:0},
+          {nombre:'Patata cocida (media)',cantidad:'90g',coste:0.16},
+          {nombre:'Patata cocida (ración)',cantidad:'175g',coste:0.31},
+          {nombre:'Pimiento rojo/verde',cantidad:'50g',coste:0},
+          {nombre:'Salsa de soja',cantidad:'15g',coste:0.02},
+          {nombre:'Ajo-aceite',cantidad:'10g',coste:0.02},
+          {nombre:'Whisky (cocina)',cantidad:'15g',coste:0},
+          {nombre:'Aceite de girasol',cantidad:'20g',coste:0.04},
+        ],
+        elaboracion:'1. Cortar lomo en dados. Marcar en plancha fuerte.\n2. Cocer patata al vapor o hervida.\n3. Saltear pimiento.\n4. Mezclar todo con soja + whisky + ajo-aceite.\n5. Servir caliente.',
+        notas:'⚠️ Coste incompleto: precio lomo y pimiento pendientes de factura.'
+      },
+      {
+        id:'r04', nombre:'Ensaladilla rusa', categoria:'carta',
+        pvp_tapa:4.70, pvp_racion:8.50, coste_tapa:0.15, coste_racion:0.24,
+        margen_tapa:96.5, margen_racion:96.9,
+        ingredientes:[
+          {nombre:'Ensaladilla (tapa)',cantidad:'215g',coste:0.15},
+          {nombre:'Ensaladilla (ración)',cantidad:'340g',coste:0.24},
+          {nombre:'Aceitunas negras',cantidad:'2 uds',coste:0},
+          {nombre:'Mariñeira o picos',cantidad:'1 ud / 2 picos',coste:0},
+          {nombre:'— TANDA: Patata cruda',cantidad:'10–12 uds',coste:0},
+          {nombre:'— TANDA: Zanahoria',cantidad:'7–8 uds',coste:0},
+          {nombre:'— TANDA: Huevos cocidos',cantidad:'10 uds',coste:0},
+          {nombre:'— TANDA: Atún desmigado',cantidad:'1 kg bote',coste:0},
+          {nombre:'— TANDA: Mayonesa Hellmann\'s',cantidad:'~3 cucharones',coste:0},
+        ],
+        elaboracion:'1. Cocer patata y zanahoria. Enfriar y cortar en dados pequeños.\n2. Cocer huevos, pelar y picar.\n3. Mezclar todo con atún y mayonesa.\n4. Emplatar con aceitunas y pan.',
+        notas:'Hacer tanda para servicio completo. Mantener refrigerada.'
+      },
+      {
+        id:'r05', nombre:'Tortilla de patatas', categoria:'carta',
+        pvp_tapa:3.20, pvp_media:12.00, pvp_entera:23.00, coste_tapa:0.28,
+        margen_tapa:90.5,
+        ingredientes:[
+          {nombre:'Huevos (mediana)',cantidad:'6 uds',coste:0},
+          {nombre:'Huevos (grande)',cantidad:'12 uds',coste:0},
+          {nombre:'Patata cruda (mediana)',cantidad:'750g → 630g pochada',coste:1.31},
+          {nombre:'Patata cruda (grande)',cantidad:'1.5kg → 1.26kg pochada',coste:2.63},
+          {nombre:'Aceite de girasol',cantidad:'para pochar',coste:0.18},
+          {nombre:'Sal',cantidad:'al gusto',coste:0},
+        ],
+        elaboracion:'1. Pelar y laminar patata. Pochar en aceite abundante (merma 16%).\n2. Batir huevos con sal. Mezclar con patata pochada.\n3. Cuajar en sartén antiadherente 2 vueltas.\n4. Mediana → 4 tapas. Grande → 8 tapas.',
+        notas:'⚠️ Precio huevos pendiente. Merma patata: 16%.'
+      },
+      {
+        id:'r06', nombre:'Croquetas', categoria:'carta',
+        pvp_tapa:3.20, pvp_racion:8.50, coste_tapa:0.57, coste_racion:1.52,
+        margen_tapa:80.4, margen_racion:82.1,
+        ingredientes:[
+          {nombre:'Croquetas jamón Hacendado (tapa)',cantidad:'3 uds',coste:0.57},
+          {nombre:'Croquetas jamón Hacendado (ración)',cantidad:'8 uds',coste:1.52},
+        ],
+        elaboracion:'1. Freidora a 180°C.\n2. Freír 3–4 min hasta doradas.\n3. Escurrir y servir inmediatamente.',
+        notas:'Producto Mercadona 0,19€/ud. Sin elaboración propia.'
+      },
+      {
+        id:'r07', nombre:'Tequeños de queso', categoria:'carta',
+        pvp_tapa:4.70, coste_tapa:1.20,
+        margen_tapa:74.5,
+        ingredientes:[
+          {nombre:'Tequeños Hacendado (tapa)',cantidad:'3 uds',coste:1.20},
+        ],
+        elaboracion:'1. Freidora a 180°C.\n2. Freír 3–4 min hasta dorados.\n3. Servir calientes.',
+        notas:'Producto Mercadona 0,40€/ud. Sin elaboración propia.'
+      },
+      {
+        id:'r08', nombre:'Patatas bravas', categoria:'carta',
+        pvp_tapa:4.70, coste_tapa:0.00,
+        margen_tapa:100,
+        ingredientes:[
+          {nombre:'Patatas bravas prefritas',cantidad:'300g',coste:0},
+          {nombre:'Salsa bravas',cantidad:'20g',coste:0},
+          {nombre:'Alioli',cantidad:'20g',coste:0},
+        ],
+        elaboracion:'1. Freidora a 180°C hasta crujientes.\n2. Escurrir. Servir con bravas y alioli.',
+        notas:'⚠️ Precios de patata bravas y salsas pendientes.'
+      },
+      {
+        id:'r09', nombre:'Criollo con patatas', categoria:'carta',
+        pvp_tapa:4.50, coste_tapa:0.41,
+        margen_tapa:90.0,
+        ingredientes:[
+          {nombre:'Chorizo criollo blanco',cantidad:'1 ud (80g)',coste:0.85},
+          {nombre:'Patata cocida',cantidad:'175g',coste:0.31},
+          {nombre:'Chimichurri',cantidad:'20g',coste:0},
+        ],
+        elaboracion:'1. Marcar chorizo al inicio del servicio.\n2. Enfriar y cortar en rodajas.\n3. Al pedido: terminar en plancha ~1,5 min.\n4. Servir sobre patata con chimichurri.',
+        notas:'Ventaja: se puede preparar con antelación y terminar rápido.'
+      },
+      {
+        id:'r10', nombre:'Coulant de chocolate', categoria:'postre',
+        pvp_tapa:4.50, coste_tapa:0.00,
+        margen_tapa:100,
+        ingredientes:[
+          {nombre:'Coulant chocolate Makro',cantidad:'1 ud',coste:0},
+        ],
+        elaboracion:'1. Horno según instrucciones del fabricante.\n2. Servir caliente con helado opcional.',
+        notas:'⚠️ Precio Makro pendiente de confirmar.'
+      },
     ]);
   }
 }
