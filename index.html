@@ -45,14 +45,12 @@
   --verde-l:rgba(126,143,75,.12);
   --verde-m:#8fa054;
 
-  /* Aliases semánticos (mantiene compatibilidad con JS existente) */
+  /* Aliases semánticos */
   --accent:#C79B47;
   --accent-l:rgba(199,155,71,.12);
   --accent-d:#a07a2a;
   --rojo:#B85656;
   --rojo-l:rgba(184,86,86,.12);
-  --verde:#7E8F4B;
-  --verde-l:rgba(126,143,75,.12);
   --naranja:#C79B47;
   --naranja-l:rgba(199,155,71,.12);
   --coral:#B85656;
@@ -66,9 +64,56 @@
   --sombra-s:0 1px 4px rgba(0,0,0,.3);
   --radio:12px;
   --radio-s:8px;
-
   --nav-w:220px;
 }
+
+/* ─── MODO CLARO ─── */
+body.light{
+  --bg:#F5F2ED;
+  --surface:#FFFFFF;
+  --surface-2:#EDE9E3;
+  --surface-3:#E4DFD8;
+  --border:#DDD8D0;
+  --border-s:#C8C1B8;
+
+  --text:#1A1714;
+  --text-2:#5A5249;
+  --text-3:#9A9088;
+
+  --amber:#9A6E28;
+  --amber-l:rgba(154,110,40,.10);
+  --amber-d:#7a540e;
+  --olive:#5A6A30;
+  --olive-l:rgba(90,106,48,.10);
+  --red:#943030;
+  --red-l:rgba(148,48,48,.10);
+  --verde:#5A6A30;
+  --verde-l:rgba(90,106,48,.10);
+  --verde-m:#6a7a3a;
+
+  --accent:#9A6E28;
+  --accent-l:rgba(154,110,40,.10);
+  --accent-d:#7a540e;
+  --rojo:#943030;
+  --rojo-l:rgba(148,48,48,.10);
+  --naranja:#9A6E28;
+  --naranja-l:rgba(154,110,40,.10);
+  --coral:#943030;
+  --coral-l:rgba(148,48,48,.10);
+  --mandarina:#9A6E28;
+  --mandarina-l:rgba(154,110,40,.10);
+  --amarillo:#9A6E28;
+  --amarillo-l:rgba(154,110,40,.10);
+
+  --sombra:0 2px 12px rgba(0,0,0,.10);
+  --sombra-s:0 1px 4px rgba(0,0,0,.07);
+}
+body.light #login-screen{background:var(--bg)}
+body.light .pin-grid{background:var(--surface-2)}
+body.light .pin-key{background:var(--surface);border-color:var(--border)}
+body.light nav{background:var(--surface);border-color:var(--border)}
+body.light header{background:var(--surface);border-color:var(--border)}
+body.light .card{background:var(--surface)}
 
 /* ─── TIPOGRAFÍA BASE ─── */
 body{
@@ -539,17 +584,17 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 /* ─── RECETAS ─── */
 .receta-card{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radio);overflow:hidden;margin-bottom:10px;
-  transition:border-color .15s;
+  border-radius:var(--radio);overflow:hidden;margin-bottom:14px;
+  transition:border-color .15s;cursor:pointer;
 }
-.receta-card:hover{border-color:var(--border-s)}
-.receta-card-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px;cursor:pointer;
+.receta-card:active{border-color:var(--border-s)}
+.receta-card-img{
+  width:100%;height:180px;object-fit:cover;display:block;
+  background:var(--surface-2);
 }
-.receta-card-body{padding:0 16px 16px;border-top:1px solid var(--border)}
-.receta-nombre{font-size:0.9rem;font-weight:600;color:var(--text)}
-.receta-meta{font-size:12px;color:var(--text-3);margin-top:3px}
+.receta-card-body{padding:14px 16px 16px}
+.receta-nombre{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.receta-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--text-3)}
 .receta-badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
 
 /* ─── CONTABILIDAD ─── */
@@ -648,6 +693,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   </div>
   <div class="header-right">
     <span class="role-badge" id="header-role">—</span>
+    <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
     <button class="btn-salir" onclick="cerrarSesion()">Salir</button>
   </div>
 </header>
@@ -1725,16 +1771,17 @@ function addHistorial(tipo, desc) {
 // TEMA
 // ══════════════════════════════════════════
 function toggleTheme() {
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
-  document.getElementById('btn-theme').textContent = isDark ? '☀️' : '🌙';
-  localStorage.setItem('urb_tema', isDark ? 'dark' : 'light');
+  const isLight = document.body.classList.toggle('light');
+  const btn = document.getElementById('btn-theme');
+  if (btn) btn.textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('urb_tema', isLight ? 'light' : 'dark');
 }
 function initTema() {
-  if (localStorage.getItem('urb_tema') === 'dark') {
-    document.body.classList.add('dark');
-    document.getElementById('btn-theme').textContent = '☀️';
-  }
+  const saved = localStorage.getItem('urb_tema');
+  const isLight = saved === 'light';
+  if (isLight) document.body.classList.add('light');
+  const btn = document.getElementById('btn-theme');
+  if (btn) btn.textContent = isLight ? '🌙' : '☀️';
 }
 
 // ══════════════════════════════════════════
@@ -4128,9 +4175,8 @@ function renderRecetas() {
   const el = document.getElementById('recetas-lista');
   if (!recetas.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">📖</div><div style="margin-top:8px">Sin recetas.</div></div>'; return; }
   const CB = {carta:'badge-oro', menu:'badge-verde', postre:'badge-naranja', salsa:'badge-gris', pincho:'badge-naranja', personal:'badge-gris'};
-  const CL = {carta:'Carta', menu:'Menú', postre:'Postre', salsa:'Salsa/Elaboración', pincho:'Pinchos', personal:'Personal'};
+  const CL = {carta:'Carta', menu:'Menú', postre:'Postre', salsa:'Salsa / Base', pincho:'Pinchos', personal:'Personal'};
   el.innerHTML = recetas.map(r => {
-    // Soporta tanto estructura nueva (pvp_media/pvp_tapa) como antigua (precio)
     const pvp = r.pvp_media || r.pvp_tapa || r.pvp_racion || r.precio || null;
     const coste = r.coste_media || r.coste_tapa || r.coste || null;
     const margen = r.margen_media || r.margen_tapa || null;
@@ -4139,16 +4185,19 @@ function renderRecetas() {
       const color = margen > 60 ? 'var(--olive)' : margen >= 30 ? 'var(--amber)' : 'var(--rojo)';
       margenHtml = `<span style="font-weight:700;color:${color}">${margen.toFixed(0)}% margen</span>`;
     }
-    // Advertencia si hay ingredientes pendientes
-    const tieneIngArray = Array.isArray(r.ingredientes);
-    const hayPendiente = tieneIngArray && r.ingredientes.some(i => i.coste === 0 && i.nombre.includes('⚠️') === false && i.nombre.startsWith('—') === false);
-    return `<div class="receta-card ${r.categoria}" onclick="verReceta(${JSON.stringify(r.id)})">
-      <div class="receta-nombre">${r.nombre}</div>
-      <div class="receta-meta">
-        <span class="badge ${CB[r.categoria]||'badge-gris'}">${CL[r.categoria]||r.categoria}</span>
-        ${pvp ? `<span>💵 desde ${pvp}€</span>` : ''}
-        ${coste ? `<span>🏷️ coste ${coste.toFixed(2)}€</span>` : ''}
-        ${margenHtml}
+    const imgHtml = r.foto
+      ? `<img class="receta-card-img" src="${r.foto}" alt="${r.nombre}" loading="lazy" onerror="this.style.display='none'">`
+      : `<div style="width:100%;height:100px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:2rem">🍽️</div>`;
+    return `<div class="receta-card" onclick="verReceta(${JSON.stringify(r.id)})">
+      ${imgHtml}
+      <div class="receta-card-body">
+        <div class="receta-nombre">${r.nombre}</div>
+        <div class="receta-meta">
+          <span class="badge ${CB[r.categoria]||'badge-gris'}">${CL[r.categoria]||r.categoria}</span>
+          ${pvp ? `<span>desde ${pvp}€</span>` : ''}
+          ${coste ? `<span>coste ${coste.toFixed(2)}€</span>` : ''}
+          ${margenHtml}
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -4606,6 +4655,7 @@ function seedData() {
     guardar('recetas', [
       {
         id:'r01', nombre:'Pollo Urbana', categoria:'carta',
+        foto:'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600&h=280&fit=crop',
         pvp_media:8.50, pvp_racion:15.00, coste_media:1.78, coste_racion:2.59,
         margen_media:77.0, margen_racion:81.0,
         ingredientes:[
@@ -4622,6 +4672,7 @@ function seedData() {
       },
       {
         id:'r02', nombre:'Pollo Flambeado', categoria:'carta',
+        foto:'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=600&h=280&fit=crop',
         pvp_media:9.20, pvp_racion:16.70, coste_media:1.18, coste_racion:1.81,
         margen_media:85.8, margen_racion:88.1,
         ingredientes:[
@@ -4639,6 +4690,7 @@ function seedData() {
       },
       {
         id:'r03', nombre:'Raxo con patatas', categoria:'carta',
+        foto:'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&h=280&fit=crop',
         pvp_media:8.50, pvp_racion:15.00, coste_media:0.21, coste_racion:0.36,
         margen_media:97.3, margen_racion:97.4,
         ingredientes:[
@@ -4655,6 +4707,7 @@ function seedData() {
       },
       {
         id:'r04', nombre:'Ensaladilla rusa', categoria:'carta',
+        foto:'https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=600&h=280&fit=crop',
         pvp_tapa:4.70, pvp_racion:8.50, coste_tapa:0.15, coste_racion:0.24,
         margen_tapa:96.5, margen_racion:96.9,
         ingredientes:[
@@ -4672,6 +4725,7 @@ function seedData() {
       },
       {
         id:'r05', nombre:'Tortilla de patatas', categoria:'carta',
+        foto:'https://images.unsplash.com/photo-1593001872095-7d5b3868fb1d?w=600&h=280&fit=crop',
         pvp_tapa:3.20, pvp_media:12.00, pvp_entera:23.00, coste_tapa:0.28,
         margen_tapa:90.5,
         ingredientes:[
@@ -4685,6 +4739,7 @@ function seedData() {
       },
       {
         id:'r06', nombre:'Croquetas', categoria:'carta',
+        foto:'https://images.unsplash.com/photo-1614948684614-3d7cd75f4de9?w=600&h=280&fit=crop',
         pvp_tapa:3.20, pvp_racion:8.50, coste_tapa:0.57, coste_racion:1.52,
         margen_tapa:80.4, margen_racion:82.1,
         ingredientes:[
@@ -4695,6 +4750,7 @@ function seedData() {
       },
       {
         id:'r07', nombre:'Patatas bravas', categoria:'carta',
+        foto:'https://images.unsplash.com/photo-1630452865849-f7f6b7c5e3c5?w=600&h=280&fit=crop',
         pvp_tapa:4.70,
         ingredientes:[
           {nombre:'Patatas bravas prefritas',cantidad:'300g'},
@@ -4706,6 +4762,7 @@ function seedData() {
       },
       {
         id:'r08', nombre:'Criollo con patatas', categoria:'carta',
+        foto:'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=280&fit=crop',
         pvp_tapa:4.50, coste_tapa:1.16,
         margen_tapa:74.2,
         ingredientes:[
