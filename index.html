@@ -252,6 +252,41 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 .alerta-txt{font-size:0.875rem;font-weight:500;color:var(--text);flex:1}
 .alerta-arrow{font-size:12px;color:var(--text-3)}
 
+/* ── Barra de progreso de stock ── */
+.stock-progress{height:4px;border-radius:2px;background:var(--surface-2);margin:8px 0 4px;overflow:hidden}
+.stock-progress-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.stock-progress-fill.verde{background:var(--olive)}
+.stock-progress-fill.amarillo{background:var(--amber)}
+.stock-progress-fill.rojo{background:var(--red)}
+
+/* ── Kanban producción ── */
+.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+@media(max-width:700px){.kanban-board{grid-template-columns:1fr}}
+.kanban-col{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;min-height:180px}
+.kanban-col-header{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.kanban-col-header .k-dot{width:7px;height:7px;border-radius:50%}
+.k-dot.hoy{background:var(--amber)}
+.k-dot.manana{background:var(--olive)}
+.k-dot.listo{background:#4a9e6b}
+.kanban-card{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.kanban-card:hover{border-color:var(--border-s)}
+.kanban-card .k-nombre{font-size:.9rem;font-weight:600;color:var(--text)}
+.kanban-card .k-meta{font-size:11px;color:var(--text-3);margin-top:3px}
+.kanban-card .k-actions{display:flex;gap:6px;margin-top:8px}
+.kanban-card .k-btn{flex:1;padding:5px;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer}
+.kanban-card .k-btn.mover{background:var(--accent-l);color:var(--accent)}
+.kanban-card .k-btn.listo{background:rgba(74,158,107,.15);color:#4a9e6b}
+.kanban-card .k-btn.borrar{background:var(--surface);border:1px solid var(--border);color:var(--text-3)}
+.kanban-add{width:100%;padding:9px;background:none;border:1.5px dashed var(--border);border-radius:10px;color:var(--text-3);font-size:13px;cursor:pointer;margin-top:4px;transition:border-color .15s}
+.kanban-add:hover{border-color:var(--border-s);color:var(--text)}
+.kanban-nombre{font-size:.9rem;font-weight:600;color:var(--text)}
+.kanban-meta{font-size:11px;color:var(--amber);margin-top:2px;font-weight:500}
+.kanban-notas{font-size:11px;color:var(--text-3);margin-top:3px;font-style:italic}
+.kanban-acciones{display:flex;gap:6px;margin-top:8px}
+.kanban-empty{font-size:12px;color:var(--text-3);padding:8px 0;text-align:center}
+.btn-xs{padding:4px 10px!important;font-size:11px!important;border-radius:7px!important}
+
+
 /* Accesos rápidos rediseñados */
 #accesos-rapidos{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
 .acceso-card{
@@ -635,9 +670,13 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
     Checklist
   </button>
-  <button onclick="tab('raciones',this)" id="nav-raciones">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+  <button onclick="tab('produccion',this)" id="nav-produccion">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19.428 15.428a2 2 0 0 0-1.022-.547l-2.387-.477a6 6 0 0 0-3.86.517l-.318.158a6 6 0 0 1-3.86.517L6.05 15.21a2 2 0 0 0-1.806.547M8 4h8l-1 1v5.172a2 2 0 0 0 .586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 0 0 9 10.172V5L8 4z"/></svg>
     Producción
+  </button>
+  <button onclick="tab('raciones',this)" id="nav-raciones" class="oculto">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+    Raciones
   </button>
   <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
@@ -993,6 +1032,69 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 </div>
 
 <!-- MERMAS -->
+
+<!-- ══════════════════════════════════ PRODUCCIÓN ══ -->
+<div id="tab-produccion" class="tab">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div>
+      <div style="font-weight:700;font-size:1.1rem">Producción</div>
+      <div style="font-size:12px;color:var(--text-3);margin-top:2px">Qué hay que preparar hoy y mañana</div>
+    </div>
+    <button class="btn btn-oro btn-sm" onclick="abrirModalTareaProduccion()">+ Tarea</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+    <!-- HOY -->
+    <div class="card" style="padding:12px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:12px">Pendiente hoy</div>
+      <div id="kanban-hoy" style="display:flex;flex-direction:column;gap:8px;min-height:80px"></div>
+    </div>
+    <!-- EN PROCESO -->
+    <div class="card" style="padding:12px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--amber);margin-bottom:12px">En proceso</div>
+      <div id="kanban-proceso" style="display:flex;flex-direction:column;gap:8px;min-height:80px"></div>
+    </div>
+    <!-- LISTO -->
+    <div class="card" style="padding:12px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--olive);margin-bottom:12px">Listo</div>
+      <div id="kanban-listo" style="display:flex;flex-direction:column;gap:8px;min-height:80px"></div>
+    </div>
+  </div>
+
+  <!-- MAÑANA -->
+  <div class="card" style="margin-top:16px;padding:14px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:12px">Mañana</div>
+    <div id="kanban-manana" style="display:flex;flex-direction:column;gap:8px;min-height:40px"></div>
+    <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="abrirModalTareaProduccion('manana')">+ Para mañana</button>
+  </div>
+</div>
+
+<!-- Modal nueva tarea de producción -->
+<div id="modal-tarea-prod" class="modal-overlay" style="display:none" onclick="if(event.target===this)cerrarModalTarea()">
+  <div class="modal-box" style="max-width:380px">
+    <div class="modal-header">
+      <span id="modal-tarea-titulo">Nueva tarea</span>
+      <button class="modal-close" onclick="cerrarModalTarea()">✕</button>
+    </div>
+    <div class="form-group"><label>Elaboración</label>
+      <input type="text" id="tarea-nombre" placeholder="ej. Caldo base, salsa alioli..."></div>
+    <div class="form-group"><label>Cantidad</label>
+      <input type="text" id="tarea-cantidad" placeholder="ej. 5 litros, 2kg..."></div>
+    <div class="form-group"><label>Para</label>
+      <select id="tarea-dia">
+        <option value="hoy">Hoy</option>
+        <option value="manana">Mañana</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Notas (opcional)</label>
+      <input type="text" id="tarea-notas" placeholder="Observaciones..."></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-outline" style="flex:1" onclick="cerrarModalTarea()">Cancelar</button>
+      <button class="btn btn-oro" style="flex:1" onclick="guardarTareaProduccion()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════ RACIONES ══ -->
 <div id="tab-raciones" class="tab">
   <div class="card" style="margin-bottom:14px">
@@ -1702,9 +1804,10 @@ function tab(id, btn) {
   document.getElementById('tab-' + id).classList.add('active');
   if (btn) btn.classList.add('active');
   const renders = {
-    inicio: initInicio, stock: renderStock,
+    inicio: initInicio, stock: renderStock, produccion: renderKanban,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
     raciones: () => { initRaciones(); },
+    produccion: () => { renderKanban(); },
     pedidos: renderPedidos, caja: initCaja, menu: initMenu,
     appcc: initAppcc, turno: initTurno,
     recetas: renderRecetas, proveedores: renderProveedores,
@@ -2248,6 +2351,7 @@ function renderStock() {
             ${ubicLabel?`<span class="ubicacion-tag">${ubicLabel}</span>`:''}
             ${!expandido && cadProxima ? cadProxima : ''}
           </div>
+          <div class="stock-progress"><div class="stock-progress-fill ${sem}" style="width:${Math.min(100,p.minimo>0?Math.round(total/Math.max(p.minimo*2,1)*100):total>0?100:0)}%"></div></div>
         </div>
         <div style="display:flex;gap:5px;align-items:center">
           ${expandido ? `<span style="font-size:16px;color:var(--text-3)">▲</span>` : `<span style="font-size:16px;color:var(--text-3)">▼</span>`}
@@ -2436,6 +2540,104 @@ const ESCANDALLOS = [
   }
 ];
 
+// ══════════════════════════════════════════════════════════════════
+// PRODUCCIÓN — Kanban Hoy / En proceso / Listo / Mañana
+// ══════════════════════════════════════════════════════════════════
+
+function renderKanban() {
+  const tareas = cargar('produccion_tareas', []);
+  const hoyStr = hoy();
+
+  const cols = { hoy: [], proceso: [], listo: [], manana: [] };
+  tareas.forEach(t => {
+    if (t.dia === 'manana') cols.manana.push(t);
+    else if (t.estado === 'listo') cols.listo.push(t);
+    else if (t.estado === 'proceso') cols.proceso.push(t);
+    else cols.hoy.push(t);
+  });
+
+  function tarjetaHtml(t) {
+    const acciones = t.estado === 'listo'
+      ? `<button class="btn btn-outline btn-xs" onclick="eliminarTarea(${t.id})">Eliminar</button>`
+      : t.estado === 'proceso'
+      ? `<button class="btn btn-oro btn-xs" onclick="avanzarTarea(${t.id})">Listo ✓</button>`
+      : t.dia === 'manana'
+      ? `<button class="btn btn-outline btn-xs" onclick="moverAHoy(${t.id})">Mover a hoy</button><button class="btn btn-outline btn-xs" onclick="eliminarTarea(${t.id})" style="margin-left:4px">✕</button>`
+      : `<button class="btn btn-oro btn-xs" onclick="avanzarTarea(${t.id})">Empezar</button>`;
+    return `<div class="kanban-card">
+      <div class="kanban-nombre">${t.nombre}</div>
+      ${t.cantidad ? `<div class="kanban-meta">${t.cantidad}</div>` : ''}
+      ${t.notas ? `<div class="kanban-notas">${t.notas}</div>` : ''}
+      <div class="kanban-acciones">${acciones}</div>
+    </div>`;
+  }
+
+  const empty = '<div class="kanban-empty">—</div>';
+  document.getElementById('kanban-hoy').innerHTML    = cols.hoy.map(tarjetaHtml).join('') || empty;
+  document.getElementById('kanban-proceso').innerHTML= cols.proceso.map(tarjetaHtml).join('') || empty;
+  document.getElementById('kanban-listo').innerHTML  = cols.listo.map(tarjetaHtml).join('') || empty;
+  document.getElementById('kanban-manana').innerHTML = cols.manana.map(tarjetaHtml).join('') || empty;
+}
+
+function abrirModalTareaProduccion(dia) {
+  document.getElementById('tarea-nombre').value = '';
+  document.getElementById('tarea-cantidad').value = '';
+  document.getElementById('tarea-notas').value = '';
+  document.getElementById('tarea-dia').value = dia || 'hoy';
+  document.getElementById('modal-tarea-prod').style.display = 'flex';
+}
+
+function cerrarModalTarea() {
+  document.getElementById('modal-tarea-prod').style.display = 'none';
+}
+
+function guardarTareaProduccion() {
+  const nombre = document.getElementById('tarea-nombre').value.trim();
+  if (!nombre) { toast('Escribe el nombre de la elaboración', 'rojo'); return; }
+  const tareas = cargar('produccion_tareas', []);
+  tareas.push({
+    id: Date.now(),
+    nombre,
+    cantidad: document.getElementById('tarea-cantidad').value.trim(),
+    notas: document.getElementById('tarea-notas').value.trim(),
+    dia: document.getElementById('tarea-dia').value,
+    estado: 'pendiente',
+    creado: ahora(),
+    quien: USUARIO
+  });
+  guardar('produccion_tareas', tareas);
+  cerrarModalTarea();
+  renderKanban();
+  toast('Tarea añadida ✓', 'verde');
+}
+
+function avanzarTarea(id) {
+  const tareas = cargar('produccion_tareas', []);
+  const t = tareas.find(x => x.id === id);
+  if (!t) return;
+  if (t.dia === 'manana') { t.dia = 'hoy'; t.estado = 'pendiente'; }
+  else if (t.estado === 'pendiente') t.estado = 'proceso';
+  else if (t.estado === 'proceso') { t.estado = 'listo'; t.terminado = ahora(); }
+  guardar('produccion_tareas', tareas);
+  renderKanban();
+}
+
+function moverAHoy(id) {
+  const tareas = cargar('produccion_tareas', []);
+  const t = tareas.find(x => x.id === id);
+  if (!t) return;
+  t.dia = 'hoy'; t.estado = 'pendiente';
+  guardar('produccion_tareas', tareas);
+  renderKanban();
+}
+
+function eliminarTarea(id) {
+  let tareas = cargar('produccion_tareas', []);
+  tareas = tareas.filter(x => x.id !== id);
+  guardar('produccion_tareas', tareas);
+  renderKanban();
+}
+
 function initRaciones() {
   const sel = document.getElementById('rac-plato');
   if (!sel) return;
@@ -2578,6 +2780,75 @@ function renderMermas() {
   mermas.forEach(m => resumen[m.motivo] = (resumen[m.motivo]||0)+1);
   const resStr = Object.entries(resumen).map(([k,v])=>`${MOTIVO_LABELS[k]}: ${v}`).join(' · ');
   document.getElementById('mermas-resumen').innerHTML = `${resStr} · <strong>Total: ${mermas.length}</strong>`;
+}
+
+
+// ─── PRODUCCIÓN KANBAN ───────────────────────────────────────
+function renderKanban() {
+  const tareas = cargar('produccion_tareas', []);
+  ['hoy','manana','listo'].forEach(function(dia) {
+    const col = document.getElementById('kanban-' + dia);
+    if (!col) return;
+    const items = tareas.filter(function(t){ return t.dia === dia; });
+    if (!items.length) {
+      col.innerHTML = '<div style="font-size:13px;color:var(--text-3);padding:4px 0;text-align:center">Sin tareas</div>';
+      return;
+    }
+    col.innerHTML = items.map(function(t) {
+      var acciones = '';
+      if (dia === 'hoy') {
+        acciones = '<button class="k-btn mover" onclick="moverTarea(' + t.id + ','manana')">→ Mañana</button>'
+          + '<button class="k-btn listo" onclick="moverTarea(' + t.id + ','listo')">✓ Listo</button>'
+          + '<button class="k-btn borrar" onclick="borrarTarea(' + t.id + ')">✕</button>';
+      } else if (dia === 'manana') {
+        acciones = '<button class="k-btn mover" onclick="moverTarea(' + t.id + ','hoy')">→ Hoy</button>'
+          + '<button class="k-btn listo" onclick="moverTarea(' + t.id + ','listo')">✓ Listo</button>'
+          + '<button class="k-btn borrar" onclick="borrarTarea(' + t.id + ')">✕</button>';
+      } else {
+        acciones = '<button class="k-btn borrar" onclick="borrarTarea(' + t.id + ')" style="width:100%">Archivar</button>';
+      }
+      return '<div class="kanban-card">'
+        + '<div class="k-nombre">' + t.nombre + '</div>'
+        + (t.notas ? '<div class="k-meta">' + t.notas + '</div>' : '')
+        + '<div class="k-meta" style="margin-top:2px">Por ' + (t.quien||'—') + ' · ' + formatHora(t.cuando) + '</div>'
+        + '<div class="k-actions">' + acciones + '</div>'
+        + '</div>';
+    }).join('');
+  });
+}
+
+function abrirModalProduccion(dia) {
+  var sel = document.getElementById('prod-dia');
+  if (sel && dia) sel.value = dia;
+  document.getElementById('prod-nombre').value = '';
+  document.getElementById('prod-notas').value = '';
+  document.getElementById('modal-produccion').style.display = 'flex';
+}
+
+function guardarTareaProduccion() {
+  var nombre = document.getElementById('prod-nombre').value.trim();
+  if (!nombre) { toast('Escribe un nombre para la tarea', 'rojo'); return; }
+  var dia = document.getElementById('prod-dia').value;
+  var notas = document.getElementById('prod-notas').value.trim();
+  var tareas = cargar('produccion_tareas', []);
+  tareas.unshift({ id: Date.now(), nombre: nombre, dia: dia, notas: notas, quien: USUARIO, cuando: ahora() });
+  guardar('produccion_tareas', tareas);
+  cerrarModal('modal-produccion');
+  renderKanban();
+  toast('Tarea añadida ✓', 'verde');
+}
+
+function moverTarea(id, nuevoDia) {
+  var tareas = cargar('produccion_tareas', []);
+  tareas = tareas.map(function(t){ return t.id === id ? Object.assign({}, t, {dia: nuevoDia}) : t; });
+  guardar('produccion_tareas', tareas);
+  renderKanban();
+}
+
+function borrarTarea(id) {
+  var tareas = cargar('produccion_tareas', []).filter(function(t){ return t.id !== id; });
+  guardar('produccion_tareas', tareas);
+  renderKanban();
 }
 
 // ─── Estadísticas de mermas del mes ───
