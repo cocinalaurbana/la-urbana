@@ -638,6 +638,29 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   #main-content .tab{padding:16px;padding-bottom:80px}
   .stats{grid-template-columns:repeat(2,1fr)}
 }
+
+/* ─── TABLET LANDSCAPE: nav inferior igual que mobile ─── */
+@media(min-width:769px) and (max-height:700px){
+  :root{--nav-w:0px}
+  #app-layout{flex-direction:column}
+  #main-nav{
+    width:100%;height:auto;
+    flex-direction:row;
+    position:sticky;bottom:0;top:auto;
+    border-right:none;border-top:1px solid var(--border);
+    padding:6px 4px;overflow-x:auto;
+    gap:0;
+  }
+  #main-nav button{
+    flex-direction:column;gap:2px;padding:6px 10px;
+    font-size:10px;border-radius:8px;min-width:56px;text-align:center;
+    justify-content:center;
+  }
+  #main-nav .nav-icon{width:18px;height:18px}
+  .nav-separator,.nav-section-label{display:none}
+  #main-content .tab{padding:16px;padding-bottom:72px}
+  .stats{grid-template-columns:repeat(4,1fr)}
+}
 </style>
 </head>
 <body>
