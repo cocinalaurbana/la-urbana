@@ -2337,6 +2337,44 @@ function initBourdain() {
 // LOGIN / ROLES / PIN
 // ══════════════════════════════════════════
 const PINS_DEFAULT = { lore:'1974', cesar:'1234', maria:'0000' };
+
+// === SISTEMA DE IDIOMA ===
+const LANG = {
+  es: {
+    buenosDias:'Buenos días', buenasTardes:'Buenas tardes', buenasNoches:'Buenas noches',
+    pinIntro:'Introduce tu PIN', pinError:'PIN incorrecto. Inténtalo de nuevo.',
+    stock:'Stock', mermas:'Mermas', dashboard:'Inicio', appcc:'APPCC',
+    guardar:'Guardar', cancelar:'Cancelar', cerrarSesion:'Cerrar sesión',
+    stockVacio:'Sin stock registrado', anadir:'Añadir', editar:'Editar', eliminar:'Eliminar',
+    cantidad:'Cantidad', producto:'Producto', ubicacion:'Ubicación', alerta:'Alerta',
+    stockBajo:'⚠️ Stock bajo', stockOk:'✓ Stock OK', sinAlertas:'Sin alertas',
+    mermaHoy:'Mermas hoy', registrarMerma:'Registrar merma', motivo:'Motivo',
+    cargando:'Cargando...', guardado:'Guardado ✓', errorGuardar:'Error al guardar',
+    temperatura:'Temperatura', entrada:'Entrada de mercancía', proveedor:'Proveedor',
+    rolMaria:'Stock · Mermas', saludo:'Bienvenida'
+  },
+  ro: {
+    buenosDias:'Bună dimineața', buenasTardes:'Bună ziua', buenasNoches:'Bună seara',
+    pinIntro:'Introdu PIN-ul tău', pinError:'PIN incorect. Încearcă din nou.',
+    stock:'Stoc', mermas:'Pierderi', dashboard:'Acasă', appcc:'Control temp.',
+    guardar:'Salvează', cancelar:'Anulează', cerrarSesion:'Deconectare',
+    stockVacio:'Niciun stoc înregistrat', anadir:'Adaugă', editar:'Editează', eliminar:'Șterge',
+    cantidad:'Cantitate', producto:'Produs', ubicacion:'Locație', alerta:'Alertă',
+    stockBajo:'⚠️ Stoc scăzut', stockOk:'✓ Stoc OK', sinAlertas:'Fără alerte',
+    mermaHoy:'Pierderi azi', registrarMerma:'Înregistrează pierdere', motivo:'Motiv',
+    cargando:'Se încarcă...', guardado:'Salvat ✓', errorGuardar:'Eroare la salvare',
+    temperatura:'Temperatură', entrada:'Intrare marfă', proveedor:'Furnizor',
+    rolMaria:'Stoc · Pierderi', saludo:'Bine ai venit'
+  }
+};
+let _lang = 'es';
+function t(key) { return (LANG[_lang]&&LANG[_lang][key])||LANG.es[key]||key; }
+function setLang(lang) {
+  _lang = lang;
+  const quien = document.getElementById('pin-quien-txt');
+  if (quien && quien.textContent.indexOf('—')===-1) return; // solo si en pantalla pin
+}
+
 const PINS = Object.fromEntries(
   Object.entries(PINS_DEFAULT).map(([k,v]) => [k, localStorage.getItem('pin_'+k)||v])
 );
@@ -2349,10 +2387,13 @@ let pinBuffer = '';
 function seleccionarRol(rol, btn) {
   pinRolActual = rol;
   pinBuffer = '';
+  // Activar idioma según usuario
+  _lang = (rol === 'maria') ? 'ro' : 'es';
   document.getElementById('login-roles').style.display = 'none';
   document.getElementById('pin-panel').style.display = 'block';
   const names = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
-  document.getElementById('pin-quien-txt').textContent = names[rol] + ' — introduce tu PIN';
+  const introText = (rol === 'maria') ? names[rol] + ' — introdu PIN-ul' : names[rol] + ' — introduce tu PIN';
+  document.getElementById('pin-quien-txt').textContent = introText;
   document.getElementById('pin-error').textContent = '';
   actualizarDots();
 }
@@ -2391,7 +2432,7 @@ function verificarPin() {
   if (pinBuffer === pinCorrecto) {
     iniciarSesion(pinRolActual);
   } else {
-    document.getElementById('pin-error').textContent = 'PIN incorrecto. Inténtalo de nuevo.';
+    document.getElementById('pin-error').textContent = t('pinError');
     pinBuffer = '';
     actualizarDots();
     // vibrar si disponible
@@ -2407,21 +2448,22 @@ function iniciarSesion(rol) {
   document.getElementById('main-nav').style.display = 'flex';
   // reset panel para próxima vez
   volverLogin();
-  const names = {lore:'Lore', cesar:'César', maria:'María'};
+  const names = {lore:'Lore', cesar:'César', maria:'Maria'};
   const badge = document.getElementById('header-role');
   badge.textContent = names[rol];
   if (rol === 'maria') badge.classList.add('maria');
   else badge.classList.remove('maria');
-  // Saludo en dashboard
+  // Saludo en dashboard (idioma según rol)
   const hora = new Date().getHours();
-  const saludo = hora < 13 ? 'Buenos días' : hora < 20 ? 'Buenas tardes' : 'Buenas noches';
+  const saludo = hora < 13 ? t('buenosDias') : hora < 20 ? t('buenasTardes') : t('buenasNoches');
   const el = document.getElementById('dash-saludo');
-  if (el) el.textContent = saludo + ', ' + names[rol] + '.';
+  if (el) el.textContent = saludo + ', ' + names[rol] + '!';
   aplicarPermisos();
   arrancarApp();
 }
 function cerrarSesion() {
   USUARIO = null;
+  _lang = 'es'; // reset idioma
   document.getElementById('login-screen').style.display = 'flex';
   document.querySelector('header').style.display = 'none';
   document.getElementById('main-nav').style.display = 'none';
@@ -2436,11 +2478,34 @@ function aplicarPermisos() {
   const btn = document.getElementById('btn-nuevo-prod');
   if (btn) btn.style.display = esAdmin() ? '' : 'none';
   poblarSelectorProductos();
+  // Traducir nav si es María
+  if (esMaria()) {
+    const navMap = {
+      'nav-stock':'🗄️ Stoc', 'nav-mermas':'📉 Pierderi', 'nav-appcc':'🌡️ Temp.',
+      'nav-inicio':'🏠 Acasă', 'nav-turno':'📋 Tură', 'nav-raciones':'🍽️ Porții',
+      'nav-produccion':'👩‍🍳 Prep.', 'nav-pedidos':'📦 Comenzi', 'nav-caja':'💰 Casă'
+    };
+    Object.entries(navMap).forEach(([id, txt]) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = txt;
+    });
+    // Traducir stats del dashboard
+    const lblOk = document.querySelector('#stat-ok')?.closest('.stat')?.querySelector('.lbl');
+    const lblCrit = document.querySelector('#stat-critico')?.closest('.stat')?.querySelector('.lbl');
+    const lblMermas = document.querySelector('#stat-mermas')?.closest('.stat')?.querySelector('.lbl');
+    if (lblOk) lblOk.textContent = 'Stoc OK';
+    if (lblCrit) lblCrit.textContent = 'Critic';
+    if (lblMermas) lblMermas.textContent = 'Pierderi azi';
+    // Mensaje de acceso no autorizado
+    window._noAccesoMsg = 'Nu ai acces la această secțiune';
+  } else {
+    window._noAccesoMsg = 'No tienes acceso a esta sección';
+  }
 }
 
 function tab(id, btn) {
   const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad'];
-  if (esMaria() && soloAdmin.includes(id)) { toast('No tienes acceso a esta sección', 'error'); return; }
+  if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
