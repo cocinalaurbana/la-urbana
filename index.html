@@ -830,6 +830,10 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0z"/></svg>
     Marketing
   </button>
+  <button onclick="tab('diario',this)" id="nav-diario" class="oculto">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
+    Diario
+  </button>
 </nav>
 <div id="main-content">
 <!-- INICIO -->
@@ -1026,8 +1030,16 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       <div id="turno-cierre-lista"></div>
     </div>
 
-    <!-- firma / guardar -->
-    <div class="card">
+      <!-- 📝 Nota para el siguiente turno (handover) -->
+      <div class="card" style="margin-bottom:14px;border-left:3px solid var(--amber)">
+        <div class="card-title">💬 Nota para el siguiente turno</div>
+        <div id="handover-pendiente" style="margin-bottom:10px"></div>
+        <textarea id="turno-handover" rows="3" placeholder="ej: Queda poca burrata, pedir mañana. Mesa 5 dejó reserva para el sábado..." style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px;font-size:14px;font-family:inherit;color:var(--text);resize:vertical"></textarea>
+        <div style="font-size:11px;color:var(--text-3);margin-top:4px">El siguiente turno verá este mensaje al abrir la app.</div>
+      </div>
+
+      <!-- firma / guardar -->
+      <div class="card">
       <div class="card-title">✍️ Quién cierra el turno</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px" id="turno-firma-btns">
         <button class="btn btn-outline" id="firma-lore"  onclick="setFirma('lore')">👩‍🍳 Lore</button>
@@ -1057,6 +1069,17 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div class="card">
       <div class="card-title">🕐 Turnos registrados hoy</div>
       <div id="turno-historial"><div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div></div>
+    </div>
+
+    <!-- 📊 Análisis: últimos 14 días -->
+    <div class="card" id="turno-analisis-card">
+      <div class="card-title" onclick="toggleAnalisisTurnos()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+        <span>📊 Rendimiento últimos 14 días</span>
+        <span id="analisis-chevron" style="font-size:12px;color:var(--text-3)">▼</span>
+      </div>
+      <div id="turno-analisis-body" style="display:none">
+        <div id="turno-analisis-contenido"></div>
+      </div>
     </div>
 
   </div>
@@ -1479,6 +1502,48 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       </select>
     </div>
     <div id="historial-lista"></div>
+  </div>
+</div>
+
+<!-- DIARIO VISUAL -->
+<div id="tab-diario" class="tab">
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">📸 Añadir foto al diario</div>
+    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">Guarda fotos del bar para el histórico y para contenido de redes.</div>
+    <div class="form-group">
+      <label>Categoría</label>
+      <select id="diario-cat" style="color:var(--text);background:var(--bg)">
+        <option value="plato">🍽️ Plato del día</option>
+        <option value="ambiente">🌿 Ambiente / sala</option>
+        <option value="flores">🌸 Flores / decoración</option>
+        <option value="cocina">👩‍🍳 Cocina / elaboración</option>
+        <option value="especial">✨ Momento especial</option>
+        <option value="otro">📦 Otro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Foto</label>
+      <input type="file" id="diario-foto" accept="image/*" capture="environment" style="font-size:13px;color:var(--text)">
+    </div>
+    <div class="form-group">
+      <label>Nota <span style="color:var(--text-3);font-weight:400;font-size:11px">— opcional</span></label>
+      <input type="text" id="diario-nota" placeholder="ej. Burrata de temporada, mesa del fondo..." style="color:var(--text)">
+    </div>
+    <button class="btn btn-oro btn-full" onclick="guardarDiario()">📸 Guardar foto</button>
+  </div>
+  <div class="card">
+    <div class="card-title">🗓️ Archivo de fotos</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <select id="diario-filtro-cat" onchange="renderDiario()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
+        <option value="">Todo</option>
+        <option value="plato">🍽️ Platos</option>
+        <option value="ambiente">🌿 Ambiente</option>
+        <option value="flores">🌸 Flores</option>
+        <option value="cocina">👩‍🍳 Cocina</option>
+        <option value="especial">✨ Especiales</option>
+      </select>
+    </div>
+    <div id="diario-galeria"></div>
   </div>
 </div>
 
@@ -2507,7 +2572,7 @@ function cerrarSesion() {
   initBourdain();
 }
 function aplicarPermisos() {
-  ['nav-recetas','nav-proveedores','nav-historial','nav-instagram','nav-contabilidad'].forEach(id => {
+  ['nav-recetas','nav-proveedores','nav-historial','nav-instagram','nav-contabilidad','nav-diario'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('oculto', esMaria());
   });
@@ -2568,7 +2633,7 @@ function aplicarPermisos() {
 }
 
 function tab(id, btn) {
-  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad'];
+  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad','diario'];
   if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -2583,6 +2648,7 @@ function tab(id, btn) {
     appcc: initAppcc, turno: initTurno,
     recetas: renderRecetas, proveedores: renderProveedores,
     historial: renderHistorial, spotify: renderPlaylistsCustom,
+    diario: renderDiario,
     contabilidad: () => {
       document.getElementById('cont-fecha').value = new Date().toISOString().split('T')[0];
       renderContabilidad();
@@ -5950,6 +6016,232 @@ initBourdain();
   observer.observe(document.body, { childList: true, subtree: true });
 
 })();
+
+// ══════════════════════════════════════════
+// HANDOVER — Notas entre turnos
+// ══════════════════════════════════════════
+function cargarHandoverPendiente() {
+  const nota = cargar('handover_nota', null);
+  const cont = document.getElementById('handover-pendiente');
+  if (!cont) return;
+  if (nota && nota.texto) {
+    const hace = formatHora(nota.cuando);
+    const quien = {lore:'Lore', cesar:'César', maria:'María'}[nota.quien] || nota.quien;
+    cont.innerHTML = `<div style="background:var(--amber-l);border-radius:8px;padding:10px 12px;margin-bottom:6px">
+      <div style="font-size:11px;color:var(--amber);font-weight:700;margin-bottom:4px">📩 Del turno anterior · ${quien} · ${hace}</div>
+      <div style="font-size:13px;color:var(--text)">${nota.texto}</div>
+    </div>`;
+  } else {
+    cont.innerHTML = '<div style="font-size:12px;color:var(--text-3);margin-bottom:6px">Sin notas del turno anterior.</div>';
+  }
+}
+
+function guardarHandover(texto, quien) {
+  if (!texto.trim()) return;
+  guardar('handover_nota', { texto: texto.trim(), quien, cuando: ahora() });
+}
+
+// Extender initTurno para cargar handover
+const _initTurnoOrig = initTurno;
+initTurno = function() {
+  _initTurnoOrig();
+  cargarHandoverPendiente();
+};
+
+// Extender guardarTurno para guardar handover
+const _guardarTurnoOrig = guardarTurno;
+guardarTurno = function() {
+  // Guarda handover ANTES de resetear
+  const hv = document.getElementById('turno-handover');
+  if (hv && hv.value.trim()) {
+    guardarHandover(hv.value, USUARIO);
+    hv.value = '';
+  }
+  _guardarTurnoOrig();
+};
+
+// ══════════════════════════════════════════
+// ANÁLISIS DE RENDIMIENTO — últimos 14 días
+// ══════════════════════════════════════════
+function toggleAnalisisTurnos() {
+  const body = document.getElementById('turno-analisis-body');
+  const chev = document.getElementById('analisis-chevron');
+  if (!body) return;
+  const abierto = body.style.display !== 'none';
+  body.style.display = abierto ? 'none' : '';
+  if (chev) chev.textContent = abierto ? '▼' : '▲';
+  if (!abierto) renderAnalisisTurnos();
+}
+
+function renderAnalisisTurnos() {
+  const cont = document.getElementById('turno-analisis-contenido');
+  if (!cont) return;
+
+  const dias = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const fechaStr = d.toISOString().slice(0,10);
+    const turnos = cargar('turno_' + fechaStr, []);
+    const raciones = cargar('raciones_dia', []).filter(r => r.cuando && r.cuando.startsWith(fechaStr));
+    const mermas = cargar('mermas', []).filter(m => m.cuando && m.cuando.startsWith(fechaStr));
+    const tiempoEntry = turnos.find(t => t.tiempo);
+    const tiempo = tiempoEntry ? tiempoEntry.tiempo : null;
+    const totalRaciones = raciones.reduce((s,r) => s + (r.cantidad||1), 0);
+    const costeMermas = mermas.reduce((s,m) => s + (m.costeTotal||0), 0);
+    if (turnos.length || raciones.length) {
+      dias.push({ fecha: fechaStr, dia: d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'}),
+        turnos: turnos.length, raciones: totalRaciones, mermas: costeMermas.toFixed(2), tiempo });
+    }
+  }
+
+  if (!dias.length) {
+    cont.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:12px">Sin datos aún. Los registros aparecerán aquí.</div>';
+    return;
+  }
+
+  // Detectar correlación lluvia vs raciones
+  const lluviaRaciones = dias.filter(d => d.tiempo && (d.tiempo.includes('Lluvia')||d.tiempo.includes('Tormenta')));
+  const solRaciones    = dias.filter(d => d.tiempo && d.tiempo.includes('Sol'));
+  const avgLluvia = lluviaRaciones.length ? (lluviaRaciones.reduce((s,d)=>s+d.raciones,0)/lluviaRaciones.length).toFixed(0) : null;
+  const avgSol    = solRaciones.length    ? (solRaciones.reduce((s,d)=>s+d.raciones,0)/solRaciones.length).toFixed(0) : null;
+
+  let insightHTML = '';
+  if (avgLluvia && avgSol) {
+    const diff = avgSol - avgLluvia;
+    insightHTML = `<div style="background:var(--surface-2);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px">
+      💡 <strong>Insight:</strong> Con sol sirves de media <strong>${avgSol} raciones</strong>, con lluvia <strong>${avgLluvia}</strong>
+      ${diff > 0 ? ` — <span style="color:var(--verde)">+${diff} más en días buenos</span>` : diff < 0 ? ` — <span style="color:var(--rojo)">${Math.abs(diff)} menos</span>` : ''}.
+    </div>`;
+  }
+
+  const tabla = dias.map(d => {
+    const tEmoji = d.tiempo ? d.tiempo.split(' ')[0] : '—';
+    const racColor = d.raciones > 20 ? 'var(--verde)' : d.raciones > 10 ? 'var(--amber)' : 'var(--text-3)';
+    return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px">
+      <div style="width:100px;color:var(--text-3)">${d.dia}</div>
+      <div style="width:28px;text-align:center;font-size:16px">${tEmoji}</div>
+      <div style="flex:1;font-weight:700;color:${racColor}">${d.raciones > 0 ? d.raciones+' rac.' : '—'}</div>
+      ${d.mermas > 0 ? `<div style="font-size:11px;color:var(--rojo)">−${d.mermas}€</div>` : ''}
+    </div>`;
+  }).join('');
+
+  cont.innerHTML = insightHTML + tabla;
+}
+
+// ══════════════════════════════════════════
+// LISTA DE COMPRA INTELIGENTE (mejorada)
+// ══════════════════════════════════════════
+// Ya existe renderListaCompra — la extendemos con sugerencias por consumo
+function calcularSugerenciaCantidad(prod) {
+  // Calcula consumo promedio de los últimos 7 días
+  const raciones = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const fs = d.toISOString().slice(0,10);
+    const mermasDay = cargar('mermas',[]).filter(m => m.cuando && m.cuando.startsWith(fs) && m.prodId === prod.id);
+    mermasDay.forEach(m => raciones.push(m.cantidad||0));
+  }
+  if (!raciones.length) return null;
+  const avg = raciones.reduce((s,v)=>s+v,0) / 7;
+  return Math.ceil(avg * 7); // stock para 7 días
+}
+
+// ══════════════════════════════════════════
+// DIARIO VISUAL — Banco de contenido
+// ══════════════════════════════════════════
+const DIARIO_CAT_LABELS = {
+  plato:'🍽️ Plato', ambiente:'🌿 Ambiente', flores:'🌸 Flores',
+  cocina:'👩‍🍳 Cocina', especial:'✨ Especial', otro:'📦 Otro'
+};
+
+function guardarDiario() {
+  const fileEl = document.getElementById('diario-foto');
+  const cat    = document.getElementById('diario-cat').value;
+  const nota   = document.getElementById('diario-nota').value.trim();
+  if (!fileEl.files || !fileEl.files[0]) { toast('Selecciona una foto','error'); return; }
+  const file = fileEl.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const entrada = {
+      id: Date.now(),
+      cat,
+      nota,
+      dataUrl: e.target.result,
+      cuando: ahora(),
+      quien: USUARIO,
+      tiempo: tiempoSeleccionado || null
+    };
+    const lista = cargar('diario_fotos', []);
+    lista.unshift(entrada);
+    // Limitar a 200 fotos para no saturar localStorage
+    if (lista.length > 200) lista.splice(200);
+    guardar('diario_fotos', lista);
+    fileEl.value = '';
+    document.getElementById('diario-nota').value = '';
+    addHistorial('diario', `📸 Foto: ${DIARIO_CAT_LABELS[cat]||cat}${nota?' — '+nota:''}`);
+    renderDiario();
+    toast('📸 Foto guardada en el diario ✓', 'verde');
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderDiario() {
+  const filtro = document.getElementById('diario-filtro-cat')?.value || '';
+  let lista = cargar('diario_fotos', []);
+  if (filtro) lista = lista.filter(e => e.cat === filtro);
+  const cont = document.getElementById('diario-galeria');
+  if (!cont) return;
+  if (!lista.length) {
+    cont.innerHTML = '<div style="color:var(--text-3);text-align:center;padding:24px;font-size:14px">Sin fotos todavía. ¡Empieza a documentar el bar! 📸</div>';
+    return;
+  }
+  // Agrupar por fecha
+  const porFecha = {};
+  lista.forEach(e => {
+    const fecha = e.cuando ? e.cuando.slice(0,10) : 'sin fecha';
+    if (!porFecha[fecha]) porFecha[fecha] = [];
+    porFecha[fecha].push(e);
+  });
+  cont.innerHTML = Object.entries(porFecha).map(([fecha, fotos]) => {
+    const label = new Date(fecha).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+    const grid = fotos.map(e => `
+      <div style="position:relative;border-radius:10px;overflow:hidden;background:var(--surface-2);cursor:pointer" onclick="verFotoDiario(${e.id})">
+        <img src="${e.dataUrl}" style="width:100%;height:120px;object-fit:cover;display:block">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.7));padding:6px 8px">
+          <div style="font-size:11px;color:#fff;font-weight:600">${DIARIO_CAT_LABELS[e.cat]||e.cat}</div>
+          ${e.nota ? `<div style="font-size:10px;color:rgba(255,255,255,.8)">${e.nota}</div>` : ''}
+        </div>
+        <button onclick="event.stopPropagation();borrarFotoDiario(${e.id})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);border:none;color:#fff;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;line-height:1">×</button>
+      </div>`).join('');
+    return `<div style="margin-bottom:16px">
+      <div style="font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${label}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">${grid}</div>
+    </div>`;
+  }).join('');
+}
+
+function verFotoDiario(id) {
+  const lista = cargar('diario_fotos', []);
+  const e = lista.find(f => f.id === id);
+  if (!e) return;
+  // Abrir en pantalla completa simple
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `<img src="${e.dataUrl}" style="max-width:100%;max-height:80vh;border-radius:12px;object-fit:contain">
+    <div style="color:#fff;margin-top:12px;text-align:center">
+      <div style="font-weight:700">${DIARIO_CAT_LABELS[e.cat]||e.cat}${e.nota?' — '+e.nota:''}</div>
+      <div style="font-size:12px;opacity:.6;margin-top:4px">${formatHora(e.cuando)} · ${e.quien}${e.tiempo?' · '+e.tiempo:''}</div>
+    </div>
+    <button onclick="this.closest('div[style]').remove()" style="margin-top:16px;background:var(--surface);color:var(--text);border:none;border-radius:10px;padding:10px 24px;font-size:14px;cursor:pointer">Cerrar</button>`;
+  overlay.addEventListener('click', function(ev){ if(ev.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+
+function borrarFotoDiario(id) {
+  if (!confirm('¿Eliminar esta foto del diario?')) return;
+  guardar('diario_fotos', cargar('diario_fotos',[]).filter(e => e.id !== id));
+  renderDiario();
+}
 
 </script>
 
