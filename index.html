@@ -1037,6 +1037,19 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
         <label>Observaciones (opcional)</label>
         <textarea id="turno-obs" rows="2" placeholder="Incidencias, notas del turno..."></textarea>
       </div>
+      <!-- 🌤 Tiempo meteorológico -->
+      <div class="form-group">
+        <label>🌤 Tiempo hoy <span style="font-size:11px;color:var(--text-3);font-weight:400">— para el histórico</span></label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="tiempo-btns">
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="☀️ Soleado" onclick="setTiempo(this)">☀️ Sol</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="⛅ Nublado" onclick="setTiempo(this)">⛅ Nublado</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="🌧️ Lluvia" onclick="setTiempo(this)">🌧️ Lluvia</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="⛈️ Tormenta" onclick="setTiempo(this)">⛈️ Tormenta</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="🌫️ Niebla" onclick="setTiempo(this)">🌫️ Niebla</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="❄️ Frío extremo" onclick="setTiempo(this)">❄️ Frío</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:6px" id="tiempo-auto-info"></div>
+      </div>
       <button class="btn btn-oro btn-full" onclick="guardarTurno()">Guardar turno</button>
     </div>
 
@@ -2364,7 +2377,30 @@ const LANG = {
     mermaHoy:'Pierderi azi', registrarMerma:'Înregistrează pierdere', motivo:'Motiv',
     cargando:'Se încarcă...', guardado:'Salvat ✓', errorGuardar:'Eroare la salvare',
     temperatura:'Temperatură', entrada:'Intrare marfă', proveedor:'Furnizor',
-    rolMaria:'Stoc · Pierderi', saludo:'Bine ai venit'
+    rolMaria:'Stoc · Pierderi', saludo:'Bine ai venit',
+    // Mermas
+    sinMermasPeriodo:'Fără pierderi în această perioadă.',
+    mermasPorMotivo:'Pierderi pe motiv',
+    historialMermas:'📋 Istoric pierderi',
+    filtroHoy:'Azi', filtroSemana:'Această săptămână', filtroTodo:'Tot',
+    detalle:'Detalii', detalleObligatorio:'*obligatoriu',
+    motivoCocinado:'✅ Folosit la gătit', motivoTirado:'🗑 Aruncat (neservit)',
+    motivoCaducado:'⚠️ Expirat', motivoRoto:'💥 Spart / vărsat', motivoOtro:'📝 Altul',
+    registrarMermaBtn:'Înregistrează pierdere',
+    // Elaborados
+    sinElaborados:'Fără preparate active.',
+    elaboradoLabel:'Preparat:', elaboradoConsumir:'Consumat',
+    elaboradoCaducado:'⛔ EXPIRAT',
+    elaboradoUrgente:'⚠️ Expiră în ',
+    elaboradoOk:'✅ Expiră ',
+    elaboradoNotas:'Note (opțional)',
+    // APPCC
+    sinRegistrosHoy:'Fără înregistrări azi.',
+    sinRegistros7d:'Fără înregistrări în ultimele 7 zile.',
+    rangoCorrect:'Interval corect:',
+    guardarRegistro:'Salvează înregistrarea',
+    tempFueraRango:'⚠️ Temperaturi în afara intervalului',
+    registro:'înregistrare', registros:'înregistrări'
   }
 };
 let _lang = 'es';
@@ -2498,6 +2534,34 @@ function aplicarPermisos() {
     if (lblMermas) lblMermas.textContent = 'Pierderi azi';
     // Mensaje de acceso no autorizado
     window._noAccesoMsg = 'Nu ai acces la această secțiune';
+    // Traducir formulario de Mermas
+    const lblMotivoSec = document.querySelector('label[for="m-motivo"], #tab-mermas label');
+    // Select de motivos
+    const selMotivo = document.getElementById('m-motivo');
+    if (selMotivo) {
+      selMotivo.options[0].text = '— Selectează —';
+      selMotivo.options[1].text = t('motivoCocinado');
+      selMotivo.options[2].text = t('motivoTirado');
+      selMotivo.options[3].text = t('motivoCaducado');
+      selMotivo.options[4].text = t('motivoRoto');
+      selMotivo.options[5].text = t('motivoOtro');
+    }
+    // Filtro de historial
+    const filtroMerma = document.getElementById('filtro-merma');
+    if (filtroMerma) {
+      if (filtroMerma.options[0]) filtroMerma.options[0].text = t('filtroHoy')||'Azi';
+      if (filtroMerma.options[1]) filtroMerma.options[1].text = t('filtroSemana')||'Această săptămână';
+      if (filtroMerma.options[2]) filtroMerma.options[2].text = t('filtroTodo')||'Tot';
+    }
+    // Botón registrar merma
+    const btnMerma = document.querySelector('#tab-mermas .btn-rojo');
+    if (btnMerma) btnMerma.textContent = t('registrarMermaBtn')||'Înregistrează pierdere';
+    // Título sección elaborados notas placeholder
+    const elabNotas = document.getElementById('elab-notas');
+    if (elabNotas) elabNotas.placeholder = t('elaboradoNotas')||'Note (opțional)';
+    // "Mermas por motivo" label
+    const mermasPorMotivoEl = document.querySelector('#tab-mermas [style*="uppercase"]');
+    if (mermasPorMotivoEl) mermasPorMotivoEl.textContent = t('mermasPorMotivo')||'Pierderi pe motiv';
   } else {
     window._noAccesoMsg = 'No tienes acceso a esta sección';
   }
@@ -3225,6 +3289,15 @@ function guardarMerma() {
   toast('Merma registrada ✓','verde');
 }
 
+function getMotivoLabels() {
+  return {
+    cocinado: t('motivoCocinado')||'✅ Cocina',
+    tirado:   t('motivoTirado')||'🗑 Tirado',
+    caducado: t('motivoCaducado')||'⚠️ Caducado',
+    roto:     t('motivoRoto')||'💥 Roto',
+    otro:     t('motivoOtro')||'📝 Otro'
+  };
+}
 const MOTIVO_LABELS = {cocinado:'✅ Cocina', tirado:'🗑 Tirado', caducado:'⚠️ Caducado', roto:'💥 Roto', otro:'📝 Otro'};
 
 // ── ESCANDALLOS FIJOS LA URBANA ─────────────────────────────
@@ -3556,24 +3629,26 @@ function renderMermas() {
 
   const el = document.getElementById('mermas-lista');
   if (!mermas.length) {
-    el.innerHTML = '<div style="color:var(--text-3);font-size:14px;padding:16px 0">Sin mermas en este período.</div>';
+    el.innerHTML = '<div style="color:var(--text-3);font-size:14px;padding:16px 0">' + (t('sinMermasPeriodo')||'Sin mermas en este período.') + '</div>';
     document.getElementById('mermas-resumen').innerHTML = '';
     return;
   }
 
   const quienLabel = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
+  const ML = getMotivoLabels();
   el.innerHTML = mermas.map(m => `<div class="merma-row">
     <div style="flex:1">
       <div style="font-weight:600;font-size:.9rem">${m.prodNombre}</div>
       <div style="font-size:12px;color:var(--text-3);margin-top:2px">${m.cantidad} ${m.unidad} · ${quienLabel[m.quien]||m.quien} · ${formatHora(m.cuando)}${m.costeTotal?` · 💰 ${m.costeTotal.toFixed(2)}€`:''}</div>
       ${m.detalle?`<div style="font-size:12px;color:var(--text-2);margin-top:3px;font-style:italic">"${m.detalle}"</div>`:''}
     </div>
-    <span class="merma-motivo ${m.motivo}">${MOTIVO_LABELS[m.motivo]||m.motivo}</span>
+    <span class="merma-motivo ${m.motivo}">${ML[m.motivo]||m.motivo}</span>
   </div>`).join('');
 
   const resumen = {};
   mermas.forEach(m => resumen[m.motivo] = (resumen[m.motivo]||0)+1);
-  const resStr = Object.entries(resumen).map(([k,v])=>`${MOTIVO_LABELS[k]}: ${v}`).join(' · ');
+  const ML2 = getMotivoLabels();
+  const resStr = Object.entries(resumen).map(([k,v])=>`${ML2[k]||k}: ${v}`).join(' · ');
   document.getElementById('mermas-resumen').innerHTML = `${resStr} · <strong>Total: ${mermas.length}</strong>`;
 }
 
@@ -3608,11 +3683,12 @@ function renderMermasStats() {
     grafEl.innerHTML = '<div style="font-size:13px;color:var(--text-3);text-align:center;padding:8px">Sin mermas este mes.</div>';
     return;
   }
+  const ML3 = getMotivoLabels();
   grafEl.innerHTML = motivos.map(m => {
     const val = porMotivo[m];
     const pct = Math.round(val / maxVal * 100);
     return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-      <div style="width:90px;font-size:12px;color:var(--text-2);flex-shrink:0">${MOTIVO_LABELS[m]||m}</div>
+      <div style="width:90px;font-size:12px;color:var(--text-2);flex-shrink:0">${ML3[m]||m}</div>
       <div style="flex:1;background:var(--surface-2);border-radius:6px;height:22px;overflow:hidden">
         <div style="width:${pct}%;height:100%;background:${colores[m]||'var(--accent)'};border-radius:6px;transition:width .3s"></div>
       </div>
@@ -3866,32 +3942,35 @@ function renderElaborados() {
   if (!cont) return;
   var lista = cargar('elaborados', []).filter(function(e){ return !e.consumido; });
   if (!lista.length) {
-    cont.innerHTML = '<div style="color:var(--text-3);text-align:center;padding:12px">Sin elaborados activos.</div>';
+    cont.innerHTML = '<div style="color:var(--text-3);text-align:center;padding:12px">' + (t('sinElaborados')||'Sin elaborados activos.') + '</div>';
     return;
   }
-  var ahora = new Date();
+  var ahoraNow = new Date();
+  var locCode = _lang === 'ro' ? 'ro-RO' : 'es-ES';
   lista.sort(function(a,b){ return new Date(a.caduca)-new Date(b.caduca); });
   cont.innerHTML = lista.map(function(e) {
     var cad = new Date(e.caduca);
-    var diffMs = cad - ahora;
+    var diffMs = cad - ahoraNow;
     var diffH  = Math.floor(diffMs / 3600000);
     var diffD  = Math.floor(diffMs / 86400000);
     var caducado = diffMs < 0;
     var urgente  = !caducado && diffH < 24;
     var color = caducado ? 'var(--rojo)' : urgente ? 'var(--amarillo)' : 'var(--verde)';
     var etiqueta = caducado
-      ? '⛔ CADUCADO'
+      ? (t('elaboradoCaducado')||'⛔ CADUCADO')
       : urgente
-        ? '⚠️ Caduca en ' + diffH + 'h'
-        : '✅ Caduca ' + cad.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
-    var fechaElab = new Date(e.fecha).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+        ? (t('elaboradoUrgente')||'⚠️ Caduca en ') + diffH + 'h'
+        : (t('elaboradoOk')||'✅ Caduca ') + cad.toLocaleDateString(locCode,{weekday:'short',day:'numeric',month:'short'});
+    var fechaElab = new Date(e.fecha).toLocaleString(locCode,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    var labelElab = t('elaboradoLabel')||'Elaborado:';
+    var labelCons = t('elaboradoConsumir')||'Consumido';
     return '<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">'
       + '<div style="flex:1">'
       + '<div style="font-weight:700;font-size:1rem">' + e.nombre + (e.cantidad ? ' — ' + e.cantidad + ' ' + e.unidad : '') + '</div>'
-      + '<div style="font-size:0.8rem;color:var(--text-3);margin-top:2px">Elaborado: ' + fechaElab + ' · ' + e.quien + (e.notas?' · '+e.notas:'') + '</div>'
+      + '<div style="font-size:0.8rem;color:var(--text-3);margin-top:2px">' + labelElab + ' ' + fechaElab + ' · ' + e.quien + (e.notas?' · '+e.notas:'') + '</div>'
       + '<div style="font-size:0.85rem;font-weight:700;color:' + color + ';margin-top:4px">' + etiqueta + '</div>'
       + '</div>'
-      + '<button onclick="consumirElaborado(' + e.id + ')" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85rem;color:var(--text-3)">Consumido</button>'
+      + '<button onclick="consumirElaborado(' + e.id + ')" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85rem;color:var(--text-3)">' + labelCons + '</button>'
       + '</div>';
   }).join('');
 }
@@ -3999,7 +4078,7 @@ function renderAppccHistorial() {
   const lista = cargar(key, []);
   const cont = document.getElementById('appcc-historial');
   if (!lista.length) {
-    cont.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div>';
+    cont.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">' + (t('sinRegistrosHoy')||'Sin registros hoy.') + '</div>';
     return;
   }
   // más reciente primero
@@ -4038,7 +4117,7 @@ function renderAppcc7Dias() {
     htmlDias += `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div style="font-weight:${esHoy?'800':'600'};font-size:13px;color:var(--text)">${esHoy?'📅 ':''}${label}</div>
-        <div style="font-size:12px;color:${lista.length?'var(--verde)':'var(--text-3)'}">${lista.length?lista.length+' registro(s)':'Sin registros'}</div>
+        <div style="font-size:12px;color:${lista.length?'var(--verde)':'var(--text-3)'}">${lista.length ? lista.length+' '+(lista.length>1?(t('registros')||'registros'):(t('registro')||'registro')) : (t('sinRegistrosHoy')||'Sin registros')}</div>
       </div>
       ${lista.length ? lista.map(r => {
         const hora = new Date(r.ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
@@ -4051,7 +4130,7 @@ function renderAppcc7Dias() {
       }).join('') : ''}
     </div>`;
   }
-  cont.innerHTML = htmlDias || '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros en los últimos 7 días.</div>';
+  cont.innerHTML = htmlDias || '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">' + (t('sinRegistros7d')||'Sin registros en los últimos 7 días.') + '</div>';
 }
 
 // ── EXPORTAR A GOOGLE SHEETS ──────────────────────────
@@ -4360,10 +4439,13 @@ function initTurno() {
   tipoTurno = 'apertura';
   tareasState = {};
   cierreState = {};
+  tiempoSeleccionado = null;
   firmaActual = USUARIO || null;
   setTipoTurno('apertura');
   if (firmaActual) setFirma(firmaActual);
   renderTurnoHistorial();
+  // Cargar sugerencia meteorológica automática
+  cargarTiempoAuto();
 }
 
 function getTareas() {
@@ -4494,6 +4576,52 @@ function abrirNuevaTarea() {
   toast('Tarea añadida');
 }
 
+// ── TIEMPO METEOROLÓGICO ─────────────────────────────
+let tiempoSeleccionado = null;
+
+function setTiempo(btn) {
+  tiempoSeleccionado = btn.dataset.tiempo;
+  document.querySelectorAll('.tiempo-btn').forEach(b => {
+    b.classList.toggle('active', b === btn);
+    b.style.background = b === btn ? 'var(--amber-l)' : '';
+    b.style.borderColor = b === btn ? 'var(--amber)' : '';
+    b.style.color = b === btn ? 'var(--amber)' : '';
+  });
+}
+
+async function cargarTiempoAuto() {
+  const info = document.getElementById('tiempo-auto-info');
+  if (!info) return;
+  try {
+    // Open-Meteo API — A Coruña: lat=43.37, lon=-8.40
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=43.37&longitude=-8.40&current=temperature_2m,weathercode&timezone=Europe/Madrid');
+    const d = await r.json();
+    const temp = d.current?.temperature_2m;
+    const code = d.current?.weathercode;
+    const wmoDesc = {
+      0:'☀️ Despejado', 1:'🌤 Mayorm. despejado', 2:'⛅ Parcialmente nublado',
+      3:'☁️ Cubierto', 45:'🌫️ Niebla', 48:'🌫️ Niebla helada',
+      51:'🌦 Llovizna ligera', 53:'🌦 Llovizna', 55:'🌧 Llovizna intensa',
+      61:'🌧️ Lluvia ligera', 63:'🌧️ Lluvia', 65:'🌧️ Lluvia fuerte',
+      71:'❄️ Nieve ligera', 73:'❄️ Nieve', 75:'❄️ Nieve intensa',
+      80:'🌦 Chubascos', 81:'🌧 Chubascos moderados', 82:'⛈️ Chubascos fuertes',
+      95:'⛈️ Tormenta', 96:'⛈️ Tormenta c/ granizo', 99:'⛈️ Tormenta fuerte'
+    };
+    const desc = wmoDesc[code] || '⛅ Variable';
+    if (info) info.textContent = `Tiempo actual en A Coruña: ${desc}, ${temp}°C (sugerencia automática)`;
+    // Autoseleccionar el botón más cercano
+    const map = {0:'☀️ Sol',1:'☀️ Sol',2:'⛅ Nublado',3:'⛅ Nublado',45:'🌫️ Niebla',48:'🌫️ Niebla',
+      51:'🌧️ Lluvia',53:'🌧️ Lluvia',55:'🌧️ Lluvia',61:'🌧️ Lluvia',63:'🌧️ Lluvia',65:'🌧️ Lluvia',
+      80:'🌧️ Lluvia',81:'🌧️ Lluvia',82:'🌧️ Lluvia',95:'⛈️ Tormenta',96:'⛈️ Tormenta',99:'⛈️ Tormenta',
+      71:'❄️ Frío',73:'❄️ Frío',75:'❄️ Frío'};
+    const textoBtn = map[code] || '⛅ Nublado';
+    const btn = Array.from(document.querySelectorAll('.tiempo-btn')).find(b => b.textContent.trim().startsWith(textoBtn.split(' ')[0]));
+    if (btn && !tiempoSeleccionado) setTiempo(btn);
+  } catch(e) {
+    if (info) info.textContent = 'Selecciona el tiempo manualmente';
+  }
+}
+
 function guardarTurno() {
   if (!firmaActual) { toast('Selecciona quién cierra el turno', 'error'); return; }
   const tareas = getTareas();
@@ -4510,6 +4638,7 @@ function guardarTurno() {
     tareas: { ...tareasState },
     cierre: { ...cierreState },
     obs: document.getElementById('turno-obs').value.trim(),
+    tiempo: tiempoSeleccionado || null,
     total: tareas.length,
     hechas: tareas.filter(t => tareasState[t.id]).length,
   };
@@ -4520,8 +4649,14 @@ function guardarTurno() {
   guardar(key, lista);
 
   // reset
-  tareasState = {}; cierreState = {};
+  tareasState = {}; cierreState = {}; tiempoSeleccionado = null;
   document.getElementById('turno-obs').value = '';
+  document.querySelectorAll('.tiempo-btn').forEach(b => {
+    b.style.background = ''; b.style.borderColor = ''; b.style.color = '';
+    b.classList.remove('active');
+  });
+  const infoEl = document.getElementById('tiempo-auto-info');
+  if (infoEl) infoEl.textContent = '';
   renderTurnoTareas();
   renderTurnoHistorial();
   toast('✅ Turno guardado');
@@ -4532,7 +4667,7 @@ function renderTurnoHistorial() {
   const lista = cargar(key, []);
   const cont = document.getElementById('turno-historial');
   if (!lista.length) {
-    cont.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">Sin registros hoy.</div>';
+    cont.innerHTML = '<div style="color:var(--text-3);font-size:14px;text-align:center;padding:12px">' + (t('sinRegistrosHoy')||'Sin registros hoy.') + '</div>';
     return;
   }
   cont.innerHTML = [...lista].reverse().map(r => {
@@ -4542,7 +4677,7 @@ function renderTurnoHistorial() {
       <span class="turno-hist-tipo ${r.tipo}">${r.tipo === 'apertura' ? '🌅 Apertura' : '🌙 Cierre'}</span>
       <div style="flex:1">
         <div style="font-size:13px;font-weight:700;color:var(--text)">${nombres[r.quien]||r.quien} — ${hora}</div>
-        <div style="font-size:12px;color:var(--text-3);margin-top:2px">${r.hechas}/${r.total} tareas completadas${r.obs?' · '+r.obs:''}</div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:2px">${r.hechas}/${r.total} tareas completadas${r.tiempo?' · '+r.tiempo:''}${r.obs?' · '+r.obs:''}</div>
       </div>
     </div>`;
   }).join('');
