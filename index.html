@@ -5826,17 +5826,6 @@ function seedData() {
         notas:'Caducidad: 7 días en frío.'
       },
       {
-        id:'s02', nombre:'Miel-mostaza', categoria:'salsa',
-        ingredientes:[
-          {nombre:'Mayonesa Hellmann\'s',cantidad:'600ml'},
-          {nombre:'Miel',cantidad:'1 cda sopera'},
-          {nombre:'Mostaza',cantidad:'1 cda sopera'},
-          {nombre:'Lima o limón',cantidad:'1 chorro'},
-        ],
-        elaboracion:'1. Mezclar todos los ingredientes.\n2. Ajustar acidez con lima/limón.\n3. Reservar en frío.',
-        notas:'Caducidad: 7–10 días en frío.'
-      },
-      {
         id:'s03', nombre:'Salsa bravas', categoria:'salsa',
         ingredientes:[
           {nombre:'Cebolla dulce',cantidad:'200g'},
@@ -5910,6 +5899,16 @@ function actualizarWidgetCaja() {
   if (aEl) aEl.style.display = 'none';
 }
 
+
+// Retirar la salsa miel-mostaza: ya no forma parte de la carta actual.
+// Se aplica también sobre datos guardados para que desaparezca de la app de todos los dispositivos.
+(function retirarSalsaNoDisponible(){
+  const recetasActuales = cargar('recetas', null);
+  if (Array.isArray(recetasActuales)) {
+    const limpias = recetasActuales.filter(r => r.id !== 's02' && r.nombre !== 'Miel-mostaza');
+    if (limpias.length !== recetasActuales.length) guardar('recetas', limpias);
+  }
+})();
 
 // Arrancar siempre sin esperar Firebase — Firefox y Chrome
 arrancarApp();
