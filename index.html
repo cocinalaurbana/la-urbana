@@ -649,24 +649,26 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
 /* ─── MOBILE: nav inferior en vez de sidebar ─── */
 @media(max-width:768px){
-  :root{--nav-w:0px}
-  #app-layout{flex-direction:column}
+  /* Vista móvil experimental: menú vertical lateral */
+  :root{--nav-w:172px}
+  #app-layout{flex-direction:row}
   #main-nav{
-    width:100%;height:auto;
-    flex-direction:row;
-    position:sticky;bottom:0;top:auto;
-    border-right:none;border-top:1px solid var(--border);
-    padding:8px 4px;overflow-x:auto;
-    gap:0;
+    width:var(--nav-w);height:calc(100vh - 56px);
+    flex-direction:column;
+    position:sticky;top:56px;bottom:auto;
+    border-right:1px solid var(--border);border-top:none;
+    padding:12px 8px;overflow-y:auto;overflow-x:hidden;
+    gap:2px;
   }
   #main-nav button{
-    flex-direction:column;gap:3px;padding:8px 12px;
-    font-size:10px;border-radius:8px;min-width:60px;text-align:center;
-    justify-content:center;
+    flex-direction:row;gap:8px;padding:9px 8px;
+    font-size:11px;border-radius:8px;min-width:0;text-align:left;
+    justify-content:flex-start;white-space:nowrap;
   }
-  #main-nav .nav-icon{width:20px;height:20px}
-  .nav-separator,.nav-section-label{display:none}
-  #main-content .tab{padding:16px;padding-bottom:80px}
+  #main-nav .nav-icon{width:18px;height:18px}
+  .nav-separator{display:block;margin:6px 0}
+  .nav-section-label{display:block;font-size:9px;padding:3px 8px}
+  #main-content .tab{padding:14px;padding-bottom:30px}
   .stats{grid-template-columns:repeat(2,1fr)}
 }
 
