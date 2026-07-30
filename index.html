@@ -4646,6 +4646,7 @@ const TURNO_TAREAS_DEFAULT = [
   { id:'t23',label:'🏷️ Comprobar etiquetas de envasado en nevera',            tipo:'apertura', critica:true  },
   { id:'t16',label:'🍞 Cortar pan (o confirmar que barra lo hace)',            tipo:'apertura', critica:false },
   { id:'t18',label:'🍽️ Encender lavavajillas',                                tipo:'apertura', critica:true  },
+  { id:'t30',label:'🍟 Lavar freidoras — con el aceite ya frío',              tipo:'apertura', critica:true  },
   { id:'t26',label:'🧤 Comprobar guantes (stock disponible)',               tipo:'apertura', critica:true  },
   { id:'t27',label:'🧺 Comprobar táper grande y pequeño con sus tapas',       tipo:'apertura', critica:true  },
   { id:'t28',label:'🫙 Comprobar táperes de salsas',                          tipo:'apertura', critica:true  },
@@ -4655,7 +4656,7 @@ const TURNO_TAREAS_DEFAULT = [
 
 // Las tareas de apertura se separan: preparación según platos vs controles fijos diarios.
 const TAREAS_PREPARACION = new Set(['t2','t3','t4','t5','t6','t7','t8','t10','t11','t12','t13','t19','t21']);
-const TAREAS_FIJAS = new Set(['t9','t16','t18','t22','t23','t26','t27','t28','t29']);
+const TAREAS_FIJAS = new Set(['t9','t16','t18','t22','t23','t26','t27','t28','t29','t30']);
 function categorizarTareas(tareas) {
   return tareas.map(t => ({...t, categoria: t.categoria || (TAREAS_PREPARACION.has(t.id) ? 'preparacion' : 'fijo')}));
 }
@@ -4663,8 +4664,7 @@ function categorizarTareas(tareas) {
 const CIERRE_CHECKLIST_DEFAULT = [
   { id:'c1', label:'🍽️ Cubrir y etiquetar todos los recipientes',              critica:true  },
   { id:'c2', label:'🔥 Limpiar plancha',                                        critica:true  },
-  { id:'c3', label:'🍟 Freidora grande — cambiar aceite y limpiar',             critica:true  },
-  { id:'c4', label:'🍟 Freidora pequeña — cambiar aceite y limpiar',            critica:true  },
+  { id:'c3', label:'🍟 Freidoras — dejar apagadas y asegurar el aceite',         critica:true  },
   { id:'c5', label:'🍽️ Apagar lavavajillas — limpiar filtro y bandeja',        critica:true  },
   { id:'c6', label:'🗑️ Vaciar y limpiar cubos de basura',                       critica:false },
   { id:'c7', label:'🌡️ Revisar temperaturas neveras (APPCC)',                   critica:true  },
