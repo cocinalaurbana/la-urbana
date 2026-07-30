@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="La Urbana">
+<meta name="apple-mobile-web-app-title" content="La Urbana Cocina">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#1a1209">
-<title>La Urbana</title>
+<title>La Urbana Cocina</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -708,7 +708,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-logo-wrap">
-    <div class="logo-title">LA URBANA</div>
+    <div class="logo-title">LA URBANA <span style="font-size:10px;letter-spacing:1px;opacity:.65">COCINA</span></div>
     <div class="logo-sub">Kitchen OS · A Coruña</div>
   </div>
   <p>¿Quién eres hoy?</p>
@@ -833,8 +833,12 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     Recetas
   </button>
   <button onclick="tab('contabilidad',this)" id="nav-contabilidad" class="oculto">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0 2 2v6a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
     Contabilidad
+  </button>
+  <button onclick="tab('controlcostes',this)" id="nav-controlcostes" class="oculto">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19V5m0 14h16M8 16v-4m4 4V8m4 8V5m4 11v-7"/></svg>
+    Control de costes
   </button>
   <button onclick="tab('proveedores',this)" id="nav-proveedores" class="oculto">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/></svg>
@@ -1632,6 +1636,43 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       <div style="font-size:12px;margin-top:13px;opacity:.7">Un tardeo para adultos, dentro del bar</div>
     </div>
     <button class="btn btn-outline btn-full" style="margin-top:12px" onclick="descargarGraficoProgramacion()">⬇️ Guardar gráfico</button>
+  </div>
+</div>
+
+<!-- CONTROL DE COSTES · LA URBANA COCINA -->
+<div id="tab-controlcostes" class="tab">
+  <div class="card" style="background:linear-gradient(135deg,#243b35,#5b8067);color:#fff;border:none;margin-bottom:14px">
+    <div style="font-size:11px;letter-spacing:1.4px;text-transform:uppercase;opacity:.72">La Urbana Cocina · piloto</div>
+    <h2 style="margin:7px 0 5px;font-family:Georgia,serif;font-weight:400">Control de costes</h2>
+    <div style="font-size:14px;opacity:.86">Primero medimos con cinco platos reales. Después corregimos.</div>
+  </div>
+  <div class="card" style="border-left:3px solid var(--amber);margin-bottom:14px">
+    <div class="card-title">📐 Cómo funciona</div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.55">El <b>food cost teórico</b> muestra lo que deberían costar las ventas según las recetas. El <b>food cost real</b> se calcula con el almacén: stock inicial + compras − stock final.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12px"><span class="badge">Teórico: receta + ventas</span><span class="badge">Real: inventario</span><span class="badge" style="background:var(--amber-l);color:var(--amber)">🟡 Precios provisionales</span></div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">🍽️ Piloto con platos de La Urbana</div>
+    <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Introduce unidades vendidas y precio de venta. Los costes iniciales son provisionales hasta contrastarlos con facturas y recetas reales.</div>
+    <div id="costes-platos"></div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">📦 Control real semanal</div>
+    <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Empieza con los productos sensibles. No hace falta contar todo el almacén.</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:9px">
+      <label style="font-size:12px">Stock inicial (€)<input id="fc-stock-inicial" type="number" step="0.01" value="0" oninput="calcularFoodCost()"></label>
+      <label style="font-size:12px">Compras (€)<input id="fc-compras" type="number" step="0.01" value="0" oninput="calcularFoodCost()"></label>
+      <label style="font-size:12px">Stock final (€)<input id="fc-stock-final" type="number" step="0.01" value="0" oninput="calcularFoodCost()"></label>
+      <label style="font-size:12px">Ventas netas (€)<input id="fc-ventas-netas" type="number" step="0.01" value="0" oninput="calcularFoodCost()"></label>
+    </div>
+    <div id="fc-resumen" style="margin-top:12px"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🧾 Salidas que no son ventas</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <span class="badge">Merma</span><span class="badge">Personal</span><span class="badge">Invitación</span><span class="badge">Plato defectuoso</span><span class="badge">Consumo interno</span>
+    </div>
+    <div style="font-size:12px;color:var(--text-3);margin-top:10px">Este registro será el siguiente paso: si algo sale del almacén, la app debe saber por qué.</div>
   </div>
 </div>
 
@@ -2721,7 +2762,7 @@ function aplicarPermisos() {
 }
 
 function tab(id, btn) {
-  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad','diario'];
+  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad','controlcostes','diario'];
   if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -2741,7 +2782,8 @@ function tab(id, btn) {
     contabilidad: () => {
       document.getElementById('cont-fecha').value = new Date().toISOString().split('T')[0];
       renderContabilidad();
-    }
+    },
+    controlcostes: renderControlCostes
   };
   if (renders[id]) renders[id]();
 }
@@ -5951,8 +5993,35 @@ const NAV_GRUPOS = {
   turnos: ['appcc','turno'],
   compras: ['pedidos','proveedores'],
   cultura: ['diario','programacion','instagram'],
-  gestion: ['contabilidad','historial']
+  gestion: ['controlcostes','contabilidad','historial']
 };
+
+const PILOTO_FOOD_COST = [
+  {nombre:'Croquetas', coste:0, precio:0, nota:'Completar con receta y rendimiento real'},
+  {nombre:'Criollo con patatas', coste:0, precio:0, nota:'Completar precio de compra y ración'},
+  {nombre:'Pollo Urbana', coste:0, precio:0, nota:'Completar gramos y acompañamiento'},
+  {nombre:'Tortilla de patatas', coste:0, precio:0, nota:'Medir rendimiento de cada tortilla'},
+  {nombre:'Ensaladilla rusa', coste:0, precio:0, nota:'Medir coste por tanda y ración'}
+];
+function renderControlCostes(){
+  const el=document.getElementById('costes-platos'); if(!el) return;
+  el.innerHTML=PILOTO_FOOD_COST.map((p,i)=>`<div style="display:grid;grid-template-columns:1.3fr .8fr .8fr .8fr;gap:7px;align-items:end;border-top:1px solid var(--border);padding:10px 0">
+    <div><strong style="font-size:13px">${p.nombre}</strong><div style="font-size:10px;color:var(--text-3)">${p.nota}</div></div>
+    <label style="font-size:10px;color:var(--text-3)">Coste €<input id="fc-coste-${i}" type="number" min="0" step="0.01" value="${p.coste}" oninput="calcularFoodCost()"></label>
+    <label style="font-size:10px;color:var(--text-3)">Venta €<input id="fc-precio-${i}" type="number" min="0" step="0.01" value="${p.precio}" oninput="calcularFoodCost()"></label>
+    <label style="font-size:10px;color:var(--text-3)">Unidades<input id="fc-unidades-${i}" type="number" min="0" step="1" value="0" oninput="calcularFoodCost()"></label>
+  </div>`).join('');
+  calcularFoodCost();
+}
+function calcularFoodCost(){
+  let teorico=0, ventasPlatos=0;
+  PILOTO_FOOD_COST.forEach((p,i)=>{const c=+document.getElementById('fc-coste-'+i)?.value||0, v=+document.getElementById('fc-precio-'+i)?.value||0, u=+document.getElementById('fc-unidades-'+i)?.value||0; teorico+=c*u; ventasPlatos+=v*u;});
+  const ventasInput=+document.getElementById('fc-ventas-netas')?.value||0, ventas=ventasInput||ventasPlatos;
+  const realStock=(+document.getElementById('fc-stock-inicial')?.value||0)+(+document.getElementById('fc-compras')?.value||0)-(+document.getElementById('fc-stock-final')?.value||0);
+  const te=ventas?teorico/ventas*100:0, re=ventas?realStock/ventas*100:0, diff=re-te;
+  const el=document.getElementById('fc-resumen'); if(!el)return;
+  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div class="stat"><div class="num">${te.toFixed(1)}%</div><div class="lbl">Teórico</div></div><div class="stat amber"><div class="num">${re.toFixed(1)}%</div><div class="lbl">Real</div></div><div class="stat ${Math.abs(diff)>4?'red':'green'}"><div class="num">${diff>=0?'+':''}${diff.toFixed(1)}</div><div class="lbl">Diferencia</div></div></div><div style="font-size:12px;color:var(--text-3);margin-top:9px">${ventas?'Ventas usadas: '+ventas.toFixed(2)+' € · Consumo real estimado: '+realStock.toFixed(2)+' €':'Introduce unidades o ventas netas para empezar.'}</div>`;
+}
 function initNavegacionAgrupada(){
   const nav = document.getElementById('main-nav'); if (!nav) return;
   nav.querySelectorAll('button[id^="nav-"]:not(#nav-inicio):not([id^="nav-grupo-"]):not(#nav-volver-grupos)').forEach(b=>b.classList.add('nav-subitem'));
