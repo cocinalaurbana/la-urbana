@@ -988,6 +988,13 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   </div>
 
   <!-- ── ELABORADOS ── -->
+  <div class="card" style="border-left:3px solid var(--amber);margin-bottom:14px">
+    <div class="card-title">🗓️ Preparaciones entre días</div>
+    <div style="font-size:13px;line-height:1.55;color:var(--text-2)">
+      Para la <b>ensaladilla</b>, se puede registrar hoy la <b>patata cocida</b> y la <b>zanahoria cocida</b>, enfriadas y conservadas correctamente, y preparar la ensaladilla al día siguiente. Registrar cada elaborado por separado permite saber qué se hizo, cuándo y cuándo debe consumirse.
+    </div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:8px">Criterio operativo provisional: enfriar cuanto antes, mantener refrigerado y confirmar siempre los tiempos y temperaturas del APPCC de La Urbana antes de fijar una caducidad definitiva.</div>
+  </div>
   <div class="card">
     <div class="card-title">🍲 Elaborados — Registro y caducidad</div>
 
@@ -995,14 +1002,19 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
       <select id="elab-nombre" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:1rem;color:var(--text);background:var(--surface)">
         <option value="">— Selecciona elaborado —</option>
-        <option value="Ensaladilla">🥗 Ensaladilla</option>
+        <option value="Ensaladilla">🥗 Ensaladilla (preparar al día siguiente si procede)</option>
         <option value="Alioli">🫙 Alioli (mayonesa Hellmann's + ajo + perejil)</option>
         <option value="Salsa bravas">🫙 Salsa bravas (tomate frito + zanahoria + cebolla)</option>
         <option value="Chimichurri">🫙 Chimichurri (aceite + especias)</option>
+        <option value="Aceite ajo-perejil">🫙 Aceite ajo-perejil / base de salsa</option>
         <option value="Pollo Urbana adobado">🐔 Pollo Urbana adobado</option>
+        <option value="Pollo flambeado">🔥 Pollo flambeado</option>
         <option value="Raxo adobado">🐷 Raxo adobado</option>
+        <option value="Huevo cocido">🥚 Huevo cocido</option>
         <option value="Tortilla cuajada">🥚 Tortilla cuajada (consumo mismo día)</option>
         <option value="Patata cocida">🥔 Patata cocida</option>
+        <option value="Zanahoria cocida">🥕 Zanahoria cocida</option>
+        <option value="Cebollino picado">🌿 Cebollino picado</option>
         <option value="Caldo base">🍵 Caldo base</option>
         <option value="Otro">📦 Otro</option>
       </select>
@@ -4124,6 +4136,12 @@ const ELAB_CADUCIDADES = {
   'Raxo adobado':         2,
   'Tortilla cuajada':     0,
   'Patata cocida':        3,
+  'Zanahoria cocida':     3,
+  'Ensaladilla':          3,
+  'Huevo cocido':         3,
+  'Cebollino picado':     3,
+  'Aceite ajo-perejil':   3,
+  'Pollo flambeado':      2,
   'Caldo base':           3,
 };
 
