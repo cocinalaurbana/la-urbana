@@ -792,6 +792,10 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
     Checklist
   </button>
+  <button onclick="tab('protocolos',this)" id="nav-protocolos" class="oculto">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"/></svg>
+    Protocolos
+  </button>
 
   <div class="nav-separator"></div>
   <div class="nav-section-label">Operaciones</div>
@@ -1636,6 +1640,38 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       <div style="font-size:12px;margin-top:13px;opacity:.7">Un tardeo para adultos, dentro del bar</div>
     </div>
     <button class="btn btn-outline btn-full" style="margin-top:12px" onclick="descargarGraficoProgramacion()">⬇️ Guardar gráfico</button>
+  </div>
+</div>
+
+<!-- PROTOCOLOS · LA URBANA COCINA -->
+<div id="tab-protocolos" class="tab">
+  <div class="card" style="background:linear-gradient(135deg,#243b35,#5b8067);color:#fff;border:none;margin-bottom:14px">
+    <div style="font-size:11px;letter-spacing:1.4px;text-transform:uppercase;opacity:.72">La Urbana Cocina · forma de trabajar</div>
+    <h2 style="margin:7px 0 5px;font-family:Georgia,serif;font-weight:400">Protocolos</h2>
+    <div style="font-size:14px;opacity:.86">Lo que se puede enseñar, se enseña. Lo que se puede ayudar, se acompaña. Lo que no se quiere hacer, se aborda.</div>
+  </div>
+  <div class="card" style="border-left:3px solid var(--amber);margin-bottom:14px">
+    <div class="card-title">🧭 Criterio para cada situación</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <div style="padding:10px;border:1px solid var(--border);border-radius:9px"><strong>1. No sabe</strong><div style="font-size:12px;color:var(--text-3);margin-top:5px">Se explica, se demuestra y se deja por escrito.</div></div>
+      <div style="padding:10px;border:1px solid var(--border);border-radius:9px"><strong>2. No puede</strong><div style="font-size:12px;color:var(--text-3);margin-top:5px">Se detecta el obstáculo y se da apoyo o formación.</div></div>
+      <div style="padding:10px;border:1px solid var(--border);border-radius:9px"><strong>3. No quiere</strong><div style="font-size:12px;color:var(--text-3);margin-top:5px">Se habla claro, se concreta la responsabilidad y se decide.</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">📚 Protocolos prioritarios</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+      <div class="badge">🌡️ APPCC y temperaturas</div><div class="badge">🧼 Limpieza y cierre</div>
+      <div class="badge">📦 Recepción de pedidos</div><div class="badge">🧊 Almacenamiento</div>
+      <div class="badge">👩‍🍳 Producción y porciones</div><div class="badge">📉 Registro de mermas</div>
+      <div class="badge">🔁 Cambio de turno</div><div class="badge">🚨 Incidencias</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📝 Plantilla para crear un protocolo</div>
+    <div style="font-size:13px;line-height:1.6;color:var(--text-2)">
+      <b>Nombre:</b> qué tarea regulamos.<br><b>Objetivo:</b> qué resultado debe quedar.<br><b>Cuándo:</b> momento o frecuencia.<br><b>Quién:</b> persona responsable.<br><b>Pasos:</b> instrucciones concretas y ordenadas.<br><b>Comprobación:</b> cómo sabemos que está hecho.<br><b>Si hay un problema:</b> qué se registra y a quién se comunica.<br><b>Revisión:</b> fecha para actualizarlo.
+    </div>
   </div>
 </div>
 
@@ -2762,7 +2798,7 @@ function aplicarPermisos() {
 }
 
 function tab(id, btn) {
-  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad','controlcostes','diario'];
+  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario'];
   if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -2783,7 +2819,8 @@ function tab(id, btn) {
       document.getElementById('cont-fecha').value = new Date().toISOString().split('T')[0];
       renderContabilidad();
     },
-    controlcostes: renderControlCostes
+    controlcostes: renderControlCostes,
+    protocolos: () => {}
   };
   if (renders[id]) renders[id]();
 }
@@ -5993,6 +6030,7 @@ const NAV_GRUPOS = {
   turnos: ['appcc','turno'],
   compras: ['pedidos','proveedores'],
   cultura: ['diario','programacion','instagram'],
+  cocina: ['recetas','produccion','stock','mermas','turno','appcc','protocolos'],
   gestion: ['controlcostes','contabilidad','historial']
 };
 
