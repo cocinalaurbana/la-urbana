@@ -1050,8 +1050,8 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
   <!-- selector apertura / cierre -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-    <button class="btn btn-outline btn-full" id="turno-btn-apertura" onclick="setTipoTurno('apertura')">🌅 Apertura</button>
-    <button class="btn btn-outline btn-full" id="turno-btn-cierre"   onclick="setTipoTurno('cierre')">🌙 Cierre</button>
+    <button class="btn btn-outline btn-full" id="turno-btn-apertura" onclick="setTipoTurno('apertura')">🌅 Entrada · apertura</button>
+    <button class="btn btn-outline btn-full" id="turno-btn-cierre"   onclick="setTipoTurno('cierre')">🌙 Salida · cierre</button>
   </div>
 
   <div id="turno-contenido">
@@ -1061,7 +1061,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
     <!-- MISE EN PLACE / tareas fijas -->
     <div class="card">
-      <div class="card-title" id="turno-titulo-mise">📋 Mise en place</div>
+      <div class="card-title" id="turno-titulo-mise">📋 Entrada · mise en place</div>
       <div id="turno-tareas-lista"></div>
       <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%" onclick="abrirNuevaTarea()">＋ Añadir tarea</button>
     </div>
@@ -4644,12 +4644,18 @@ const TURNO_TAREAS_DEFAULT = [
   { id:'t21',label:'🍗 Comprobar croquetas (si hay stock)',                    tipo:'apertura', critica:false },
   { id:'t22',label:'🫙 Biberones — comprobar que tienen aceite',               tipo:'apertura', critica:true  },
   { id:'t23',label:'🏷️ Comprobar etiquetas de envasado en nevera',            tipo:'apertura', critica:true  },
-  { id:'t24',label:'📦 Envases take away: pequeño, grande, pizza M, pizza L',  tipo:'apertura', critica:true  },
-  { id:'t25',label:'🛍️ Bolsas take away',                                     tipo:'apertura', critica:false },
   { id:'t16',label:'🍞 Cortar pan (o confirmar que barra lo hace)',            tipo:'apertura', critica:false },
   { id:'t18',label:'🍽️ Encender lavavajillas',                                tipo:'apertura', critica:true  },
   { id:'t26',label:'🧤 Comprobar guantes (stock disponible)',               tipo:'apertura', critica:true  },
 ];
+
+
+// Las tareas de apertura se separan: preparación según platos vs controles fijos diarios.
+const TAREAS_PREPARACION = new Set(['t2','t3','t4','t5','t6','t7','t8','t10','t11','t12','t13','t19','t21']);
+const TAREAS_FIJAS = new Set(['t9','t16','t18','t22','t23','t26']);
+function categorizarTareas(tareas) {
+  return tareas.map(t => ({...t, categoria: t.categoria || (TAREAS_PREPARACION.has(t.id) ? 'preparacion' : 'fijo')}));
+}
 
 const CIERRE_CHECKLIST_DEFAULT = [
   { id:'c1', label:'🍽️ Cubrir y etiquetar todos los recipientes',              critica:true  },
@@ -4681,7 +4687,7 @@ function setTipoTurno(tipo) {
     'btn btn-full ' + (tipo === 'cierre' ? 'btn-oro' : 'btn-outline');
   document.getElementById('turno-cierre-card').style.display = tipo === 'cierre' ? '' : 'none';
   document.getElementById('turno-titulo-mise').textContent =
-    tipo === 'apertura' ? '🌅 Mise en place — Apertura' : '📋 Tareas del turno';
+    tipo === 'apertura' ? '🌅 Entrada · preparación y controles' : '📋 Salida · tareas de cierre';
   renderAPPCCAlertas();
   renderTurnoTareas();
 }
@@ -4700,7 +4706,7 @@ function initTurno() {
 }
 
 function getTareas() {
-  return cargar('turno_tareas_custom', TURNO_TAREAS_DEFAULT);
+  return categorizarTareas(cargar('turno_tareas_custom', TURNO_TAREAS_DEFAULT));
 }
 function getCierreChecklist() {
   return cargar('cierre_checklist_custom', CIERRE_CHECKLIST_DEFAULT);
@@ -4751,16 +4757,19 @@ function marcarElaboradoConsumido(id) {
 function renderTurnoTareas() {
   const tareas = getTareas();
   const cont = document.getElementById('turno-tareas-lista');
-  cont.innerHTML = tareas.map(t => {
-    const done = !!tareasState[t.id];
-    return `<div class="tarea-item ${done?'done':''} ${t.critica?'tarea-critica':''}"
-      onclick="toggleTarea('${t.id}')">
-      <div class="tarea-check ${done?'done':''}"></div>
-      <div style="flex:1">
-        <div class="tarea-label">${t.label}</div>
-        ${t.critica ? '<div style="font-size:10px;color:var(--rojo);font-weight:700;margin-top:1px">OBLIGATORIO</div>' : ''}
-      </div>
-    </div>`;
+  const grupos = [
+    {key:'preparacion', titulo:'🍽️ Preparación según los platos', ayuda:'Se activa según el menú y la producción del día. No todo se hace siempre.'},
+    {key:'fijo', titulo:'🔁 Controles fijos de cocina', ayuda:'Tareas que se comprueban todos los días, independientemente de los platos.'}
+  ];
+  cont.innerHTML = grupos.map(g => {
+    const lista = tareas.filter(t => t.categoria === g.key);
+    if (!lista.length) return '';
+    return `<div style="margin:10px 0 6px;padding-top:8px;border-top:1px solid var(--border)"><div style="font-weight:800;font-size:13px">${g.titulo}</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">${g.ayuda}</div></div>` + lista.map(t => {
+      const done = !!tareasState[t.id];
+      return `<div class="tarea-item ${done?'done':''} ${t.critica?'tarea-critica':''}" onclick="toggleTarea('${t.id}')">
+        <div class="tarea-check ${done?'done':''}"></div><div style="flex:1"><div class="tarea-label">${t.label}</div>${t.critica ? '<div style="font-size:10px;color:var(--rojo);font-weight:700;margin-top:1px">OBLIGATORIO</div>' : ''}</div>
+      </div>`;
+    }).join('');
   }).join('');
 
   // progreso
