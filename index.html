@@ -2668,6 +2668,12 @@ function initBourdain() {
 // LOGIN / ROLES / PIN
 // ══════════════════════════════════════════
 const PINS_DEFAULT = { lore:'1974', cesar:'1234', maria:'0000' };
+// Compatibilidad táctil: algunos navegadores Android no activan bien botones con eventos inline.
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('#login-roles .login-btn').forEach(function(btn){
+    btn.addEventListener('touchend', function(e){ e.preventDefault(); btn.click(); }, {passive:false});
+  });
+});
 
 // === SISTEMA DE IDIOMA ===
 const LANG = {
