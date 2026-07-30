@@ -4630,7 +4630,7 @@ function exportarAppccSemana() {
 const TURNO_TAREAS_DEFAULT = [
   { id:'t2', label:'🐔 Pollo Urbana — cortar y adobar',                        tipo:'apertura', critica:true  },
   { id:'t3', label:'🐷 Raxo de cerdo — cortar (si lo hay)',                    tipo:'apertura', critica:false },
-  { id:'t4', label:'🥗 Ensaladilla — chequear que está buena / hacer más',     tipo:'apertura', critica:true  },
+  { id:'t4', label:'🥗 Revisar ensaladilla — comprobar que está buena / hacer más', tipo:'apertura', critica:true  },
   { id:'t5', label:'🥚 Comprobar huevos en cocina',                            tipo:'apertura', critica:true  },
   { id:'t6', label:'🫙 Stock alioli — reponer si falta',                       tipo:'apertura', critica:true  },
   { id:'t7', label:'🫙 Stock bravas — reponer si falta',                       tipo:'apertura', critica:true  },
@@ -4641,18 +4641,21 @@ const TURNO_TAREAS_DEFAULT = [
   { id:'t12',label:'🌿 Cortar puerro',                                         tipo:'apertura', critica:false },
   { id:'t13',label:'🥩 Cortar lomo — según planificación y stock (normalmente semanal)', tipo:'apertura', critica:false },
   { id:'t19',label:'🍟 Pochar patata para tortilla y patata bastón',           tipo:'apertura', critica:true  },
-  { id:'t21',label:'🍗 Comprobar croquetas (si hay stock)',                    tipo:'apertura', critica:false },
+  { id:'t21',label:'🍗 Comprobar stock de croquetas en cocina',                    tipo:'apertura', critica:true  },
   { id:'t22',label:'🫙 Biberones — comprobar que tienen aceite',               tipo:'apertura', critica:true  },
   { id:'t23',label:'🏷️ Comprobar etiquetas de envasado en nevera',            tipo:'apertura', critica:true  },
   { id:'t16',label:'🍞 Cortar pan (o confirmar que barra lo hace)',            tipo:'apertura', critica:false },
   { id:'t18',label:'🍽️ Encender lavavajillas',                                tipo:'apertura', critica:true  },
   { id:'t26',label:'🧤 Comprobar guantes (stock disponible)',               tipo:'apertura', critica:true  },
+  { id:'t27',label:'🧺 Comprobar táper grande y pequeño con sus tapas',       tipo:'apertura', critica:true  },
+  { id:'t28',label:'🫙 Comprobar táperes de salsas',                          tipo:'apertura', critica:true  },
+  { id:'t29',label:'🛍️ Comprobar bolsas de cocina',                          tipo:'apertura', critica:true  },
 ];
 
 
 // Las tareas de apertura se separan: preparación según platos vs controles fijos diarios.
 const TAREAS_PREPARACION = new Set(['t2','t3','t4','t5','t6','t7','t8','t10','t11','t12','t13','t19','t21']);
-const TAREAS_FIJAS = new Set(['t9','t16','t18','t22','t23','t26']);
+const TAREAS_FIJAS = new Set(['t9','t16','t18','t22','t23','t26','t27','t28','t29']);
 function categorizarTareas(tareas) {
   return tareas.map(t => ({...t, categoria: t.categoria || (TAREAS_PREPARACION.has(t.id) ? 'preparacion' : 'fijo')}));
 }
