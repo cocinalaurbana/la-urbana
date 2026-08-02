@@ -1216,14 +1216,21 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <!-- Pestañas de ubicación -->
   <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:none" id="stock-ubic-tabs">
     <button class="stock-ubic-btn active" data-ubic="" onclick="setFiltroUbic(this,'')">📋 Todo</button>
-    <button class="stock-ubic-btn" data-ubic="congelador-columna" onclick="setFiltroUbic(this,'congelador-columna')">🧊 Cong. columna</button>
-    <button class="stock-ubic-btn" data-ubic="congelador-cocina" onclick="setFiltroUbic(this,'congelador-cocina')">❄️ Cong. cocina</button>
-    <button class="stock-ubic-btn" data-ubic="nevera-blanca" onclick="setFiltroUbic(this,'nevera-blanca')">🔲 Nevera blanca</button>
-    <button class="stock-ubic-btn" data-ubic="nevera-almacen" onclick="setFiltroUbic(this,'nevera-almacen')">📦 Nev. almacén</button>
-    <button class="stock-ubic-btn" data-ubic="nevera-cocina" onclick="setFiltroUbic(this,'nevera-cocina')">🍳 Nev. cocina</button>
-    <button class="stock-ubic-btn" data-ubic="estanteria" onclick="setFiltroUbic(this,'estanteria')">🗄️ Estantería</button>
-    <button class="stock-ubic-btn" data-ubic="cocina" onclick="setFiltroUbic(this,'cocina')">🍳 Cocina seca</button>
+    <button class="stock-ubic-btn" data-ubic="almacen-congelador-columna" onclick="setFiltroUbic(this,'almacen-congelador-columna')">🧊 Almacén · Cong. columna</button>
+    <button class="stock-ubic-btn" data-ubic="almacen-nevera-blanca" onclick="setFiltroUbic(this,'almacen-nevera-blanca')">🔲 Almacén · Nevera blanca</button>
+    <button class="stock-ubic-btn" data-ubic="exterior-congelador-grande" onclick="setFiltroUbic(this,'exterior-congelador-grande')">❄️ Fuera · Cong. grande</button>
+    <button class="stock-ubic-btn" data-ubic="exterior-congelador-pequeno" onclick="setFiltroUbic(this,'exterior-congelador-pequeno')">❄️ Fuera · Cong. pequeño</button>
+    <button class="stock-ubic-btn" data-ubic="exterior-nevera" onclick="setFiltroUbic(this,'exterior-nevera')">🔲 Fuera · Nevera</button>
+    <button class="stock-ubic-btn" data-ubic="cocina-nevera" onclick="setFiltroUbic(this,'cocina-nevera')">🍳 Cocina · Nevera</button>
+    <button class="stock-ubic-btn" data-ubic="cocina-congelador-diario" onclick="setFiltroUbic(this,'cocina-congelador-diario')">🧊 Cocina · Cong. diario</button>
+    <button class="stock-ubic-btn" data-ubic="estanteria" onclick="setFiltroUbic(this,'estanteria')">🗄️ Estantería seca</button>
     <button class="stock-ubic-btn" data-ubic="embalaje" onclick="setFiltroUbic(this,'embalaje')">🥡 Para llevar</button>
+  </div>
+
+  <div class="card" style="margin:4px 0 14px;border-left:4px solid var(--olive);padding:12px 14px">
+    <div style="font-weight:800;font-size:.9rem;margin-bottom:5px">✅ Cómo hacer el inventario</div>
+    <div style="font-size:12px;color:var(--text-2);line-height:1.5">Mismo día y hora · mismo recorrido · mismas unidades · contar en horas valle o con el servicio parado · no mover género durante el recuento · registrar diferencias y revisarlas. Si es posible, una persona cuenta y otra comprueba.</div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:6px">Recorrido La Urbana: almacén/cocina → exterior → cocina. Cada producto se asigna a un único sitio para no contarlo dos veces.</div>
   </div>
 
   <div id="stock-lista"></div>
@@ -2256,13 +2263,14 @@ De [hora] a [hora]. Ven con quien quieras.
       <label>Ubicación</label>
       <select id="s-ubicacion" style="color:var(--text);background:var(--bg)">
         <option value="">Sin especificar</option>
-        <option value="congelador-columna">🧊 Congelador columna</option>
-        <option value="congelador-cocina">❄️ Congelador cocina</option>
-        <option value="nevera-blanca">🔲 Nevera blanca</option>
-        <option value="nevera-almacen">📦 Nevera almacén</option>
-        <option value="nevera-cocina">🍳 Nevera cocina</option>
-        <option value="estanteria">🗄️ Estantería</option>
-        <option value="cocina">🍳 Cocina seca</option>
+        <option value="almacen-congelador-columna">🧊 Almacén · Congelador columna</option>
+        <option value="almacen-nevera-blanca">🔲 Almacén · Nevera blanca</option>
+        <option value="exterior-congelador-grande">❄️ Fuera · Congelador grande</option>
+        <option value="exterior-congelador-pequeno">❄️ Fuera · Congelador pequeño</option>
+        <option value="exterior-nevera">🔲 Fuera · Nevera</option>
+        <option value="cocina-nevera">🍳 Cocina · Nevera</option>
+        <option value="cocina-congelador-diario">🧊 Cocina · Congelador pequeño / uso del día</option>
+        <option value="estanteria">🗄️ Estantería seca</option>
         <option value="embalaje">🥡 Para llevar</option>
       </select>
     </div>
@@ -3259,10 +3267,18 @@ function toggleWa() {
 // ══════════════════════════════════════════
 let productoEditId = null;
 const UBIC_LABELS = {
-  'congelador-columna':'🧊 Congelador columna','congelador-cocina':'❄️ Congelador cocina',
-  'nevera-blanca':'🔲 Nevera blanca','nevera-almacen':'📦 Nevera almacén',
-  'nevera-cocina':'🍳 Nevera cocina','estanteria':'🗄️ Estantería',
-  'cocina':'🍳 Cocina seca','embalaje':'🥡 Para llevar',''  :''
+  'almacen-congelador-columna':'🧊 Almacén · Congelador columna',
+  'almacen-nevera-blanca':'🔲 Almacén · Nevera blanca',
+  'exterior-congelador-grande':'❄️ Fuera · Congelador grande',
+  'exterior-congelador-pequeno':'❄️ Fuera · Congelador pequeño',
+  'exterior-nevera':'🔲 Fuera · Nevera',
+  'cocina-nevera':'🍳 Cocina · Nevera',
+  'cocina-congelador-diario':'🧊 Cocina · Congelador pequeño / uso del día',
+  'estanteria':'🗄️ Estantería seca','embalaje':'🥡 Para llevar',''  :'',
+  // Compatibilidad con ubicaciones antiguas ya guardadas
+  'congelador-columna':'🧊 Almacén · Congelador columna','congelador-cocina':'🍳 Cocina · Congelador',
+  'nevera-blanca':'🔲 Almacén · Nevera blanca','nevera-almacen':'📦 Almacén · Nevera',
+  'nevera-cocina':'🍳 Cocina · Nevera','cocina':'🗄️ Cocina seca'
 };
 
 function abrirModalProducto(id) {
