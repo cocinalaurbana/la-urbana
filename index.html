@@ -1768,6 +1768,11 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div id="costes-platos"></div>
   </div>
   <div class="card" style="margin-bottom:14px">
+    <div class="card-title">📥 Tarifa de Quique · base para escandallos</div>
+    <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Precios recibidos el 03/08/2026. En las croquetas se usa 0,40 € por unidad, el extremo alto del rango comunicado. El resto queda como precio de materia prima hasta completar gramajes y formatos.</div>
+    <div id="quique-costes-resumen"></div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
     <div class="card-title">📦 Control real semanal</div>
     <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Empieza con los productos sensibles. No hace falta contar todo el almacén.</div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:9px">
@@ -3730,8 +3735,8 @@ const ESCANDALLOS = [
   },
   {
     plato: 'Croquetas', formatos: [
-      { nombre: 'Tapa (3 uds)', ingredientes: [{nombre:'Croquetas jamón Hacendado', uds:3}] },
-      { nombre: 'Ración (8 uds)', ingredientes: [{nombre:'Croquetas jamón Hacendado', uds:8}] }
+      { nombre: 'Tapa (3 uds)', ingredientes: [{nombre:'Croquetas Quique 33g', uds:3}] },
+      { nombre: 'Ración (8 uds)', ingredientes: [{nombre:'Croquetas Quique 33g', uds:8}] }
     ]
   }
 ];
@@ -5590,6 +5595,7 @@ const PROVEEDORES_DEFAULT = [
   {id:10, nombre:'Carrefour', categoria:'General', telefono:'', productos:'Varios', dias:'', notas:''},
   {id:11, nombre:'Fresh&Clean', categoria:'Limpieza', telefono:'', productos:'Productos limpieza', dias:'', notas:''},
   {id:12, nombre:'Eroski', categoria:'General', telefono:'', productos:'Varios', dias:'', notas:''},
+  {id:13, nombre:'Quique Codillos', categoria:'Cárnico', telefono:'34622101000', productos:'Carnes, croquetas, elaborados, pescados y arroces', dias:'Según disponibilidad', notas:'Tarifa recibida el 03/08/2026. Precios pendientes de confirmar por formato, IVA y condiciones de pedido.'},
 ];
 
 function initProveedoresDefault() {
@@ -5622,13 +5628,15 @@ function guardarProveedor() {
   const nombre = document.getElementById('pv-nombre').value.trim();
   if (!nombre) { toast('Nombre del proveedor'); return; }
   const idEdit = parseInt(document.getElementById('pv-id').value)||null;
+  const previo = idEdit ? cargar('proveedores',[]).find(p => p.id===idEdit) : null;
   const prov = {
     id: idEdit || Date.now(), nombre,
     categoria: document.getElementById('pv-categoria').value.trim(),
     telefono: document.getElementById('pv-telefono').value.trim(),
     productos: document.getElementById('pv-productos').value.trim(),
     dias: document.getElementById('pv-dias').value.trim(),
-    notas: document.getElementById('pv-notas').value.trim()
+    notas: document.getElementById('pv-notas').value.trim(),
+    ...(previo && previo.tarifa ? {tarifa: previo.tarifa} : {})
   };
   let proveedores = cargar('proveedores',[]);
   if (idEdit) proveedores = proveedores.map(p => p.id===idEdit ? prov : p);
@@ -5652,13 +5660,58 @@ function pedirAProveedor(id) {
   const msg = encodeURIComponent(`Hola, buenos días. Soy Lorena de La Urbana (A Coruña). Necesitaríamos hacer un pedido de ${p.productos||'productos'}. ¿Podéis confirmarnos disponibilidad y precio? Muchas gracias 🙏`);
   window.open(`https://wa.me/${telWA}?text=${msg}`, '_blank');
 }
+// Tarifa recibida de Quique Codillos el 03/08/2026.
+// Se conserva la unidad tal como fue comunicada; donde no la indicó, queda marcado para confirmar.
+const QUIQUE_TARIFA = [
+  {producto:'Croquetas 33 g', precio:'0,38–0,40', unidad:'€/ud', formato:'Bolsa de 70 unidades', escandallo:0.40, nota:'Para escandallo usamos el extremo alto: 0,40 €/ud'},
+  {producto:'Croca', precio:'14,95', unidad:'€/kg', formato:'—', escandallo:14.95},
+  {producto:'Picaña', precio:'19,95', unidad:'€/kg', formato:'—', escandallo:19.95},
+  {producto:'Ensaladilla Findus', precio:'2,19', unidad:'€/kg', formato:'—', escandallo:2.19},
+  {producto:'Atún bolsa 70/30', precio:'6,75', unidad:'confirmar', formato:'Bolsa 70/30', nota:'Confirmar si es €/kg y el peso de la bolsa'},
+  {producto:'Chorizo Alberca', precio:'22,00', unidad:'confirmar', formato:'—', nota:'Confirmar unidad'},
+  {producto:'Salpicón de rape y gambón', precio:'25,00', unidad:'€/kg', formato:'—', escandallo:25},
+  {producto:'Pota / calamares', precio:'6,95', unidad:'€/kg', formato:'—', escandallo:6.95},
+  {producto:'Calamar 4L', precio:'10,20', unidad:'confirmar', formato:'4L', nota:'Confirmar si el precio es por formato/caja'},
+  {producto:'Solomillo de cerdo', precio:'6,75', unidad:'€/kg', formato:'Menú', escandallo:6.75},
+  {producto:'Codillo 1/2', precio:'3,50', unidad:'confirmar', formato:'Menú', nota:'Confirmar si es por unidad'},
+  {producto:'Codillo entero', precio:'3,25', unidad:'confirmar', formato:'Menú', nota:'Confirmar unidad; aparece más barato que el medio'},
+  {producto:'Carrilleras', precio:'7,75', unidad:'€/kg', formato:'Menú', escandallo:7.75},
+  {producto:'Carne melosa', precio:'5,90', unidad:'€/kg', formato:'Menú', escandallo:5.90},
+  {producto:'Puntas de costilla', precio:'3,95', unidad:'€/kg', formato:'Menú', escandallo:3.95},
+  {producto:'Costilla en tiras', precio:'5,10', unidad:'€/kg', formato:'Menú', escandallo:5.10},
+  {producto:'Pollo picantón 1/2 · 300 g', precio:'1,75', unidad:'€/ud', formato:'Media pieza de 300 g', escandallo:1.75},
+  {producto:'Pechuga de pollo', precio:'6,50', unidad:'€/kg', formato:'—', escandallo:6.50},
+  {producto:'Lagarto de cerdo', precio:'6,75', unidad:'€/kg', formato:'—', escandallo:6.75},
+  {producto:'Arroz arborio', precio:'3,40', unidad:'€/kg', formato:'—', escandallo:3.40},
+  {producto:'Arroz bomba', precio:'6,80', unidad:'€/kg', formato:'—', escandallo:6.80},
+  {producto:'Sugerencias', precio:'—', unidad:'', formato:'Secreto, presa, pluma, lágrima, abanico, pulpo, cola de gambón, langostino y zamburiñas', nota:'Sin precio en el listado recibido'}
+];
+
+function integrarTarifaQuique() {
+  let proveedores = cargar('proveedores', []);
+  if (!proveedores.length) proveedores = PROVEEDORES_DEFAULT.slice();
+  let quique = proveedores.find(p => (p.nombre||'').toLowerCase().includes('quique'));
+  if (!quique) {
+    quique = {id:13, nombre:'Quique Codillos', categoria:'Cárnico', telefono:'34622101000', productos:'Carnes, croquetas, elaborados, pescados y arroces', dias:'Según disponibilidad', notas:'Tarifa recibida el 03/08/2026. Precios pendientes de confirmar por formato, IVA y condiciones de pedido.', tarifa:QUIQUE_TARIFA};
+    proveedores.push(quique);
+  } else {
+    quique.telefono = quique.telefono || '34622101000';
+    quique.productos = quique.productos || 'Carnes, croquetas, elaborados, pescados y arroces';
+    quique.tarifa = quique.tarifa || QUIQUE_TARIFA;
+    quique.notas = quique.notas || 'Tarifa recibida el 03/08/2026. Precios pendientes de confirmar por formato, IVA y condiciones de pedido.';
+  }
+  guardar('proveedores', proveedores);
+}
+
 const PROV_EMOJIS = {'Cárnico':'🥩','Verduras':'🥬','Frutas y Verduras':'🥬','Frutas':'🍊','Pescado':'🐟','Bebidas':'🍺','Panadería':'🍞','Lácteos':'🧀','Suministro':'💡','General':'📦'};
 function renderProveedores() {
   initProveedoresDefault();
   const el = document.getElementById('proveedores-lista');
   const proveedores = cargar('proveedores',[]);
   if (!proveedores.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">🤝</div><div>Sin proveedores.</div></div>'; return; }
-  el.innerHTML = proveedores.map(p => `<div class="prov-card">
+  el.innerHTML = proveedores.map(p => {
+    const tarifaHtml = p.tarifa && p.tarifa.length ? `<details style="margin-top:9px"><summary style="cursor:pointer;font-size:12px;color:var(--accent-d);font-weight:700">💶 Ver tarifa recibida (${p.tarifa.length} referencias)</summary><div style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px">${p.tarifa.map(tar => `<div style="display:grid;grid-template-columns:1fr auto;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px"><span>${tar.producto}${tar.formato && tar.formato!=='—' ? ` <span style=\"color:var(--text-3)\">· ${tar.formato}</span>` : ''}${tar.nota ? `<br><span style=\"color:var(--text-3);font-size:10px\">${tar.nota}</span>` : ''}</span><strong style="white-space:nowrap">${tar.precio}${tar.unidad ? ' '+tar.unidad : ''}</strong></div>`).join('')}</div></details>` : '';
+    return `<div class="prov-card">
     <div class="prov-emoji">${PROV_EMOJIS[p.categoria]||'📦'}</div>
     <div style="flex:1">
       <div class="prov-nombre">${p.nombre}</div>
@@ -5668,6 +5721,7 @@ function renderProveedores() {
         ${p.telefono?`📞 ${p.telefono} `:''}
         ${p.dias?`<span style="font-size:11px;color:var(--text-3)">📅 ${p.dias}</span><br>`:''}
         ${p.notas?`<span style="color:var(--text-3);font-size:11px">${p.notas}</span>`:''}
+        ${tarifaHtml}
       </div>
       ${p.telefono?`<button class="btn btn-oro btn-sm" style="margin-top:8px" onclick="pedirAProveedor(${p.id})">📲 Pedir por WhatsApp</button>`:'<span style="font-size:11px;color:var(--text-3)">Sin teléfono — edita para añadir</span>'}
     </div>
@@ -5675,7 +5729,8 @@ function renderProveedores() {
       <button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:14px" onclick="abrirModalProveedor(${p.id})">✏️</button>
       <button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px" onclick="borrarProveedor(${p.id})">×</button>
     </div>
-  </div>`).join('');
+  </div>`;
+  }).join('');
 }
 
 // ══════════════════════════════════════════
@@ -6117,6 +6172,7 @@ function seedData() {
 // ══════════════════════════════════════════
 function arrancarApp() {
   seedData();
+  integrarTarifaQuique();
   initHeader();
   // Forzar tab inicio activo y renderizar
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -6168,8 +6224,21 @@ const PILOTO_FOOD_COST = [
   {nombre:'Tortilla de patatas', coste:0, precio:0, nota:'Medir rendimiento de cada tortilla'},
   {nombre:'Ensaladilla rusa', coste:0, precio:0, nota:'Medir coste por tanda y ración'}
 ];
+function renderQuiqueCostesResumen(){
+  const el = document.getElementById('quique-costes-resumen');
+  if (!el || typeof QUIQUE_TARIFA === 'undefined') return;
+  const croq = QUIQUE_TARIFA.find(x => x.producto === 'Croquetas 33 g');
+  const calculos = croq ? [
+    ['Croquetas · tapa (3 uds)', (3 * croq.escandallo).toFixed(2) + ' €'],
+    ['Croquetas · ración (8 uds)', (8 * croq.escandallo).toFixed(2) + ' €'],
+    ['Pollo picantón · 1/2 pieza', '1,75 €']
+  ] : [];
+  const materias = QUIQUE_TARIFA.filter(x => x.escandallo && x.producto !== 'Croquetas 33 g' && x.producto !== 'Pollo picantón 1/2 · 300 g');
+  el.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px">${calculos.map(x => `<div style="background:var(--surface-2);border-radius:9px;padding:8px 10px"><div style="font-size:11px;color:var(--text-3)">${x[0]}</div><strong style="font-size:16px;color:var(--accent-d)">${x[1]}</strong></div>`).join('')}</div><div style="display:flex;flex-wrap:wrap;gap:5px">${materias.map(x => `<span class="badge">${x.producto}: <strong>${x.precio} ${x.unidad}</strong></span>`).join('')}</div><div style="font-size:11px;color:var(--text-3);margin-top:9px">⚠️ Son costes de compra, no el coste final del plato: faltan los demás ingredientes, mermas, aceite, salsas y gramajes.</div>`;
+}
 function renderControlCostes(){
   const el=document.getElementById('costes-platos'); if(!el) return;
+  renderQuiqueCostesResumen();
   el.innerHTML=PILOTO_FOOD_COST.map((p,i)=>`<div style="display:grid;grid-template-columns:1.3fr .8fr .8fr .8fr;gap:7px;align-items:end;border-top:1px solid var(--border);padding:10px 0">
     <div><strong style="font-size:13px">${p.nombre}</strong><div style="font-size:10px;color:var(--text-3)">${p.nota}</div></div>
     <label style="font-size:10px;color:var(--text-3)">Coste €<input id="fc-coste-${i}" type="number" min="0" step="0.01" value="${p.coste}" oninput="calcularFoodCost()"></label>
@@ -6605,7 +6674,7 @@ const PROGRAMAS_INVIERNO = [
   {tipo:'noche', icono:'📚', titulo:'Club de lectura gastronómico', frecuencia:'Una vez al mes · hablar con Mon', formato:'Elegir un libro con un plato memorable y recrearlo como tapa para leer, conversar y comer el mismo mundo', objetivo:'Crear un formato propio de La Urbana, guiado por Mon, especialista en clubes de lectura.'},
   {tipo:'mañana', icono:'🗣️', titulo:'Idiomas con desayuno', frecuencia:'Piloto · fecha por definir', formato:'Desayuno o merienda + conversación guiada por niveles; sesiones sueltas o ciclo mensual', objetivo:'Facilitar práctica real de idiomas y encuentros entre gente local y extranjera.'},
   {tipo:'tardeo', icono:'☕', titulo:'Idiomas con merienda', frecuencia:'Opcional · fecha por definir', formato:'Merienda sencilla + moderación + tema de conversación', objetivo:'Crear una versión más ligera y accesible del formato de idiomas.'},
-  {tipo:'noche', icono:'🍽️', titulo:'Cena adivina', frecuencia:'Piloto · una vez al mes', formato:'Cena con precio cerrado + invitado interesante + conversación moderada', objetivo:'Conocer personas nuevas y convertir La Urbana en una casa abierta a historias.'}
+  {tipo:'noche', icono:'🍽️', titulo:'Cena adivina', frecuencia:'Piloto · una vez al mes', formato:'Cena con precio cerrado + invitado interesante + conversación moderada', objetivo:'Conocer personas nuevas y convertir La Urbana en una casa abierta a historias.'},
   {tipo:'noche', icono:'🌿', titulo:'Charlas sobre menopausia', frecuencia:'Bimensual', formato:'Conversación cercana + invitada experta + cena informal', objetivo:'Crear comunidad alrededor de un tema real, sin tono clínico.'},
   {tipo:'noche', icono:'🪶', titulo:'Noches filosóficas', frecuencia:'Una noche al mes', formato:'Pregunta-guía + moderación + pinchos y vino', objetivo:'Una experiencia cultural íntima, no una conferencia.'},
   {tipo:'noche', icono:'🌕', titulo:'Noche de luna llena', frecuencia:'Cada luna llena', formato:'Menú especial de pinchos + música ambiente + ritual creativo', objetivo:'Dar a La Urbana un sello reconocible y propio.'}
@@ -6643,3 +6712,4 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
