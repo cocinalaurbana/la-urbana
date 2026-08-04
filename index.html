@@ -5646,6 +5646,11 @@ function seedPruebasRecetas() {
     notas: 'Objetivo: seguir sabiendo a ensaladilla de toda la vida, pero con una textura más cuidada y un gesto visual propio.',
     creado: Date.now()
   });
+  const propuestaRadial = lista.find(x => x.id === propuestaId);
+  if (propuestaRadial && !propuestaRadial.platoRadialCorregido) {
+    propuestaRadial.emplatado = 'Plato real de La Urbana: redondo, blanco, con líneas negras radiales que salen exactamente del centro, como trazos de bolígrafo. Cada raya mide aproximadamente 3 mm y el espacio blanco entre rayas también. No hay círculos concéntricos ni dibujo de rueda. Probar una pieza rectangular baja, ligeramente desplazada, dejando visible el centro del plato, y un único bastón de patata fino y crujiente en diagonal. Sin picos, sin pan de orégano y sin forma de helado.';
+    propuestaRadial.platoRadialCorregido = true;
+  }
   guardar('pruebas_recetas', lista);
 }
 function limpiarFormularioPrueba() {
