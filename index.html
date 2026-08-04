@@ -453,6 +453,7 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 
 /* ─── FORMULARIOS ─── */
 .form-group{margin-bottom:14px}
+.prueba-label{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px}.prueba-texto{white-space:pre-line;font-size:13px;line-height:1.6;color:var(--text-2);background:var(--surface-2);border-radius:8px;padding:9px 10px}
 .form-group label{display:block;font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px}
 input,select,textarea{
   width:100%;padding:10px 13px;
@@ -835,6 +836,10 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <button onclick="tab('recetas',this)" id="nav-recetas" class="oculto">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
     Recetas
+  </button>
+  <button onclick="tab('pruebas',this)" id="nav-pruebas" class="oculto">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6m-5 0v5l-4.5 8.1A3 3 0 0 0 8.1 21h7.8a3 3 0 0 0 2.6-4.9L14 8V3M7 16h10"/></svg>
+    Pruebas
   </button>
   <button onclick="tab('contabilidad',this)" id="nav-contabilidad" class="oculto">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0 2 2v6a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
@@ -1530,6 +1535,34 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     </select>
   </div>
   <div id="recetas-lista"></div>
+</div>
+
+<!-- PRUEBAS DE RECETAS -->
+<div id="tab-pruebas" class="tab">
+  <div class="card" style="border-left:3px solid var(--accent);margin-bottom:14px">
+    <div class="card-title">🧪 Laboratorio de recetas</div>
+    <div style="font-size:13px;line-height:1.6;color:var(--text-2)">Aquí no buscamos acertar a la primera. Guardamos cada prueba con sus cantidades, textura, sabor, emplatado y decisión: <b>seguir probando, pasa a la siguiente, aprobada o descartada</b>.</div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">➕ Registrar una prueba</div>
+    <div style="display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:8px">
+      <div class="form-group"><label>Nombre de la prueba</label><input id="prueba-nombre" placeholder="Ej. Ensaladilla · textura patata tibia"></div>
+      <div class="form-group"><label>Fecha</label><input type="date" id="prueba-fecha"></div>
+      <div class="form-group"><label>Decisión</label><select id="prueba-estado"><option value="En prueba">En prueba</option><option value="Pasa a la siguiente prueba">Pasa a la siguiente prueba</option><option value="Aprobada">Aprobada</option><option value="Mejorar">Mejorar</option><option value="Descartada">Descartada</option></select></div>
+    </div>
+    <div class="form-group"><label>Cantidades utilizadas</label><textarea id="prueba-cantidades" rows="5" placeholder="Ingrediente — cantidad exacta"></textarea></div>
+    <div class="form-group"><label>Método y cambios de esta prueba</label><textarea id="prueba-metodo" rows="4" placeholder="Qué hicimos diferente y cómo lo hicimos"></textarea></div>
+    <div class="form-group"><label>Emplatado / presentación</label><textarea id="prueba-emplatado" rows="3" placeholder="Forma, plato, altura, crujiente, garnish..."></textarea></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div class="form-group"><label>Sabor (1–5)</label><select id="prueba-sabor"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+      <div class="form-group"><label>Textura (1–5)</label><select id="prueba-textura"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+      <div class="form-group"><label>Acidez (1–5)</label><select id="prueba-acidez"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+      <div class="form-group"><label>Visual (1–5)</label><select id="prueba-visual"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+    </div>
+    <div class="form-group"><label>Observaciones y siguiente cambio</label><textarea id="prueba-notas" rows="3" placeholder="Qué nos gustó, qué no, qué probamos después"></textarea></div>
+    <button class="btn btn-oro" onclick="guardarPruebaReceta()">💾 Guardar prueba</button>
+  </div>
+  <div id="pruebas-recetas-lista"></div>
 </div>
 
 <!-- PROVEEDORES -->
@@ -2844,7 +2877,7 @@ function cerrarSesion() {
   initBourdain();
 }
 function aplicarPermisos() {
-  ['nav-recetas','nav-proveedores','nav-historial','nav-instagram','nav-contabilidad','nav-diario','nav-programacion'].forEach(id => {
+  ['nav-recetas','nav-pruebas','nav-proveedores','nav-historial','nav-instagram','nav-contabilidad','nav-diario','nav-programacion'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('oculto', esMaria());
   });
@@ -2905,7 +2938,7 @@ function aplicarPermisos() {
 }
 
 function tab(id, btn) {
-  const soloAdmin = ['menu','recetas','proveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario'];
+  const soloAdmin = ['menu','recetas','pruebas','proveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario'];
   if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -2918,7 +2951,7 @@ function tab(id, btn) {
     produccion: () => { renderKanban(); },
     pedidos: renderPedidos, caja: initCaja, menu: initMenu,
     appcc: initAppcc, turno: initTurno,
-    recetas: renderRecetas, proveedores: renderProveedores,
+    recetas: renderRecetas, pruebas: renderPruebasRecetas, proveedores: renderProveedores,
     historial: renderHistorial, spotify: renderPlaylistsCustom,
     diario: renderDiario,
     programacion: initProgramacion,
@@ -5579,6 +5612,69 @@ function borrarReceta(id) {
 }
 
 // ══════════════════════════════════════════
+// PRUEBAS DE RECETAS
+// ══════════════════════════════════════════
+function escPrueba(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]; });
+}
+function seedPruebasRecetas() {
+  let lista = cargar('pruebas_recetas', null);
+  if (!Array.isArray(lista)) lista = [];
+  const baseId = 'ensaladilla-lore-20260804';
+  if (!lista.some(x => x.id === baseId)) lista.unshift({
+    id: baseId,
+    nombre: 'Ensaladilla rusa clásica revisada · prueba Lore',
+    fecha: '2026-08-04',
+    estado: 'Pasa a la siguiente prueba',
+    cantidades: 'Patata: 610 g\nZanahoria: 140 g\nHuevo duro: 95 g\nAceituna verde: 45 g\nPepinillo agridulce: 45 g\nAtún en aceite de oliva, escurrido: 125 g\nHellmann’s: 250 g\nAnchoa: 8–10 g\nAOVE suave: 15–20 ml\nLimón: 5–10 ml',
+    metodo: 'Patata cocida entera con piel y cortada en dados. Zanahoria al dente. Huevo cocido 9 minutos y enfriado en hielo. Encurtidos en brunoise. Mayonesa Hellmann’s tuneada con anchoa, AOVE y limón.',
+    emplatado: 'Pendiente de cambiar el formato tipo helado. No usar picos ni el pan de orégano actual: buscar una presentación tradicional con un elemento disruptor.',
+    sabor: '', textura: '', acidez: '', visual: '',
+    notas: 'La receta funciona y gusta, pero es mejorable. Mantener los 90 g de encurtidos. Probar una textura más ligada aplastando 80–100 g de patata tibia y dejando el resto en dados.',
+    creado: Date.now()
+  });
+  const propuestaId = 'ensaladilla-patata-tibia-20260805';
+  if (!lista.some(x => x.id === propuestaId)) lista.unshift({
+    id: propuestaId,
+    nombre: 'Ensaladilla · prueba textura patata tibia',
+    fecha: '2026-08-05',
+    estado: 'Propuesta',
+    cantidades: 'Base: la misma receta de Lore. Mantener 90 g de encurtidos (45 g aceituna + 45 g pepinillo).\nDe la patata: reservar 80–100 g para aplastar en caliente/tibio.',
+    metodo: 'Aplastar los 80–100 g de patata todavía tibios con unas gotas de limón o una cucharadita de líquido de pepinillo. Mezclar con parte de la mayonesa para crear una base cremosa. Incorporar después el resto de la patata en dados de 8–10 mm y añadir los encurtidos al final para conservar la mordida. Sin pimiento del piquillo.',
+    emplatado: 'Propuesta visual A: pieza rectangular baja y ligeramente irregular, desplazada en el plato para dejar ver el centro de los radios. Terminar con un único bastón de patata muy fino y crujiente en diagonal. Sin picos, sin pan de orégano y sin forma de bola/helado.',
+    sabor: '', textura: '', acidez: '', visual: '',
+    notas: 'Objetivo: seguir sabiendo a ensaladilla de toda la vida, pero con una textura más cuidada y un gesto visual propio.',
+    creado: Date.now()
+  });
+  guardar('pruebas_recetas', lista);
+}
+function limpiarFormularioPrueba() {
+  ['prueba-nombre','prueba-cantidades','prueba-metodo','prueba-emplatado','prueba-notas','prueba-sabor','prueba-textura','prueba-acidez','prueba-visual'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
+  const f=document.getElementById('prueba-fecha'); if(f) f.value=hoy();
+  const est=document.getElementById('prueba-estado'); if(est) est.value='En prueba';
+}
+function guardarPruebaReceta() {
+  const nombre = document.getElementById('prueba-nombre').value.trim();
+  if (!nombre) { toast('Pon un nombre a la prueba','error'); return; }
+  const prueba = { id:'prueba-'+Date.now(), nombre, fecha:document.getElementById('prueba-fecha').value||hoy(), estado:document.getElementById('prueba-estado').value, cantidades:document.getElementById('prueba-cantidades').value.trim(), metodo:document.getElementById('prueba-metodo').value.trim(), emplatado:document.getElementById('prueba-emplatado').value.trim(), sabor:document.getElementById('prueba-sabor').value, textura:document.getElementById('prueba-textura').value, acidez:document.getElementById('prueba-acidez').value, visual:document.getElementById('prueba-visual').value, notas:document.getElementById('prueba-notas').value.trim(), creado:Date.now() };
+  const lista=cargar('pruebas_recetas',[]); lista.unshift(prueba); guardar('pruebas_recetas',lista); addHistorial('menu','🧪 Prueba de receta: '+nombre); limpiarFormularioPrueba(); renderPruebasRecetas(); toast('Prueba guardada ✓','verde');
+}
+function borrarPruebaReceta(id) {
+  if (!confirm('¿Borrar esta prueba de receta?')) return;
+  guardar('pruebas_recetas', cargar('pruebas_recetas',[]).filter(x=>x.id!==id)); renderPruebasRecetas(); toast('Prueba borrada');
+}
+function renderPruebasRecetas() {
+  seedPruebasRecetas();
+  const el=document.getElementById('pruebas-recetas-lista'); if(!el) return;
+  const lista=cargar('pruebas_recetas',[]);
+  const colores={'Aprobada':'var(--verde)','Pasa a la siguiente prueba':'var(--accent)','En prueba':'var(--amber)','Mejorar':'var(--amber)','Descartada':'var(--rojo)','Propuesta':'var(--text-3)'};
+  el.innerHTML=lista.map(p=>{
+    const notas=[['Sabor',p.sabor],['Textura',p.textura],['Acidez',p.acidez],['Visual',p.visual]].filter(x=>x[1]);
+    return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${colores[p.estado]||'var(--border)'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">${escPrueba(p.nombre)}</div><div style="font-size:11px;color:var(--text-3)">${p.fecha||''}</div></div><span class="badge" style="color:${colores[p.estado]||'var(--text)'}">${escPrueba(p.estado)}</span></div>${p.cantidades?`<div style="margin-top:12px"><div class="prueba-label">Cantidades</div><div class="prueba-texto">${escPrueba(p.cantidades)}</div></div>`:''}${p.metodo?`<div style="margin-top:10px"><div class="prueba-label">Método</div><div class="prueba-texto">${escPrueba(p.metodo)}</div></div>`:''}${p.emplatado?`<div style="margin-top:10px"><div class="prueba-label">Emplatado</div><div class="prueba-texto">${escPrueba(p.emplatado)}</div></div>`:''}${notas.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${notas.map(x=>`<span class="badge">${x[0]}: ${x[1]}/5</span>`).join('')}</div>`:''}${p.notas?`<div style="margin-top:10px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:12px;line-height:1.5">${escPrueba(p.notas)}</div>`:''}<button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="borrarPruebaReceta(${JSON.stringify(p.id)})">Borrar</button></div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
 // PROVEEDORES
 // ══════════════════════════════════════════
 
@@ -6173,6 +6269,7 @@ function seedData() {
 function arrancarApp() {
   seedData();
   integrarTarifaQuique();
+  seedPruebasRecetas();
   initHeader();
   // Forzar tab inicio activo y renderizar
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -6213,8 +6310,8 @@ const NAV_GRUPOS = {
   turnos: ['appcc','turno'],
   compras: ['pedidos','proveedores'],
   cultura: ['diario','programacion','instagram'],
-  cocina: ['recetas','produccion','stock','mermas','turno','appcc','protocolos'],
-  gestion: ['controlcostes','contabilidad','historial']
+  cocina: ['recetas','pruebas','produccion','stock','mermas','turno','appcc','protocolos'],
+  gestion: ['controlcostes','contabilidad','historial'],
 };
 
 const PILOTO_FOOD_COST = [
