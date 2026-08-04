@@ -5633,6 +5633,19 @@ function seedPruebasRecetas() {
     notas: 'La receta funciona y gusta, pero es mejorable. Mantener los 90 g de encurtidos. Probar una textura más ligada aplastando 80–100 g de patata tibia y dejando el resto en dados.',
     creado: Date.now()
   });
+  const visualAId = 'ensaladilla-emplatado-a-20260805';
+  if (!lista.some(x => x.id === visualAId)) lista.unshift({
+    id: visualAId,
+    nombre: 'Ensaladilla · prueba A de emplatado sin crujiente',
+    fecha: '2026-08-05',
+    estado: 'En prueba',
+    cantidades: 'La receta base de Lore: 610 g patata, 140 g zanahoria, 95 g huevo, 90 g de encurtidos, 125 g atún y mayonesa Hellmann’s tuneada.',
+    metodo: 'Sin cambiar la receta todavía. Probar primero la forma y la composición para no mezclar variables.',
+    emplatado: 'Pieza baja, horizontal y ligeramente irregular, sin aro redondo, sin bola y sin forma de helado. Colocarla dejando visible el punto central y las líneas diametrales del plato. Sin picos, sin pan de orégano y sin crujiente de patata.',
+    sabor: '', textura: '', acidez: '', visual: '',
+    notas: 'Primera prueba recomendada: comprobar si la receta y el plato ya tienen suficiente personalidad sin añadir una guarnición. Solo después valorar un elemento crujiente.',
+    creado: Date.now()
+  });
   const propuestaId = 'ensaladilla-patata-tibia-20260805';
   if (!lista.some(x => x.id === propuestaId)) lista.unshift({
     id: propuestaId,
