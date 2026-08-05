@@ -2510,7 +2510,7 @@ De [hora] a [hora]. Ven con quien quieras.
     catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
   };
 
-  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia'];
+  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom'];
   Promise.all(CLAVES.map(k => window._fbCargar(k, null))).then(() => {
     window._firebaseReady = true;
     // No relanzar arrancarApp — ya arrancó sin esperar Firebase
@@ -2518,6 +2518,8 @@ De [hora] a [hora]. Ven con quien quieras.
     if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
       initInicio();
       if (typeof actualizarWidgetCaja === 'function') actualizarWidgetCaja();
+      if (typeof renderKanban === 'function' && document.getElementById('tab-produccion')?.classList.contains('active')) renderKanban();
+      if (typeof renderTurnoTareas === 'function' && document.getElementById('tab-turno')?.classList.contains('active')) { migrarChecklistTurno(); renderTurnoTareas(); }
     }
   });
 })();
