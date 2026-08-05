@@ -253,6 +253,12 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 }
 .tab{display:none;padding:24px;max-width:900px;padding-bottom:60px}
 .tab.active{display:block}
+.tab-guide{margin:0 0 14px;padding:12px 14px;border-left:4px solid var(--accent);background:linear-gradient(135deg,var(--surface-2),var(--surface));border-radius:0 12px 12px 0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.tab-guide-title{font-weight:800;font-size:.95rem;color:var(--text);margin-bottom:4px}
+.tab-guide-desc{font-size:12px;line-height:1.45;color:var(--text-2);margin-bottom:6px}
+.tab-guide-role{font-size:12px;line-height:1.45;color:var(--accent-d);font-weight:600}
+.tab-guide-role span{font-weight:800;color:var(--text)}
+
 
 /* ─── CARDS ─── */
 .card{
@@ -1150,7 +1156,8 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
   <!-- ENTRADAS DE MERCANCÍA -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-title">📥 Nueva entrada de mercancía</div>
+    <div class="card-title">📥 Recepción de miércoles / Nueva entrada</div>
+    <div style="font-size:12px;color:var(--text-2);line-height:1.45;margin:-4px 0 10px;padding:8px 10px;background:var(--surface-2);border-radius:9px">César: fotografía el albarán y las etiquetas del pollo/raxo. Lore: valida la recepción el domingo. Si falta algo, anótalo en la nota.</div>
     <div style="display:flex;gap:8px;margin-bottom:8px">
       <select id="entrada-proveedor" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
         <option value="">— Proveedor —</option>
@@ -1399,7 +1406,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <div class="card">
     <div class="card-title">📉 Registrar merma</div>
     <div class="form-group"><label>Producto</label><select id="m-producto" style="color:var(--text);background:var(--bg)"></select></div>
-    <div class="form-group"><label>Cantidad</label><input type="number" id="m-cantidad" placeholder="ej. 2" min="0.1" step="0.1"></div>
+    <div class="form-group"><label id="m-cantidad-label">Cantidad</label><input type="number" id="m-cantidad" placeholder="ej. 2" min="0.1" step="0.1"><div id="m-cantidad-ayuda" style="font-size:11px;color:var(--text-3);margin-top:4px"></div></div>
     <div id="merma-coste-info" style="display:none;font-size:13px;color:var(--text-3);margin-bottom:10px;padding:8px 10px;background:var(--surface-2);border-radius:8px"></div>
     <div class="form-group">
       <label>Motivo <span style="color:var(--rojo)">*obligatorio</span></label>
@@ -2337,7 +2344,9 @@ De [hora] a [hora]. Ven con quien quieras.
     <div class="modal-title"><span id="modal-lote-titulo">Añadir lote</span><button class="modal-close" onclick="cerrarModal('modal-lote')">×</button></div>
     <div class="form-group"><label>Cantidad</label><input type="number" id="l-cantidad" placeholder="ej. 4" min="0.1" step="0.1"><div id="l-unidad-label" style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600"></div></div>
     <div class="form-group"><label>Caducidad</label><input type="date" id="l-caduca"></div>
-    <div class="form-group"><label>Notas</label><input type="text" id="l-notas" placeholder="ej. Pedido Mercadona 22 jul"></div>
+    <div class="form-group"><label>Número de lote <span style="font-size:11px;color:var(--text-3)">— si aparece en la etiqueta</span></label><input type="text" id="l-numero" placeholder="ej. L240805"></div>
+    <div class="form-group"><label>Foto de etiqueta / lote</label><input type="file" id="l-foto" accept="image/*" capture="environment" style="font-size:12px;color:var(--text)"><div id="l-foto-existente" style="font-size:11px;color:var(--verde);margin-top:4px"></div></div>
+    <div class="form-group"><label>Notas</label><input type="text" id="l-notas" placeholder="ej. Pedido del miércoles · César"></div>
     <input type="hidden" id="l-prod-id">
     <div style="display:flex;gap:10px">
       <button class="btn btn-oro" style="flex:1" onclick="guardarLote()">Añadir</button>
@@ -2739,41 +2748,29 @@ const LANG = {
     temperatura:'Temperatura', entrada:'Entrada de mercancía', proveedor:'Proveedor',
     rolMaria:'Stock · Mermas', saludo:'Bienvenida'
   },
-  ro: {
-    buenosDias:'Bună dimineața', buenasTardes:'Bună ziua', buenasNoches:'Bună seara',
-    pinIntro:'Introdu PIN-ul tău', pinError:'PIN incorect. Încearcă din nou.',
-    stock:'Stoc', mermas:'Pierderi', dashboard:'Acasă', appcc:'Control temp.',
-    guardar:'Salvează', cancelar:'Anulează', cerrarSesion:'Deconectare',
-    stockVacio:'Niciun stoc înregistrat', anadir:'Adaugă', editar:'Editează', eliminar:'Șterge',
-    cantidad:'Cantitate', producto:'Produs', ubicacion:'Locație', alerta:'Alertă',
-    stockBajo:'⚠️ Stoc scăzut', stockOk:'✓ Stoc OK', sinAlertas:'Fără alerte',
-    mermaHoy:'Pierderi azi', registrarMerma:'Înregistrează pierdere', motivo:'Motiv',
-    cargando:'Se încarcă...', guardado:'Salvat ✓', errorGuardar:'Eroare la salvare',
-    temperatura:'Temperatură', entrada:'Intrare marfă', proveedor:'Furnizor',
-    rolMaria:'Stoc · Pierderi', saludo:'Bine ai venit',
-    // Mermas
-    sinMermasPeriodo:'Fără pierderi în această perioadă.',
-    mermasPorMotivo:'Pierderi pe motiv',
-    historialMermas:'📋 Istoric pierderi',
-    filtroHoy:'Azi', filtroSemana:'Această săptămână', filtroTodo:'Tot',
-    detalle:'Detalii', detalleObligatorio:'*obligatoriu',
-    motivoCocinado:'✅ Folosit la gătit', motivoTirado:'🗑 Aruncat (neservit)',
-    motivoCaducado:'⚠️ Expirat', motivoRoto:'💥 Spart / vărsat', motivoOtro:'📝 Altul',
-    registrarMermaBtn:'Înregistrează pierdere',
-    // Elaborados
-    sinElaborados:'Fără preparate active.',
-    elaboradoLabel:'Preparat:', elaboradoConsumir:'Consumat',
-    elaboradoCaducado:'⛔ EXPIRAT',
-    elaboradoUrgente:'⚠️ Expiră în ',
-    elaboradoOk:'✅ Expiră ',
-    elaboradoNotas:'Note (opțional)',
-    // APPCC
-    sinRegistrosHoy:'Fără înregistrări azi.',
-    sinRegistros7d:'Fără înregistrări în ultimele 7 zile.',
-    rangoCorrect:'Interval corect:',
-    guardarRegistro:'Salvează înregistrarea',
-    tempFueraRango:'⚠️ Temperaturi în afara intervalului',
-    registro:'înregistrare', registros:'înregistrări'
+  hu: {
+    buenosDias:'Jó reggelt', buenasTardes:'Jó napot', buenasNoches:'Jó estét',
+    pinIntro:'Írd be a PIN-kódodat', pinError:'Hibás PIN-kód. Próbáld újra.',
+    stock:'Készlet', mermas:'Veszteség', dashboard:'Kezdőlap', appcc:'HACCP',
+    guardar:'Mentés', cancelar:'Mégse', cerrarSesion:'Kijelentkezés',
+    stockVacio:'Nincs rögzített készlet', anadir:'Hozzáadás', editar:'Szerkesztés', eliminar:'Törlés',
+    cantidad:'Mennyiség', producto:'Termék', ubicacion:'Hely', alerta:'Riasztás',
+    stockBajo:'⚠️ Alacsony készlet', stockOk:'✓ Készlet rendben', sinAlertas:'Nincs riasztás',
+    mermaHoy:'Mai veszteség', registrarMerma:'Veszteség rögzítése', motivo:'Ok',
+    cargando:'Betöltés...', guardado:'Mentve ✓', errorGuardar:'Mentési hiba',
+    temperatura:'Hőmérséklet', entrada:'Áruátvétel', proveedor:'Beszállító',
+    rolMaria:'Készlet · Veszteség', saludo:'Üdvözlünk',
+    sinMermasPeriodo:'Ebben az időszakban nincs veszteség.',
+    mermasPorMotivo:'Veszteség ok szerint', historialMermas:'📋 Veszteségelőzmények',
+    filtroHoy:'Ma', filtroSemana:'Ezen a héten', filtroTodo:'Mind', detalle:'Részletek', detalleObligatorio:'*kötelező',
+    motivoCocinado:'✅ Konyhai felhasználás', motivoTirado:'🗑 Kidobva (nem tálalva)',
+    motivoCaducado:'⚠️ Lejárt', motivoRoto:'💥 Törött / kiömlött', motivoOtro:'📝 Egyéb',
+    registrarMermaBtn:'Veszteség rögzítése', sinElaborados:'Nincs aktív előkészített étel.',
+    elaboradoLabel:'Előkészített étel:', elaboradoConsumir:'Felhasználva', elaboradoCaducado:'⛔ LEJÁRT',
+    elaboradoUrgente:'⚠️ Lejár ', elaboradoOk:'✅ Lejár ', elaboradoNotas:'Megjegyzés (nem kötelező)',
+    sinRegistrosHoy:'Ma nincs bejegyzés.', sinRegistros7d:'Az elmúlt 7 napban nincs bejegyzés.',
+    rangoCorrect:'Megfelelő tartomány:', guardarRegistro:'Bejegyzés mentése',
+    tempFueraRango:'⚠️ Tartományon kívüli hőmérséklet', registro:'bejegyzés', registros:'bejegyzés'
   }
 };
 let _lang = 'es';
@@ -2797,11 +2794,11 @@ function seleccionarRol(rol, btn) {
   pinRolActual = rol;
   pinBuffer = '';
   // Activar idioma según usuario
-  _lang = (rol === 'maria') ? 'ro' : 'es';
+  _lang = (rol === 'maria') ? 'hu' : 'es';
   document.getElementById('login-roles').style.display = 'none';
   document.getElementById('pin-panel').style.display = 'block';
   const names = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
-  const introText = (rol === 'maria') ? names[rol] + ' — introdu PIN-ul' : names[rol] + ' — introduce tu PIN';
+  const introText = (rol === 'maria') ? names[rol] + ' — írd be a PIN-kódodat' : names[rol] + ' — introduce tu PIN';
   document.getElementById('pin-quien-txt').textContent = introText;
   document.getElementById('pin-error').textContent = '';
   actualizarDots();
@@ -2890,9 +2887,9 @@ function aplicarPermisos() {
   // Traducir nav si es María
   if (esMaria()) {
     const navMap = {
-      'nav-stock':'🗄️ Stoc', 'nav-mermas':'📉 Pierderi', 'nav-appcc':'🌡️ Temp.',
-      'nav-inicio':'🏠 Acasă', 'nav-turno':'📋 Tură', 'nav-raciones':'🍽️ Porții',
-      'nav-produccion':'👩‍🍳 Prep.', 'nav-pedidos':'📦 Comenzi', 'nav-caja':'💰 Casă'
+      'nav-stock':'🗄️ Készlet', 'nav-mermas':'📉 Veszteség', 'nav-appcc':'🌡️ HACCP',
+      'nav-inicio':'🏠 Kezdőlap', 'nav-turno':'📋 Műszak', 'nav-raciones':'🍽️ Adagok',
+      'nav-produccion':'👩‍🍳 Előkészítés', 'nav-pedidos':'📦 Rendelések', 'nav-caja':'💰 Áruátvétel'
     };
     Object.entries(navMap).forEach(([id, txt]) => {
       const el = document.getElementById(id);
@@ -2902,11 +2899,11 @@ function aplicarPermisos() {
     const lblOk = document.querySelector('#stat-ok')?.closest('.stat')?.querySelector('.lbl');
     const lblCrit = document.querySelector('#stat-critico')?.closest('.stat')?.querySelector('.lbl');
     const lblMermas = document.querySelector('#stat-mermas')?.closest('.stat')?.querySelector('.lbl');
-    if (lblOk) lblOk.textContent = 'Stoc OK';
+    if (lblOk) lblOk.textContent = 'Készlet rendben';
     if (lblCrit) lblCrit.textContent = 'Critic';
-    if (lblMermas) lblMermas.textContent = 'Pierderi azi';
+    if (lblMermas) lblMermas.textContent = 'Mai veszteség';
     // Mensaje de acceso no autorizado
-    window._noAccesoMsg = 'Nu ai acces la această secțiune';
+    window._noAccesoMsg = 'Ehhez a részhez nincs hozzáférésed';
     // Traducir formulario de Mermas
     const lblMotivoSec = document.querySelector('label[for="m-motivo"], #tab-mermas label');
     // Select de motivos
@@ -2922,9 +2919,9 @@ function aplicarPermisos() {
     // Filtro de historial
     const filtroMerma = document.getElementById('filtro-merma');
     if (filtroMerma) {
-      if (filtroMerma.options[0]) filtroMerma.options[0].text = t('filtroHoy')||'Azi';
-      if (filtroMerma.options[1]) filtroMerma.options[1].text = t('filtroSemana')||'Această săptămână';
-      if (filtroMerma.options[2]) filtroMerma.options[2].text = t('filtroTodo')||'Tot';
+      if (filtroMerma.options[0]) filtroMerma.options[0].text = t('filtroHoy')||'Ma';
+      if (filtroMerma.options[1]) filtroMerma.options[1].text = t('filtroSemana')||'Ezen a héten';
+      if (filtroMerma.options[2]) filtroMerma.options[2].text = t('filtroTodo')||'Mind';
     }
     // Botón registrar merma
     const btnMerma = document.querySelector('#tab-mermas .btn-rojo');
@@ -2940,6 +2937,39 @@ function aplicarPermisos() {
   }
 }
 
+
+const TAB_GUIAS = {
+  inicio:{es:['Inicio','Aquí ves el estado general de La Urbana y las alertas que requieren atención.','Revisa el resumen y actúa solo sobre lo que aparezca como pendiente o crítico.'],hu:['Kezdőlap','Itt látható a La Urbana általános állapota és a figyelmet igénylő riasztások.','Ellenőrizd az összefoglalót, és csak a függőben lévő vagy kritikus feladatokkal foglalkozz.']},
+  turno:{es:['Turnos y relevo','Aquí se registra qué se hace al entrar, al cerrar y qué queda comunicado al siguiente turno.','Marca lo que realmente has comprobado y escribe en el relevo lo que queda para mañana.'],hu:['Műszak és átadás','Itt rögzítjük a nyitási és zárási feladatokat, valamint azt, amit a következő műszaknak átadunk.','Csak azt jelöld késznek, amit valóban ellenőriztél; a holnapi feladatokat írd be az átadásba.']},
+  produccion:{es:['Producción','Aquí se ve qué elaboraciones y preparaciones hay que hacer hoy o mañana.','Realiza las tareas y márcalas cuando estén terminadas; si no se pueden hacer, deja una nota.'],hu:['Előkészítés','Itt látható, mit kell ma vagy holnap elkészíteni és előkészíteni.','A feladatot csak akkor jelöld késznek, amikor elkészült; ha nem lehet elvégezni, írj megjegyzést.']},
+  stock:{es:['Inventario','Aquí se comprueba qué productos hay físicamente, dónde están y qué queda por reponer.','Cuenta sin mover género, respeta las zonas y comunica cualquier diferencia.'],hu:['Készlet','Itt ellenőrizzük, milyen termékek vannak ténylegesen, hol vannak, és miből kell rendelni.','Számolás közben ne mozgasd az árut; tartsd be a zónákat, és jelezd az eltéréseket.']},
+  mermas:{es:['Mermas y consumos','Aquí se registra lo que se tira, caduca, se daña o se utiliza fuera de una ración normal.','Registra la cantidad real y el motivo; si se usó en cocina, indica para qué.'],hu:['Veszteség és felhasználás','Itt rögzítjük, amit kidobunk, lejár, megsérül, vagy a normál adagoláson kívül használunk fel.','A tényleges mennyiséget és az okot írd be; konyhai felhasználásnál írd le, mire használtad.']},
+  appcc:{es:['APPCC y seguridad alimentaria','Aquí se registran temperaturas y controles que protegen la seguridad de los alimentos.','Haz el control cuando corresponde y deja constancia si algo está fuera de rango.'],hu:['HACCP és élelmiszerbiztonság','Itt rögzítjük az élelmiszerek biztonságát védő hőmérséklet- és egyéb ellenőrzéseket.','A megfelelő időben végezd el az ellenőrzést; eltérés esetén írj megjegyzést.']},
+  pedidos:{es:['Compras y pedidos','Aquí se prepara la lista de compra y se registra lo que falta o hay que solicitar.','Revisa la lista y comunica faltas o sustituciones; los pedidos de lunes se validan el domingo.'],hu:['Beszerzés és rendelések','Itt készül a bevásárlólista, és itt jelezzük, mi hiányzik vagy mit kell megrendelni.','Ellenőrizd a listát, és jelezd a hiányt vagy a helyettesítést; a hétfői rendelést vasárnap hagyjuk jóvá.']},
+  caja:{es:['Entradas y gastos','Aquí se registran las entradas de mercancía, los albaranes y los gastos.','Quien recibe anota o fotografía la entrega; Lore la valida después.'],hu:['Áruátvétel és kiadások','Itt rögzítjük az áruátvételt, a szállítóleveleket és a kiadásokat.','Az átvevő rögzíti vagy lefényképezi a szállítmányt; Lore később ellenőrzi.']},
+  menu:{es:['Menú del día','Aquí se registra el menú que se ofrece hoy y sus notas o alérgenos.','Mantén la información actualizada para que cocina y sala trabajen con la misma referencia.'],hu:['Napi menü','Itt rögzítjük a napi menüt, a megjegyzéseket és az allergéneket.','Tartsd naprakészen, hogy a konyha és a pult ugyanazt az információt használja.']},
+  raciones:{es:['Raciones','Aquí se anotan las raciones servidas para relacionar producción, consumo y ventas.','Registra las cantidades reales, no las estimadas.'],hu:['Adagok','Itt rögzítjük a kiadott adagokat, hogy összevessük az előkészítést, a felhasználást és az értékesítést.','A tényleges mennyiségeket írd be, ne becslést.']},
+  recetas:{es:['Recetas','Aquí se guardan las recetas, cantidades y rendimientos que deben repetirse.','Usa la receta como referencia común y comunica cualquier cambio.'],hu:['Receptek','Itt tároljuk az ismételhető recepteket, mennyiségeket és hozamokat.','A recept legyen a közös referencia; minden változást jelezz.']},
+  pruebas:{es:['Pruebas de recetas','Aquí se registran los ensayos antes de convertirlos en platos de la carta.','Anota qué se ha probado y qué decisión se toma; no des una prueba por definitiva sin validación.'],hu:['Receptpróbák','Itt rögzítjük a próbákat, mielőtt egy étel bekerül az étlapra.','Írd le, mit próbáltunk ki és mi lett a döntés; jóváhagyás nélkül ne tekintsük véglegesnek.']},
+  proveedores:{es:['Proveedores','Aquí se guarda quién suministra cada producto, sus datos y sus tarifas.','Comprueba los cambios de precio y comunica cualquier incidencia con el proveedor.'],hu:['Beszállítók','Itt tároljuk a beszállítókat, elérhetőségüket és áraikat.','Ellenőrizd az árváltozásokat, és jelezd a beszállítóval kapcsolatos problémákat.']},
+  contabilidad:{es:['Contabilidad','Aquí se ordenan compras, gastos y datos económicos para poder decidir.','Registra con precisión y deja la interpretación económica para la revisión de Lore.'],hu:['Könyvelés és pénzügyek','Itt rendezzük a beszerzéseket, kiadásokat és a döntéshez szükséges pénzügyi adatokat.','Pontos adatot rögzíts; a pénzügyi értékelést Lore végzi.']},
+  controlcostes:{es:['Control de costes','Aquí se calcula cuánto cuesta cada plato y si resulta rentable.','Aporta cantidades y precios reales; no cambies los costes sin una factura o comprobación.'],hu:['Költségellenőrzés','Itt számoljuk ki az ételek tényleges költségét és jövedelmezőségét.','Valós mennyiségeket és árakat adj meg; ellenőrzés nélkül ne módosíts költséget.']},
+  protocolos:{es:['Protocolos','Aquí se explica cómo hacer las tareas importantes de forma segura y repetible.','Consulta el protocolo cuando tengas dudas y señala si algo no se puede cumplir en la práctica.'],hu:['Munkafolyamatok','Itt magyarázzuk el, hogyan kell a fontos feladatokat biztonságosan és ismételhetően elvégezni.','Kérdés esetén használd az útmutatót, és jelezd, ha valami a gyakorlatban nem teljesíthető.']},
+  diario:{es:['Diario de La Urbana','Aquí se guardan fotos, observaciones y momentos que pueden servir para el histórico o las redes.','Sube solo material útil y añade una breve explicación.'],hu:['La Urbana naplója','Itt tároljuk a történeti vagy közösségi médiához hasznos fényképeket és megjegyzéseket.','Csak hasznos anyagot tölts fel, rövid magyarázattal.']},
+  instagram:{es:['Redes y comunicación','Aquí se planifican ideas, publicaciones y la forma de contar La Urbana.','Registra lo que se publica y observa qué genera visitas o reservas.'],hu:['Közösségi média és kommunikáció','Itt tervezzük a bejegyzéseket és azt, hogyan mesélünk a La Urbanáról.','Rögzítsd, mi jelent meg, és figyeld, mi hoz vendéget vagy foglalást.']},
+  programacion:{es:['Programación','Aquí se organizan acciones y contenidos que deben hacerse en fechas concretas.','Revisa las próximas acciones y comunica si falta material o tiempo.'],hu:['Ütemezés','Itt szervezzük a meghatározott időponthoz kötött feladatokat és tartalmakat.','Ellenőrizd a következő feladatokat, és jelezd, ha anyag vagy idő hiányzik.']},
+  historial:{es:['Historial','Aquí queda la memoria de cambios, entradas, mermas y decisiones.','Consulta el historial cuando necesites saber qué ocurrió y cuándo.'],hu:['Előzmények','Itt marad meg a változások, áruátvételek, veszteségek és döntések története.','Használd az előzményeket, ha tudni szeretnéd, mi történt és mikor.']},
+  spotify:{es:['Música','Aquí se guardan las referencias musicales y listas para cada momento de La Urbana.','Usa la música para reforzar la experiencia del local, no como una tarea aislada.'],hu:['Zene','Itt tároljuk a La Urbana különböző pillanataihoz tartozó zenei referenciákat és lejátszási listákat.','A zene a hely hangulatát erősítse, ne különálló feladat legyen.']}
+};
+function renderTabGuia(id) {
+  const panel=document.getElementById('tab-'+id); if(!panel) return;
+  const g=(TAB_GUIAS[id]||TAB_GUIAS.inicio)[esMaria()?'hu':'es'];
+  let el=panel.querySelector(':scope > .tab-guide');
+  if(!el){ el=document.createElement('div'); el.className='tab-guide'; panel.insertBefore(el,panel.firstChild); }
+  const actor=esMaria()?'María / Te':USUARIO==='cesar'?'César / Tú':'Tu papel';
+  el.innerHTML='<div class="tab-guide-title">'+g[0]+'</div><div class="tab-guide-desc">'+g[1]+'</div><div class="tab-guide-role"><span>'+actor+':</span> '+g[2]+'</div>';
+}
+
 function tab(id, btn) {
   const soloAdmin = ['menu','recetas','pruebas','proveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario'];
   if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
@@ -2947,6 +2977,7 @@ function tab(id, btn) {
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   if (btn) btn.classList.add('active');
+  renderTabGuia(id);
   const renders = {
     inicio: initInicio, stock: renderStock, produccion: renderKanban,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
@@ -3391,6 +3422,9 @@ function abrirModalLote(prodId) {
   document.getElementById('l-unidad-label').textContent = 'Unidad: ' + p.unidad;
   document.getElementById('l-cantidad').value = '';
   document.getElementById('l-notas').value = '';
+  document.getElementById('l-numero').value = '';
+  document.getElementById('l-foto').value = '';
+  document.getElementById('l-foto-existente').textContent = '';
   document.getElementById('l-prod-id').value = prodId;
   if (p.vidaDias) {
     const sug = new Date(); sug.setDate(sug.getDate() + p.vidaDias);
@@ -3408,9 +3442,40 @@ function guardarLote() {
   const lote = {
     id: Date.now(), cantidad,
     caduca: document.getElementById('l-caduca').value || null,
+    numeroLote: document.getElementById('l-numero').value.trim() || null,
+    fotoLote: null,
     notas: document.getElementById('l-notas').value.trim(),
     entrada: hoy()
   };
+  const fotoInput = document.getElementById('l-foto');
+  const fotoFile = fotoInput && fotoInput.files && fotoInput.files[0];
+  const finalizarLote = (loteFinal) => {
+    let productos = cargar('stock_productos',[]);
+    productos = productos.map(p => {
+      if (p.id !== prodId) return p;
+      const lotes = [...(p.lotes||[]), loteFinal].sort((a,b) => {
+        if (!a.caduca && !b.caduca) return 0;
+        if (!a.caduca) return 1; if (!b.caduca) return -1;
+        return a.caduca.localeCompare(b.caduca);
+      });
+      return {...p, lotes};
+    });
+    const prod = productos.find(p => p.id === prodId);
+    guardar('stock_productos', productos);
+    addHistorial('stock', `📥 Lote: +${cantidad} ${(prod ? prod.unidad : '')} de ${(prod ? prod.nombre : '')}${loteFinal.numeroLote?' · lote '+loteFinal.numeroLote:''}`);
+    cerrarModal('modal-lote'); renderStock(); toast('Lote añadido ✓','verde');
+  };
+  if (fotoFile) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => { const c=document.createElement('canvas'); const max=1000; const scale=Math.min(1,max/img.width); c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale); c.getContext('2d').drawImage(img,0,0,c.width,c.height); lote.fotoLote=c.toDataURL('image/jpeg',.72); finalizarLote(lote); };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(fotoFile);
+  } else finalizarLote(lote);
+  return; /* the remaining legacy block is kept below for safe migration */
+
   let productos = cargar('stock_productos',[]);
   productos = productos.map(p => {
     if (p.id !== prodId) return p;
@@ -3427,6 +3492,16 @@ function guardarLote() {
   cerrarModal('modal-lote');
   renderStock();
   toast('Lote añadido ✓','verde');
+}
+
+function verFotoLote(prodId, loteId) {
+  const prod=cargar('stock_productos',[]).find(p=>p.id===prodId); const lote=prod && (prod.lotes||[]).find(l=>l.id===loteId);
+  if(!lote || !lote.fotoLote) return;
+  const modal=document.getElementById('modal-foto-ticket'); if(!modal) return;
+  document.getElementById('foto-ticket-concepto').textContent=(prod.nombre||'Producto')+' · '+(lote.numeroLote?'Lote '+lote.numeroLote:'Etiqueta');
+  document.getElementById('foto-ticket-fecha').textContent='Entrada: '+(lote.entrada||'')+(lote.caduca?' · Caducidad: '+lote.caduca:'');
+  document.getElementById('foto-ticket-img').src=lote.fotoLote;
+  abrirModal('modal-foto-ticket');
 }
 
 function consumirUnidad(prodId, loteId) {
@@ -3544,7 +3619,7 @@ function renderStock() {
           return `<div class="lote-row">
             <div style="flex:1">
               <div style="font-size:13px;font-weight:600">${l.cantidad} ${p.unidad}${fifo}</div>
-              <div style="margin-top:3px;display:flex;gap:5px;flex-wrap:wrap">${cadLabel}${l.notas?`<span style="font-size:11px;color:var(--text-3)">${l.notas}</span>`:''}</div>
+              <div style="margin-top:3px;display:flex;gap:5px;flex-wrap:wrap">${cadLabel}${l.numeroLote?`<span style="font-size:11px;color:var(--text-2);font-weight:700">Lote: ${l.numeroLote}</span>`:''}${l.notas?`<span style="font-size:11px;color:var(--text-3)">${l.notas}</span>`:''}${l.fotoLote?`<button onclick="event.stopPropagation();verFotoLote(${p.id},${l.id})" style="border:0;background:var(--accent-l);color:var(--accent-d);border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer">📷 Etiqueta</button>`:''}</div>
             </div>
             <button onclick="event.stopPropagation();consumirUnidad(${p.id},${l.id})" style="background:var(--rojo-l);color:#e05555;border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer">−1</button>
           </div>`;
@@ -3593,30 +3668,38 @@ function renderStock() {
   }).join('');
 }
 
-function poblarSelectorProductos() {
-  const sel = document.getElementById('m-producto');
-  if (!sel) return;
-  const productos = cargar('stock_productos',[]);
-  sel.innerHTML = productos.length
-    ? productos.map(p => `<option value="${p.id}">${p.nombre} (${(p.lotes||[]).reduce((a,l)=>a+l.cantidad,0)} ${p.unidad})</option>`).join('')
-    : '<option value="">Sin productos registrados</option>';
-  sel.onchange = actualizarMermaCosteInfo;
-  const cantInput = document.getElementById('m-cantidad');
-  if (cantInput) cantInput.oninput = actualizarMermaCosteInfo;
+function getFormatoMerma(prod) {
+  const m = String(prod && prod.unidad || '').match(/(\d+(?:[.,]\d+)?)\s*(kg|g|l|ml)\b/i);
+  if (!m) return null;
+  const n=parseFloat(m[1].replace(',','.')); const u=m[2].toLowerCase();
+  if (u==='kg') return {contenido:n*1000, unidad:'g'};
+  if (u==='g') return {contenido:n, unidad:'g'};
+  if (u==='l') return {contenido:n*1000, unidad:'ml'};
+  return {contenido:n, unidad:'ml'};
 }
-
+function formatStockQty(q) { return Number.isInteger(q) ? String(q) : q.toFixed(3).replace(/0+$/,'').replace(/\.$/,''); }
+function actualizarMermaUnidad() {
+  const prodId=parseInt(document.getElementById('m-producto')?.value); const prod=cargar('stock_productos',[]).find(p=>p.id===prodId);
+  const lab=document.getElementById('m-cantidad-label'), help=document.getElementById('m-cantidad-ayuda'), inp=document.getElementById('m-cantidad');
+  if(!prod || !lab || !help || !inp) return;
+  const f=getFormatoMerma(prod);
+  if(f){ lab.textContent='Cantidad de merma ('+f.unidad+')'; inp.placeholder=f.unidad==='g'?'ej. 100':'ej. 250'; help.textContent='El stock está en '+prod.unidad+'. La app descontará la fracción equivalente, no una unidad entera.'; }
+  else { lab.textContent='Cantidad ('+prod.unidad+')'; inp.placeholder='ej. 1'; help.textContent='Indica la cantidad en la unidad del stock.'; }
+}
+function poblarSelectorProductos() {
+  const sel = document.getElementById('m-producto'); if (!sel) return;
+  const productos = cargar('stock_productos',[]);
+  sel.innerHTML = productos.length ? productos.map(p => `<option value="${p.id}">${p.nombre} (${(p.lotes||[]).reduce((a,l)=>a+l.cantidad,0)} ${p.unidad})</option>`).join('') : '<option value="">Sin productos registrados</option>';
+  sel.onchange = () => { actualizarMermaUnidad(); actualizarMermaCosteInfo(); };
+  const cantInput = document.getElementById('m-cantidad'); if (cantInput) cantInput.oninput = actualizarMermaCosteInfo;
+  actualizarMermaUnidad();
+}
 function actualizarMermaCosteInfo() {
-  const prodId = parseInt(document.getElementById('m-producto').value);
-  const cantidad = parseFloat(document.getElementById('m-cantidad').value);
-  const infoEl = document.getElementById('merma-coste-info');
+  const prodId = parseInt(document.getElementById('m-producto')?.value); const cantidad = parseFloat(document.getElementById('m-cantidad')?.value); const infoEl = document.getElementById('merma-coste-info');
   if (!prodId || !cantidad || cantidad <= 0) { if (infoEl) infoEl.style.display = 'none'; return; }
-  const prod = cargar('stock_productos',[]).find(p => p.id === prodId);
-  if (!prod || !prod.costeUnitario) { if (infoEl) infoEl.style.display = 'none'; return; }
-  const coste = (prod.costeUnitario * cantidad).toFixed(2);
-  if (infoEl) {
-    infoEl.style.display = '';
-    infoEl.innerHTML = `💰 Coste estimado: <strong>${coste}€</strong> <span style="color:var(--text-3)">(${prod.costeUnitario.toFixed(2)}€/${prod.unidad})</span>`;
-  }
+  const prod = cargar('stock_productos',[]).find(p => p.id === prodId); if (!prod || !prod.costeUnitario) { if (infoEl) infoEl.style.display = 'none'; return; }
+  const f=getFormatoMerma(prod); const stockQty=f ? cantidad/f.contenido : cantidad; const coste=(prod.costeUnitario*stockQty).toFixed(2);
+  if (infoEl) { infoEl.style.display=''; infoEl.innerHTML=`💰 Coste estimado: <strong>${coste}€</strong> <span style="color:var(--text-3)">${f?`(${formatStockQty(stockQty)} ${prod.unidad})`:`(${prod.costeUnitario.toFixed(2)}€/${prod.unidad})`}</span>`; }
 }
 
 // ══════════════════════════════════════════
@@ -3645,11 +3728,13 @@ function guardarMerma() {
   const prod = productos.find(p => p.id === prodId);
   if (!prod) { toast('Producto no encontrado','error'); return; }
 
-  // Calcular coste aproximado si el producto tiene coste unitario
+  // Para formatos como “bolsa 2,5kg”, la cantidad se introduce en gramos y se descuenta la fracción de bolsa.
+  const formatoMerma = getFormatoMerma(prod);
+  const cantidadStock = formatoMerma ? cantidad / formatoMerma.contenido : cantidad;
   const costeUnit = prod.costeUnitario || null;
-  const costeTotal = costeUnit ? Math.round(costeUnit * cantidad * 100) / 100 : null;
+  const costeTotal = costeUnit ? Math.round(costeUnit * cantidadStock * 100) / 100 : null;
 
-  let restante = cantidad;
+  let restante = cantidadStock;
   const lotesActualizados = (prod.lotes||[]).map(l => {
     if (restante <= 0) return l;
     const consumido = Math.min(l.cantidad, restante);
@@ -3660,11 +3745,11 @@ function guardarMerma() {
   const productosActualizados = productos.map(p => p.id === prodId ? {...p, lotes: lotesActualizados} : p);
   guardar('stock_productos', productosActualizados);
 
-  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidad:prod.unidad, cantidad, motivo, detalle, costeUnit, costeTotal, quien:USUARIO, cuando:ahora()};
+  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidad:formatoMerma ? formatoMerma.unidad : prod.unidad, unidadStock:prod.unidad, cantidad, cantidadStock, motivo, detalle, costeUnit, costeTotal, quien:USUARIO, cuando:ahora()};
   const mermas = cargar('mermas',[]);
   mermas.unshift(merma);
   guardar('mermas', mermas);
-  addHistorial('merma', `📉 ${cantidad} ${prod.unidad} de ${prod.nombre} · ${motivo}${detalle?' — '+detalle:''}${costeTotal?` (${costeTotal.toFixed(2)}€)`:''}`);
+  addHistorial('merma', `📉 ${cantidad} ${formatoMerma ? formatoMerma.unidad : prod.unidad} de ${prod.nombre}${formatoMerma ? ` (${formatStockQty(cantidadStock)} ${prod.unidad})` : ''} · ${motivo}${detalle?' — '+detalle:''}${costeTotal?` (${costeTotal.toFixed(2)}€)`:''}`);
 
   document.getElementById('m-cantidad').value = '';
   document.getElementById('m-motivo').value = '';
@@ -4049,7 +4134,7 @@ function renderMermas() {
   el.innerHTML = mermas.map(m => `<div class="merma-row">
     <div style="flex:1">
       <div style="font-weight:600;font-size:.9rem">${m.prodNombre}</div>
-      <div style="font-size:12px;color:var(--text-3);margin-top:2px">${m.cantidad} ${m.unidad} · ${quienLabel[m.quien]||m.quien} · ${formatHora(m.cuando)}${m.costeTotal?` · 💰 ${m.costeTotal.toFixed(2)}€`:''}</div>
+      <div style="font-size:12px;color:var(--text-3);margin-top:2px">${m.cantidad} ${m.unidad}${m.cantidadStock&&m.unidadStock?` (${formatStockQty(m.cantidadStock)} ${m.unidadStock})`:''} · ${quienLabel[m.quien]||m.quien} · ${formatHora(m.cuando)}${m.costeTotal?` · 💰 ${m.costeTotal.toFixed(2)}€`:''}</div>
       ${m.detalle?`<div style="font-size:12px;color:var(--text-2);margin-top:3px;font-style:italic">"${m.detalle}"</div>`:''}
     </div>
     <span class="merma-motivo ${m.motivo}">${ML[m.motivo]||m.motivo}</span>
@@ -4362,7 +4447,7 @@ function renderElaborados() {
     return;
   }
   var ahoraNow = new Date();
-  var locCode = _lang === 'ro' ? 'ro-RO' : 'es-ES';
+  var locCode = _lang === 'hu' ? 'hu-HU' : 'es-ES';
   lista.sort(function(a,b){ return new Date(a.caduca)-new Date(b.caduca); });
   cont.innerHTML = lista.map(function(e) {
     var cad = new Date(e.caduca);
@@ -6348,6 +6433,7 @@ function arrancarApp() {
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   const tabInicio = document.getElementById('tab-inicio');
   if (tabInicio) tabInicio.classList.add('active');
+  renderTabGuia('inicio');
   const btnInicio = document.querySelector('nav button[onclick*="inicio"]');
   if (btnInicio) btnInicio.classList.add('active');
   initInicio();
