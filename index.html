@@ -4888,8 +4888,8 @@ function exportarAppccSemana() {
 const TURNO_TAREAS_DEFAULT = [
   { id:'t2', label:'🐔 Pollo Urbana — cortar y adobar',                        tipo:'apertura', critica:true  },
   { id:'t3', label:'🐷 Raxo de cerdo — cortar (si lo hay)',                    tipo:'apertura', critica:false },
-  { id:'t4', label:'🥗 Revisar ensaladilla — comprobar que está buena / hacer más', tipo:'apertura', critica:true  },
-  { id:'t5', label:'🥚 Comprobar huevos en cocina',                            tipo:'apertura', critica:true  },
+  { id:'t4', label:'🥗 Revisar ensaladilla — comprobar calidad; si falta, cocer patata, zanahoria y huevo', tipo:'apertura', critica:true  },
+  { id:'t5', label:'🥚 Comprobar huevos en cocina al entrar',                    tipo:'apertura', critica:true  },
   { id:'t6', label:'🫙 Stock alioli — reponer si falta',                       tipo:'apertura', critica:true  },
   { id:'t7', label:'🫙 Salsa brava — comprobar stock / preparar si falta',      tipo:'apertura', critica:true  },
   { id:'t31',label:'🫙 Salsa mayonesa — comprobar stock / preparar base para tunear', tipo:'apertura', critica:true  },
@@ -4899,7 +4899,7 @@ const TURNO_TAREAS_DEFAULT = [
   { id:'t33',label:'🫑 Cortar pimiento rojo',                                   tipo:'apertura', critica:false },
   { id:'t34',label:'🌶️ Comprobar stock de pimientos de Padrón',                tipo:'apertura', critica:false },
   { id:'t13',label:'🥩 Cortar lomo — según planificación y stock (normalmente semanal)', tipo:'apertura', critica:false },
-  { id:'t19',label:'🍟 Pochar patata para tortilla y patata bastón',           tipo:'apertura', critica:true  },
+  { id:'t19',label:'🍟 Comprobar patata gajo envasada y patata para tortilla / bastón', tipo:'apertura', critica:true  },
   { id:'t21',label:'🍗 Comprobar stock de croquetas en cocina',                    tipo:'apertura', critica:true  },
   { id:'t22',label:'🫙 Biberones — comprobar que tienen aceite',               tipo:'apertura', critica:true  },
   { id:'t23',label:'🏷️ Comprobar etiquetas de envasado en nevera',            tipo:'apertura', critica:true  },
@@ -4907,12 +4907,17 @@ const TURNO_TAREAS_DEFAULT = [
   { id:'t18',label:'🍽️ Encender lavavajillas',                                tipo:'apertura', critica:true  },
   { id:'t30',label:'🍟 Lavar freidoras — con el aceite ya frío',              tipo:'apertura', critica:true  },
   { id:'t26',label:'🧤 Comprobar guantes (stock disponible)',               tipo:'apertura', critica:true  },
-  { id:'t28',label:'🫙 Comprobar táperes de salsas',                          tipo:'apertura', critica:true  },
+  { id:'t28',label:'🫙 Comprobar táperes: ajo-perejil con aceite y alioli del Pollo Urbana', tipo:'apertura', critica:true  },
+  { id:'t35',label:'🧂 Comprobar salsas y fondo: soja clara, teriyaki, pesto, tahini, panko y especias', tipo:'apertura', critica:true  },
+  { id:'t38',label:'🌭 Comprobar criollos envasados y fecha',                           tipo:'apertura', critica:true  },
+  { id:'t39',label:'🍅 Comprobar tomates para ensalada',                              tipo:'apertura', critica:false },
+  { id:'t36',label:'🧊 Sacar a descongelar pollo Urbana (si procede)',            tipo:'apertura', critica:true  },
+  { id:'t37',label:'🧊 Sacar a descongelar raxo (si procede)',                    tipo:'apertura', critica:false },
 ];
 
 
 // Las tareas de apertura se separan: preparación según platos vs controles fijos diarios.
-const TAREAS_PREPARACION = new Set(['t2','t3','t4','t5','t6','t7','t8','t13','t19','t21','t31','t32','t33','t34']);
+const TAREAS_PREPARACION = new Set(['t2','t3','t4','t5','t6','t7','t8','t13','t19','t21','t31','t32','t33','t34','t35','t36','t37','t38','t39']);
 const TAREAS_FIJAS = new Set(['t9','t16','t18','t22','t23','t26','t28','t30']);
 function categorizarTareas(tareas) {
   return tareas.map(t => ({...t, categoria: t.categoria || (TAREAS_PREPARACION.has(t.id) ? 'preparacion' : 'fijo')}));
@@ -4920,17 +4925,16 @@ function categorizarTareas(tareas) {
 
 const CIERRE_CHECKLIST_DEFAULT = [
   { id:'c1', label:'🍽️ Cubrir y etiquetar todos los recipientes',              critica:true  },
-  { id:'c2', label:'🔥 Limpiar plancha',                                        critica:true  },
+  { id:'c2', label:'🔥 Limpiar cocina y los tres fogones',                      critica:true  },
   { id:'c3', label:'🍟 Freidoras — dejar apagadas y asegurar el aceite',         critica:true  },
   { id:'c5', label:'🍽️ Apagar lavavajillas — limpiar filtro y bandeja',        critica:true  },
   { id:'c6', label:'🗑️ Vaciar y limpiar cubos de basura',                       critica:false },
   { id:'c7', label:'🌡️ Revisar temperaturas neveras (APPCC)',                   critica:true  },
-  { id:'c8', label:'📋 Dejar mise en place para el siguiente turno',            critica:false },
   { id:'c9', label:'⚡ Apagar equipos no necesarios',                            critica:false },
   { id:'c10',label:'🔒 Cerrar cámaras y congeladores',                          critica:true  },
-  { id:'c11',label:'🧊 Sacar a descongelar para mañana (si procede)',           critica:true  },
-  { id:'c12',label:'📦 Recuento para pedido Fructífera (fruta, patata, bastón)',critica:false },
-  { id:'c13',label:'🔁 FIFO — recolocar Fructífera en nevera (lo nuevo detrás)',critica:true  },
+
+  { id:'c12',label:'🍎 Preparar pedido de fruta y verdura al salir',            critica:false },
+  { id:'c13',label:'🔁 FIFO — recolocar fruta y verdura en nevera',              critica:true  },
   { id:'c14',label:'🌬️ Filtros campana — limpiar (cada 2 días)',              critica:false },
 ];
 
@@ -6286,7 +6290,7 @@ function seedData() {
           {nombre:'Whisky (cocina)',cantidad:'15g'},
           {nombre:'Aceite de girasol',cantidad:'20g'},
         ],
-        elaboracion:'1. Marcar pechuga en plancha con aceite y ajo.\n2. Añadir nata, queso gallego y parmesano.\n3. Flambear con whisky.\n4. Ajustar sabor con soja.',
+        elaboracion:'1. Marcar la pechuga en sartén, sobre un fogón, con aceite y ajo.\n2. Añadir nata, queso gallego y parmesano.\n3. Flambear con whisky.\n4. Ajustar sabor con soja.',
         notas:'⚠️ Coste pendiente: nata, parmesano y whisky sin precio confirmado.'
       },
       {
@@ -6303,7 +6307,7 @@ function seedData() {
           {nombre:'Whisky (cocina)',cantidad:'15g (igual en ambas)'},
           {nombre:'Aceite de girasol',cantidad:'20g (igual en ambas)'},
         ],
-        elaboracion:'1. Cortar lomo en dados. Marcar en plancha fuerte.\n2. Cocer patata al vapor o hervida.\n3. Saltear pimiento.\n4. Mezclar con soja + whisky + ajo-aceite.\n5. Servir caliente.',
+        elaboracion:'1. Cortar lomo en dados. Marcar en sartén muy caliente, sobre un fogón.\n2. Cocer patata al vapor o hervida.\n3. Saltear pimiento.\n4. Mezclar con soja + whisky + ajo-aceite.\n5. Servir caliente.',
         notas:'⚠️ Coste incompleto: precio lomo y pimiento pendientes de factura.'
       },
       {
@@ -6371,7 +6375,7 @@ function seedData() {
           {nombre:'Patata cocida',cantidad:'175g'},
           {nombre:'Chimichurri',cantidad:'20g'},
         ],
-        elaboracion:'1. Marcar chorizo entero al inicio del servicio.\n2. Enfriar y cortar en rodajas.\n3. Al pedido: terminar en plancha ~1,5 min.\n4. Servir sobre patata cocida con chimichurri.',
+        elaboracion:'1. Marcar el chorizo entero en sartén al inicio del servicio.\n2. Enfriar y cortar en rodajas.\n3. Al pedido: terminar en sartén ~1,5 min.\n4. Servir sobre patata cocida con chimichurri.',
         notas:'Se puede preparar con antelación y terminar rápido al pase.'
       },
       {
