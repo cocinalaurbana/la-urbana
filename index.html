@@ -2902,6 +2902,15 @@ function aplicarPermisos() {
     if (lblOk) lblOk.textContent = 'Készlet rendben';
     if (lblCrit) lblCrit.textContent = 'Critic';
     if (lblMermas) lblMermas.textContent = 'Mai veszteség';
+    const lblCritico = document.querySelector('#stat-critico')?.closest('.stat')?.querySelector('.lbl');
+    const lblPedidos = document.querySelector('#stat-pedidos')?.closest('.stat')?.querySelector('.lbl');
+    if (lblCritico) lblCritico.textContent = 'Kritikus';
+    if (lblPedidos) lblPedidos.textContent = 'Függő rendelések';
+    const gruposHu = { 'nav-grupo-bar':'Előterem', 'nav-grupo-cocina':'Konyha', 'nav-grupo-turnos':'Műszakok', 'nav-grupo-compras':'Beszerzés', 'nav-grupo-cultura':'Kultúra', 'nav-grupo-gestion':'Vezetés' };
+    Object.entries(gruposHu).forEach(([id,txt]) => { const el=document.getElementById(id); if(el) { const sp=el.querySelector('span'); if(sp) sp.textContent=txt; } });
+    const backHu=document.getElementById('nav-volver-grupos'); if(backHu) backHu.textContent='‹ Minden rész';
+    const salirHu=document.querySelector('.btn-salir'); if(salirHu) salirHu.textContent='Kilépés';
+    const barHu=document.querySelector('#nav-grupo-bar');
     // Mensaje de acceso no autorizado
     window._noAccesoMsg = 'Ehhez a részhez nincs hozzáférésed';
     // Traducir formulario de Mermas
