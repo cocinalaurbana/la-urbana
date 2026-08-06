@@ -6318,6 +6318,18 @@ function migrarStockCarta() {
     ['Vinagre de manzana','botella','estanteria',0],
     ['Pimientos de Padrón','kg','nevera-almacen',0],
     ['Ajo','cabeza','estanteria',0],
+    ['Perejil fresco','manojo','nevera-almacen',0],
+    ['Zanahoria','kg','nevera-almacen',0],
+    ['Huevos','ud','nevera-cocina',0],
+    ['Tomate frito','bote','estanteria',0],
+    ['Nata para cocinar','brick','nevera-cocina',0],
+    ['Whisky (cocina)','botella','estanteria',0],
+    ['Aceituna verde','bote','estanteria',0],
+    ['Pepinillo agridulce','bote','nevera-cocina',0],
+    ['Anchoa','lata','nevera-cocina',0],
+    ['AOVE','botella','estanteria',0],
+    ['Limón','kg','nevera-almacen',0],
+    ['Sal','kg','estanteria',0],
   ];
   let nextId = Math.max(1100, ...productos.map(p => Number(p.id)||0)) + 1;
   let cambio = false;
@@ -6443,14 +6455,14 @@ function seedData() {
         margen_media:77.0, margen_racion:81.0,
         ingredientes:[
           {nombre:'Pechuga pollo IQF',cantidad:'240g (media) · 350g (ración)'},
-          {nombre:'Chips de patata',cantidad:'25g (media) · 40g (ración)'},
+          {nombre:'Panko',cantidad:'25g (media) · 40g (ración)'},
           {nombre:'Tahini (adobo)',cantidad:'~15g por tanda 2,5kg'},
           {nombre:'Salsa de soja (adobo)',cantidad:'~60ml por tanda'},
           {nombre:'Pimienta negra molida',cantidad:'1 cda sopera'},
           {nombre:'Ajo-perejil (adobo)',cantidad:'al gusto'},
           {nombre:'Perejil seco + ajo seco',cantidad:'al gusto'},
         ],
-        elaboracion:'1. Adobar pollo: soja + tahini + pimienta + ajo-perejil (mínimo 1h, mejor de víspera).\n2. Freidora 5–6 min hasta dorado.\n3. Servir sobre chips de patata.',
+        elaboracion:'1. Adobar pollo: soja + tahini + pimienta + ajo-perejil (mínimo 1h, mejor de víspera).\n2. Freidora 5–6 min hasta dorado.\n3. Terminar con panko.',
         notas:'Alérgenos: sésamo (tahini).'
       },
       {
@@ -6463,7 +6475,7 @@ function seedData() {
           {nombre:'Queso parmesano',cantidad:'25g'},
           {nombre:'Nata para cocinar',cantidad:'65g'},
           {nombre:'Salsa de soja',cantidad:'15g'},
-          {nombre:'Ajo-aceite',cantidad:'10g'},
+          {nombre:'Ajo-perejil con aceite',cantidad:'10g'},
           {nombre:'Whisky (cocina)',cantidad:'15g'},
           {nombre:'Aceite de semillas',cantidad:'20g'},
         ],
@@ -6480,7 +6492,7 @@ function seedData() {
           {nombre:'Patata cocida',cantidad:'90g (media) · 175g (ración)'},
           {nombre:'Pimiento rojo/verde',cantidad:'50g (igual en ambas)'},
           {nombre:'Salsa de soja',cantidad:'15g (igual en ambas)'},
-          {nombre:'Ajo-aceite',cantidad:'10g (igual en ambas)'},
+          {nombre:'Ajo-perejil con aceite',cantidad:'10g (igual en ambas)'},
           {nombre:'Whisky (cocina)',cantidad:'15g (igual en ambas)'},
           {nombre:'Aceite de semillas',cantidad:'20g (igual en ambas)'},
         ],
@@ -6588,7 +6600,7 @@ function seedData() {
         id:'s04', nombre:'Alioli', categoria:'salsa',
         ingredientes:[
           {nombre:'Ajos gordos',cantidad:'6 dientes'},
-          {nombre:'Ajo-aceite',cantidad:'3 cdas soperas'},
+          {nombre:'Ajo-perejil con aceite',cantidad:'3 cdas soperas'},
           {nombre:'Salsa ajo-perejil',cantidad:'al gusto'},
           {nombre:'Mayonesa Hellmann\'s',cantidad:'1 kg'},
         ],
