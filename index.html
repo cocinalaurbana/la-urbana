@@ -253,6 +253,12 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 }
 .tab{display:none;padding:24px;max-width:900px;padding-bottom:60px}
 .tab.active{display:block}
+#tab-turno.perfil-lore{background:linear-gradient(135deg,rgba(201,151,58,.14),rgba(255,255,255,.02));border:1px solid rgba(201,151,58,.45);border-radius:16px;padding:10px}
+#tab-turno.perfil-maria{background:linear-gradient(135deg,rgba(76,145,133,.15),rgba(255,255,255,.02));border:1px solid rgba(76,145,133,.45);border-radius:16px;padding:10px}
+#tab-turno.perfil-cesar{background:linear-gradient(135deg,rgba(78,112,170,.14),rgba(255,255,255,.02));border:1px solid rgba(78,112,170,.45);border-radius:16px;padding:10px}
+.turno-perfil-banner{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:12px;border-radius:12px;background:rgba(255,255,255,.62);border:1px solid var(--border);font-size:13px}
+.turno-perfil-banner strong{font-size:14px}
+
 .tab-guide{margin:0 0 14px;padding:12px 14px;border-left:4px solid var(--accent);background:linear-gradient(135deg,var(--surface-2),var(--surface));border-radius:0 12px 12px 0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .tab-guide-title{font-weight:800;font-size:.95rem;color:var(--text);margin-bottom:4px}
 .tab-guide-desc{font-size:12px;line-height:1.45;color:var(--text-2);margin-bottom:6px}
@@ -1093,11 +1099,11 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
       <!-- firma / guardar -->
       <div class="card">
-      <div class="card-title">✍️ Quién cierra el turno</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px" id="turno-firma-btns">
-        <button class="btn btn-outline" id="firma-lore"  onclick="setFirma('lore')">👩‍🍳 Lore</button>
-        <button class="btn btn-outline" id="firma-maria" onclick="setFirma('maria')">🧑‍🍳 María</button>
+      <div class="card-title">👤 Perfil activo</div>
+      <div class="turno-perfil-banner" id="turno-perfil-activo">
+        <span style="font-size:1.4rem">👤</span><div><strong>Se guarda con tu perfil</strong><div style="font-size:11px;color:var(--text-3);margin-top:2px">No hace falta elegir quién eres: la aplicación utiliza la clave de acceso.</div></div>
       </div>
+      <div id="turno-firma-btns" style="display:none"></div>
       <div class="form-group">
         <label>Observaciones (opcional)</label>
         <textarea id="turno-obs" rows="2" placeholder="Incidencias, notas del turno..."></textarea>
@@ -1899,7 +1905,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       </div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-      <a href="https://www.instagram.com/laurbanabar" target="_blank" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;text-decoration:none">📸 Instagram</a>
+      
       <button onclick="mkTab('vision')" id="mk-btn-vision" class="mk-tab-btn active" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">🔥 Visión</button>
       <button onclick="mkTab('estrategia')" id="mk-btn-estrategia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">🎯 Estrategia</button>
       <button onclick="mkTab('calendario')" id="mk-btn-calendario" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">📅 Calendario</button>
@@ -2186,22 +2192,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
   <!-- IDEAS -->
   <div id="mk-ideas" style="display:none">
-    <!-- REEL DE REFERENCIA INCORPORADO -->
-    <div class="card" style="margin-bottom:14px;border-left:4px solid #d62976;background:linear-gradient(135deg,#fff7fb,var(--surface))">
-      <div style="display:flex;align-items:flex-start;gap:10px">
-        <div style="font-size:1.7rem">🎞️</div>
-        <div style="flex:1">
-          <div style="font-weight:800;font-size:.95rem">Reel de referencia · Plantillas de cocina</div>
-          <div style="font-size:12px;color:var(--text-2);line-height:1.5;margin-top:5px">Referencia incorporada para seguir mejorando el sistema de La Urbana. El reel organiza el trabajo en apertura, cierre, limpieza diaria, producción, pedidos por sección y gestión de compras.</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px">
-            <span class="badge">Apertura</span><span class="badge">Cierre</span><span class="badge">Limpieza</span><span class="badge">Producción</span><span class="badge">Compras</span>
-          </div>
-          <a href="https://www.instagram.com/reel/DbrIuOoAo9K/?igsh=MTIzcnFvMzlpYW55OA==" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="display:inline-block;margin-top:10px;text-decoration:none">📲 Abrir reel</a>
-          <div style="font-size:10px;color:var(--text-3);margin-top:6px">Fuente: @restaurantedigital_ · Se usa como referencia de organización, no como copia de contenido.</div>
-        </div>
-      </div>
-    </div>
-
     <div class="card" style="margin-bottom:14px">
       <div style="font-weight:800;font-size:.95rem;margin-bottom:10px">💡 Banco de ideas</div>
       <div style="display:flex;gap:8px;margin-bottom:12px">
@@ -2526,7 +2516,7 @@ De [hora] a [hora]. Ven con quien quieras.
     catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
   };
 
-  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom'];
+  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom','appcc_' + new Date().toISOString().slice(0,10)];
   Promise.all(CLAVES.map(k => window._fbCargar(k, null))).then(() => {
     window._firebaseReady = true;
     // Tras cargar la nube, sincronizamos listas compartidas y refrescamos la pestaña activa.
@@ -4566,8 +4556,19 @@ function colorearAppcc(id, min, max) {
   el.className = 'equipo-input ' + (estado === 'empty' ? '' : estado);
 }
 
+function hayTemperaturasRegistradas(momento) {
+  const lista = cargar('appcc_' + hoy(), []);
+  return Array.isArray(lista) && lista.some(r => Object.keys(r.temps || {}).length && (!momento || r.momento === momento));
+}
+function actualizarChecklistDesdeAppcc() {
+  if (document.getElementById('tab-turno')?.classList.contains('active')) {
+    renderTurnoTareas();
+    if (tipoTurno === 'cierre') renderCierreChecklist();
+  }
+}
+
 function guardarAppcc() {
-  const registro = { ts: Date.now(), quien: USUARIO || 'desconocido', temps: {} };
+  const registro = { ts: Date.now(), quien: USUARIO || 'desconocido', momento: tipoTurno || 'apertura', temps: {} };
   let alguno = false;
   const alertas = [];
 
@@ -4610,6 +4611,7 @@ function guardarAppcc() {
 
   renderAppccHistorial();
   renderAppcc7Dias();
+  actualizarChecklistDesdeAppcc();
   toast(alertas.length ? '⚠️ Registrado — hay temperaturas fuera de rango' : '✅ Temperaturas registradas');
 }
 
@@ -4973,8 +4975,25 @@ let firmaActual = null;
 let tareasState = {}; // {id: done}
 let cierreState = {};
 
+function aplicarPerfilTurno() {
+  const panel = document.getElementById('tab-turno');
+  if (panel) {
+    panel.classList.remove('perfil-lore','perfil-maria','perfil-cesar');
+    if (USUARIO) panel.classList.add('perfil-' + USUARIO);
+  }
+  const el = document.getElementById('turno-perfil-activo');
+  if (!el) return;
+  const datos = {
+    lore:['👩‍🍳','Lore','Perfil de gestión · tus registros quedan asociados a Lore'],
+    maria:['🧑‍🍳','María','Perfil de cocina · los registros quedan asociados a María'],
+    cesar:['🧑‍💼','César','Perfil de propietario · los registros quedan asociados a César']
+  }[USUARIO] || ['👤', 'Usuario', 'Los registros quedan asociados a tu perfil'];
+  el.innerHTML = `<span style="font-size:1.4rem">${datos[0]}</span><div><strong>${datos[1]}</strong><div style="font-size:11px;color:var(--text-3);margin-top:2px">${datos[2]}</div></div>`;
+}
+
 function setTipoTurno(tipo) {
   tipoTurno = tipo;
+  aplicarPerfilTurno();
   document.getElementById('turno-btn-apertura').className =
     'btn btn-full ' + (tipo === 'apertura' ? 'btn-oro' : 'btn-outline');
   document.getElementById('turno-btn-cierre').className =
@@ -4994,6 +5013,7 @@ function initTurno() {
   cierreState = {};
   tiempoSeleccionado = null;
   firmaActual = USUARIO || null;
+  aplicarPerfilTurno();
   setTipoTurno('apertura');
   if (firmaActual) setFirma(firmaActual);
   renderTurnoHistorial();
@@ -5085,7 +5105,7 @@ function renderTurnoTareas() {
     const lista = tareas.filter(t => t.categoria === g.key);
     if (!lista.length) return '';
     return `<div style="margin:10px 0 6px;padding-top:8px;border-top:1px solid var(--border)"><div style="font-weight:800;font-size:13px">${g.titulo}</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">${g.ayuda}</div></div>` + lista.map(t => {
-      const done = !!tareasState[t.id];
+      const done = !!tareasState[t.id] || (t.id === 't9' && hayTemperaturasRegistradas('apertura'));
       return `<div class="tarea-item ${done?'done':''} ${t.critica?'tarea-critica':''}" onclick="toggleTarea('${t.id}')">
         <div class="tarea-check ${done?'done':''}"></div><div style="flex:1"><div class="tarea-label">${t.label}</div>${t.critica ? '<div style="font-size:10px;color:var(--rojo);font-weight:700;margin-top:1px">OBLIGATORIO</div>' : ''}</div>
       </div>`;
@@ -5120,7 +5140,7 @@ function renderCierreChecklist() {
   const lista = getCierreChecklist();
   const cont = document.getElementById('turno-cierre-lista');
   cont.innerHTML = lista.map(t => {
-    const done = !!cierreState[t.id];
+    const done = !!cierreState[t.id] || (t.id === 'c7' && hayTemperaturasRegistradas('cierre'));
     return `<div class="tarea-item ${done?'done':''} ${t.critica?'tarea-critica':''}"
       onclick="toggleCierre('${t.id}')">
       <div class="tarea-check ${done?'done':''}"></div>
@@ -5205,9 +5225,14 @@ async function cargarTiempoAuto() {
 }
 
 function guardarTurno() {
-  if (!firmaActual) { toast('Selecciona quién cierra el turno', 'error'); return; }
+  firmaActual = USUARIO || firmaActual;
+  if (!firmaActual) { toast('No se ha detectado el perfil activo', 'error'); return; }
   const tareas = getTareas().filter(t => t.tipo === tipoTurno);
-  const pendCriticas = tareas.filter(t => t.critica && !tareasState[t.id]);
+  const tareasGuardadas = {...tareasState};
+  const cierreGuardado = {...cierreState};
+  if (tipoTurno === 'apertura' && hayTemperaturasRegistradas('apertura')) tareasGuardadas.t9 = true;
+  if (tipoTurno === 'cierre' && hayTemperaturasRegistradas('cierre')) cierreGuardado.c7 = true;
+  const pendCriticas = tareas.filter(t => t.critica && !(tareasGuardadas[t.id] || cierreGuardado[t.id]));
   if (pendCriticas.length && tipoTurno === 'cierre') {
     const ok = confirm(`Hay ${pendCriticas.length} tarea(s) críticas sin completar:\n${pendCriticas.map(t=>t.label).join('\n')}\n\n¿Guardar igualmente?`);
     if (!ok) return;
@@ -5217,12 +5242,12 @@ function guardarTurno() {
     ts: Date.now(),
     tipo: tipoTurno,
     quien: firmaActual,
-    tareas: { ...tareasState },
-    cierre: { ...cierreState },
+    tareas: tareasGuardadas,
+    cierre: cierreGuardado,
     obs: document.getElementById('turno-obs').value.trim(),
     tiempo: tiempoSeleccionado || null,
     total: tareas.length,
-    hechas: tareas.filter(t => tareasState[t.id]).length,
+    hechas: tareas.filter(t => tareasGuardadas[t.id]).length,
   };
 
   const key = 'turno_' + hoy();
