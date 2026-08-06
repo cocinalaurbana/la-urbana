@@ -2343,6 +2343,7 @@ De [hora] a [hora]. Ven con quien quieras.
   <div class="modal">
     <div class="modal-title"><span id="modal-lote-titulo">Añadir lote</span><button class="modal-close" onclick="cerrarModal('modal-lote')">×</button></div>
     <div class="form-group"><label>Cantidad</label><input type="number" id="l-cantidad" placeholder="ej. 4" min="0.1" step="0.1"><div id="l-unidad-label" style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600"></div></div>
+    <div class="form-group"><label>Formato / peso del envase <span style="font-size:11px;color:var(--text-3)">— si puede variar</span></label><input type="text" id="l-formato" placeholder="ej. saco 5 kg, bolsa 2,5 kg"><div id="l-formato-ayuda" style="font-size:11px;color:var(--accent);margin-top:4px"></div></div>
     <div class="form-group"><label>Caducidad</label><input type="date" id="l-caduca"></div>
     <div class="form-group"><label>Número de lote <span style="font-size:11px;color:var(--text-3)">— si aparece en la etiqueta</span></label><input type="text" id="l-numero" placeholder="ej. L240805"></div>
     <div class="form-group"><label>Foto de etiqueta / lote</label><input type="file" id="l-foto" accept="image/*" capture="environment" style="font-size:12px;color:var(--text)"><div id="l-foto-existente" style="font-size:11px;color:var(--verde);margin-top:4px"></div></div>
@@ -3436,6 +3437,8 @@ function abrirModalLote(prodId) {
   document.getElementById('l-unidad-label').textContent = 'Unidad: ' + p.unidad;
   document.getElementById('l-cantidad').value = '';
   document.getElementById('l-notas').value = '';
+  document.getElementById('l-formato').value = '';
+  document.getElementById('l-formato-ayuda').textContent = (p.formatos && p.formatos.length) ? 'Formatos previstos: ' + p.formatos.join(' · ') : '';
   document.getElementById('l-numero').value = '';
   document.getElementById('l-foto').value = '';
   document.getElementById('l-foto-existente').textContent = '';
@@ -3456,6 +3459,7 @@ function guardarLote() {
   const lote = {
     id: Date.now(), cantidad,
     caduca: document.getElementById('l-caduca').value || null,
+    formato: document.getElementById('l-formato').value.trim() || null,
     numeroLote: document.getElementById('l-numero').value.trim() || null,
     fotoLote: null,
     notas: document.getElementById('l-notas').value.trim(),
@@ -3632,7 +3636,7 @@ function renderStock() {
           const fifo = i===0 && (p.lotes||[]).length>1 ? `<span style="background:rgba(201,151,58,.2);color:var(--accent);padding:1px 6px;border-radius:6px;font-size:10px;font-weight:700;margin-left:4px">USA 1º</span>` : '';
           return `<div class="lote-row">
             <div style="flex:1">
-              <div style="font-size:13px;font-weight:600">${l.cantidad} ${p.unidad}${fifo}</div>
+              <div style="font-size:13px;font-weight:600">${l.cantidad} ${p.unidad}${l.formato?` <span style="font-size:11px;color:var(--accent-d);font-weight:700">· ${l.formato}</span>`:''}${fifo}</div>
               <div style="margin-top:3px;display:flex;gap:5px;flex-wrap:wrap">${cadLabel}${l.numeroLote?`<span style="font-size:11px;color:var(--text-2);font-weight:700">Lote: ${l.numeroLote}</span>`:''}${l.notas?`<span style="font-size:11px;color:var(--text-3)">${l.notas}</span>`:''}${l.fotoLote?`<button onclick="event.stopPropagation();verFotoLote(${p.id},${l.id})" style="border:0;background:var(--accent-l);color:var(--accent-d);border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer">📷 Etiqueta</button>`:''}</div>
             </div>
             <button onclick="event.stopPropagation();consumirUnidad(${p.id},${l.id})" style="background:var(--rojo-l);color:#e05555;border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer">−1</button>
@@ -3666,6 +3670,7 @@ function renderStock() {
             <span>Total: <strong style="color:var(--text)">${total} ${p.unidad}</strong></span>
             ${ubicLabel?`<span class="ubicacion-tag">${ubicLabel}</span>`:''}
             ${p.proveedor?`<span style="font-size:10px;color:var(--text-3);background:var(--surface-3);padding:1px 7px;border-radius:8px">🚚 ${p.proveedor}</span>`:''}
+            ${p.formatos&&p.formatos.length?`<span style="font-size:10px;color:var(--accent-d);background:var(--accent-l);padding:1px 7px;border-radius:8px">📦 ${p.formatos.join(' · ')}</span>`:''}
             ${!expandido && cadProxima ? cadProxima : ''}
           </div>
           <div class="stock-progress"><div class="stock-progress-fill ${sem}" style="width:${Math.min(100,p.minimo>0?Math.round(total/Math.max(p.minimo*2,1)*100):total>0?100:0)}%"></div></div>
@@ -4925,13 +4930,14 @@ const TURNO_TAREAS_DEFAULT = [
   { id:'t35',label:'🧂 Comprobar salsas y fondo: soja clara, teriyaki, pesto, tahini, panko y especias', tipo:'apertura', critica:true  },
   { id:'t38',label:'🌭 Comprobar criollos envasados y fecha',                           tipo:'apertura', critica:true  },
   { id:'t39',label:'🍅 Comprobar tomates para ensalada',                              tipo:'apertura', critica:false },
+  { id:'t40',label:'📦 Patata nueva — comprobar el peso real del saco/bolsa',          tipo:'apertura', critica:true  },
   { id:'t36',label:'🧊 Sacar a descongelar pollo Urbana (si procede)',            tipo:'apertura', critica:true  },
   { id:'t37',label:'🧊 Sacar a descongelar raxo (si procede)',                    tipo:'apertura', critica:false },
 ];
 
 
 // Las tareas de apertura se separan: preparación según platos vs controles fijos diarios.
-const TAREAS_PREPARACION = new Set(['t2','t3','t4','t5','t6','t7','t8','t13','t19','t21','t31','t32','t33','t34','t35','t36','t37','t38','t39']);
+const TAREAS_PREPARACION = new Set(['t2','t3','t4','t5','t6','t7','t8','t13','t19','t21','t31','t32','t33','t34','t35','t36','t37','t38','t39','t40']);
 const TAREAS_FIJAS = new Set(['t9','t16','t18','t22','t23','t26','t28','t30']);
 function categorizarTareas(tareas) {
   return tareas.map(t => ({...t, categoria: t.categoria || (TAREAS_PREPARACION.has(t.id) ? 'preparacion' : 'fijo')}));
@@ -6253,6 +6259,11 @@ function migrarStockCarta() {
     if (productos.some(p => p.nombre.toLowerCase() === nombre.toLowerCase())) return;
     productos.push({id:nextId++,nombre,unidad,ubicacion,minimo,critico:0,vidaDias:null,lotes:[],categoria:'despensa'});
     cambio = true;
+  });
+  // La patata nueva puede llegar en sacos de pesos distintos: el lote debe guardar el formato real.
+  productos.filter(p => /patata (nueva|entera con piel)/i.test(p.nombre)).forEach(p => {
+    const formatos = ['peso variable — confirmar en cada albarán'];
+    if (JSON.stringify(p.formatos||[]) !== JSON.stringify(formatos)) { p.formatos = formatos; cambio = true; }
   });
   if (cambio) guardar('stock_productos', productos);
 }
