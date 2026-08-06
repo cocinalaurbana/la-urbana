@@ -253,6 +253,9 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 }
 .tab{display:none;padding:24px;max-width:900px;padding-bottom:60px}
 .tab.active{display:block}
+.protocolo-btn{width:100%;text-align:left;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:10px;padding:10px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
+.protocolo-btn:hover,.protocolo-btn.active{background:var(--accent-l);border-color:var(--accent);color:var(--accent-d)}
+
 #tab-turno.perfil-lore{background:linear-gradient(135deg,rgba(201,151,58,.14),rgba(255,255,255,.02));border:1px solid rgba(201,151,58,.45);border-radius:16px;padding:10px}
 #tab-turno.perfil-maria{background:linear-gradient(135deg,rgba(76,145,133,.15),rgba(255,255,255,.02));border:1px solid rgba(76,145,133,.45);border-radius:16px;padding:10px}
 #tab-turno.perfil-cesar{background:linear-gradient(135deg,rgba(78,112,170,.14),rgba(255,255,255,.02));border:1px solid rgba(78,112,170,.45);border-radius:16px;padding:10px}
@@ -1076,6 +1079,24 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <!-- ALERTAS APPCC — elaborados que caducan hoy o mañana -->
     <div id="turno-appcc-alertas" style="display:none;margin-bottom:12px"></div>
 
+    <!-- TIEMPO — queda antes del checklist para no perderlo al bajar -->
+    <div class="card" style="margin-bottom:14px;border-left:3px solid var(--amber)">
+      <div class="card-title">🌤 Tiempo y observaciones del día</div>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:8px">Se registra antes de empezar la checklist y queda guardado con el turno.</div>
+      <!-- 🌤 Tiempo meteorológico -->
+      <div class="form-group">
+        <label>🌤 Tiempo hoy <span style="font-size:11px;color:var(--text-3);font-weight:400">— para el histórico</span></label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="tiempo-btns">
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="☀️ Soleado" onclick="setTiempo(this)">☀️ Sol</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="⛅ Nublado" onclick="setTiempo(this)">⛅ Nublado</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="🌧️ Lluvia" onclick="setTiempo(this)">🌧️ Lluvia</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="⛈️ Tormenta" onclick="setTiempo(this)">⛈️ Tormenta</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="🌫️ Niebla" onclick="setTiempo(this)">🌫️ Niebla</button>
+          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="❄️ Frío extremo" onclick="setTiempo(this)">❄️ Frío</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:6px" id="tiempo-auto-info"></div>
+      </div>    </div>
+
     <!-- MISE EN PLACE / tareas fijas -->
     <div class="card" id="turno-mise-card">
       <div class="card-title" id="turno-titulo-mise">📋 Entrada · mise en place</div>
@@ -1107,19 +1128,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       <div class="form-group">
         <label>Observaciones (opcional)</label>
         <textarea id="turno-obs" rows="2" placeholder="Incidencias, notas del turno..."></textarea>
-      </div>
-      <!-- 🌤 Tiempo meteorológico -->
-      <div class="form-group">
-        <label>🌤 Tiempo hoy <span style="font-size:11px;color:var(--text-3);font-weight:400">— para el histórico</span></label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="tiempo-btns">
-          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="☀️ Soleado" onclick="setTiempo(this)">☀️ Sol</button>
-          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="⛅ Nublado" onclick="setTiempo(this)">⛅ Nublado</button>
-          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="🌧️ Lluvia" onclick="setTiempo(this)">🌧️ Lluvia</button>
-          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="⛈️ Tormenta" onclick="setTiempo(this)">⛈️ Tormenta</button>
-          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="🌫️ Niebla" onclick="setTiempo(this)">🌫️ Niebla</button>
-          <button type="button" class="btn btn-outline btn-sm tiempo-btn" data-tiempo="❄️ Frío extremo" onclick="setTiempo(this)">❄️ Frío</button>
-        </div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:6px" id="tiempo-auto-info"></div>
       </div>
       <button class="btn btn-oro btn-full" onclick="guardarTurno()">Guardar turno</button>
     </div>
@@ -1784,12 +1792,8 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   </div>
   <div class="card" style="margin-bottom:14px">
     <div class="card-title">📚 Protocolos prioritarios</div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
-      <div class="badge">🌡️ APPCC y temperaturas</div><div class="badge">🧼 Limpieza y cierre</div>
-      <div class="badge">📦 Recepción de pedidos</div><div class="badge">🧊 Almacenamiento</div>
-      <div class="badge">👩‍🍳 Producción y porciones</div><div class="badge">📉 Registro de mermas</div>
-      <div class="badge">🔁 Cambio de turno</div><div class="badge">🚨 Incidencias</div>
-    </div>
+    <div id="protocolos-prioritarios-lista" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div>
+    <div id="protocolo-detalle" style="display:none;margin-top:14px;padding:14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border)"></div>
   </div>
   <div class="card">
     <div class="card-title">📝 Plantilla para crear un protocolo</div>
@@ -2990,6 +2994,30 @@ function renderTabGuia(id) {
   el.innerHTML='<div class="tab-guide-title">'+g[0]+'</div><div class="tab-guide-desc">'+g[1]+'</div><div class="tab-guide-role"><span>'+actor+':</span> '+g[2]+'</div>';
 }
 
+const PROTOCOLOS_PRIORITARIOS = [
+  {id:'appcc',icon:'🌡️',nombre:'APPCC y temperaturas',objetivo:'Mantener neveras y congeladores dentro de rango y dejar constancia.',pasos:['Entrar en APPCC desde Entrada o Cierre.','Medir los equipos que correspondan.','Registrar cada temperatura real.','Si sale de rango, avisar y anotar la acción tomada.','La casilla de la checklist se marca automáticamente.'],responsable:'Quien realiza el turno; Lore revisa las incidencias.'},
+  {id:'limpieza',icon:'🧼',nombre:'Limpieza y cierre',objetivo:'Dejar la cocina segura y lista para el siguiente turno.',pasos:['Cubrir y etiquetar recipientes.','Limpiar cocina y los tres fogones.','Apagar y asegurar freidoras y lavavajillas.','Vaciar cubos y revisar temperaturas.','Cerrar cámaras y congeladores.','Preparar al salir el pedido de fruta y verdura.'],responsable:'La persona que cierra el turno.'},
+  {id:'recepcion',icon:'📦',nombre:'Recepción de pedidos',objetivo:'Que cada entrega quede fotografiada y trazable.',pasos:['César recibe el miércoles.','Fotografiar albarán.','Fotografiar etiquetas de pollo y raxo.','Anotar incidencias, faltas o sustituciones.','Lore valida el domingo.'],responsable:'César recibe; Lore valida.'},
+  {id:'almacenamiento',icon:'🧊',nombre:'Almacenamiento',objetivo:'Saber qué hay, dónde está y qué debe utilizarse primero.',pasos:['Guardar cada producto en su zona real.','Aplicar FIFO: lo nuevo detrás.','Etiquetar abiertos y elaborados.','Guardar lote, caducidad y foto si procede.','En formatos variables, registrar el peso real del envase.'],responsable:'Toda la cocina según su tarea; Lore controla el sistema.'},
+  {id:'produccion',icon:'👩‍🍳',nombre:'Producción y porciones',objetivo:'Repetir las elaboraciones con la misma calidad y cantidad.',pasos:['Consultar la receta antes de empezar.','Hacer la mise en place en Entrada.','Registrar pruebas o cambios.','Respetar gramajes y formatos.','Marcar la tarea solo cuando esté realmente terminada.'],responsable:'La persona que elabora; Lore valida cambios.'},
+  {id:'mermas',icon:'📉',nombre:'Registro de mermas',objetivo:'Saber qué se pierde, cuánto y por qué.',pasos:['Registrar la cantidad real, no una unidad entera por defecto.','Indicar el motivo: caducidad, daño, elaboración o consumo.','En bolsas de kilos, descontar solo los gramos utilizados.','Añadir una nota si hay una incidencia.'],responsable:'Quien detecta o produce la merma.'},
+  {id:'turno',icon:'🔁',nombre:'Cambio de turno',objetivo:'Que el siguiente turno sepa exactamente qué queda pendiente.',pasos:['Escribir una tarea por línea.','Indicar producto, cantidad o incidencia.','No confiar en la memoria ni en mensajes sueltos.','El siguiente turno marca lo que realmente ha comprobado.'],responsable:'Quien termina el turno.'},
+  {id:'incidencias',icon:'🚨',nombre:'Incidencias',objetivo:'Resolver rápido sin ocultar el problema.',pasos:['Parar la tarea si afecta a seguridad o servicio.','Hacer foto si ayuda a entenderlo.','Registrar qué ocurrió, cuándo y con qué producto.','Avisar a la persona responsable.','Dejar la solución o el siguiente paso.'],responsable:'Quien detecta la incidencia; Lore coordina las críticas.'}
+];
+function mostrarProtocolo(id) {
+  const p=PROTOCOLOS_PRIORITARIOS.find(x=>x.id===id), el=document.getElementById('protocolo-detalle');
+  if (!p || !el) return;
+  document.querySelectorAll('.protocolo-btn').forEach(b=>b.classList.toggle('active',b.dataset.protocolo===id));
+  el.style.display='';
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div style="font-weight:800;font-size:15px">${p.icon} ${p.nombre}</div><div style="font-size:12px;color:var(--text-2);margin-top:4px">${p.objetivo}</div></div><button class="btn btn-outline btn-xs" onclick="cerrarProtocolo()">Cerrar</button></div><ol style="margin:12px 0 8px;padding-left:20px;font-size:13px;line-height:1.65">${p.pasos.map(x=>`<li>${x}</li>`).join('')}</ol><div style="font-size:11px;color:var(--accent-d);font-weight:700">Responsable: ${p.responsable}</div>`;
+}
+function cerrarProtocolo() { const el=document.getElementById('protocolo-detalle'); if(el) el.style.display='none'; document.querySelectorAll('.protocolo-btn').forEach(b=>b.classList.remove('active')); }
+function initProtocolos() {
+  const el=document.getElementById('protocolos-prioritarios-lista'); if(!el) return;
+  el.innerHTML=PROTOCOLOS_PRIORITARIOS.map(p=>`<button class="protocolo-btn" data-protocolo="${p.id}" onclick="mostrarProtocolo('${p.id}')">${p.icon} ${p.nombre}<span style="float:right;color:var(--text-3)">›</span></button>`).join('');
+  cerrarProtocolo();
+}
+
 function tab(id, btn) {
   const soloAdmin = ['menu','recetas','pruebas','proveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario'];
   if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
@@ -3014,7 +3042,7 @@ function tab(id, btn) {
       renderContabilidad();
     },
     controlcostes: renderControlCostes,
-    protocolos: () => {}
+    protocolos: initProtocolos
   };
   if (renders[id]) renders[id]();
 }
