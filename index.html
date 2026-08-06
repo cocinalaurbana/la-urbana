@@ -2121,6 +2121,28 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
   <!-- CALENDARIO -->
   <div id="mk-calendario" style="display:none">
+    <div class="card" style="border-left:3px solid var(--accent);margin-bottom:14px">
+      <div class="card-title">🗓️ Calendario de contenidos y campañas</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.55;margin-bottom:11px">Aquí planificamos qué se publica cada día y guardamos la foto o el enlace. Para una serie con continuidad, escribe siempre el mismo nombre de campaña y añade el capítulo: así se ve de un vistazo qué parte toca.</div>
+      <div style="background:var(--surface-2);border-radius:9px;padding:9px 10px;font-size:11px;color:var(--text-3);line-height:1.5;margin-bottom:12px"><strong>Ejemplo:</strong> Campaña «Historias que continúan» · Capítulo 01 · foto del plato · enlace al vídeo. Al día siguiente: la misma campaña · Capítulo 02 · enlace al desenlace.</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+        <div class="form-group"><label>Fecha</label><input id="mk-plan-fecha" type="date" value=""></div>
+        <div class="form-group"><label>Campaña o serie</label><input id="mk-plan-campana" placeholder="Ej. Historias que continúan"></div>
+        <div class="form-group"><label>Título / capítulo</label><input id="mk-plan-titulo" placeholder="Ej. Capítulo 01 · La tortilla desaparece"></div>
+        <div class="form-group"><label>Formato</label><select id="mk-plan-formato"><option>Foto</option><option>Reel</option><option>Story</option><option>Carrusel</option><option>Texto</option></select></div>
+        <div class="form-group"><label>Estado</label><select id="mk-plan-estado"><option>Idea</option><option>Preparar</option><option>Listo</option><option>Publicado</option></select></div>
+        <div class="form-group"><label>Capítulo / orden <span style="font-size:10px;color:var(--text-3);font-weight:400">opcional</span></label><input id="mk-plan-orden" type="number" min="1" step="1" placeholder="1"></div>
+      </div>
+      <div class="form-group"><label>Enlace <span style="font-size:10px;color:var(--text-3);font-weight:400">Reel, Drive, Instagram, vídeo, etc.</span></label><input id="mk-plan-enlace" type="url" placeholder="Pega aquí el enlace cuando exista"></div>
+      <div class="form-group"><label>Foto del día <span style="font-size:10px;color:var(--text-3);font-weight:400">se reduce para guardarla en la ficha</span></label><input id="mk-plan-foto" type="file" accept="image/*" style="font-size:12px;color:var(--text)"></div>
+      <div class="form-group"><label>Nota de producción</label><textarea id="mk-plan-nota" rows="2" placeholder="Qué falta, quién lo graba, qué debe mantener la continuidad..."></textarea></div>
+      <button class="btn btn-oro btn-full" onclick="guardarContenidoPlanificado()">💾 Guardar en el calendario</button>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px"><div class="card-title" style="margin:0">📆 Vista mensual</div><input id="mk-plan-mes" type="month" onchange="renderCalendarioContenidos()" style="padding:6px 8px;border-radius:8px;border:1px solid var(--border);color:var(--text);background:var(--surface)"></div>
+      <div id="mk-calendario-real"></div>
+      <div id="mk-contenidos-lista" style="margin-top:12px"></div>
+    </div>
     <div class="card" style="margin-bottom:14px">
       <div style="font-weight:800;font-size:.95rem;margin-bottom:12px">📅 Calendario editorial</div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;margin-bottom:8px">
@@ -2591,6 +2613,8 @@ function copiarTexto(el, msg) {
     ta.value = txt; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
     toast(msg||'Copiado ✓');
+  });
+}
 
 // ── MARKETING ──────────────────────────────────────────
 function mkTab(name) {
@@ -2603,7 +2627,7 @@ function mkTab(name) {
     btn.style.background = active ? 'rgba(255,255,255,.15)' : 'transparent';
     btn.style.color = active ? '#fff' : 'rgba(255,255,255,.6)';
   });
-  if (name === 'calendario') renderMkPubs();
+  if (name === 'calendario') { renderCalendarioContenidos(); renderMkPubs(); }
   if (name === 'ideas') renderMkIdeas();
 }
 
@@ -2636,6 +2660,41 @@ function borrarIdea(id) {
   guardar('mk_ideas', cargar('mk_ideas',[]).filter(i => i.id !== id));
   renderMkIdeas();
 }
+
+function leerFotoPlanificada(file, maxSide=1000){
+  return new Promise((resolve,reject)=>{
+    if(!file){ resolve(''); return; }
+    const reader=new FileReader();
+    reader.onload=()=>{ const img=new Image(); img.onload=()=>{ const ratio=Math.min(1,maxSide/Math.max(img.width,img.height)); const c=document.createElement('canvas'); c.width=Math.round(img.width*ratio); c.height=Math.round(img.height*ratio); c.getContext('2d').drawImage(img,0,0,c.width,c.height); resolve(c.toDataURL('image/jpeg',.78)); }; img.onerror=reject; img.src=reader.result; };
+    reader.onerror=reject; reader.readAsDataURL(file);
+  });
+}
+function guardarContenidoPlanificado(){
+  const fecha=document.getElementById('mk-plan-fecha')?.value||hoy();
+  const campana=document.getElementById('mk-plan-campana')?.value.trim();
+  const titulo=document.getElementById('mk-plan-titulo')?.value.trim();
+  if(!campana || !titulo){ toast('Pon la campaña y el título','error'); return; }
+  const file=document.getElementById('mk-plan-foto')?.files?.[0];
+  leerFotoPlanificada(file).then(foto=>{
+    const lista=cargar('mk_contenidos',[]);
+    lista.push({id:Date.now(),fecha,campana,titulo,formato:document.getElementById('mk-plan-formato').value,estado:document.getElementById('mk-plan-estado').value,orden:document.getElementById('mk-plan-orden').value,enlace:document.getElementById('mk-plan-enlace').value.trim(),foto,nota:document.getElementById('mk-plan-nota').value.trim(),quien:USUARIO});
+    lista.sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||'') || (+a.orden||999)-(+b.orden||999)); guardar('mk_contenidos',lista);
+    ['mk-plan-campana','mk-plan-titulo','mk-plan-orden','mk-plan-enlace','mk-plan-nota'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';}); const fEl=document.getElementById('mk-plan-foto');if(fEl)fEl.value='';
+    renderCalendarioContenidos(); toast('Contenido añadido al calendario ✓','verde');
+  }).catch(()=>toast('No se pudo cargar la foto','error'));
+}
+function renderCalendarioContenidos(){
+  const grid=document.getElementById('mk-calendario-real'), listaEl=document.getElementById('mk-contenidos-lista'); if(!grid||!listaEl)return;
+  const fechaEl=document.getElementById('mk-plan-fecha'); if(fechaEl&&!fechaEl.value)fechaEl.value=hoy(); const mesEl=document.getElementById('mk-plan-mes'); if(mesEl&&!mesEl.value)mesEl.value=hoy().slice(0,7); const mes=mesEl?.value||'';
+  const items=cargar('mk_contenidos',[]).filter(x=>!mes||String(x.fecha||'').startsWith(mes));
+  const by={}; items.forEach(x=>{if(!by[x.fecha])by[x.fecha]=[];by[x.fecha].push(x);});
+  let html='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">'; ['L','M','X','J','V','S','D'].forEach(d=>html+=`<div style="text-align:center;font-size:10px;font-weight:700;color:var(--text-3);padding:3px">${d}</div>`);
+  if(mes){const [yy,mm]=mes.split('-').map(Number), first=new Date(yy,mm-1,1), days=new Date(yy,mm,0).getDate(), offset=(first.getDay()+6)%7; for(let i=0;i<offset;i++)html+='<div></div>'; for(let day=1;day<=days;day++){const key=`${yy}-${String(mm).padStart(2,'0')}-${String(day).padStart(2,'0')}`,arr=by[key]||[]; html+=`<div onclick="document.getElementById('mk-plan-fecha').value='${key}'" style="min-height:58px;border:1px solid var(--border);border-radius:7px;padding:4px;cursor:pointer;background:${arr.length?'var(--accent-l)':'var(--surface-2)'}"><div style="font-size:10px;font-weight:700">${day}</div>${arr.slice(0,2).map(x=>`<div style="font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;color:var(--accent-d)">${escPrueba(x.formato||'')} · ${escPrueba(x.titulo)}</div>`).join('')}${arr.length>2?`<div style="font-size:9px;color:var(--text-3)">+${arr.length-2}</div>`:''}</div>`;}}
+  html+='</div>'; grid.innerHTML=html;
+  if(!items.length){listaEl.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:8px 0">No hay contenidos planificados este mes. Empieza cargando una foto, una campaña o un enlace.</div>';return;}
+  listaEl.innerHTML=items.map(x=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border)">${x.foto?`<img src="${x.foto}" style="width:56px;height:56px;object-fit:cover;border-radius:8px">`:'<div style="width:56px;height:56px;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:22px">${x.formato==='Reel'?'🎬':x.formato==='Story'?'📱':'📌'}</div>'}<div style="flex:1"><div style="font-size:11px;color:var(--accent-d);font-weight:700">${formatFecha(x.fecha)} · ${escPrueba(x.campana)}</div><div style="font-size:13px;font-weight:700;margin-top:2px">${escPrueba(x.titulo)} ${x.orden?`<span class="badge">Cap. ${escPrueba(x.orden)}</span>`:''}</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">${escPrueba(x.formato)} · ${escPrueba(x.estado)}${x.nota?' · '+escPrueba(x.nota):''}</div>${x.enlace?`<a href="${escPrueba(x.enlace)}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent-d);display:inline-block;margin-top:4px">🔗 Abrir enlace</a>`:''}</div><button onclick="borrarContenidoPlanificado(${x.id})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px">×</button></div>`).join('');
+}
+function borrarContenidoPlanificado(id){ guardar('mk_contenidos',cargar('mk_contenidos',[]).filter(x=>x.id!==id)); renderCalendarioContenidos(); toast('Contenido eliminado'); }
 
 function abrirNuevaPub() {
   const plato = prompt('¿Qué publicaste? (título o descripción)');
@@ -2670,8 +2729,6 @@ function borrarPub(id) {
   renderMkPubs();
 }
 // ── FIN MARKETING ───────────────────────────────────────
-  });
-}
 function addHistorial(tipo, desc) {
   const h = cargar('historial', []);
   h.unshift({id: Date.now(), tipo, descripcion: desc, quien: USUARIO, cuando: ahora()});
