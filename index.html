@@ -876,6 +876,10 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
     Historial
   </button>
+  <button onclick="tab('formacion',this)" id="nav-formacion" class="oculto">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 6h8M8 10h8M8 14h5"/></svg>
+    Formación y equipo
+  </button>
   <button onclick="tab('instagram',this)" id="nav-instagram" class="oculto">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0z"/></svg>
     Marketing
@@ -1637,6 +1641,42 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       </select>
     </div>
     <div id="historial-lista"></div>
+  </div>
+</div>
+
+<!-- FORMACIÓN Y EQUIPO -->
+<div id="tab-formacion" class="tab">
+  <div class="tab-guide"><div class="tab-guide-title">Formación y recorrido profesional</div><div class="tab-guide-desc">Aquí se organiza la rotación por puestos, se recogen las reuniones semanales y se ve qué puede hacer cada persona de forma autónoma.</div><div class="tab-guide-role"><span>Lore / César:</span> acompañar, escuchar y dar responsabilidades progresivamente; no etiquetar a nadie, sino registrar su siguiente paso.</div></div>
+  <div class="card" style="border-left:3px solid var(--accent);margin-bottom:14px">
+    <div class="card-title">🎓 La Urbana como escuela de oficio</div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.55;margin-bottom:10px">Toda persona puede pasar por los puestos y salir con una base profesional más amplia. La matriz no clasifica a nadie como «bueno» o «malo»: indica cuánta autonomía tiene hoy en cada puesto y qué apoyo necesita para avanzar.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;text-align:center">
+      <div style="background:var(--surface-2);border-radius:9px;padding:9px 5px;font-size:11px">🟠<br><strong>Con apoyo</strong><br><span style="color:var(--text-3)">Practicar acompañado</span></div>
+      <div style="background:var(--surface-2);border-radius:9px;padding:9px 5px;font-size:11px">🟡<br><strong>Supervisión</strong><br><span style="color:var(--text-3)">Ya lo hace, revisar</span></div>
+      <div style="background:var(--surface-2);border-radius:9px;padding:9px 5px;font-size:11px">🟢<br><strong>Autónomo</strong><br><span style="color:var(--text-3)">Puede enseñar</span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">🗣️ Reunión semanal</div>
+    <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Registra una conversación breve: qué costó, qué gustó, qué no funcionó, qué mejora propone y cuál será el siguiente paso.</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+      <div class="form-group"><label>Persona</label><input id="form-persona" type="text" placeholder="Nombre"></div>
+      <div class="form-group"><label>Fecha</label><input id="form-fecha" type="date" value=""></div>
+      <div class="form-group"><label>Puesto revisado</label><select id="form-puesto"><option>Entrada y preparación</option><option>Cocina y salida</option><option>Sala</option><option>Barra</option><option>Limpieza y cierre</option><option>Recepción y almacén</option><option>Organización de turno</option></select></div>
+      <div class="form-group"><label>Nivel actual</label><select id="form-nivel"><option>Con apoyo</option><option>Con supervisión</option><option>Autónomo</option><option>Puede enseñar</option></select></div>
+    </div>
+    <div class="form-group"><label>Qué le costó / qué necesita</label><textarea id="form-dificultad" rows="2" placeholder="Tarea difícil, bloqueo o apoyo que necesita"></textarea></div>
+    <div class="form-group"><label>Qué le gustó y qué mejoraría</label><textarea id="form-mejora" rows="2" placeholder="Lo que le funcionó, lo que no y su propuesta"></textarea></div>
+    <div class="form-group"><label>Siguiente paso</label><input id="form-siguiente" type="text" placeholder="Ej. hacer el cierre con supervisión el sábado"></div>
+    <button class="btn btn-oro btn-full" onclick="guardarRevisionFormacion()">💾 Guardar revisión</button>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px"><div class="card-title" style="margin:0">🧭 Matriz de autonomía</div><select id="form-filtro-persona" onchange="renderFormacion()" style="padding:6px 8px;border-radius:8px;border:1px solid var(--border);color:var(--text);background:var(--surface);max-width:130px"><option value="">Todas las personas</option></select></div>
+    <div id="form-matriz"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📝 Reuniones registradas</div>
+    <div id="form-revisiones"></div>
   </div>
 </div>
 
@@ -2934,7 +2974,7 @@ function cerrarSesion() {
   initBourdain();
 }
 function aplicarPermisos() {
-  ['nav-recetas','nav-pruebas','nav-proveedores','nav-nuevosproveedores','nav-historial','nav-instagram','nav-contabilidad','nav-diario','nav-programacion'].forEach(id => {
+  ['nav-recetas','nav-pruebas','nav-proveedores','nav-nuevosproveedores','nav-historial','nav-formacion','nav-instagram','nav-contabilidad','nav-diario','nav-programacion'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('oculto', esMaria());
   });
@@ -3026,6 +3066,7 @@ const TAB_GUIAS = {
   instagram:{es:['Redes y comunicación','Aquí se planifican ideas, publicaciones y la forma de contar La Urbana.','Registra lo que se publica y observa qué genera visitas o reservas.'],hu:['Közösségi média és kommunikáció','Itt tervezzük a bejegyzéseket és azt, hogyan mesélünk a La Urbanáról.','Rögzítsd, mi jelent meg, és figyeld, mi hoz vendéget vagy foglalást.']},
   programacion:{es:['Programación','Aquí se organizan acciones y contenidos que deben hacerse en fechas concretas.','Revisa las próximas acciones y comunica si falta material o tiempo.'],hu:['Ütemezés','Itt szervezzük a meghatározott időponthoz kötött feladatokat és tartalmakat.','Ellenőrizd a következő feladatokat, és jelezd, ha anyag vagy idő hiányzik.']},
   historial:{es:['Historial','Aquí queda la memoria de cambios, entradas, mermas y decisiones.','Consulta el historial cuando necesites saber qué ocurrió y cuándo.'],hu:['Előzmények','Itt marad meg a változások, áruátvételek, veszteségek és döntések története.','Használd az előzményeket, ha tudni szeretnéd, mi történt és mikor.']},
+  formacion:{es:['Formación y equipo','Aquí se organiza la rotación por puestos, las reuniones semanales y el avance de cada persona.','Escucha, registra el nivel real y asigna el siguiente paso sin encasillar a nadie.'],hu:['Képzés és csapat','Itt szervezzük a munkakörök rotációját, a heti megbeszéléseket és mindenki fejlődését.','Hallgasd meg a csapatot, rögzítsd a valódi szintet, és jelöld ki a következő lépést.']},
   spotify:{es:['Música','Aquí se guardan las referencias musicales y listas para cada momento de La Urbana.','Usa la música para reforzar la experiencia del local, no como una tarea aislada.'],hu:['Zene','Itt tároljuk a La Urbana különböző pillanataihoz tartozó zenei referenciákat és lejátszási listákat.','A zene a hely hangulatát erősítse, ne különálló feladat legyen.']}
 };
 function renderTabGuia(id) {
@@ -3061,8 +3102,32 @@ function initProtocolos() {
   cerrarProtocolo();
 }
 
+const FORM_PUESTOS = ['Entrada y preparación','Cocina y salida','Sala','Barra','Limpieza y cierre','Recepción y almacén','Organización de turno'];
+function guardarRevisionFormacion(){
+  const persona=document.getElementById('form-persona')?.value.trim(); if(!persona){toast('Pon el nombre de la persona','error');return;}
+  const item={id:Date.now(),persona,fecha:document.getElementById('form-fecha')?.value||hoy(),puesto:document.getElementById('form-puesto')?.value||FORM_PUESTOS[0],nivel:document.getElementById('form-nivel')?.value||'Con apoyo',dificultad:document.getElementById('form-dificultad')?.value.trim()||'',mejora:document.getElementById('form-mejora')?.value.trim()||'',siguiente:document.getElementById('form-siguiente')?.value.trim()||'',quien:USUARIO};
+  const lista=cargar('form_revisiones',[]); lista.unshift(item); guardar('form_revisiones',lista);
+  ['form-persona','form-dificultad','form-mejora','form-siguiente'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  renderFormacion(); toast('Revisión guardada ✓','verde');
+}
+function renderFormacion(){
+  const fecha=document.getElementById('form-fecha'); if(fecha&&!fecha.value)fecha.value=hoy();
+  const matriz=document.getElementById('form-matriz'), revisiones=document.getElementById('form-revisiones'), filtro=document.getElementById('form-filtro-persona'); if(!matriz||!revisiones)return;
+  const lista=cargar('form_revisiones',[]); const personas=[...new Set(lista.map(x=>x.persona))].sort((a,b)=>a.localeCompare(b,'es'));
+  if(filtro){const val=filtro.value; filtro.innerHTML='<option value="">Todas las personas</option>'+personas.map(n=>`<option value="${escPrueba(n)}">${escPrueba(n)}</option>`).join(''); if(personas.includes(val))filtro.value=val;}
+  const elegido=filtro?.value||''; const vista=lista.filter(x=>!elegido||x.persona===elegido);
+  if(!vista.length){matriz.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:8px 0">Todavía no hay revisiones. La matriz se irá formando con las conversaciones semanales.</div>';} else {
+    const ultimos={}; vista.forEach(x=>{const k=x.persona+'|'+x.puesto;if(!ultimos[k]||String(x.fecha)>String(ultimos[k].fecha))ultimos[k]=x;});
+    const icon={"Con apoyo":'🟠',"Con supervisión":'🟡',"Autónomo":'🟢',"Puede enseñar":'⭐'};
+    matriz.innerHTML=Object.values(ultimos).sort((a,b)=>a.persona.localeCompare(b.persona,'es')||a.puesto.localeCompare(b.puesto,'es')).map(x=>`<div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding:9px 0"><div style="font-size:18px">${icon[x.nivel]||'⚪'}</div><div style="flex:1"><div style="font-weight:700;font-size:13px">${escPrueba(x.persona)} · ${escPrueba(x.puesto)}</div><div style="font-size:11px;color:var(--text-3)">${escPrueba(x.nivel)} · Revisado ${formatFecha(x.fecha)}${x.siguiente?' · Siguiente: '+escPrueba(x.siguiente):''}</div></div></div>`).join('');
+  }
+  if(!lista.length){revisiones.innerHTML='<div style="font-size:13px;color:var(--text-3)">Sin reuniones registradas.</div>';return;}
+  revisiones.innerHTML=lista.slice(0,30).map(x=>`<div style="border-top:1px solid var(--border);padding:10px 0"><div style="display:flex;justify-content:space-between;gap:8px"><strong style="font-size:13px">${escPrueba(x.persona)} · ${escPrueba(x.puesto)}</strong><button onclick="borrarRevisionFormacion(${x.id})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px">×</button></div><div style="font-size:11px;color:var(--accent-d);margin-top:3px">${formatFecha(x.fecha)} · ${escPrueba(x.nivel)}</div>${x.dificultad?`<div style="font-size:12px;margin-top:5px"><strong>Necesita:</strong> ${escPrueba(x.dificultad)}</div>`:''}${x.mejora?`<div style="font-size:12px;margin-top:3px"><strong>Mejora:</strong> ${escPrueba(x.mejora)}</div>`:''}${x.siguiente?`<div style="font-size:12px;color:var(--accent-d);margin-top:3px"><strong>Siguiente paso:</strong> ${escPrueba(x.siguiente)}</div>`:''}</div>`).join('');
+}
+function borrarRevisionFormacion(id){guardar('form_revisiones',cargar('form_revisiones',[]).filter(x=>x.id!==id));renderFormacion();toast('Revisión eliminada');}
+
 function tab(id, btn) {
-  const soloAdmin = ['menu','recetas','pruebas','proveedores','nuevosproveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario'];
+  const soloAdmin = ['menu','recetas','pruebas','proveedores','nuevosproveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario','formacion'];
   if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -3077,7 +3142,7 @@ function tab(id, btn) {
     pedidos: renderPedidos, caja: initCaja, menu: initMenu,
     appcc: initAppcc, turno: initTurno,
     recetas: renderRecetas, pruebas: renderPruebasRecetas, proveedores: renderProveedores, nuevosproveedores: renderNuevosProveedores,
-    historial: renderHistorial, spotify: renderPlaylistsCustom,
+    historial: renderHistorial, formacion: renderFormacion, spotify: renderPlaylistsCustom,
     diario: renderDiario,
     programacion: initProgramacion,
     contabilidad: () => {
@@ -6760,7 +6825,7 @@ const NAV_GRUPOS = {
   turnos: ['appcc','turno'],
   compras: ['pedidos','proveedores','nuevosproveedores'],
   cultura: ['diario','programacion','instagram'],
-  gestion: ['controlcostes','contabilidad','historial'],
+  gestion: ['formacion','controlcostes','contabilidad','historial'],
 };
 
 const PILOTO_FOOD_COST = [
