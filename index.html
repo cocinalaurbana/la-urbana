@@ -6247,7 +6247,7 @@ function migrarStockCarta() {
     ['Cayena','bote','estanteria',0],
     ['Vinagre de vino','botella','estanteria',0],
   ];
-  let nextId = Math.max(1100, ...productos.map(p => Number(p.id)||0) + 1);
+  let nextId = Math.max(1100, ...productos.map(p => Number(p.id)||0)) + 1;
   let cambio = false;
   base.forEach(([nombre,unidad,ubicacion,minimo]) => {
     if (productos.some(p => p.nombre.toLowerCase() === nombre.toLowerCase())) return;
