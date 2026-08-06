@@ -2526,6 +2526,7 @@ De [hora] a [hora]. Ven con quien quieras.
     // Tras cargar la nube, sincronizamos listas compartidas y refrescamos la pestaña activa.
     if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
     if (typeof migrarStockCarta === 'function') migrarStockCarta();
+    if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
     // No relanzar arrancarApp — ya arrancó sin esperar Firebase
     // Solo refrescar datos si ya hay usuario activo
     if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
@@ -3826,12 +3827,12 @@ const ESCANDALLOS = [
       { nombre: 'Media ración', ingredientes: [
         {nombre:'Lomo de cerdo', g:150}, {nombre:'Patata pelada al vacío', g:90},
         {nombre:'Pimiento', g:50}, {nombre:'Salsa de soja', g:15},
-        {nombre:'Aceite de girasol', g:20}, {nombre:'Whisky (cocina)', g:15}
+        {nombre:'Aceite de semillas', g:20}, {nombre:'Whisky (cocina)', g:15}
       ]},
       { nombre: 'Ración', ingredientes: [
         {nombre:'Lomo de cerdo', g:300}, {nombre:'Patata pelada al vacío', g:175},
         {nombre:'Pimiento', g:50}, {nombre:'Salsa de soja', g:15},
-        {nombre:'Aceite de girasol', g:20}, {nombre:'Whisky (cocina)', g:15}
+        {nombre:'Aceite de semillas', g:20}, {nombre:'Whisky (cocina)', g:15}
       ]}
     ]
   },
@@ -3848,15 +3849,15 @@ const ESCANDALLOS = [
   {
     plato: 'Pollo Flambeado', formatos: [
       { nombre: 'Media ración', ingredientes: [
-        {nombre:'Pechuga de pollo IQF', g:220}, {nombre:'Queso gallego (Arzúa-Ulloa)', g:25},
+        {nombre:'Pechuga de pollo IQF', g:220},
         {nombre:'Queso parmesano', g:25}, {nombre:'Nata para cocinar', g:65},
-        {nombre:'Salsa de soja', g:15}, {nombre:'Aceite de girasol', g:20},
+        {nombre:'Salsa de soja', g:15}, {nombre:'Aceite de semillas', g:20},
         {nombre:'Whisky (cocina)', g:15}
       ]},
       { nombre: 'Ración', ingredientes: [
-        {nombre:'Pechuga de pollo IQF', g:320}, {nombre:'Queso gallego (Arzúa-Ulloa)', g:25},
+        {nombre:'Pechuga de pollo IQF', g:320},
         {nombre:'Queso parmesano', g:25}, {nombre:'Nata para cocinar', g:65},
-        {nombre:'Salsa de soja', g:15}, {nombre:'Aceite de girasol', g:20},
+        {nombre:'Salsa de soja', g:15}, {nombre:'Aceite de semillas', g:20},
         {nombre:'Whisky (cocina)', g:15}
       ]}
     ]
@@ -6297,7 +6298,7 @@ function migrarStockCarta() {
   const productos = cargar('stock_productos', null);
   if (!Array.isArray(productos)) return;
   const base = [
-    ['Patata gajo envasada','bolsa','congelador-croquetas',1],
+    ['Patata gajo envasada','bolsa 1kg','congelador-croquetas',1],
     ['Salsa de soja clara','botella','estanteria',0],
     ['Salsa teriyaki','botella','estanteria',0],
     ['Pesto','bote','nevera-cocina',0],
@@ -6314,16 +6315,73 @@ function migrarStockCarta() {
     ['Pimentón dulce','bote','estanteria',0],
     ['Pimentón picante','bote','estanteria',0],
     ['Cayena','bote','estanteria',0],
-    ['Vinagre de vino','botella','estanteria',0],
+    ['Vinagre de manzana','botella','estanteria',0],
+    ['Pimientos de Padrón','kg','nevera-almacen',0],
+    ['Ajo','cabeza','estanteria',0],
   ];
   let nextId = Math.max(1100, ...productos.map(p => Number(p.id)||0)) + 1;
   let cambio = false;
+  const obsoletos = productos.filter(p => /teque|coulant|arz[uú]a/i.test(p.nombre||''));
+  if (obsoletos.length) { productos = productos.filter(p => !/teque|coulant|arz[uú]a/i.test(p.nombre||'')); cambio = true; }
+  productos.forEach(p => {
+    const n = (p.nombre||'').toLowerCase();
+    if (n === 'burrata') { if (JSON.stringify(p.formatos||[]) !== JSON.stringify(['envase individual'])) { p.formatos=['envase individual']; cambio=true; } }
+    if (n.includes('chorizo criollo')) { if (JSON.stringify(p.formatos||[]) !== JSON.stringify(['pack de 4'])) { p.formatos=['pack de 4']; cambio=true; } }
+    if (n.includes('atún desmigado') && p.unidad !== 'sobre 1kg') { p.unidad='sobre 1kg'; cambio=true; }
+    if (n.includes('patata panadera')) { if (p.unidad !== 'bolsa 5kg') { p.unidad='bolsa 5kg'; cambio=true; } p.formatos=['5 kg actualmente · peso variable con nuevo proveedor']; }
+    if (n.includes('patata gajo')) { if (p.unidad !== 'bolsa 1kg') { p.unidad='bolsa 1kg'; cambio=true; } p.formatos=['bolsa de 1 kg']; }
+    if (n === 'aceite girasol' || n === 'aceite de semillas') { if (p.nombre !== 'Aceite de semillas' || p.unidad !== 'garrafa 10L') { p.nombre='Aceite de semillas'; p.unidad='garrafa 10L'; cambio=true; } }
+    if (n === 'vinagre de vino') { p.nombre='Vinagre de manzana'; cambio=true; }
+    (p.lotes||[]).forEach(l => {
+      if (n === 'burrata' && !l.formato) { l.formato='envase individual'; cambio=true; }
+      if (n.includes('chorizo criollo') && !l.formato) { l.formato='pack de 4'; cambio=true; }
+      if (n === 'aceite girasol' && l.notas) { l.notas=l.notas.replace(/aceite girasol/ig,'aceite de semillas').replace(/15L/ig,'10L'); cambio=true; }
+    });
+  });
   base.forEach(([nombre,unidad,ubicacion,minimo]) => {
     if (productos.some(p => p.nombre.toLowerCase() === nombre.toLowerCase())) return;
     productos.push({id:nextId++,nombre,unidad,ubicacion,minimo,critico:0,vidaDias:null,lotes:[],categoria:'despensa'});
     cambio = true;
   });
+  // Evita duplicados si un producto antiguo fue renombrado durante una migración.
+  const unicos = [];
+  productos.forEach(p => {
+    const existente = unicos.find(x => (x.nombre||'').toLowerCase() === (p.nombre||'').toLowerCase());
+    if (!existente) unicos.push(p);
+    else { existente.lotes = [...(existente.lotes||[]), ...(p.lotes||[])]; cambio = true; }
+  });
+  if (unicos.length !== productos.length) cambio = true;
+  productos = unicos;
   if (cambio) guardar('stock_productos', productos);
+}
+
+function limpiarCatalogoObsoleto() {
+  const limpiarTexto = texto => String(texto||'')
+    .replace(/tequeños?/ig,'')
+    .replace(/coulant(?: de chocolate)?/ig,'')
+    .replace(/queso (?:gallego )?arz[uú]a[- ]?ulloa/ig,'')
+    .replace(/aceite de girasol/ig,'aceite de semillas')
+    .replace(/aceite girasol/ig,'aceite de semillas')
+    .replace(/garrafa 15L/ig,'garrafa 10L')
+    .replace(/vinagre de vino/ig,'vinagre de manzana')
+    .replace(/,\s*,/g,',').replace(/^,\s*|,\s*$/g,'').trim();
+  const proveedores = cargar('proveedores', null);
+  if (Array.isArray(proveedores)) {
+    let cambio=false;
+    const salida=proveedores.map(p=>{ const q={...p}; ['notas','productos'].forEach(k=>{if(typeof q[k]==='string'){const z=limpiarTexto(q[k]);if(z!==q[k]){q[k]=z;cambio=true;}}}); return q; });
+    if(cambio) guardar('proveedores',salida);
+  }
+  const recetas = cargar('recetas', null);
+  if (Array.isArray(recetas)) {
+    let cambio=false;
+    const salida=recetas.map(r=>{
+      const q={...r};
+      ['nombre','elaboracion','notas'].forEach(k=>{if(typeof q[k]==='string'){const z=limpiarTexto(q[k]);if(z!==q[k]){q[k]=z;cambio=true;}}});
+      if(Array.isArray(q.ingredientes)){ const antes=q.ingredientes.length; q.ingredientes=q.ingredientes.filter(i=>!/(teque|coulant|arz[uú]a)/i.test(i.nombre||'')).map(i=>({...i,nombre:limpiarTexto(i.nombre),cantidad:limpiarTexto(i.cantidad)})); if(q.ingredientes.length!==antes)cambio=true; }
+      return q;
+    });
+    if(cambio) guardar('recetas',salida);
+  }
 }
 
 function seedData() {
@@ -6331,7 +6389,7 @@ function seedData() {
     guardar('proveedores', [
       {id:1,nombre:'Elmar',categoria:'Cárnico',telefono:'',dias:'Lunes y Jueves',notas:'Pechuga pollo IQF bolsas 2,5kg'},
       {id:2,nombre:'Fructifera',categoria:'Verduras',telefono:'',dias:'Martes y Viernes',notas:'Patata pelada vacío, pimiento, zanahoria, perejil'},
-      {id:3,nombre:'Armando Galves',categoria:'General',telefono:'',dias:'',notas:'Aceite girasol garrafa 15L'},
+      {id:3,nombre:'Armando Galves',categoria:'General',telefono:'',dias:'',notas:'Aceite de semillas garrafa 10L'},
       {id:4,nombre:'Mercadona',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Chorizo criollo, croquetas'},
       {id:5,nombre:'Del Mar',categoria:'Pescado/Conservas',telefono:'',dias:'Según necesidad',notas:'Atún desmigado 1kg'},
       {id:6,nombre:'Gadis',categoria:'General',telefono:'',dias:'Según necesidad',notas:"Mayonesa Hellmann's cubo 4,6kg, nata cocinar"},
@@ -6343,15 +6401,15 @@ function seedData() {
     const h = hoy();
     const en = (d) => { const f=new Date(); f.setDate(f.getDate()+d); return f.toISOString().slice(0,10); };
     guardar('stock_productos', [
-      {id:1001,nombre:'Burrata',unidad:'ud',ubicacion:'nevera-columna',minimo:3,critico:1,vidaDias:7,lotes:[{id:9001,cantidad:4,caduca:en(5),notas:'Mercadona',entrada:h}]},
+      {id:1001,nombre:'Burrata',unidad:'ud',formatos:['envase individual'],ubicacion:'nevera-columna',minimo:3,critico:1,vidaDias:7,lotes:[{id:9001,cantidad:4,caduca:en(5),notas:'Mercadona',entrada:h}]},
       {id:1002,nombre:'Rúcula',unidad:'bolsa',ubicacion:'nevera-columna',minimo:2,critico:0,vidaDias:3,lotes:[{id:9002,cantidad:1,caduca:en(2),notas:'',entrada:h}]},
       {id:1003,nombre:'Tomate ensalada',unidad:'kg',ubicacion:'nevera-columna',minimo:2,critico:0,vidaDias:5,lotes:[{id:9003,cantidad:1,caduca:en(3),notas:'Fructifera',entrada:h}]},
       {id:1004,nombre:'Pechuga pollo IQF',unidad:'bolsa 2,5kg',ubicacion:'congelador-pollo',minimo:2,critico:0,vidaDias:null,lotes:[{id:9004,cantidad:4,caduca:null,notas:'Elmar',entrada:h}]},
-      {id:1005,nombre:'Chorizo criollo blanco',unidad:'ud',ubicacion:'nevera-blanca',minimo:4,critico:1,vidaDias:null,lotes:[{id:9005,cantidad:8,caduca:null,notas:'Mercadona',entrada:h}]},
-      {id:1006,nombre:'Atún desmigado',unidad:'bote 1kg',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9006,cantidad:1,caduca:null,notas:'Del Mar',entrada:h}]},
+      {id:1005,nombre:'Chorizo criollo blanco',unidad:'ud',formatos:['pack de 4'],ubicacion:'nevera-blanca',minimo:4,critico:1,vidaDias:null,lotes:[{id:9005,cantidad:8,caduca:null,notas:'Mercadona',entrada:h}]},
+      {id:1006,nombre:'Atún desmigado',unidad:'sobre 1kg',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9006,cantidad:1,caduca:null,notas:'Del Mar',entrada:h}]},
       {id:1007,nombre:'Patata bastón (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:2,critico:0,vidaDias:null,lotes:[{id:9007,cantidad:3,caduca:null,notas:'Fructifera',entrada:h}]},
       {id:1021,nombre:'Patata tortilla (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:2,critico:0,vidaDias:null,lotes:[]},
-      {id:1022,nombre:'Patata panadera (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
+      {id:1022,nombre:'Patata panadera (vacío)',unidad:'bolsa 5kg',formatos:['5 kg actualmente · peso variable con nuevo proveedor'],ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1023,nombre:'Patata entera (vacío)',unidad:'bolsa',ubicacion:'nevera-almacen',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1024,nombre:'Patata entera con piel',unidad:'kg',ubicacion:'nevera-almacen',minimo:3,critico:0,vidaDias:null,lotes:[]},
       {id:1025,nombre:'Patata brava congelada',unidad:'bolsa',ubicacion:'congelador-croquetas',minimo:1,critico:0,vidaDias:null,lotes:[]},
@@ -6363,7 +6421,7 @@ function seedData() {
       {id:1031,nombre:'Limpiador multiusos',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
       {id:1032,nombre:'Insecticida',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
       {id:1033,nombre:'Limpiacristales',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
-      {id:1008,nombre:'Aceite girasol',unidad:'garrafa 15L',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9008,cantidad:1,caduca:null,notas:'Armando Galves',entrada:h}]},
+      {id:1008,nombre:'Aceite de semillas',unidad:'garrafa 10L',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9008,cantidad:1,caduca:null,notas:'Armando Galves',entrada:h}]},
       {id:1010,nombre:'Croquetas jamón',unidad:'bolsa',ubicacion:'congelador-croquetas',minimo:2,critico:1,vidaDias:null,lotes:[{id:9010,cantidad:1,caduca:null,notas:'Mercadona',entrada:h}]},
       {id:1012,nombre:"Mayonesa Hellmann's",unidad:'cubo',ubicacion:'cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1014,nombre:'Pan mariñeira',unidad:'ud',ubicacion:'cocina',minimo:10,critico:3,vidaDias:1,lotes:[]},
@@ -6402,15 +6460,14 @@ function seedData() {
         margen_media:85.8, margen_racion:88.1,
         ingredientes:[
           {nombre:'Pechuga de pollo',cantidad:'220g (media) · 320g (ración)'},
-          {nombre:'Queso gallego Arzúa-Ulloa',cantidad:'25g'},
           {nombre:'Queso parmesano',cantidad:'25g'},
           {nombre:'Nata para cocinar',cantidad:'65g'},
           {nombre:'Salsa de soja',cantidad:'15g'},
           {nombre:'Ajo-aceite',cantidad:'10g'},
           {nombre:'Whisky (cocina)',cantidad:'15g'},
-          {nombre:'Aceite de girasol',cantidad:'20g'},
+          {nombre:'Aceite de semillas',cantidad:'20g'},
         ],
-        elaboracion:'1. Marcar la pechuga en sartén, sobre un fogón, con aceite y ajo.\n2. Añadir nata, queso gallego y parmesano.\n3. Flambear con whisky.\n4. Ajustar sabor con soja.',
+        elaboracion:'1. Marcar la pechuga en sartén, sobre un fogón, con aceite y ajo.\n2. Añadir nata y parmesano.\n3. Flambear con whisky.\n4. Ajustar sabor con soja.',
         notas:'⚠️ Coste pendiente: nata, parmesano y whisky sin precio confirmado.'
       },
       {
@@ -6425,7 +6482,7 @@ function seedData() {
           {nombre:'Salsa de soja',cantidad:'15g (igual en ambas)'},
           {nombre:'Ajo-aceite',cantidad:'10g (igual en ambas)'},
           {nombre:'Whisky (cocina)',cantidad:'15g (igual en ambas)'},
-          {nombre:'Aceite de girasol',cantidad:'20g (igual en ambas)'},
+          {nombre:'Aceite de semillas',cantidad:'20g (igual en ambas)'},
         ],
         elaboracion:'1. Cortar lomo en dados. Marcar en sartén muy caliente, sobre un fogón.\n2. Cocer patata al vapor o hervida.\n3. Saltear pimiento.\n4. Mezclar con soja + whisky + ajo-aceite.\n5. Servir caliente.',
         notas:'⚠️ Coste incompleto: precio lomo y pimiento pendientes de factura.'
@@ -6456,7 +6513,7 @@ function seedData() {
         ingredientes:[
           {nombre:'Huevos',cantidad:'6 uds (mediana) · 12 uds (grande)'},
           {nombre:'Patata cruda',cantidad:'750g → 630g pochada (mediana) · 1,5kg → 1,26kg (grande)'},
-          {nombre:'Aceite de girasol',cantidad:'para pochar'},
+          {nombre:'Aceite de semillas',cantidad:'para pochar'},
           {nombre:'Sal',cantidad:'al gusto'},
         ],
         elaboracion:'1. Pelar y laminar patata. Pochar en aceite abundante (merma 16%).\n2. Batir huevos con sal. Mezclar con patata pochada y escurrida.\n3. Cuajar en sartén antiadherente, dar 2 vueltas.\n4. Mediana → 4 tapas. Grande → 8 tapas.',
@@ -6505,8 +6562,8 @@ function seedData() {
           {nombre:'Orégano',cantidad:'2 cdas'},
           {nombre:'Tomillo',cantidad:'1 cda'},
           {nombre:'Perejil',cantidad:'1 cda'},
-          {nombre:'Aceite de girasol',cantidad:'300ml'},
-          {nombre:'Vinagre de vino',cantidad:'200ml'},
+          {nombre:'Aceite de semillas',cantidad:'300ml'},
+          {nombre:'Vinagre de manzana',cantidad:'200ml'},
           {nombre:'Dientes de ajo',cantidad:'4 uds'},
           {nombre:'Pimentón picante',cantidad:'1 cda postre rasa'},
           {nombre:'Pimentón dulce',cantidad:'1 cda postre rasa'},
@@ -6543,7 +6600,7 @@ function seedData() {
         ingredientes:[
           {nombre:'Perejil fresco',cantidad:'1 manojo'},
           {nombre:'Ajos',cantidad:'1 cabeza'},
-          {nombre:'Aceite de girasol',cantidad:'600ml'},
+          {nombre:'Aceite de semillas',cantidad:'600ml'},
         ],
         elaboracion:'Triturar todo en frío hasta emulsionar.',
         notas:'Caducidad: ~4–5 días en frío (provisional).'
@@ -6558,6 +6615,7 @@ function seedData() {
 function arrancarApp() {
   seedData();
   migrarStockCarta();
+  limpiarCatalogoObsoleto();
   integrarTarifaQuique();
   migrarChecklistTurno();
   seedPruebasRecetas();
