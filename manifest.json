@@ -2,7 +2,7 @@
   "name": "La Urbana Cocina",
   "short_name": "La Urbana",
   "description": "Organización de cocina, stock, recetas y comunicación de La Urbana",
-  "start_url": "/la-urbana/index.html?entrada=lore",
+  "start_url": "/la-urbana/acceso.html",
   "id": "/la-urbana/",
   "scope": "/la-urbana/",
   "display": "standalone",
