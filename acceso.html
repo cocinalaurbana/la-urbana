@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Entrar en La Urbana</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#171513;color:#f1e9df;font-family:Arial,sans-serif;padding:24px}.box{width:min(100%,360px);text-align:center;background:#24201d;border:1px solid #51463d;border-radius:18px;padding:30px 22px;box-shadow:0 18px 50px #0008}h1{font-size:26px;letter-spacing:2px;margin:0 0 8px}p{color:#b8aaa0;font-size:14px;line-height:1.5;margin:0 0 24px}label{display:block;text-align:left;color:#d2c4b9;font-size:13px;margin-bottom:7px}input{width:100%;font-size:28px;letter-spacing:12px;text-align:center;color:#fff;background:#171513;border:1px solid #66584d;border-radius:10px;padding:13px 8px;outline:none}input:focus{border-color:#c9973a}button{width:100%;margin-top:16px;border:0;border-radius:10px;background:#c9973a;color:#1b1611;font-weight:700;font-size:16px;padding:14px;cursor:pointer}#error{min-height:20px;color:#e98d7d;font-size:13px;margin-top:12px}.hint{margin-top:22px;font-size:11px;color:#887b70}
+</style>
+</head>
+<body>
+<main class="box">
+  <h1>LA URBANA</h1>
+  <p>Acceso de Lore</p>
+  <form id="form">
+    <label for="pin">Introduce tu PIN</label>
+    <input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" autofocus>
+    <button type="submit">Entrar</button>
+    <div id="error"></div>
+  </form>
+  <div class="hint">La aplicación abrirá tu espacio de trabajo.</div>
+</main>
+<script>
+document.getElementById('form').addEventListener('submit',function(e){
+  e.preventDefault();
+  var pin=document.getElementById('pin').value;
+  if(pin==='1974'){
+    window.location.href='index.html?entrada=lore&auto=1&v=65';
+  }else{
+    document.getElementById('error').textContent='PIN incorrecto. Inténtalo de nuevo.';
+    document.getElementById('pin').value='';
+    document.getElementById('pin').focus();
+  }
+});
+</script>
+</body>
+</html>
