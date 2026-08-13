@@ -768,6 +768,41 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   </div>
 </div>
 
+<!-- ACCESO MÓVIL ROBUSTO: muestra el PIN aunque el navegador tarde en enlazar los scripts -->
+<script>
+(function(){
+  function prepararAcceso(){
+    var roles = document.querySelectorAll('#login-roles .login-btn');
+    roles.forEach(function(btn, i){
+      if (btn.dataset.urbMobileBound) return;
+      btn.dataset.urbMobileBound = '1';
+      btn.addEventListener('click', function(){
+        var nombres = ['lore','cesar','maria'];
+        if (typeof window.seleccionarRol === 'function') {
+          window.seleccionarRol(nombres[i], btn);
+        } else {
+          document.getElementById('login-roles').style.display = 'none';
+          document.getElementById('pin-panel').style.display = 'block';
+          document.getElementById('pin-quien-txt').textContent = nombres[i] === 'lore' ? '👩‍🍳 Lore — introduce tu PIN' : 'Introduce tu PIN';
+        }
+      }, false);
+    });
+    if (new URLSearchParams(window.location.search).get('entrada') === 'lore') {
+      var lore = roles[0];
+      if (lore && typeof window.seleccionarRol === 'function') {
+        window.seleccionarRol('lore', lore);
+      } else if (lore) {
+        document.getElementById('login-roles').style.display = 'none';
+        document.getElementById('pin-panel').style.display = 'block';
+        document.getElementById('pin-quien-txt').textContent = '👩‍🍳 Lore — introduce tu PIN';
+      }
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', prepararAcceso);
+  else prepararAcceso();
+})();
+</script>
+
 <!-- HEADER -->
 <header>
   <div class="header-left">
