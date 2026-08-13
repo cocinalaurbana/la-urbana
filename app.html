@@ -768,6 +768,41 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   </div>
 </div>
 
+<!-- ACCESO MÓVIL ROBUSTO: muestra el PIN aunque el navegador tarde en enlazar los scripts -->
+<script>
+(function(){
+  function prepararAcceso(){
+    var roles = document.querySelectorAll('#login-roles .login-btn');
+    roles.forEach(function(btn, i){
+      if (btn.dataset.urbMobileBound) return;
+      btn.dataset.urbMobileBound = '1';
+      btn.addEventListener('click', function(){
+        var nombres = ['lore','cesar','maria'];
+        if (typeof window.seleccionarRol === 'function') {
+          window.seleccionarRol(nombres[i], btn);
+        } else {
+          document.getElementById('login-roles').style.display = 'none';
+          document.getElementById('pin-panel').style.display = 'block';
+          document.getElementById('pin-quien-txt').textContent = nombres[i] === 'lore' ? '👩‍🍳 Lore — introduce tu PIN' : 'Introduce tu PIN';
+        }
+      }, false);
+    });
+    if (new URLSearchParams(window.location.search).get('entrada') === 'lore') {
+      var lore = roles[0];
+      if (lore && typeof window.seleccionarRol === 'function') {
+        window.seleccionarRol('lore', lore);
+      } else if (lore) {
+        document.getElementById('login-roles').style.display = 'none';
+        document.getElementById('pin-panel').style.display = 'block';
+        document.getElementById('pin-quien-txt').textContent = '👩‍🍳 Lore — introduce tu PIN';
+      }
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', prepararAcceso);
+  else prepararAcceso();
+})();
+</script>
+
 <!-- HEADER -->
 <header>
   <div class="header-left">
@@ -3195,6 +3230,28 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
         <div><strong style="color:var(--text)">4. Revisar HDR:</strong> desactivarlo si está activo para evitar cambios de brillo o color al subir a Instagram.</div>
         <div><strong style="color:var(--text)">5. Mirar el fondo:</strong> retirar cajas, reflejos, luces fuertes, cables y objetos que compitan con la comida.</div>
       </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">💡 Una sola dirección de luz · comprobación rápida</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">En nuestra cocina sin ventanas, la ventana se sustituye por la LED. Lo importante no es añadir luz, sino evitar que varias fuentes compitan.</div>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Solo una dirección clara · □ LED lateral, no frontal · □ comida como punto más luminoso · □ sombras suaves · □ fondo sin objetos que roben la mirada · □ fluorescentes apagados si es posible.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🥄 Siete gestos de salsa · inspiración con criterio</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia muestra recursos de emplatado: swipe, reverse pull, mini swipe, brocha, puntos, goteo y splash. En La Urbana no los usaremos por decorar: solo si la salsa existe, aporta algo y encaja con el plato.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Más útiles para probar:</strong> punto controlado, goteo natural o un trazo corto que guíe la mirada.</div>
+        <div><strong style="color:var(--text)">Evitar:</strong> manchas, salpicaduras o pinceladas que parezcan suciedad o cambien la ración.</div>
+        <div><strong style="color:var(--text)">Regla:</strong> cada gesto debe aportar sabor, textura, contraste o identidad; si no, el plato queda más limpio sin él.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">📦 Vídeo creativo de producto</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6">El último Reel se presenta como edición de vídeo creativo de producto en CapCut. Como el texto no describe toda la secuencia visual, no voy a inventar sus planos. Nos quedamos con un formato aplicable:</div>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.8;margin-top:8px">revelación → detalle → uso/servicio → resultado → cierre local. Aplicarlo a una bebida, una bandeja, un plato o un elemento real de La Urbana.</div>
     </div>
 
     <!-- COPIES LISTOS -->
