@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="La Urbana Cocina">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/la-urbana/icon-192.png">
+<link rel="manifest" href="/la-urbana/manifest.json">
 <meta name="theme-color" content="#1a1209">
 <title>La Urbana Cocina</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1931,11 +1931,20 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
       
-      <button onclick="mkTab('vision')" id="mk-btn-vision" class="mk-tab-btn active" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">🔥 Visión</button>
-      <button onclick="mkTab('estrategia')" id="mk-btn-estrategia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">🎯 Estrategia</button>
-      <button onclick="mkTab('calendario')" id="mk-btn-calendario" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">📅 Calendario</button>
-      <button onclick="mkTab('ideas')" id="mk-btn-ideas" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">💡 Ideas</button>
-      <button onclick="mkTab('guia')" id="mk-btn-guia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">📸 Guía foto</button>
+      <button onclick="mkTab('vision')" id="mk-btn-vision" class="mk-tab-btn active" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🔥 00 Panel</button>
+      <button onclick="mkTab('realidad')" id="mk-btn-realidad" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">✅ 01 Realidad</button>
+      <button onclick="mkTab('estrategia')" id="mk-btn-estrategia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🎯 02 Estrategia</button>
+      <button onclick="mkTab('rodaje')" id="mk-btn-rodaje" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🎬 03 Rodaje</button>
+      <button onclick="mkTab('iluminacion')" id="mk-btn-iluminacion" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">💡 04 Luz</button>
+      <button onclick="mkTab('guia')" id="mk-btn-guia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">📸 05 Foto</button>
+      <button onclick="mkTab('video')" id="mk-btn-video" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">✂️ 06 Vídeo</button>
+      <button onclick="mkTab('sonido')" id="mk-btn-sonido" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🎧 07 Sonido</button>
+      <button onclick="mkTab('ideas')" id="mk-btn-ideas" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">💡 08 Ideas</button>
+      <button onclick="mkTab('formatos')" id="mk-btn-formatos" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🧩 09 Formatos</button>
+      <button onclick="mkTab('calendario')" id="mk-btn-calendario" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">📅 10 Calendario</button>
+      <button onclick="mkTab('publicar')" id="mk-btn-publicar" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">📤 11 Publicar</button>
+      <button onclick="mkTab('equipo')" id="mk-btn-equipo" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🧰 12 Equipo</button>
+      <button onclick="mkTab('qr')" id="mk-btn-qr" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🎴 13 QR</button>
     </div>
   </div>
 
@@ -1944,6 +1953,13 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <!-- VISIÓN ESTRATÉGICA -->
   <div id="mk-vision">
 
+    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,var(--surface),var(--surface-2));border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:1rem;margin-bottom:8px">🔥 00 · Panel de trabajo</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La aplicación queda organizada como un recorrido de trabajo, no como un cajón de referencias. Se entra por la realidad, se prepara la sesión, se graba, se edita y después se publica.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"><span class="badge">01 Realidad</span><span class="badge">02 Estrategia</span><span class="badge">03 Rodaje</span><span class="badge">04 Luz</span><span class="badge">05 Foto</span><span class="badge">06 Vídeo</span><span class="badge">07 Sonido</span><span class="badge">08 Ideas</span><span class="badge">09 Formatos</span><span class="badge">10 Calendario</span><span class="badge">11 Publicar</span><span class="badge">12 Equipo</span><span class="badge">13 QR</span></div>
+      <div style="padding:10px 12px;background:var(--accent-l);border-radius:10px;font-size:12px;color:var(--text-2);line-height:1.55"><strong>Siguiente acción:</strong> confirmar tres platos, un pincho/prueba y una bebida; después preparar una sesión de 60 minutos con el Xiaomi 17 Leica, una luz y una superficie limpia.</div>
+    </div>
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)"><div style="font-weight:800;font-size:.95rem;margin-bottom:7px">📝 Organización que también se puede contar</div><div style="font-size:12px;color:var(--text-2);line-height:1.6">La referencia muestra que organizar la semana también puede formar parte del contenido. Para La Urbana: planos del calendario, selección de platos, montaje de la luz y preparación de la sesión, sin enseñar datos sensibles. Serie posible: «Mientras esperamos, organizamos La Urbana».</div></div>
 
     <!-- ESTRATEGIA COMPLETA · MES 1 -->
     <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
@@ -2148,6 +2164,18 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <!-- ESTRATEGIA -->
   <div id="mk-estrategia" style="display:none">
 
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">📦 Una sesión mensual · 12 piezas reutilizables</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Objetivo práctico: una sesión de contenido puede alimentar un mes sin volver a fotografiar cada semana.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">4 Reels:</strong> producto, oficio, sonido/ambiente y un formato creativo.</div>
+        <div><strong style="color:var(--text)">4 carruseles:</strong> ingrediente, proceso, primera visita y una historia del equipo/local.</div>
+        <div><strong style="color:var(--text)">4 fotos o piezas breves:</strong> hero shot, bebida, pincho real y plato terminado/mesa.</div>
+        <div><strong style="color:var(--text)">Reutilización:</strong> cada Reel puede producir Stories, un QR, una portada y un detalle para calendario.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>No es una obligación de publicar 12 veces:</strong> es una reserva de material para elegir con calma según disponibilidad y ritmo real.</div>
+    </div>
+
     <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
       <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🧩 Tres familias de contenido · no confundir con storytelling</div>
       <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La estrategia puede ordenarse en tres familias. El storytelling no es una familia aparte: es la forma de contar cualquiera de ellas.</div>
@@ -2156,6 +2184,31 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
         <div><strong style="color:var(--verde)">2. Personas y oficio:</strong> manos, equipo, preparación, limpieza, pase, servicio y decisiones que hacen posible el plato.</div>
         <div><strong style="color:var(--verde)">3. Lugar y ambiente:</strong> barra, entrada, mesas, luz, barrio, sonidos y sensación de estar en La Urbana.</div>
         <div><strong style="color:var(--verde)">Reparto inicial orientativo:</strong> 50% producto, 30% oficio/personas y 20% espacio/ambiente. Se puede cambiar según lo que interese comunicar cada mes.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">♻️ Una sesión, cinco piezas distintas</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">No fotografiamos un plato una sola vez. Planificamos antes cinco historias visuales diferentes para aprovechar la misma elaboración y no tener que repetir la sesión la semana siguiente.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">1. Retrato del ingrediente:</strong> limpio, sencillo y con fondo neutro.</div>
+        <div><strong style="color:var(--text)">2. Preparación y textura:</strong> corte, interior, mezcla o detalle.</div>
+        <div><strong style="color:var(--text)">3. En proceso:</strong> fuego, manos, salsa, montaje o servicio.</div>
+        <div><strong style="color:var(--text)">4. Plato terminado:</strong> hero shot claro y apetecible.</div>
+        <div><strong style="color:var(--text)">5. Variación:</strong> cambiar un solo elemento, como ángulo, recorte o dirección de la luz.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Ejemplo:</strong> con el huevo o la patata podemos crear contenido de ingrediente, oficio, proceso, plato final y una variación para Stories o QR.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid #8b6f5a">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🎯 Destino antes de disparar</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Cada foto se decide pensando primero dónde se va a utilizar. Así no acumulamos imágenes bonitas que luego no tienen función.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Menú o carta:</strong> imagen clara, legible y fiel al plato.</div>
+        <div><strong style="color:var(--text)">Instagram:</strong> composición emocional, textura y espacio para el texto si lo necesita.</div>
+        <div><strong style="color:var(--text)">Story:</strong> vertical y rápida, con lugar para una encuesta o información.</div>
+        <div><strong style="color:var(--text)">Promoción:</strong> dejar espacio negativo para precio, fecha o disponibilidad.</div>
+        <div><strong style="color:var(--text)">QR:</strong> plano que conecte con el vídeo y no se quede solo en una fotografía.</div>
       </div>
     </div>
 
@@ -2262,7 +2315,81 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     </div>
   </div>
 
-  <!-- CALENDARIO -->
+  <!-- 01 REALIDAD -->
+  <div id="mk-realidad" style="display:none">
+    <div class="card" style="border-left:4px solid var(--verde);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">✅ 01 · Realidad antes de comunicar</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Esta pestaña evita que una referencia externa se convierta por error en una decisión de La Urbana.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🍽️ Oferta real de trabajo</div><div style="font-size:12px;color:var(--text-2);line-height:1.6">Tortilla · ensaladilla · croquetas · pollo Urbana · patatas bravas · raxo · criollo · pinchos reales del día. Confirmar siempre qué está disponible antes de grabar o publicar.</div><div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3)"><strong>Fuera de la oferta actual:</strong> pescado y jamón asado. El aliño de limón queda como prueba para un pincho, no como plato fijo.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🍷 Bebidas</div><div style="font-size:12px;color:var(--text-2);line-height:1.6">Comprobar existencia, equipo, precio y facilidad de servicio antes de comunicar cerveza, vino, vermut, tinto de verano, Spritz o combinados. No añadir bebidas por inspiración externa.</div></div>
+    <div class="card"><div class="card-title">🧾 Ficha de verificación de cada pieza</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Plato/bebida disponible · □ Ingredientes reales · □ Precio confirmado · □ Horario confirmado · □ Alérgenos revisados · □ Permisos de personas · □ Enlace/QR probado</div></div>
+  </div>
+
+  <!-- 03 RODAJE -->
+  <div id="mk-rodaje" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🎬 03 · Sesión de rodaje</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Una sesión mensual, un hueco tranquilo, tres elaboraciones reales, un pincho o prueba y una bebida disponible. La escena se prepara antes de emplatar.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">⏱️ Guion de 60 minutos</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">00–10 preparar fondo, luz y Xiaomi · 10–25 oficio y calor · 25–30 fotos · 30–35 B-roll · 35–55 conceptos · 55–60 comprobar archivos y recoger.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🎥 Las cuatro escenas</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Preparación tranquila · □ Calor/vapor/chisporroteo · □ Mesa/servicio · □ Primer bocado o plato terminado</div></div>
+    <div class="card"><div class="card-title">♻️ Material que debe salir</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Hero shot · □ Plano completo · □ 45º · □ Detalle · □ Cenital independiente · □ Sonidos · □ Fotos para carta/Stories/QR · □ Un Reel en bruto</div></div>
+  </div>
+
+  <!-- 04 ILUMINACION -->
+  <div id="mk-iluminacion" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">💡 04 · Luz de una cocina sin ventanas</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">No iluminamos toda la cocina: creamos un rincón portátil y controlado.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🛒 Compra inicial</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ LED continua bicolor, regulable, CRI alto y sin parpadeo · □ Softbox/difusor · □ Trípode · □ Cartón blanco · □ Cartón negro opcional</div><div style="margin-top:8px;font-size:11px;color:var(--text-3)">No comprar todavía RGB, dos focos, slider ni batería V-mount.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">📐 Montaje</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Luz lateral/trasera a 45º · cámara en lado de sombra · blanco para rellenar · negro para recuperar textura · apagar fluorescentes si se puede.</div></div>
+    <div class="card"><div class="card-title">🌫️ Suave no significa plano</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Difundir solo si hay reflejo duro. Si se pierde textura, retirar difusión, mover la luz al lateral o usar cartón negro.</div></div>
+  </div>
+
+  <!-- 06 VIDEO -->
+  <div id="mk-video" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">✂️ 06 · Vídeo y montaje</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Grabar es reunir material; editar es decidir qué merece quedarse.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">📱 Xiaomi 17 Leica</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Limpiar lente · □ 4K si hay luz · □ 24/25/30 fps normal · □ 50 fps si queremos ralentizar · □ Bloquear foco/exposición · □ Balance de blancos fijo · □ Trípode o apoyo.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🎞️ Reel de 15–25 segundos</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Gancho · preparación · calor · mesa · bocado · nombre del plato · cierre local. Un solo efecto avanzado por pieza.</div></div>
+    <div class="card"><div class="card-title">✂️ Editar en CapCut o Edits</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Qué se queda · □ dónde cortar · □ ritmo rápido/lento · □ jump cut o corte por movimiento · □ sonido claro · □ exportar sin HDR por defecto · □ revisar antes de publicar.</div></div>
+  </div>
+
+  <!-- 07 SONIDO -->
+  <div id="mk-sonido" style="display:none">
+    <div class="card" style="border-left:4px solid var(--verde);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🎧 07 · Sonido como identidad</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">No todo Reel necesita música. La cocina puede hablar.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🔊 Mapa sonoro</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Preparación · calor · acabado · barra/mesa. Elegir cuatro sonidos y dejar silencios entre ellos.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🎙️ Biblioteca</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Cuchillo · tabla · aceite · plancha · crujiente · salsa · plato · bebida · ambiente. Grabar tomas separadas si el extractor o las voces molestan.</div></div>
+    <div class="card"><div class="card-title">🏷️ Series</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">«Sonidos que abren el apetito» · «Deja que la cocina hable» · «Así empieza una cena en La Urbana».</div></div>
+  </div>
+
+  <!-- 10 PUBLICAR -->
+  <div id="mk-publicar" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">📤 10 · Publicar con intención</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Antes de hacer una foto hay que saber dónde irá. Antes de publicar hay que verificar la realidad.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">📆 Ritmo inicial</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ 1 Reel/semana · □ 1 foto o carrusel/semana · □ 3–5 Stories · □ una pieza humana o de ambiente cuando exista algo real que contar.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">💬 Llamadas a la acción</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">«Ven a probarlo» · «¿Tortilla o croquetas?» · «Comenta CARTA» solo si hay algo real que responder · «Guárdalo para tu próxima visita».</div></div>
+    <div class="card"><div class="card-title">📊 Revisar al mes</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Guardados · compartidos · respuestas · visitas al perfil · consultas · platos mencionados · tiempo real de producción.</div></div>
+  </div>
+
+  <!-- 11 EQUIPO -->
+  <div id="mk-equipo" style="display:none">
+    <div class="card" style="border-left:4px solid #8b6f5a;margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🧰 11 · Equipo y compras</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Comprar por fases. Primero lo que mejora todas las fotos; después los accesorios creativos.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🟢 Ahora</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">LED bicolor + softbox + trípode + pinza universal para Xiaomi + cartón blanco/negro + tabla/superficie mate.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🟡 Después de probar</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Soporte articulado · ventosa para superficies lisas · mini slider · plato giratorio para órbitas y vertidos · luz de contra para bebidas.</div></div>
+    <div class="card"><div class="card-title">🔴 Más adelante</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Foco 100 W, brazo articulado, batería V-mount o equipo de rodaje portátil.</div></div>
+  </div>
+
+  <!-- 12 QR -->
+  <div id="mk-qr" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🎴 12 · Carta abanico + QR</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">El QR solo se crea cuando el vídeo está terminado, publicado y probado desde otro móvil.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">📋 Flujo</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Elegir 3–5 platos reales · grabar · editar · publicar en página estable · probar enlace · generar QR · colocar en abanico.</div></div>
+    <div class="card"><div class="card-title">🎥 Primeros vídeos</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Tortilla · croquetas · plato estrella confirmado · una bebida disponible · presentación general del local.</div></div>
+  </div>
+
+
+  <!-- 09 FORMATOS -->
+  <div id="mk-formatos" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🧩 09 · Banco de formatos</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">No empezamos de cero cada semana. Elegimos un formato, lo rellenamos con un plato real y lo adaptamos a foto, Reel, Story o QR.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🧱 Plantilla de cada formato</div><div style="font-size:12px;color:var(--text-2);line-height:1.8"><strong>Gancho</strong> → <strong>acción visual</strong> → <strong>detalle de oficio</strong> → <strong>prueba/resultado</strong> → <strong>CTA</strong>. Antes de grabar: plato real, destino y disponibilidad.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🍽️ Formatos de producto</div><div style="font-size:12px;color:var(--text-2);line-height:1.9">01 · La Urbana presenta · 02 · Ven a probarlo · 03 · Lo sencillo, bien hecho · 04 · La mejor reseña: el plato vacío · 05 · Producto protagonista con dos datos reales · 06 · Una sesión, cinco piezas · 07 · El plato se monta solo.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🤲 Formatos de personas y oficio</div><div style="font-size:12px;color:var(--text-2);line-height:1.9">08 · Lo que no se ve antes de abrir · 09 · Gente que hace La Urbana · 10 · Muchas manos, una mesa · 11 · La sonrisa del primer bocado · 12 · El equipo es productivo… probablemente · 13 · Detrás de cámaras.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🎧 Formatos sensoriales</div><div style="font-size:12px;color:var(--text-2);line-height:1.9">14 · Sonidos que abren el apetito · 15 · Deja que la cocina hable · 16 · Mirar lo cotidiano · 17 · Cine breve con móvil · 18 · Cuatro momentos: preparación, calor, mesa y bocado.</div></div>
+    <div class="card"><div class="card-title">📌 Formatos de comunidad y local</div><div style="font-size:12px;color:var(--text-2);line-height:1.9">19 · Para quien viene por primera vez · 20 · Para compartir · 21 · A Coruña en una mesa · 22 · Pregunta/encuesta · 23 · Palabra clave solo si hay recurso real · 24 · Carta abanico + QR.</div><div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3)"><strong>Cómo usarlo:</strong> elegir un número en el calendario y apuntar plato, formato, destino, fecha, material disponible y estado.</div></div>
+  </div>
+
+  <!-- 10 CALENDARIO -->
   <div id="mk-calendario" style="display:none">
     <div class="card" style="border-left:3px solid var(--accent);margin-bottom:14px">
       <div class="card-title">🗓️ Calendario de contenidos y campañas</div>
@@ -2846,6 +2973,218 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Ventaja para la cocina:</strong> los planos cercanos llevan la atención a la comida y dejan fuera el entorno viejo sin disfrazar lo que se sirve.</div>
     </div>
 
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🎞️ Movimiento y transiciones avanzadas · fase 2</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Algunas referencias usan slider, velocidad por curva, tracking, máscaras, zoom, cross dissolve y cortes por movimiento. Son recursos interesantes, pero no son necesarios para empezar.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Primero:</strong> practicar movimiento suave con el Xiaomi apoyado, en trípode o con un desplazamiento corto de manos.</div>
+        <div><strong style="color:var(--text)">Después:</strong> probar un mini slider o dolly de móvil si realmente aporta algo; no comprarlo antes de comprobar que el formato se va a repetir.</div>
+        <div><strong style="color:var(--text)">Montaje:</strong> hacer un storyboard de cuatro o cinco planos y elegir un solo recurso avanzado por vídeo.</div>
+        <div><strong style="color:var(--text)">Aplicación:</strong> seguir la bandeja, entrar en un plato por un hueco, cortar de una mano a otra o transformar un ingrediente en el plato final.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Regla del primer mes:</strong> no perseguir la perfección. Publicar una pieza sencilla, aprender y mejorar la siguiente.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">📱 Soporte móvil · grabar sin sostener el Xiaomi</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia usa un soporte con ventosa y brazo articulado para grabar con cámara delantera o trasera y cambiar de ángulo. Puede facilitar el detrás de cámaras, el cenital y los planos de pase.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Para el Xiaomi 17 Leica:</strong> elegir pinza universal o comprobar que el sistema magnético sea compatible; no asumir que el teléfono tiene MagSafe como un iPhone.</div>
+        <div><strong style="color:var(--text)">Uso útil:</strong> cenital, plano a ras de encimera, plano fijo del pase, detrás de cámaras y grabación en solitario.</div>
+        <div><strong style="color:var(--text)">Superficie:</strong> una ventosa solo funciona bien sobre cristal, granito, madera lisa o metal limpio y liso; no sobre azulejo rugoso, juntas, grasa o superficies viejas irregulares.</div>
+        <div><strong style="color:var(--text)">Seguridad:</strong> añadir un cordón de seguridad o apoyo secundario y mantenerlo lejos de aceite, agua, vapor y zonas de paso.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Prioridad:</strong> primero un trípode estable con pinza. El soporte de ventosa y brazo queda como accesorio posterior, no como compra imprescindible.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">⏱️ Sesión de 60 minutos · rodar sin perder comida</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Una sesión corta y ordenada puede dar mucho material. La comida se prepara cuando la escena está lista, no al revés.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">00–10 min · Preparar:</strong> elegir encuadre, limpiar fondo, colocar luz, superficie, trípode y props.</div>
+        <div><strong style="color:var(--text)">10–25 min · Oficio:</strong> grabar preparación, calor, manos y pase; usar 50 fps si el Xiaomi lo ofrece y queremos ralentizar a 25 fps.</div>
+        <div><strong style="color:var(--text)">25–30 min · Fotos:</strong> hero shot, plano completo, 45º, detalle y cenital.</div>
+        <div><strong style="color:var(--text)">30–35 min · B-roll:</strong> órbita suave, acercamiento, servicio y bebida.</div>
+        <div><strong style="color:var(--text)">35–55 min · Conceptos:</strong> transición, ASMR, humor, serie «La Urbana presenta» o primer bocado.</div>
+        <div><strong style="color:var(--text)">55–60 min · Recoger:</strong> comprobar que los archivos están guardados y desmontar.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🎯 Una cámara, un ángulo · dinamismo con montaje</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">No hace falta mover la cámara todo el tiempo. Podemos dejar el Xiaomi 17 Leica fijo y hacer dinámico el Reel mediante cortes, acciones y cambios de escala.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div>Plano general fijo.</div>
+        <div>Detalle del ingrediente.</div>
+        <div>Mano que entra y sale.</div>
+        <div>Corte por movimiento.</div>
+        <div>Acercamiento o recorte en edición.</div>
+        <div>Plano final limpio.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Ventaja:</strong> es más estable, más sencillo para empezar y permite grabar sola.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid #8b6f5a">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">📤 Exportar bien · no estropear el material</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Grabar:</strong> en 4K si el Xiaomi lo permite y hay luz suficiente; así tendremos margen para recortar.</div>
+        <div><strong style="color:var(--text)">Publicar:</strong> 1080p a 30 fps es un estándar razonable para Reels si el archivo final se ve limpio.</div>
+        <div><strong style="color:var(--text)">HDR:</strong> no activarlo por defecto; puede verse demasiado brillante o cambiar al subirlo a Instagram.</div>
+        <div><strong style="color:var(--text)">Antes de exportar:</strong> revisar color, sonido, formato vertical y que no haya texto cortado.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Regla:</strong> una buena exportación no arregla una toma mal iluminada; primero luz, enfoque, encuadre y sonido.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🧰 Luz portátil avanzada · más adelante</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6">La referencia muestra un foco bicolor de 100 W, brazo articulado y batería V-mount para trabajar en cualquier lugar. Es una solución portátil potente, pero no es la primera compra para La Urbana.</div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Ahora:</strong> una LED de unos 60 W con softbox y corriente. <strong>Después:</strong> valorar más potencia, brazo y batería si hacemos rodajes fuera o necesitamos movernos mucho.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">✂️ El Reel se decide al cortar</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Grabar es reunir material; editar es decidir qué merece quedarse. El móvil fijo y un solo ángulo pueden resultar dinámicos si el montaje tiene intención.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Qué se queda:</strong> la acción más clara, la textura más apetecible, el gesto que cuenta algo y el plano final.</div>
+        <div><strong style="color:var(--text)">Dónde cortar:</strong> justo antes o después de una acción; cortar el movimiento puede unir dos planos con naturalidad.</div>
+        <div><strong style="color:var(--text)">Ritmo:</strong> rápido para humor, servicio y energía; lento para vapor, corte, crujiente y primer bocado.</div>
+        <div><strong style="color:var(--text)">Recursos:</strong> jump cuts, cortes por movimiento y una transición sencilla; no acumular efectos.</div>
+        <div><strong style="color:var(--text)">Herramienta:</strong> CapCut o Edits con el Xiaomi 17 Leica; revisar el Reel sin sonido y con sonido antes de publicarlo.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🎧 Mapa sonoro de La Urbana</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia convierte los sonidos de cocina en una pieza con identidad y añade el lugar. Podemos construir una firma sonora propia sin usar música.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Elegir cuatro sonidos:</strong> preparación, calor, acabado y barra/mesa.</div>
+        <div><strong style="color:var(--text)">Ordenar:</strong> no ponerlos todos a la vez; dejar pequeños silencios para que cada sonido se entienda.</div>
+        <div><strong style="color:var(--text)">Imagen:</strong> cada sonido debe tener un plano cercano que lo explique.</div>
+        <div><strong style="color:var(--text)">Cierre:</strong> nombre de La Urbana, A Coruña y una frase breve sobre el momento.</div>
+        <div><strong style="color:var(--text)">Cuidado:</strong> si hay demasiado extractor, conversaciones o ruido, grabar tomas de sonido separadas y no subir una mezcla confusa.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Ejemplo:</strong> cuchillo → plancha → salsa → plato sobre mesa. Título: «Sonidos de la cocina de La Urbana».</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">📐 Elegir el ángulo según lo que queremos contar</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La imagen resume cinco ángulos para una mesa de café. Corrijo la lectura anterior: aquí no aparecen cenital ni holandés; los cinco son nivel de ojos, alto, bajo, 45º y detalle.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">1. Nivel de ojos o mesa:</strong> cámara a la altura del plato. Sensación natural, cercana y real; base para comida y bebidas.</div>
+        <div><strong style="color:var(--text)">2. Ángulo alto:</strong> cámara por encima inclinada hacia abajo. Enseña mesa y contexto; útil para compartir, pinchos y ambiente.</div>
+        <div><strong style="color:var(--text)">3. Ángulo bajo:</strong> cámara algo por debajo. Da presencia y fuerza; mejor para una bebida, una torre de croquetas o vapor.</div>
+        <div><strong style="color:var(--text)">4. Ángulo de 45º:</strong> muestra superficie y volumen a la vez. Es el hero shot más versátil para platos, salsas y bebidas.</div>
+        <div><strong style="color:var(--text)">5. Detalle o close-up:</strong> acercamiento a textura y gesto: corte, crujiente, vapor, salsa, hielo o condensación.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Aplicación:</strong> nivel de mesa para naturalidad, alto para compartir, bajo para presencia, 45º para la foto protagonista y detalle para hacer que se imagine el primer bocado.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🌫️ Luz suave sí, comida plana no</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia combina un octabox con un panel difusor para suavizar la luz y controlar reflejos. Pero demasiada difusión puede quitar textura y contraste a la comida.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Primera capa:</strong> LED + softbox a un lado/lateral trasero para dar forma.</div>
+        <div><strong style="color:var(--text)">Si hay reflejo duro:</strong> añadir difusión entre la luz y el plato, no tapar toda la escena por sistema.</div>
+        <div><strong style="color:var(--text)">Si falta textura:</strong> retirar parte de la difusión, mover la luz más lateral o poner una cartulina negra en el lado de sombra para recuperar contraste.</div>
+        <div><strong style="color:var(--text)">Relleno:</strong> cartulina blanca solo cuando la sombra sea demasiado profunda.</div>
+        <div><strong style="color:var(--text)">Bebidas:</strong> más adelante se puede añadir una pequeña luz de contra para condensación, hielo y borde del vaso.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Compra inicial:</strong> seguimos con una LED, un softbox y cartulinas blanca/negra. No hace falta montar un estudio de dos luces todavía.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🎭 Cinco ángulos creativos · comida y bebida</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Esta nueva referencia amplía la guía de ángulos básicos con cinco recursos más narrativos. No son cinco fotos obligatorias: se elige uno según la historia del plato.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">1. Tres cuartos o 45º:</strong> muestra altura, volumen y textura. Base para plato y bebida protagonista.</div>
+        <div><strong style="color:var(--text)">2. Flat lay estético:</strong> cámara desde arriba para equilibrio, ingredientes, vajilla y composición de mesa.</div>
+        <div><strong style="color:var(--text)">3. Nivel de suelo:</strong> cámara baja para dar presencia a una bebida, una torre de croquetas o una bandeja; nunca hace falta enseñar el suelo real.</div>
+        <div><strong style="color:var(--text)">4. A través de un elemento:</strong> grabar entre manos, detrás de un vaso, a través de una botella o por un hueco para crear profundidad y relato.</div>
+        <div><strong style="color:var(--text)">5. Silueta lateral a contraluz:</strong> luz detrás para dibujar el contorno de una copa, unas manos o vapor; usarlo como plano de ambiente, no para mostrar el color exacto del plato.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Aplicación:</strong> 45º para hero shot, flat lay para mesa compartida, bajo para bebida, a través de un vaso para servicio y silueta para abrir o cerrar un Reel.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🤲 Muchas manos, una mesa</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia convierte el trabajo colectivo y el acto de compartir en una pequeña declaración de marca. No hace falta una explicación: las manos y la mesa cuentan la historia.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Secuencia:</strong> una mano prepara → otra termina → otra sirve → varias comparten.</div>
+        <div><strong style="color:var(--text)">Aplicación:</strong> tortilla al centro, croquetas que pasan, bebida servida, plato compartido y mesa real.</div>
+        <div><strong style="color:var(--text)">Tono:</strong> cálido, colectivo y sencillo; no hace falta enseñar todos los rostros.</div>
+        <div><strong style="color:var(--text)">Frases:</strong> «Hecho por muchas manos. Compartido en una mesa» · «De nuestras manos a vuestra mesa».</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Uso:</strong> Reel de equipo, apertura de la carta abanico o vídeo de presentación general de La Urbana.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🪞 Reflector casero · rellenar sin comprar otra luz</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia usa cartón o papel cascarón y aluminio para devolver parte de la luz hacia el plato. Con una fuente principal podemos suavizar sombras sin añadir una segunda lámpara.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Lado blanco:</strong> rebote suave y natural para tortilla, croquetas, salsas y platos claros.</div>
+        <div><strong style="color:var(--text)">Lado de aluminio:</strong> rebote más intenso y con más brillo; probarlo con bebidas o superficies mates, no pegarlo al plato.</div>
+        <div><strong style="color:var(--text)">Colocación:</strong> enfrente de la luz, en el lado de sombra, moviéndolo hasta que la sombra se suavice sin borrar la textura.</div>
+        <div><strong style="color:var(--text)">Seguridad:</strong> mantenerlo lejos de fuego, aceite, vapor y zonas de paso; sujetarlo para que no caiga sobre la comida.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Compra inicial más ajustada:</strong> LED + softbox + cartón blanco. El aluminio puede ser una cara experimental, pero no es obligatorio.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🎥 Vídeo cinematográfico sin cámara cara · 5 recordatorios</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Si un vídeo queda plano, el problema puede estar en cómo se graba, no en el Xiaomi. Esta referencia reúne cinco recursos que ya estamos trabajando.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">1. Lado de sombra:</strong> luz lateral/trasera y cámara en el lado menos iluminado para ganar volumen.</div>
+        <div><strong style="color:var(--text)">2. Regla de tercios:</strong> colocar plato, manos o vaso en un punto de interés y dejar espacio hacia donde se mueve la acción.</div>
+        <div><strong style="color:var(--text)">3. De bajo a alto:</strong> comenzar cerca de la mesa o ingrediente y subir hacia el plato, la bebida o la persona.</div>
+        <div><strong style="color:var(--text)">4. POV:</strong> cámara como si fueran los ojos de quien prepara, sirve, lleva la bandeja o se sienta a la mesa.</div>
+        <div><strong style="color:var(--text)">5. Detalles pequeños:</strong> corte, vapor, aceite, crujiente, hielo, manos, sonido y mesa; son los que hacen sentir que estamos allí.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Aplicación:</strong> elegir dos o tres recursos por Reel, no los cinco a la vez. Cierre local: La Urbana, A Coruña y disponibilidad real.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🔁 Variaciones y errores · grabar para poder elegir</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia recuerda que una pieza necesita variedad de ángulos. No nos quedamos con la primera toma: hacemos pequeñas variaciones y después elegimos.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5"><div>□ Plano completo · □ 45º · □ detalle · □ alto · □ acción · □ una variación de luz o recorte.</div><div><strong style="color:var(--text)">Formato posible:</strong> «No hagas esto / prueba esto» con contraste visual, sin ridiculizar ni presentar como regla absoluta lo que solo es una elección estética.</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🪞 Estudio casero con objetos cotidianos</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La cocina no necesita parecer un estudio. Una fuente de luz, un espejo, una botella limpia con agua para experimentar con la difusión y un cartón reflector pueden cambiar mucho el resultado.</div>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.5">Usar primero cartón blanco; el espejo y el agua son pruebas puntuales, siempre lejos de electricidad, aceite, fuego y vapor. No comprar accesorios antes de probar lo que ya tenemos.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🌀 POV de humor · vender lo imposible</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Un POV puede contar una situación absurda o exagerada alrededor de un plato, como si estuviéramos intentando convencer a alguien de probarlo.</div>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.5"><strong>Adaptación:</strong> usar texto en pantalla y actuación propia; no depender de clips de famosos. Ejemplo: «POV: vienes diciendo que solo tomarás algo y ves salir las croquetas».</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">📐 Tres ángulos mínimos por elaboración</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Esta referencia concreta el mínimo que debemos asegurar en cada plato antes de pasar a ideas más creativas.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">1. Plano completo:</strong> muestra todo el plato y permite recortar después para distintos formatos.</div>
+        <div><strong style="color:var(--text)">2. Cenital:</strong> aporta otra perspectiva y sirve para mesa, ingredientes y composición.</div>
+        <div><strong style="color:var(--text)">3. Extreme close-up:</strong> enseña textura, crujiente, salsa, vapor, hielo o condensación.</div>
+        <div><strong style="color:var(--text)">Bonus · cortar o abrir:</strong> grabarlo siempre al final, cuando ya tengamos todas las fotos y planos del plato intacto.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Regla de rodaje:</strong> primero conservar el plato completo; después experimentar con cortes, bocados y movimiento.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🫓 La textura se revela en el montaje, no en el filtro</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia recuerda que la textura no se añade editando: se crea antes, con luz, ángulo, separación y una superficie que ayude.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Luz direccional:</strong> lateral, rozando el plato para crear pequeñas sombras en corteza, crujiente, salsa o migas.</div>
+        <div><strong style="color:var(--text)">Ángulo:</strong> 45º muestra altura y forma; el cenital puede esconder volumen y aplanar algunos platos.</div>
+        <div><strong style="color:var(--text)">Capas de superficie:</strong> combinar una textura suave y otra rugosa, sin llenar el encuadre de props.</div>
+        <div><strong style="color:var(--text)">Profundidad:</strong> separar el plato del fondo, enfocar la comida y dejar que el fondo pierda protagonismo.</div>
+        <div><strong style="color:var(--text)">Edición mínima:</strong> subir un poco la claridad si hace falta y bajar altas luces; no aplicar filtros que inventen textura.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Para La Urbana:</strong> la LED lateral sustituye a la ventana, la madera/lino/pizarra aportan capas y la cocina queda fuera del fondo. Primero se construye; después se edita.</div>
+    </div>
+
     <!-- COPIES LISTOS -->
     <div class="card">
       <div style="font-weight:800;font-size:.95rem;margin-bottom:12px">✍️ Copies listos para usar</div>
@@ -3184,7 +3523,7 @@ function copiarTexto(el, msg) {
 
 // ── MARKETING ──────────────────────────────────────────
 function mkTab(name) {
-  ['vision','estrategia','calendario','ideas','guia'].forEach(t => {
+  ['vision','realidad','estrategia','rodaje','iluminacion','guia','video','sonido','ideas','formatos','calendario','publicar','equipo','qr'].forEach(t => {
     const el = document.getElementById('mk-'+t);
     const btn = document.getElementById('mk-btn-'+t);
     if (!el || !btn) return;
