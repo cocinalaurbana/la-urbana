@@ -3364,6 +3364,11 @@ document.addEventListener('DOMContentLoaded', function(){
     btn.addEventListener('click', activar, false);
     btn.addEventListener('touchend', activar, {passive:false});
   });
+  // Acceso directo para Lore cuando el selector no responde en algún móvil.
+  if (new URLSearchParams(window.location.search).get('entrada') === 'lore') {
+    const loreBtn = document.querySelector('#login-roles .login-btn');
+    if (loreBtn) seleccionarRol('lore', loreBtn);
+  }
 });
 
 // === SISTEMA DE IDIOMA ===
