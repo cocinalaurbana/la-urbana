@@ -1,24 +1,16 @@
 {
-  "name": "La Urbana",
+  "name": "La Urbana Cocina",
   "short_name": "La Urbana",
-  "description": "Gestión de cocina y barra",
-  "start_url": "/",
+  "description": "Organización de cocina, stock, recetas y comunicación de La Urbana",
+  "start_url": "/la-urbana/index.html?entrada=lore",
+  "id": "/la-urbana/",
+  "scope": "/la-urbana/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#C9973A",
+  "background_color": "#f5f1ea",
+  "theme_color": "#5b4636",
   "orientation": "any",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
