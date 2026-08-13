@@ -3349,10 +3349,20 @@ function initBourdain() {
 // LOGIN / ROLES / PIN
 // ══════════════════════════════════════════
 const PINS_DEFAULT = { lore:'1974', cesar:'1234', maria:'0000' };
-// Compatibilidad táctil: algunos navegadores Android no activan bien botones con eventos inline.
+// Compatibilidad móvil: algunos navegadores Android no ejecutan de forma fiable el onclick inline.
 document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('#login-roles .login-btn').forEach(function(btn){
-    btn.addEventListener('touchend', function(e){ e.preventDefault(); btn.click(); }, {passive:false});
+  const roles = ['lore','cesar','maria'];
+  document.querySelectorAll('#login-roles .login-btn').forEach(function(btn, i){
+    if (btn.dataset.loginBound) return;
+    btn.dataset.loginBound = '1';
+    function activar(e){
+      if (e) e.preventDefault();
+      document.querySelectorAll('#login-roles .login-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      seleccionarRol(roles[i], btn);
+    }
+    btn.addEventListener('click', activar, false);
+    btn.addEventListener('touchend', activar, {passive:false});
   });
 });
 
