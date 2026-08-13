@@ -1931,11 +1931,19 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
       
-      <button onclick="mkTab('vision')" id="mk-btn-vision" class="mk-tab-btn active" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">🔥 Visión</button>
-      <button onclick="mkTab('estrategia')" id="mk-btn-estrategia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">🎯 Estrategia</button>
-      <button onclick="mkTab('calendario')" id="mk-btn-calendario" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">📅 Calendario</button>
-      <button onclick="mkTab('ideas')" id="mk-btn-ideas" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">💡 Ideas</button>
-      <button onclick="mkTab('guia')" id="mk-btn-guia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">📸 Guía foto</button>
+      <button onclick="mkTab('vision')" id="mk-btn-vision" class="mk-tab-btn active" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🔥 00 Panel</button>
+      <button onclick="mkTab('realidad')" id="mk-btn-realidad" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">✅ 01 Realidad</button>
+      <button onclick="mkTab('estrategia')" id="mk-btn-estrategia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🎯 02 Estrategia</button>
+      <button onclick="mkTab('rodaje')" id="mk-btn-rodaje" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🎬 03 Rodaje</button>
+      <button onclick="mkTab('iluminacion')" id="mk-btn-iluminacion" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">💡 04 Luz</button>
+      <button onclick="mkTab('guia')" id="mk-btn-guia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">📸 05 Foto</button>
+      <button onclick="mkTab('video')" id="mk-btn-video" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">✂️ 06 Vídeo</button>
+      <button onclick="mkTab('sonido')" id="mk-btn-sonido" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🎧 07 Sonido</button>
+      <button onclick="mkTab('ideas')" id="mk-btn-ideas" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">💡 08 Ideas</button>
+      <button onclick="mkTab('calendario')" id="mk-btn-calendario" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">📅 09 Calendario</button>
+      <button onclick="mkTab('publicar')" id="mk-btn-publicar" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">📤 10 Publicar</button>
+      <button onclick="mkTab('equipo')" id="mk-btn-equipo" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🧰 11 Equipo</button>
+      <button onclick="mkTab('qr')" id="mk-btn-qr" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer;white-space:nowrap">🎴 12 QR</button>
     </div>
   </div>
 
@@ -1944,6 +1952,12 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <!-- VISIÓN ESTRATÉGICA -->
   <div id="mk-vision">
 
+    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,var(--surface),var(--surface-2));border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:1rem;margin-bottom:8px">🔥 00 · Panel de trabajo</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La aplicación queda organizada como un recorrido de trabajo, no como un cajón de referencias. Se entra por la realidad, se prepara la sesión, se graba, se edita y después se publica.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"><span class="badge">01 Realidad</span><span class="badge">02 Estrategia</span><span class="badge">03 Rodaje</span><span class="badge">04 Luz</span><span class="badge">05 Foto</span><span class="badge">06 Vídeo</span><span class="badge">07 Sonido</span><span class="badge">08 Ideas</span><span class="badge">09 Calendario</span><span class="badge">10 Publicar</span><span class="badge">11 Equipo</span><span class="badge">12 QR</span></div>
+      <div style="padding:10px 12px;background:var(--accent-l);border-radius:10px;font-size:12px;color:var(--text-2);line-height:1.55"><strong>Siguiente acción:</strong> confirmar tres platos, un pincho/prueba y una bebida; después preparar una sesión de 60 minutos con el Xiaomi 17 Leica, una luz y una superficie limpia.</div>
+    </div>
 
     <!-- ESTRATEGIA COMPLETA · MES 1 -->
     <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
@@ -2286,6 +2300,70 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       <div style="font-size:11px;color:var(--accent);margin-top:6px;font-weight:600">Toca para copiar</div>
     </div>
   </div>
+
+  <!-- 01 REALIDAD -->
+  <div id="mk-realidad" style="display:none">
+    <div class="card" style="border-left:4px solid var(--verde);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">✅ 01 · Realidad antes de comunicar</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Esta pestaña evita que una referencia externa se convierta por error en una decisión de La Urbana.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🍽️ Oferta real de trabajo</div><div style="font-size:12px;color:var(--text-2);line-height:1.6">Tortilla · ensaladilla · croquetas · pollo Urbana · patatas bravas · raxo · criollo · pinchos reales del día. Confirmar siempre qué está disponible antes de grabar o publicar.</div><div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3)"><strong>Fuera de la oferta actual:</strong> pescado y jamón asado. El aliño de limón queda como prueba para un pincho, no como plato fijo.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🍷 Bebidas</div><div style="font-size:12px;color:var(--text-2);line-height:1.6">Comprobar existencia, equipo, precio y facilidad de servicio antes de comunicar cerveza, vino, vermut, tinto de verano, Spritz o combinados. No añadir bebidas por inspiración externa.</div></div>
+    <div class="card"><div class="card-title">🧾 Ficha de verificación de cada pieza</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Plato/bebida disponible · □ Ingredientes reales · □ Precio confirmado · □ Horario confirmado · □ Alérgenos revisados · □ Permisos de personas · □ Enlace/QR probado</div></div>
+  </div>
+
+  <!-- 03 RODAJE -->
+  <div id="mk-rodaje" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🎬 03 · Sesión de rodaje</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Una sesión mensual, un hueco tranquilo, tres elaboraciones reales, un pincho o prueba y una bebida disponible. La escena se prepara antes de emplatar.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">⏱️ Guion de 60 minutos</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">00–10 preparar fondo, luz y Xiaomi · 10–25 oficio y calor · 25–30 fotos · 30–35 B-roll · 35–55 conceptos · 55–60 comprobar archivos y recoger.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🎥 Las cuatro escenas</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Preparación tranquila · □ Calor/vapor/chisporroteo · □ Mesa/servicio · □ Primer bocado o plato terminado</div></div>
+    <div class="card"><div class="card-title">♻️ Material que debe salir</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Hero shot · □ Plano completo · □ 45º · □ Detalle · □ Cenital independiente · □ Sonidos · □ Fotos para carta/Stories/QR · □ Un Reel en bruto</div></div>
+  </div>
+
+  <!-- 04 ILUMINACION -->
+  <div id="mk-iluminacion" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">💡 04 · Luz de una cocina sin ventanas</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">No iluminamos toda la cocina: creamos un rincón portátil y controlado.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🛒 Compra inicial</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ LED continua bicolor, regulable, CRI alto y sin parpadeo · □ Softbox/difusor · □ Trípode · □ Cartón blanco · □ Cartón negro opcional</div><div style="margin-top:8px;font-size:11px;color:var(--text-3)">No comprar todavía RGB, dos focos, slider ni batería V-mount.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">📐 Montaje</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Luz lateral/trasera a 45º · cámara en lado de sombra · blanco para rellenar · negro para recuperar textura · apagar fluorescentes si se puede.</div></div>
+    <div class="card"><div class="card-title">🌫️ Suave no significa plano</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Difundir solo si hay reflejo duro. Si se pierde textura, retirar difusión, mover la luz al lateral o usar cartón negro.</div></div>
+  </div>
+
+  <!-- 06 VIDEO -->
+  <div id="mk-video" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">✂️ 06 · Vídeo y montaje</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Grabar es reunir material; editar es decidir qué merece quedarse.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">📱 Xiaomi 17 Leica</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Limpiar lente · □ 4K si hay luz · □ 24/25/30 fps normal · □ 50 fps si queremos ralentizar · □ Bloquear foco/exposición · □ Balance de blancos fijo · □ Trípode o apoyo.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🎞️ Reel de 15–25 segundos</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Gancho · preparación · calor · mesa · bocado · nombre del plato · cierre local. Un solo efecto avanzado por pieza.</div></div>
+    <div class="card"><div class="card-title">✂️ Editar en CapCut o Edits</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ Qué se queda · □ dónde cortar · □ ritmo rápido/lento · □ jump cut o corte por movimiento · □ sonido claro · □ exportar sin HDR por defecto · □ revisar antes de publicar.</div></div>
+  </div>
+
+  <!-- 07 SONIDO -->
+  <div id="mk-sonido" style="display:none">
+    <div class="card" style="border-left:4px solid var(--verde);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🎧 07 · Sonido como identidad</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">No todo Reel necesita música. La cocina puede hablar.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🔊 Mapa sonoro</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Preparación · calor · acabado · barra/mesa. Elegir cuatro sonidos y dejar silencios entre ellos.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🎙️ Biblioteca</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Cuchillo · tabla · aceite · plancha · crujiente · salsa · plato · bebida · ambiente. Grabar tomas separadas si el extractor o las voces molestan.</div></div>
+    <div class="card"><div class="card-title">🏷️ Series</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">«Sonidos que abren el apetito» · «Deja que la cocina hable» · «Así empieza una cena en La Urbana».</div></div>
+  </div>
+
+  <!-- 10 PUBLICAR -->
+  <div id="mk-publicar" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">📤 10 · Publicar con intención</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Antes de hacer una foto hay que saber dónde irá. Antes de publicar hay que verificar la realidad.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">📆 Ritmo inicial</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">□ 1 Reel/semana · □ 1 foto o carrusel/semana · □ 3–5 Stories · □ una pieza humana o de ambiente cuando exista algo real que contar.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">💬 Llamadas a la acción</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">«Ven a probarlo» · «¿Tortilla o croquetas?» · «Comenta CARTA» solo si hay algo real que responder · «Guárdalo para tu próxima visita».</div></div>
+    <div class="card"><div class="card-title">📊 Revisar al mes</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Guardados · compartidos · respuestas · visitas al perfil · consultas · platos mencionados · tiempo real de producción.</div></div>
+  </div>
+
+  <!-- 11 EQUIPO -->
+  <div id="mk-equipo" style="display:none">
+    <div class="card" style="border-left:4px solid #8b6f5a;margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🧰 11 · Equipo y compras</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">Comprar por fases. Primero lo que mejora todas las fotos; después los accesorios creativos.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🟢 Ahora</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">LED bicolor + softbox + trípode + pinza universal para Xiaomi + cartón blanco/negro + tabla/superficie mate.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">🟡 Después de probar</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Soporte articulado · ventosa para superficies lisas · mini slider · luz de contra para bebidas.</div></div>
+    <div class="card"><div class="card-title">🔴 Más adelante</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Foco 100 W, brazo articulado, batería V-mount o equipo de rodaje portátil.</div></div>
+  </div>
+
+  <!-- 12 QR -->
+  <div id="mk-qr" style="display:none">
+    <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div style="font-weight:800;font-size:1rem;margin-bottom:8px">🎴 12 · Carta abanico + QR</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">El QR solo se crea cuando el vídeo está terminado, publicado y probado desde otro móvil.</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="card-title">📋 Flujo</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Elegir 3–5 platos reales · grabar · editar · publicar en página estable · probar enlace · generar QR · colocar en abanico.</div></div>
+    <div class="card"><div class="card-title">🎥 Primeros vídeos</div><div style="font-size:12px;color:var(--text-2);line-height:1.8">Tortilla · croquetas · plato estrella confirmado · una bebida disponible · presentación general del local.</div></div>
+  </div>
+
 
   <!-- CALENDARIO -->
   <div id="mk-calendario" style="display:none">
@@ -3378,7 +3456,7 @@ function copiarTexto(el, msg) {
 
 // ── MARKETING ──────────────────────────────────────────
 function mkTab(name) {
-  ['vision','estrategia','calendario','ideas','guia'].forEach(t => {
+  ['vision','realidad','estrategia','rodaje','iluminacion','guia','video','sonido','ideas','calendario','publicar','equipo','qr'].forEach(t => {
     const el = document.getElementById('mk-'+t);
     const btn = document.getElementById('mk-btn-'+t);
     if (!el || !btn) return;
