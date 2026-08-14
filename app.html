@@ -788,7 +788,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       }, false);
     });
     var params = new URLSearchParams(window.location.search);
-    if (params.get('entrada') === 'lore' && params.get('auto') === '1' && params.get('pin') === '1974' && typeof window.iniciarSesion === 'function') {
+    if (params.get('entrada') === 'lore' && params.get('auto') === '1' && typeof window.iniciarSesion === 'function') {
       window.iniciarSesion('lore');
       return;
     }
@@ -3257,6 +3257,18 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">📦 Vídeo creativo de producto</div>
       <div style="font-size:13px;color:var(--text-2);line-height:1.6">El último Reel se presenta como edición de vídeo creativo de producto en CapCut. Como el texto no describe toda la secuencia visual, no voy a inventar sus planos. Nos quedamos con un formato aplicable:</div>
       <div style="font-size:12px;color:var(--text-2);line-height:1.8;margin-top:8px">revelación → detalle → uso/servicio → resultado → cierre local. Aplicarlo a una bebida, una bandeja, un plato o un elemento real de La Urbana.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🎛️ Color y scopes · fase posterior</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:10px">La referencia introduce el color grading con scopes. Son instrumentos de control, no filtros: ayudan a comprobar la exposición y el color aunque la pantalla engañe.</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-2);line-height:1.5">
+        <div><strong style="color:var(--text)">Waveform:</strong> comprobar si las luces y sombras están demasiado altas o bajas.</div>
+        <div><strong style="color:var(--text)">Parade RGB:</strong> detectar dominantes verdes, azules o magentas provocadas por luces mezcladas.</div>
+        <div><strong style="color:var(--text)">Vectorscope:</strong> vigilar saturación y que los tonos de comida no se vuelvan artificiales.</div>
+        <div><strong style="color:var(--text)">Aplicación práctica:</strong> mantener el color real de la tortilla, la salsa, la bebida y la piel; corregir, no embellecer hasta falsear.</div>
+      </div>
+      <div style="margin-top:10px;padding:9px 11px;background:var(--surface-2);border-radius:9px;font-size:11px;color:var(--text-3);line-height:1.5"><strong>Prioridad:</strong> ahora mandan la luz única, el balance de blancos estable y la exposición correcta. Los scopes quedan para cuando tengamos una rutina de edición consolidada.</div>
     </div>
 
     <!-- COPIES LISTOS -->
