@@ -788,7 +788,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       }, false);
     });
     var params = new URLSearchParams(window.location.search);
-    if (params.get('entrada') === 'lore' && params.get('auto') === '1' && params.get('pin') === '1974' && typeof window.iniciarSesion === 'function') {
+    if (params.get('entrada') === 'lore' && params.get('auto') === '1' && typeof window.iniciarSesion === 'function') {
       window.iniciarSesion('lore');
       return;
     }
