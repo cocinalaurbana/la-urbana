@@ -23,14 +23,14 @@
 <script>
 document.getElementById('pin').addEventListener('input',function(){
   if(this.value.length===4 && this.value==='1974'){
-    window.location.href='index.html?entrada=lore&auto=1&v=67';
+    window.location.href='index.html?entrada=lore&auto=1&v=68';
   }
 });
 document.getElementById('form').addEventListener('submit',function(e){
   e.preventDefault();
   var pin=document.getElementById('pin').value;
   if(pin==='1974'){
-    window.location.href='index.html?entrada=lore&auto=1&v=67';
+    window.location.href='index.html?entrada=lore&auto=1&v=68';
   }else{
     document.getElementById('error').textContent='PIN incorrecto. Inténtalo de nuevo.';
     document.getElementById('pin').value='';
