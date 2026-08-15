@@ -670,6 +670,42 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 .card{transition:border-color .15s,box-shadow .15s}
 .card:hover{box-shadow:0 4px 20px rgba(0,0,0,.2)}
 
+/* ─── DASHBOARD EDITORIAL · mesa de trabajo ─── */
+#tab-inicio{max-width:980px}
+#tab-inicio .dash-greeting{padding:4px 0 20px;border-bottom:1px solid var(--border);margin-bottom:18px}
+#tab-inicio .dash-greeting:before{content:'LA URBANA  ·  COCINA';display:block;font-size:10px;letter-spacing:1.8px;font-weight:800;color:var(--amber);margin-bottom:8px}
+#tab-inicio .dash-greeting h2{font-size:1.55rem;letter-spacing:-.02em;margin:0 0 4px}
+#tab-inicio .dash-greeting p{font-size:12px;color:var(--text-3);margin:0}
+.dash-editorial-section{margin:0 0 22px}
+.dash-editorial-title{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:1.4px;font-weight:800;color:var(--text-3);margin-bottom:10px}
+.dash-editorial-title:after{content:'';height:1px;background:var(--border);flex:1}
+.dash-today-strip{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.dash-today-item{padding:13px 10px 12px;border-right:1px solid var(--border);cursor:pointer;transition:background .15s}
+.dash-today-item:last-child{border-right:none}
+.dash-today-item:hover{background:var(--surface-2)}
+.dash-today-item .num{font-size:1.35rem;font-weight:800;line-height:1.1;color:var(--text)}
+.dash-today-item .lbl{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.45px;margin-top:5px}
+.dash-today-item.ok .num{color:var(--olive)}
+.dash-today-item.warn .num{color:var(--amber)}
+.dash-today-item.danger .num{color:var(--red)}
+#tab-inicio .stats{display:none}
+#tab-inicio .card{box-shadow:none}
+.dash-production-preview{border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.dash-production-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.dash-production-row:last-child{border-bottom:none}
+.dash-production-name{flex:1;font-size:13px;color:var(--text)}
+.dash-production-meta{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px}
+.dash-production-empty{padding:12px 0;font-size:13px;color:var(--text-3)}
+#tab-inicio .dash-flat-card{background:transparent;border:0;border-radius:0;padding:0;margin:0 0 22px}
+#tab-inicio .dash-flat-card .card-title{font-size:11px;letter-spacing:1.4px;color:var(--text-3);margin-bottom:10px}
+#tab-inicio .dash-flat-card .card-title:after{content:'';display:block;height:1px;background:var(--border);margin-top:9px}
+#tab-inicio #accesos-rapidos{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px}
+#tab-inicio #accesos-rapidos .acceso-card{flex:1 1 145px;min-width:125px;background:transparent;border:1px solid var(--border);border-radius:8px;padding:9px 10px;box-shadow:none}
+#tab-inicio #accesos-rapidos .acceso-icon-wrap{display:none}
+#tab-inicio #accesos-rapidos .acceso-label{font-size:11px}
+#tab-inicio #accesos-rapidos .acceso-desc{font-size:10px}
+@media(max-width:560px){.dash-today-strip{grid-template-columns:repeat(2,1fr)}.dash-today-item:nth-child(2){border-right:none}.dash-today-item:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+
 /* ─── MOBILE: nav inferior en vez de sidebar ─── */
 @media(max-width:768px){
   /* Vista móvil experimental: menú vertical lateral */
@@ -897,83 +933,83 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 <!-- INICIO -->
 <div id="tab-inicio" class="tab active">
 
-  <!-- SALUDO -->
   <div class="dash-greeting">
     <h2 id="dash-saludo">Hola, Lore.</h2>
     <p id="header-fecha-dash">—</p>
   </div>
 
-  <!-- STATS -->
-  <div class="stats" style="margin-bottom:20px">
-    <div class="stat verde" onclick="irAStock('rojo')" style="cursor:pointer" title="Ver críticos"><div class="num" id="stat-ok">0</div><div class="lbl">Stock OK</div></div>
-    <div class="stat rojo" onclick="irAStock('rojo')" style="cursor:pointer" title="Ver críticos"><div class="num" id="stat-critico">0</div><div class="lbl">Crítico</div></div>
-    <div class="stat amber" onclick="tab('mermas',document.getElementById('nav-mermas'))" style="cursor:pointer"><div class="num" id="stat-mermas">0</div><div class="lbl">Mermas hoy</div></div>
-    <div class="stat" onclick="tab('pedidos',document.getElementById('nav-pedidos'))" style="cursor:pointer"><div class="num" style="color:var(--amber)" id="stat-pedidos">0</div><div class="lbl">Pedidos pend.</div></div>
-  </div>
+  <section class="dash-editorial-section">
+    <div class="dash-editorial-title">HOY</div>
+    <div class="dash-today-strip">
+      <div class="dash-today-item ok" onclick="irAStock('verde')" title="Ver stock correcto">
+        <div class="num" id="stat-ok">0</div><div class="lbl">Stock OK</div>
+      </div>
+      <div class="dash-today-item danger" onclick="irAStock('rojo')" title="Ver productos críticos">
+        <div class="num" id="stat-critico">0</div><div class="lbl">Crítico</div>
+      </div>
+      <div class="dash-today-item warn" onclick="tab('mermas',document.getElementById('nav-mermas'))">
+        <div class="num" id="stat-mermas">0</div><div class="lbl">Mermas hoy</div>
+      </div>
+      <div class="dash-today-item warn" onclick="tab('pedidos',document.getElementById('nav-pedidos'))">
+        <div class="num" id="stat-pedidos">0</div><div class="lbl">Pedidos pend.</div>
+      </div>
+    </div>
+  </section>
 
-  <!-- ALERTAS colapsables -->
-  <div id="alertas-banner" style="margin-bottom:4px"></div>
-  <div id="alertas-detalle" style="display:none"></div>
+  <section class="dash-editorial-section">
+    <div class="dash-editorial-title">ATENCIÓN</div>
+    <div id="alertas-banner"></div>
+    <div id="alertas-detalle" style="display:none"></div>
+  </section>
 
-  <div class="dash-line"></div>
+  <section class="dash-editorial-section">
+    <div class="dash-editorial-title">PRODUCCIÓN</div>
+    <div id="dashboard-produccion" class="dash-production-preview"></div>
+  </section>
 
-  <!-- ACCESOS RÁPIDOS -->
-  <div id="accesos-rapidos"></div>
+  <section class="dash-editorial-section">
+    <div class="dash-editorial-title">ACCESOS</div>
+    <div id="accesos-rapidos"></div>
+  </section>
 
-  <!-- CAJA DEL DÍA -->
-  <div id="caja-widget" style="display:none" class="card" style="cursor:pointer" onclick="tab('caja',document.getElementById('nav-caja'))">
+  <div id="caja-widget" style="display:none" class="dash-flat-card" onclick="tab('caja',document.getElementById('nav-caja'))">
     <div class="card-title">Entradas hoy <span id="caja-widget-fecha" style="font-weight:400;text-transform:none;letter-spacing:0"></span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
-      <div>
-        <div style="font-size:10px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Entradas</div>
-        <div style="font-size:1.4rem;font-weight:700;color:var(--olive)" id="cw-ventas">—</div>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Gastos</div>
-        <div style="font-size:1.4rem;font-weight:700;color:var(--red)" id="cw-gastos">—</div>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Balance</div>
-        <div style="font-size:1.4rem;font-weight:700" id="cw-balance">—</div>
-      </div>
+      <div><div style="font-size:10px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Entradas</div><div style="font-size:1.4rem;font-weight:700;color:var(--olive)" id="cw-ventas">—</div></div>
+      <div><div style="font-size:10px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Gastos</div><div style="font-size:1.4rem;font-weight:700;color:var(--red)" id="cw-gastos">—</div></div>
+      <div><div style="font-size:10px;color:var(--text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Balance</div><div style="font-size:1.4rem;font-weight:700" id="cw-balance">—</div></div>
     </div>
     <div id="cw-alerta" style="margin-top:8px;font-size:12px;font-weight:600;display:none"></div>
   </div>
 
-  <!-- FILA INFERIOR: comida personal + menú del día -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
-
-    <!-- COMIDA DEL PERSONAL -->
-    <div class="card" style="margin:0">
-      <div class="card-title" style="margin-bottom:10px">🧑‍🍳 Personal</div>
-      <div style="font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:10px" id="personal-hoy-plato">Sin anotar</div>
-      <span id="personal-hoy-label" style="font-size:11px;color:var(--text-3);display:block;margin-bottom:8px"></span>
-      <div style="display:flex;gap:6px;align-items:center">
-        <input type="text" id="personal-hoy-input" placeholder="¿Qué comemos?"
-          style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter')guardarPersonalHoy()">
-        <input type="number" id="personal-hoy-coste" placeholder="€" step="0.5" min="0" style="width:52px;font-size:13px">
-        <button class="btn btn-primary btn-sm" onclick="guardarPersonalHoy()">✓</button>
+  <section class="dash-editorial-section" style="margin-top:2px">
+    <div class="dash-editorial-title">MENÚ Y PERSONA</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div class="dash-flat-card">
+        <div class="card-title">🧑‍🍳 Personal</div>
+        <div style="font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:10px" id="personal-hoy-plato">Sin anotar</div>
+        <span id="personal-hoy-label" style="font-size:11px;color:var(--text-3);display:block;margin-bottom:8px"></span>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="text" id="personal-hoy-input" placeholder="¿Qué comemos?" style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter')guardarPersonalHoy()">
+          <input type="number" id="personal-hoy-coste" placeholder="€" step="0.5" min="0" style="width:52px;font-size:13px">
+          <button class="btn btn-primary btn-sm" onclick="guardarPersonalHoy()">✓</button>
+        </div>
+      </div>
+      <div class="dash-flat-card" style="cursor:pointer" onclick="tab('menu',document.getElementById('nav-menu'))">
+        <div class="card-title">🍽️ Menú hoy</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:8px" id="inicio-menu-fecha"></div>
+        <div id="inicio-menu-platos"><div style="opacity:.6;font-size:13px">Sin menú para hoy.</div></div>
       </div>
     </div>
+  </section>
 
-    <!-- MENÚ DEL DÍA -->
-    <div class="card" style="margin:0;border-left:3px solid var(--amber);cursor:pointer" onclick="tab('menu',document.getElementById('nav-menu'))">
-      <div class="card-title" style="margin-bottom:10px">🍽️ Menú hoy</div>
-      <div style="font-size:11px;color:var(--text-3);margin-bottom:8px" id="inicio-menu-fecha"></div>
-      <div id="inicio-menu-platos"><div style="opacity:.6;font-size:13px">Sin menú para hoy.</div></div>
-    </div>
-
-  </div>
-
-  <!-- TURNO HOY -->
-  <div id="turno-widget" style="display:none;margin-top:12px" class="card" onclick="tab('turno',document.getElementById('nav-turno'))" style="cursor:pointer">
+  <div id="turno-widget" style="display:none;margin-top:2px" class="dash-flat-card" onclick="tab('turno',document.getElementById('nav-turno'))">
     <div class="card-title">Turno de hoy</div>
     <div style="font-size:11px;color:var(--text-3)" id="turno-widget-info"></div>
     <div id="turno-widget-detalle" style="font-size:13px;color:var(--text-2)"></div>
   </div>
 
-  <!-- WHATSAPP ALERTAS (solo admin) -->
-  <div class="card" id="wa-config-card" style="display:none;margin-top:12px">
+  <div class="dash-flat-card" id="wa-config-card" style="display:none;margin-top:12px">
     <div id="wa-config-panel"></div>
   </div>
 </div>
@@ -3202,9 +3238,25 @@ function guardarPersonalHoy() {
   toast('Anotado ✓', 'verde');
 }
 
+function renderDashboardProduccion() {
+  const el = document.getElementById('dashboard-produccion');
+  if (!el) return;
+  const tareas = cargar('produccion_tareas', []).filter(t => t.estado !== 'listo');
+  const visibles = tareas.slice(0, 6);
+  if (!visibles.length) {
+    el.innerHTML = '<div class="dash-production-empty">Sin tareas de producción registradas. <button class="btn btn-outline btn-xs" onclick="tab(\'produccion\',document.getElementById(\'nav-produccion\'))">Abrir producción</button></div>';
+    return;
+  }
+  el.innerHTML = visibles.map(t => {
+    const meta = t.dia === 'manana' ? 'MAÑANA' : t.estado === 'proceso' ? 'EN PROCESO' : 'HOY';
+    return `<div class="dash-production-row" onclick="tab('produccion',document.getElementById('nav-produccion'))"><div class="dash-production-name">${escPrueba(t.nombre||'Sin nombre')}</div>${t.cantidad ? `<div class="dash-production-meta">${escPrueba(t.cantidad)}</div>` : ''}<div class="dash-production-meta">${meta}</div></div>`;
+  }).join('');
+}
+
 function initInicio() {
   try {
   renderPersonalHoyWidget();
+  renderDashboardProduccion();
   actualizarWidgetCaja();
   document.getElementById('inicio-menu-fecha').textContent = formatFecha(hoy());
   const menu = cargar('menu_' + hoy(), null);
