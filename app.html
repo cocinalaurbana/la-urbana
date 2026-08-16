@@ -725,6 +725,43 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 <body>
 
 <!-- LOGIN -->
+<!-- Acceso robusto: funciona aunque un servicio externo no cargue -->
+<script>
+(function () {
+  var currentRole = null, pin = '', pins = { lore: '1974', cesar: '1234', maria: '0000' };
+  function id(x) { return document.getElementById(x); }
+  function dots() { document.querySelectorAll('#pin-dots span').forEach(function (x, i) { x.classList.toggle('lleno', i < pin.length); }); }
+  function choose(role) {
+    currentRole = role; pin = '';
+    var a = id('login-roles'), b = id('pin-panel');
+    if (a) a.style.display = 'none'; if (b) b.style.display = 'block';
+    var names = { lore: '👩‍🍳 Lore', cesar: '🧑‍💼 César', maria: '🧑‍🍳 María' };
+    if (id('pin-quien-txt')) id('pin-quien-txt').textContent = names[role] + ' — introduce tu PIN';
+    if (id('pin-error')) id('pin-error').textContent = ''; dots();
+  }
+  function back() { currentRole = null; pin = ''; if (id('pin-panel')) id('pin-panel').style.display = 'none'; if (id('login-roles')) id('login-roles').style.display = 'block'; dots(); }
+  function login() {
+    if (pin !== pins[currentRole]) { if (id('pin-error')) id('pin-error').textContent = 'PIN incorrecto. Inténtalo de nuevo.'; pin = ''; dots(); return; }
+    var r = currentRole;
+    if (typeof window.iniciarSesion === 'function' && !window.iniciarSesion.__earlyFix) {
+      try { window.iniciarSesion(r); return; } catch (e) {}
+    }
+    if (id('login-screen')) id('login-screen').style.display = 'none';
+    var h = document.querySelector('header'), n = id('main-nav'); if (h) h.style.display = 'flex'; if (n) n.style.display = 'flex';
+    if (id('header-role')) id('header-role').textContent = r === 'cesar' ? 'César' : r === 'maria' ? 'María' : 'Lore';
+  }
+  document.addEventListener('click', function (ev) {
+    var roleBtn = ev.target.closest && ev.target.closest('#login-roles .login-btn');
+    if (roleBtn) { ev.preventDefault(); ev.stopImmediatePropagation(); var m = (roleBtn.getAttribute('onclick') || '').match(/'([^']+)'/); choose(m ? m[1] : 'lore'); return; }
+    var key = ev.target.closest && ev.target.closest('#pin-panel .pin-key');
+    if (key) { ev.preventDefault(); ev.stopImmediatePropagation(); if (key.classList.contains('del')) pin = pin.slice(0, -1); else if (pin.length < 4) pin += key.textContent.trim(); dots(); if (pin.length === 4) setTimeout(login, 120); return; }
+    var change = ev.target.closest && ev.target.closest('#pin-panel .btn-volver');
+    if (change) { ev.preventDefault(); ev.stopImmediatePropagation(); back(); }
+  }, true);
+  window.__laUrbanaEarlyLogin = true;
+})();
+</script>
+
 <div id="login-screen">
   <div class="login-logo-wrap">
     <div class="logo-title">LA URBANA <span style="font-size:10px;letter-spacing:1px;opacity:.65">COCINA</span></div>
@@ -8537,98 +8574,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-<!-- Fallback de acceso: no depende de Firebase ni de scripts externos -->
-<script>
-(function () {
-  function byId(id) { return document.getElementById(id); }
-  var pins = { lore: '1974', cesar: '1234', maria: '0000' };
-  var role = null;
-  var buf = '';
-
-  function selectRole(r) {
-    role = r; buf = '';
-    var roles = byId('login-roles'), panel = byId('pin-panel');
-    if (roles) roles.style.display = 'none';
-    if (panel) panel.style.display = 'block';
-    var names = { lore: '👩‍🍳 Lore', cesar: '🧑‍💼 César', maria: '🧑‍🍳 María' };
-    var who = byId('pin-quien-txt');
-    if (who) who.textContent = names[r] + ' — introduce tu PIN';
-    var err = byId('pin-error'); if (err) err.textContent = '';
-    updateDots();
-  }
-
-  function backToRoles() {
-    role = null; buf = '';
-    var roles = byId('login-roles'), panel = byId('pin-panel');
-    if (panel) panel.style.display = 'none';
-    if (roles) roles.style.display = 'block';
-    var err = byId('pin-error'); if (err) err.textContent = '';
-    updateDots();
-  }
-
-  function updateDots() {
-    var dots = document.querySelectorAll('#pin-dots span');
-    dots.forEach(function (d, i) { d.classList.toggle('lleno', i < buf.length); });
-  }
-
-  function startSession(r) {
-    var oldStart = window.__laUrbanaOriginalStart;
-    if (oldStart) {
-      try { oldStart(r); return; } catch (e) {}
-    }
-    window.USUARIO = r;
-    var login = byId('login-screen'); if (login) login.style.display = 'none';
-    var header = document.querySelector('header'); if (header) header.style.display = 'flex';
-    var nav = byId('main-nav'); if (nav) nav.style.display = 'flex';
-    var badge = byId('header-role');
-    if (badge) badge.textContent = r === 'cesar' ? 'César' : r === 'maria' ? 'María' : 'Lore';
-    try { if (typeof window.arrancarApp === 'function') window.arrancarApp(); } catch (e) {}
-  }
-
-  function checkPin() {
-    if (buf === pins[role]) { startSession(role); return; }
-    var err = byId('pin-error'); if (err) err.textContent = 'PIN incorrecto. Inténtalo de nuevo.';
-    buf = ''; updateDots();
-  }
-
-  function pressDigit(d) {
-    if (!role || buf.length >= 4) return;
-    buf += String(d); updateDots();
-    if (buf.length === 4) window.setTimeout(checkPin, 120);
-  }
-  function deleteDigit() { buf = buf.slice(0, -1); updateDots(); }
-
-  if (typeof window.iniciarSesion === 'function') {
-    window.__laUrbanaOriginalStart = window.iniciarSesion;
-  }
-  window.seleccionarRol = selectRole;
-  window.volverLogin = backToRoles;
-  window.pinPulsar = pressDigit;
-  window.pinBorrar = deleteDigit;
-  window.verificarPin = checkPin;
-  window.iniciarSesion = startSession;
-
-  function wire() {
-    document.querySelectorAll('#login-roles .login-btn').forEach(function (btn) {
-      if (btn.dataset.fallbackWired) return;
-      btn.dataset.fallbackWired = '1';
-      btn.addEventListener('click', function (e) {
-        e.preventDefault(); e.stopPropagation();
-        var r = (btn.getAttribute('onclick') || '').match(/'([^']+)'/);
-        selectRole(r ? r[1] : 'lore');
-      }, true);
-      btn.addEventListener('touchend', function (e) {
-        e.preventDefault(); e.stopPropagation();
-        var r = (btn.getAttribute('onclick') || '').match(/'([^']+)'/);
-        selectRole(r ? r[1] : 'lore');
-      }, { passive: false, capture: true });
-    });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
-  else wire();
-})();
-</script>
-
 </body>
 </html>
 
