@@ -6173,7 +6173,7 @@ function renderPruebasRecetas() {
 // ══════════════════════════════════════════
 
 const PROVEEDORES_DEFAULT = [
-  {id:1, nombre:'Fructífera', categoria:'Frutas y Verduras', telefono:'609439305', productos:'Frutas, verduras', dias:'L-V', notas:''},
+  {id:1, nombre:'Pedidos Urbana', categoria:'Frutas y Verduras', telefono:'609439305', productos:'Fruta y hortalizas', dias:'L-V', notas:''},
   {id:2, nombre:'Pepe (Panadería)', categoria:'Panadería', telefono:'', productos:'Pan, bollería', dias:'Diario mañana', notas:''},
   {id:3, nombre:'Gadis', categoria:'General', telefono:'', productos:'Varios, lácteos, conservas', dias:'', notas:'Código cliente: 36557 · Pendiente facturas'},
   {id:4, nombre:'Del Mar', categoria:'Pescado/Conservas', telefono:'', productos:'Atún', dias:'', notas:'Proveedor atún'},
@@ -6348,7 +6348,7 @@ function migrarContactosProveedores(){
     if(!p){p={id:Date.now()+lista.length,nombre:datos.nombre,categoria:datos.categoria||'General',telefono:'',productos:'',dias:'',notas:''};lista.push(p);cambio=true;}
     Object.keys(datos).forEach(function(k){if(p[k]!==datos[k]){p[k]=datos[k];cambio=true;}});
   }
-  actualizar(['fructifera','fructífera'],{nombre:'Fructífera',telefono:'609439305',productos:'Frutas, verduras'});
+  actualizar(['pedidos urbana','fructifera','fructífera'],{nombre:'Pedidos Urbana',telefono:'609439305',productos:'Fruta y hortalizas'});
   actualizar(['elmar','el mar'],{nombre:'El Mar · Sergio',telefono:'626528854',productos:'Pollo, cinta de lomo, patatas bravas'});
   actualizar(['grupo silva','armando galves','armando'],{nombre:'Grupo Silva',telefono:'686926398',productos:'Mayonesa, aceite, aceitunas, atún, tomate en lata'});
   actualizar(['gas abegondo','gas bergondo'],{nombre:'Gas Abegondo',telefono:'981216872',productos:'Bombonas de gas'});
@@ -6710,7 +6710,7 @@ function seedData() {
   if (!cargar('proveedores', null)) {
     guardar('proveedores', [
       {id:1,nombre:'El Mar · Sergio',categoria:'Cárnico',telefono:'626528854',dias:'',notas:'Pollo, cinta de lomo y patatas bravas'},
-      {id:2,nombre:'Fructífera',categoria:'Verduras',telefono:'609439305',dias:'Martes y Viernes',notas:'Patata pelada vacío, pimiento, zanahoria, perejil'},
+      {id:2,nombre:'Pedidos Urbana',categoria:'Verduras',telefono:'609439305',dias:'Martes y Viernes',notas:'Fruta y hortalizas · patata pelada vacío, pimiento, zanahoria, perejil'},
       {id:3,nombre:'Grupo Silva',categoria:'General',telefono:'686926398',dias:'',notas:'Mayonesa, aceite, aceitunas, atún, tomate en lata'},
       {id:4,nombre:'Mercadona',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Chorizo criollo, tequeños, croquetas, pan crujiente · Código cliente: B70355714'},
       {id:5,nombre:'Del Mar',categoria:'Pescado/Conservas',telefono:'',dias:'Según necesidad',notas:'Atún desmigado 1kg'},
