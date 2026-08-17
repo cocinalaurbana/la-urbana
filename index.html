@@ -6348,7 +6348,7 @@ function migrarContactosProveedores(){
     if(!p){p={id:Date.now()+lista.length,nombre:datos.nombre,categoria:datos.categoria||'General',telefono:'',productos:'',dias:'',notas:''};lista.push(p);cambio=true;}
     Object.keys(datos).forEach(function(k){if(p[k]!==datos[k]){p[k]=datos[k];cambio=true;}});
   }
-  actualizar(['pedidos urbana','fructifera','fructífera'],{nombre:'Pedidos Urbana',telefono:'609439305',productos:'Fruta y hortalizas'});
+  actualizar(['pedidos urbana','frutero urbana','fructifera','fructífera'],{nombre:'Pedidos Urbana',telefono:'609439305',productos:'Fruta y hortalizas'});
   actualizar(['elmar','el mar'],{nombre:'El Mar · Sergio',telefono:'626528854',productos:'Pollo, cinta de lomo, patatas bravas'});
   actualizar(['grupo silva','armando galves','armando'],{nombre:'Grupo Silva',telefono:'686926398',productos:'Mayonesa, aceite, aceitunas, atún, tomate en lata'});
   actualizar(['gas abegondo','gas bergondo'],{nombre:'Gas Abegondo',telefono:'981216872',productos:'Bombonas de gas'});
