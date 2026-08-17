@@ -7243,6 +7243,7 @@ const PROVEEDORES_DEFAULT = [
   {id:11, nombre:'Fresh&Clean', categoria:'Limpieza', telefono:'', productos:'Productos limpieza', dias:'', notas:''},
   {id:12, nombre:'Eroski', categoria:'General', telefono:'', productos:'Varios', dias:'', notas:''},
   {id:13, nombre:'Quique Codillos', categoria:'Cárnico', telefono:'34622101000', productos:'Carnes, croquetas, elaborados, pescados y arroces', dias:'Según disponibilidad', notas:'Tarifa recibida el 03/08/2026. Precios pendientes de confirmar por formato, IVA y condiciones de pedido.'},
+  {id:15, nombre:'Hermida / Disgal Chef', categoria:'General', telefono:'604015283', productos:'Burrata, aceites, salsas, patatas 4ª gama, elaborados y postres', dias:'Según disponibilidad', notas:'GALDIS S.L. · contacto@grupodisgal.com · pedidos@comercialdisgal.com'},
 ];
 
 function initProveedoresDefault() {
@@ -7408,6 +7409,7 @@ function migrarContactosProveedores(){
   actualizar(['grupo silva','armando galves','armando'],{nombre:'Grupo Silva',telefono:'686926398',productos:'Mayonesa, aceite, aceitunas, atún, tomate en lata'});
   actualizar(['gas abegondo','gas bergondo'],{nombre:'Gas Abegondo',telefono:'981216872',productos:'Bombonas de gas'});
   actualizar(['campomayor'],{nombre:'Campomayor',telefono:'605233959',productos:'Huevos'});
+  actualizar(['hermida','disgal'],{nombre:'Hermida / Disgal Chef',telefono:'604015283',productos:'Burrata, aceites, salsas, patatas 4ª gama, elaborados y postres',notas:'GALDIS S.L. · contacto@grupodisgal.com · pedidos@comercialdisgal.com'});
   actualizar(['gadis'],{nombre:'Gadis',notas:'Código cliente: 36557'});
   actualizar(['mercadona'],{nombre:'Mercadona',notas:'Código cliente: B70355714'});
   if(cambio) guardar('proveedores',lista);
