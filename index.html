@@ -233,6 +233,14 @@ header .sub{font-size:0.7rem;color:var(--text-3);margin-top:1px}
 }
 #main-nav button:hover{background:var(--surface-2);color:var(--text)}
 #main-nav button.active{background:var(--amber-l);color:var(--amber);font-weight:600}
+/* Mejor contraste del menú lateral sin aumentar el tamaño */
+#main-nav button{color:#A7A7A7}
+#main-nav button.active{color:#D7B35D}
+.nav-section-label{color:#8F8F8F}
+.nav-back-btn{color:#9B9B9B}
+body.light #main-nav button{color:var(--text-2)}
+body.light #main-nav button.active{color:var(--amber)}
+body.light .nav-section-label,body.light .nav-back-btn{color:var(--text-2)}
 #main-nav .nav-icon{width:18px;height:18px;opacity:.6;flex-shrink:0}
 #main-nav button.active .nav-icon{opacity:1}
 .nav-separator{height:1px;background:var(--border);margin:8px 0}
