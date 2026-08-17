@@ -6562,7 +6562,7 @@ function renderPlaylistsCustom() {
 // Productos que la operativa real necesita comprobar aunque todavía no tengan
 // cantidades o precios definitivos. Se añaden sin inventar existencias.
 function migrarStockCarta() {
-  const productos = cargar('stock_productos', null);
+  let productos = cargar('stock_productos', null);
   if (!Array.isArray(productos)) return;
   const base = [
     ['Patata gajo envasada','bolsa 1kg','congelador-croquetas',1],
