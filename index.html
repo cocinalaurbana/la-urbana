@@ -3059,8 +3059,12 @@ function iniciarSesion(rol) {
   const saludo = hora < 13 ? t('buenosDias') : hora < 20 ? t('buenasTardes') : t('buenasNoches');
   const el = document.getElementById('dash-saludo');
   if (el) el.textContent = saludo + ', ' + names[rol] + '!';
-  aplicarPermisos();
-  arrancarApp();
+  try { aplicarPermisos(); } catch (e) { console.warn('Permisos iniciales no disponibles; continúo con el panel', e); }
+  try { arrancarApp(); } catch (e) {
+    console.warn('Arranque parcial; intento renderizar el panel', e);
+    try { initHeader(); } catch (_) {}
+    try { initInicio(); } catch (_) {}
+  }
 }
 function cerrarSesion() {
   USUARIO = null;
@@ -7017,7 +7021,7 @@ function volverGruposNav(){
 })();
 
 // Arrancar siempre sin esperar Firebase — Firefox y Chrome
-arrancarApp();
+try { arrancarApp(); } catch (e) { console.warn('Arranque inicial aplazado', e); }
 initNavegacionAgrupada();
 initTema();
 initBourdain();
