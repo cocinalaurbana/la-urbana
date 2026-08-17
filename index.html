@@ -6357,6 +6357,7 @@ function migrarContactosProveedores(){
   if(cambio) guardar('proveedores',lista);
 }
 function renderProveedores() {
+  migrarContactosProveedores();
   initProveedoresDefault();
   const el = document.getElementById('proveedores-lista');
   const proveedores = cargar('proveedores',[]);
