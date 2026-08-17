@@ -1718,6 +1718,16 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
 <!-- PROVEEDORES -->
 <div id="tab-proveedores" class="tab">
+  <div class="card" style="margin-bottom:14px;border-left:3px solid var(--accent)">
+    <div class="card-title">🏠 Datos de La Urbana</div>
+    <div style="font-size:13px;line-height:1.7;color:var(--text-2)">
+      <strong>La Urbana Bar, S.L.</strong><br>
+      CIF: B70355714 · Tel.: 881884875<br>
+      Calle Pastoriza 10, bajo · 15003 A Coruña<br>
+      Código cliente Gadis: 36557<br>
+      Código cliente Mercadona: B70355714
+    </div>
+  </div>
   <div style="margin-bottom:14px"><button class="btn btn-oro btn-sm" onclick="abrirModalProveedor()">➕ Nuevo proveedor</button></div>
   <div id="proveedores-lista"></div>
 </div>
@@ -3701,6 +3711,7 @@ De [hora] a [hora]. Ven con quien quieras.
     if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
     if (typeof migrarStockCarta === 'function') migrarStockCarta();
     if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
+    if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
     // No relanzar arrancarApp — ya arrancó sin esperar Firebase
     // Solo refrescar datos si ya hay usuario activo
     if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
@@ -7218,16 +7229,17 @@ function renderPruebasRecetas() {
 // ══════════════════════════════════════════
 
 const PROVEEDORES_DEFAULT = [
-  {id:1, nombre:'Fructífera', categoria:'Frutas y Verduras', telefono:'', productos:'Frutas, verduras', dias:'L-V', notas:''},
+  {id:1, nombre:'Fructífera', categoria:'Frutas y Verduras', telefono:'609439305', productos:'Frutas, verduras', dias:'L-V', notas:''},
   {id:2, nombre:'Pepe (Panadería)', categoria:'Panadería', telefono:'', productos:'Pan, bollería', dias:'Diario mañana', notas:''},
-  {id:3, nombre:'Gadis', categoria:'General', telefono:'', productos:'Varios, lácteos, conservas', dias:'', notas:'Pendiente facturas'},
+  {id:3, nombre:'Gadis', categoria:'General', telefono:'', productos:'Varios, lácteos, conservas', dias:'', notas:'Código cliente: 36557 · Pendiente facturas'},
   {id:4, nombre:'Del Mar', categoria:'Pescado/Conservas', telefono:'', productos:'Atún', dias:'', notas:'Proveedor atún'},
-  {id:5, nombre:'Elmar', categoria:'Cárnico', telefono:'', productos:'Pollo', dias:'', notas:''},
+  {id:5, nombre:'El Mar · Sergio', categoria:'Cárnico', telefono:'626528854', productos:'Pollo, cinta de lomo, patatas bravas', dias:'', notas:''},
   {id:6, nombre:'DIS', categoria:'Cárnico', telefono:'', productos:'Chorizo rojo ahumado', dias:'', notas:'Pendiente precio y formato'},
-  {id:7, nombre:'Armando Galves', categoria:'Suministro', telefono:'', productos:'Aceite alto oleico', dias:'', notas:''},
-  {id:8, nombre:'Gas Bergondo', categoria:'Suministro', telefono:'', productos:'Bombonas de gas', dias:'', notas:''},
+  {id:7, nombre:'Grupo Silva', categoria:'Suministro', telefono:'686926398', productos:'Mayonesa, aceite, aceitunas, atún, tomate en lata', dias:'', notas:''},
+  {id:8, nombre:'Gas Abegondo', categoria:'Suministro', telefono:'981216872', productos:'Bombonas de gas', dias:'', notas:''},
   {id:9, nombre:'Restafresh', categoria:'Pescado', telefono:'630727805', productos:'Mejillón fresco (candidato)', dias:'Fines de semana', notas:'⭐ Candidato proveedor mejillón — pendiente confirmar'},
   {id:10, nombre:'Carrefour', categoria:'General', telefono:'', productos:'Varios', dias:'', notas:''},
+  {id:14, nombre:'Campomayor', categoria:'Huevos', telefono:'605233959', productos:'Huevos', dias:'', notas:''},
   {id:11, nombre:'Fresh&Clean', categoria:'Limpieza', telefono:'', productos:'Productos limpieza', dias:'', notas:''},
   {id:12, nombre:'Eroski', categoria:'General', telefono:'', productos:'Varios', dias:'', notas:''},
   {id:13, nombre:'Quique Codillos', categoria:'Cárnico', telefono:'34622101000', productos:'Carnes, croquetas, elaborados, pescados y arroces', dias:'Según disponibilidad', notas:'Tarifa recibida el 03/08/2026. Precios pendientes de confirmar por formato, IVA y condiciones de pedido.'},
@@ -7382,6 +7394,24 @@ function integrarTarifaQuique() {
 }
 
 const PROV_EMOJIS = {'Cárnico':'🥩','Verduras':'🥬','Frutas y Verduras':'🥬','Frutas':'🍊','Pescado':'🐟','Bebidas':'🍺','Panadería':'🍞','Lácteos':'🧀','Suministro':'💡','General':'📦'};
+function migrarContactosProveedores(){
+  var lista=cargar('proveedores',[]);
+  if(!Array.isArray(lista)) return;
+  var cambio=false;
+  function actualizar(nombres, datos){
+    var p=lista.find(function(x){var n=String(x.nombre||'').toLowerCase();return nombres.some(function(v){return n.includes(v);});});
+    if(!p){p={id:Date.now()+lista.length,nombre:datos.nombre,categoria:datos.categoria||'General',telefono:'',productos:'',dias:'',notas:''};lista.push(p);cambio=true;}
+    Object.keys(datos).forEach(function(k){if(p[k]!==datos[k]){p[k]=datos[k];cambio=true;}});
+  }
+  actualizar(['fructifera','fructífera'],{nombre:'Fructífera',telefono:'609439305',productos:'Frutas, verduras'});
+  actualizar(['elmar','el mar'],{nombre:'El Mar · Sergio',telefono:'626528854',productos:'Pollo, cinta de lomo, patatas bravas'});
+  actualizar(['grupo silva','armando galves','armando'],{nombre:'Grupo Silva',telefono:'686926398',productos:'Mayonesa, aceite, aceitunas, atún, tomate en lata'});
+  actualizar(['gas abegondo','gas bergondo'],{nombre:'Gas Abegondo',telefono:'981216872',productos:'Bombonas de gas'});
+  actualizar(['campomayor'],{nombre:'Campomayor',telefono:'605233959',productos:'Huevos'});
+  actualizar(['gadis'],{nombre:'Gadis',notas:'Código cliente: 36557'});
+  actualizar(['mercadona'],{nombre:'Mercadona',notas:'Código cliente: B70355714'});
+  if(cambio) guardar('proveedores',lista);
+}
 function renderProveedores() {
   initProveedoresDefault();
   const el = document.getElementById('proveedores-lista');
@@ -7726,12 +7756,12 @@ function limpiarCatalogoObsoleto() {
 function seedData() {
   if (!cargar('proveedores', null)) {
     guardar('proveedores', [
-      {id:1,nombre:'Elmar',categoria:'Cárnico',telefono:'',dias:'Lunes y Jueves',notas:'Pechuga pollo IQF bolsas 2,5kg'},
-      {id:2,nombre:'Fructifera',categoria:'Verduras',telefono:'',dias:'Martes y Viernes',notas:'Patata pelada vacío, pimiento, zanahoria, perejil'},
-      {id:3,nombre:'Armando Galves',categoria:'General',telefono:'',dias:'',notas:'Aceite de semillas garrafa 10L'},
-      {id:4,nombre:'Mercadona',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Chorizo criollo, croquetas'},
+      {id:1,nombre:'El Mar · Sergio',categoria:'Cárnico',telefono:'626528854',dias:'',notas:'Pollo, cinta de lomo y patatas bravas'},
+      {id:2,nombre:'Fructífera',categoria:'Verduras',telefono:'609439305',dias:'Martes y Viernes',notas:'Patata pelada vacío, pimiento, zanahoria, perejil'},
+      {id:3,nombre:'Grupo Silva',categoria:'General',telefono:'686926398',dias:'',notas:'Mayonesa, aceite, aceitunas, atún, tomate en lata'},
+      {id:4,nombre:'Mercadona',categoria:'General',telefono:'',dias:'Según necesidad',notas:'Chorizo criollo, tequeños, croquetas, pan crujiente · Código cliente: B70355714'},
       {id:5,nombre:'Del Mar',categoria:'Pescado/Conservas',telefono:'',dias:'Según necesidad',notas:'Atún desmigado 1kg'},
-      {id:6,nombre:'Gadis',categoria:'General',telefono:'',dias:'Según necesidad',notas:"Mayonesa Hellmann's cubo 4,6kg, nata cocinar"},
+      {id:6,nombre:'Gadis',categoria:'General',telefono:'',dias:'Según necesidad',notas:"Mayonesa Hellmann's cubo 4,6kg, nata cocinar · Código cliente: 36557"},
       {id:7,nombre:'DIS',categoria:'Bebidas',telefono:'',dias:'',notas:'Chorizo rojo ahumado'},
     ]);
   }
@@ -7760,7 +7790,7 @@ function seedData() {
       {id:1031,nombre:'Limpiador multiusos',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
       {id:1032,nombre:'Insecticida',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
       {id:1033,nombre:'Limpiacristales',unidad:'spray',ubicacion:'limpieza',minimo:1,critico:0,categoria:'limpieza',vidaDias:null,lotes:[]},
-      {id:1008,nombre:'Aceite de semillas',unidad:'garrafa 10L',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9008,cantidad:1,caduca:null,notas:'Armando Galves',entrada:h}]},
+      {id:1008,nombre:'Aceite de semillas',unidad:'garrafa 10L',ubicacion:'estanteria',minimo:1,critico:0,vidaDias:null,lotes:[{id:9008,cantidad:1,caduca:null,notas:'Grupo Silva',entrada:h}]},
       {id:1010,nombre:'Croquetas jamón',unidad:'bolsa',ubicacion:'congelador-croquetas',minimo:2,critico:1,vidaDias:null,lotes:[{id:9010,cantidad:1,caduca:null,notas:'Mercadona',entrada:h}]},
       {id:1012,nombre:"Mayonesa Hellmann's",unidad:'cubo',ubicacion:'cocina',minimo:1,critico:0,vidaDias:null,lotes:[]},
       {id:1014,nombre:'Pan mariñeira',unidad:'ud',ubicacion:'cocina',minimo:10,critico:3,vidaDias:1,lotes:[]},
@@ -8028,6 +8058,7 @@ function seedRecetasDrive() {
 // ══════════════════════════════════════════
 function arrancarApp() {
   seedData();
+  migrarContactosProveedores();
   seedRecetasDrive();
   migrarStockCarta();
   limpiarCatalogoObsoleto();
