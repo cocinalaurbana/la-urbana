@@ -1588,6 +1588,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div class="form-group"><input type="text" id="pincho-nuevo" placeholder="Nuevo pincho..." onkeydown="if(event.key==='Enter')addPincho()"></div>
     <button class="btn btn-outline btn-sm" onclick="addPincho()">+ Añadir</button>
   </div>
+  <div class="card" style="border-left:3px solid var(--accent);margin-bottom:14px"><div class="card-title">🌱 Banco de pinchos de temporada</div><div style="font-size:12px;color:var(--text-2);line-height:1.5">Producto próximo, pocos elementos, preparación sencilla y acabado rápido. Primero se prueba; después se decide si vuelve. La lista se puede editar desde el bloque Pinchos.</div></div>
   <!-- COMIDA DEL PERSONAL: cuadro semanal -->
   <div class="card">
     <div class="card-title">👨‍🍳 Comida del personal</div>
@@ -2702,6 +2703,7 @@ De [hora] a [hora]. Ven con quien quieras.
     if (typeof migrarStockCarta === 'function') migrarStockCarta();
     if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
     if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
+    if (typeof migrarBancoPinchos === 'function') migrarBancoPinchos();
     // No relanzar arrancarApp — ya arrancó sin esperar Firebase
     // Solo refrescar datos si ya hay usuario activo
     if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
@@ -5791,6 +5793,14 @@ function guardarMenu() {
   addHistorial('menu', `🍽️ Menú ${fecha}: ${[menu.p1,menu.p2,menu.postre].filter(Boolean).join(' · ')}`);
   toast('Menú guardado ✓','verde');
 }
+const IDEAS_PINCHOS=['Judías verdes al dente con picadillo de chorizo y patata crujiente · PRÓXIMO DOMINGO', 'Guisantes con panceta crujiente y patata frita · sin huevo', 'Brécol a la plancha con ajo, limón y patata chafada', 'Pimientos de Padrón con queso gallego y vinagreta', 'Tomate pera aliñado con bonito, cebolla y pan crujiente', 'Zanahoria asada y aliñada con yogur, limón y semillas', 'Calabacín a la plancha con ajo, queso curado y encurtido', 'Pimiento rojo asado con atún, aceituna y patata', 'Patata chafada con salsa brava y panceta crujiente', 'Judías verdes salteadas con ajo, almendra y limón · opción sin carne'];
+function migrarBancoPinchos(){
+  var lista=cargar('pinchos',[]);
+  if(!Array.isArray(lista)) return;
+  var ideas=IDEAS_PINCHOS; var cambio=false;
+  ideas.forEach(function(idea){if(!lista.some(function(x){return String(x).toLowerCase()===idea.toLowerCase();})){lista.push(idea);cambio=true;}});
+  if(cambio) guardar('pinchos',lista);
+}
 function renderPinchos() {
   const pinchos = cargar('pinchos',[]);
   const el = document.getElementById('pinchos-lista');
@@ -6980,6 +6990,7 @@ function seedData() {
 function arrancarApp() {
   seedData();
   migrarContactosProveedores();
+  migrarBancoPinchos();
   migrarStockCarta();
   limpiarCatalogoObsoleto();
   integrarTarifaQuique();
