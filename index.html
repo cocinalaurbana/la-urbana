@@ -761,6 +761,56 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   #main-content .tab{padding:16px;padding-bottom:40px}
   .stats{grid-template-columns:repeat(4,1fr)}
 }
+
+/* ─── TABLET / MOBILE · navegación legible por grupos ───
+   Primera fase del modo páginas: la navegación ocupa todo el ancho,
+   el contenido deja de quedar encajonado en una columna lateral y los
+   subapartados se recorren horizontalmente como una secuencia clara. */
+@media (max-width:1024px){
+  #app-layout{display:block;min-height:calc(100vh - 56px)}
+  #main-nav{
+    width:100%;height:auto;min-height:0;max-height:118px;
+    position:sticky;top:56px;z-index:40;
+    display:flex;flex-direction:row;align-items:center;
+    border-right:0;border-bottom:1px solid var(--border);
+    padding:8px 10px;overflow-x:auto;overflow-y:hidden;
+    gap:7px;background:var(--surface);
+  }
+  #main-nav > button#nav-inicio{
+    width:auto;flex:0 0 auto;padding:10px 12px;white-space:nowrap;
+  }
+  #main-nav .nav-separator,#main-nav .nav-section-label{display:none!important}
+  #main-nav #nav-grupos{
+    display:flex;flex:0 0 auto;flex-direction:row;gap:7px;
+    width:max-content;overflow:visible;
+  }
+  #main-nav .nav-group-btn{
+    width:auto;min-width:max-content;flex:0 0 auto;
+    padding:10px 12px!important;white-space:nowrap;
+  }
+  #main-nav .nav-subitem{display:none!important}
+  #main-nav.nav-group-active{flex-direction:row;max-height:74px}
+  #main-nav.nav-group-active #nav-grupos{display:none!important}
+  #main-nav.nav-group-active #nav-volver-grupos{
+    display:flex!important;flex:0 0 auto;width:auto;
+    padding:10px 12px;white-space:nowrap;
+    border:1px solid var(--border);border-radius:9px;
+    background:var(--surface-2);color:var(--text);
+  }
+  #main-nav.nav-group-active .nav-subitem{
+    display:flex!important;flex:0 0 auto;width:auto;
+    padding:10px 12px;white-space:nowrap;
+  }
+  #main-content{width:100%;overflow:visible}
+  #main-content .tab{max-width:none;padding:18px 16px 48px}
+  #main-content .card{border-radius:14px}
+}
+@media (max-width:560px){
+  #main-nav{padding:7px 8px}
+  #main-nav button{font-size:12px}
+  #main-content .tab{padding:14px 12px 36px}
+}
+
 </style>
 </head>
 <body>
