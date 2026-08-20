@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // La aplicación guarda sus datos operativos en esta colección.
+    // Solo pueden acceder las cuentas autorizadas de La Urbana.
+    match /laurbana/{documentId} {
+      allow read, write: if request.auth != null
+        && (
+          request.auth.token.email == 'lorelofisterra@gmail.com'
+          || request.auth.token.email == 'cesar@laurbana.es'
+        );
+    }
+
+    // Todo lo demás queda cerrado por defecto.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
