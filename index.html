@@ -2017,6 +2017,9 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <div class="card" id="circuito-brava-card" style="margin-bottom:14px;border-left:3px solid var(--olive)">
     <div class="card-title">🔗 Primer circuito · producto → preparación → plato</div>
     <div style="font-size:13px;color:var(--text-2);line-height:1.5">Lo probamos con una elaboración real de La Urbana. Esta primera versión guarda la relación y el rendimiento, pero <b>todavía no descuenta stock automáticamente</b>.</div>
+    <div style="margin-top:10px">
+      <label style="font-size:11px;color:var(--text-3)">Plato de prueba relacionado<select id="cb-plato" onchange="renderCircuitoBrava()" style="margin-top:4px;width:100%"></select></label>
+    </div>
     <div class="circuito-flow">
       <div class="circuito-node"><small>Producto comprado</small><strong>Tomate frito<br>+ cebolla<br>+ zanahoria<br>+ pimentón</strong></div>
       <div class="circuito-arrow">→</div>
@@ -6331,6 +6334,19 @@ function seedPruebasRecetas() {
     propuestaRadial.emplatado = 'Plato real de La Urbana: redondo y blanco, con líneas negras rectas como trazos de bolígrafo. No son radios que terminan en el centro: cada raya atraviesa el plato entero, de un borde al borde opuesto, y todas se cruzan en el centro. En el borde, la raya mide aproximadamente 1–2 mm y el espacio blanco entre rayas tiene un ancho parecido. Probar una pieza rectangular baja, ligeramente desplazada, dejando visible el centro de los cruces. Sin picos, sin pan de orégano y sin forma de helado.';
     propuestaRadial.platoRadialCorregidoV2 = true;
   }
+  const bravaId = 'patatas-bravas-salsa-brava-20260821';
+  if (!borradas.includes(bravaId) && !lista.some(x => x.id === bravaId)) lista.unshift({
+    id: bravaId,
+    nombre: 'Patatas bravas · prueba de salsa brava',
+    fecha: '2026-08-21',
+    estado: 'En prueba',
+    cantidades: 'Salsa brava: 2,5 kg de tomate frito + 1 kg de cebolla + 5 zanahorias + pimentón. Patata: pendiente de fijar ración.',
+    metodo: 'Relacionar la tanda de salsa brava con el plato de prueba y medir el rendimiento final.',
+    emplatado: 'Pendiente.',
+    sabor: '', textura: '', acidez: '', visual: '',
+    notas: 'Primera prueba del circuito producto → preparación → plato.',
+    creado: Date.now()
+  });
   guardar('pruebas_recetas', lista);
 }
 function limpiarFormularioPrueba() {
@@ -7201,21 +7217,33 @@ function renderQuiqueCostesResumen(){
 }
 
 function renderCircuitoBrava(){
-  const d=cargar('circuito_brava',{coste:'',rendimiento:'',raciones:''});
+  seedPruebasRecetas();
+  const d=cargar('circuito_brava',{coste:'',rendimiento:'',raciones:'',pruebaId:''});
   ['coste','rendimiento','raciones'].forEach(k=>{const el=document.getElementById('cb-'+k);if(el)el.value=d[k]??'';});
+  const sel=document.getElementById('cb-plato');
+  if(sel){
+    const pruebas=cargar('pruebas_recetas',[]);
+    const elegido=sel.value||d.pruebaId||'patatas-bravas-salsa-brava-20260821';
+    sel.innerHTML='<option value="">— Selecciona una prueba —</option>'+pruebas.map(x=>`<option value="${escPrueba(x.id)}">${escPrueba(x.nombre)}</option>`).join('');
+    sel.value=elegido;
+  }
   const r=document.getElementById('cb-resumen'); if(!r)return;
   const coste=Number(d.coste)||0, rac=Number(d.raciones)||0;
-  r.textContent=(coste&&rac)?`Coste provisional por ración: ${(coste/rac).toFixed(2)} €`:'Pendiente de pesar la tanda y completar el coste.';
+  const pruebaIdActual=sel?.value||d.pruebaId||'patatas-bravas-salsa-brava-20260821';
+  const prueba=(cargar('pruebas_recetas',[]).find(x=>x.id===pruebaIdActual)||{}).nombre;
+  r.textContent=(coste&&rac)?`Coste provisional por ración: ${(coste/rac).toFixed(2)} € · Vinculado a: ${prueba||'prueba seleccionada'}`:`Vinculado a: ${prueba||'ninguna prueba'} · Pendiente de pesar la tanda y completar el coste.`;
 }
 function guardarCircuitoBrava(){
   const d={
     id:'salsa-brava', nombre:'Salsa brava',
     ingredientes:[{producto:'Tomate frito',cantidad:2500,unidad:'g'},{producto:'Cebolla dulce',cantidad:1000,unidad:'g'},{producto:'Zanahoria',cantidad:550,unidad:'g'},{producto:'Pimentón',cantidad:'5 + 5',unidad:'cucharadas'}],
-    plato:'Patatas bravas', coste:document.getElementById('cb-coste')?.value||'', rendimiento:document.getElementById('cb-rendimiento')?.value||'', raciones:document.getElementById('cb-raciones')?.value||'', actualizado:ahora(), estado:'en_prueba'
+    plato:'Patatas bravas', pruebaId:document.getElementById('cb-plato')?.value||'patatas-bravas-salsa-brava-20260821', coste:document.getElementById('cb-coste')?.value||'', rendimiento:document.getElementById('cb-rendimiento')?.value||'', raciones:document.getElementById('cb-raciones')?.value||'', actualizado:ahora(), estado:'en_prueba'
   };
   guardar('circuito_brava',d);
   const lista=cargar('preparaciones',[]).filter(x=>x.id!=='salsa-brava'); lista.push(d); guardar('preparaciones',lista);
-  renderCircuitoBrava(); toast('Prueba de salsa brava guardada','verde');
+  const pruebas=cargar('pruebas_recetas',[]); const prueba=pruebas.find(x=>x.id===d.pruebaId);
+  if(prueba){prueba.preparacionId='salsa-brava'; prueba.preparacionNombre='Salsa brava'; prueba.platoRelacionado='Patatas bravas'; guardar('pruebas_recetas',pruebas);}
+  renderCircuitoBrava(); toast('Circuito y plato de prueba guardados','verde');
 }
 
 function renderControlCostes(){
