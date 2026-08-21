@@ -825,6 +825,22 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 @media(max-width:620px){.circuito-flow{grid-template-columns:1fr;gap:5px}.circuito-arrow{transform:rotate(90deg);height:14px}.circuito-grid{grid-template-columns:1fr 1fr}}
 
 </style>
+<style>
+/* Navegación tipo páginas de libro en móvil/tablet */
+#book-nav{display:none;grid-template-columns:42px 1fr 42px;gap:8px;align-items:center;width:100%;padding:4px 0}
+#book-nav button{width:42px!important;height:42px!important;padding:0!important;justify-content:center!important;border:1px solid var(--border)!important;border-radius:10px!important;background:var(--surface-2)!important;color:var(--text)!important;font-size:22px!important}
+#book-nav button:disabled{opacity:.3;cursor:default}
+#book-page{min-width:0;text-align:center;padding:3px 8px}
+#book-page strong{display:block;font-size:14px;line-height:1.2;color:var(--text)}
+#book-page small{display:block;margin-top:3px;font-size:10px;color:var(--text-3);letter-spacing:.5px;text-transform:uppercase}
+.maria-hidden{display:none!important}
+@media (max-width:1024px){
+  #main-nav{display:block;max-height:none;overflow:visible;padding:8px 10px}
+  #book-nav{display:grid}
+  #main-nav > :not(#book-nav){display:none!important}
+}
+@media (max-width:560px){#main-nav{padding:7px 8px}#book-page strong{font-size:13px}}
+</style>
 </head>
 <body>
 
@@ -930,6 +946,11 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
 <div id="app-layout">
 <nav id="main-nav">
+  <div id="book-nav" aria-label="Navegación por páginas">
+    <button id="book-prev" type="button" aria-label="Página anterior">‹</button>
+    <div id="book-page"><strong id="book-page-title">Inicio</strong><small id="book-page-count">Página 1</small></div>
+    <button id="book-next" type="button" aria-label="Página siguiente">›</button>
+  </div>
   <!-- Dashboard -->
   <button class="active" onclick="tab('inicio',this)" id="nav-inicio">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -3366,6 +3387,19 @@ function cerrarSesion() {
   initBourdain();
 }
 function aplicarPermisos() {
+  const MARIA_ALLOWED_TABS = ['inicio','turno','produccion','stock','mermas','appcc'];
+  document.querySelectorAll('#main-nav button[id^="nav-"]:not([id^="nav-grupo-"])').forEach(btn => {
+    const tabId = btn.id.replace(/^nav-/, '');
+    if (tabId) btn.classList.toggle('maria-hidden', esMaria() && !MARIA_ALLOWED_TABS.includes(tabId));
+  });
+  ['nav-grupo-bar','nav-grupo-compras','nav-grupo-cultura','nav-grupo-gestion'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('maria-hidden', esMaria());
+  });
+  document.querySelectorAll('#accesos-rapidos .acceso-card').forEach(card => {
+    const m = (card.getAttribute('onclick') || '').match(/tab\('(.*?)'/);
+    if (m) card.classList.toggle('maria-hidden', esMaria() && !MARIA_ALLOWED_TABS.includes(m[1]));
+  });
   ['nav-recetas','nav-pruebas','nav-proveedores','nav-nuevosproveedores','nav-historial','nav-formacion','nav-instagram','nav-contabilidad','nav-diario','nav-programacion'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('oculto', esMaria());
@@ -3518,9 +3552,32 @@ function renderFormacion(){
 }
 function borrarRevisionFormacion(id){guardar('form_revisiones',cargar('form_revisiones',[]).filter(x=>x.id!==id));renderFormacion();toast('Revisión eliminada');}
 
+const BOOK_ALL_TABS = ['inicio','turno','produccion','stock','mermas','appcc','pedidos','caja','menu','raciones','recetas','pruebas','proveedores','nuevosproveedores','historial','formacion','diario','programacion','instagram','contabilidad','controlcostes','protocolos','spotify'];
+const BOOK_MARIA_TABS = ['inicio','turno','produccion','stock','mermas','appcc'];
+function actualizarNavegacionLibro(activeId) {
+  const nav = document.getElementById('book-nav');
+  if (!nav) return;
+  const ids = (esMaria() ? BOOK_MARIA_TABS : BOOK_ALL_TABS).filter(id => {
+    const panel = document.getElementById('tab-' + id);
+    const button = document.getElementById('nav-' + id);
+    return panel && (!button || !button.classList.contains('oculto'));
+  });
+  if (!ids.length) return;
+  let index = Math.max(0, ids.indexOf(activeId));
+  const current = ids[index];
+  const guide = (typeof TAB_GUIAS !== 'undefined' && TAB_GUIAS[current]) ? TAB_GUIAS[current] : null;
+  const title = document.getElementById('book-page-title');
+  const count = document.getElementById('book-page-count');
+  if (title) title.textContent = guide ? guide[esMaria() ? 'hu' : 'es'][0] : current;
+  if (count) count.textContent = `Página ${index + 1} de ${ids.length}`;
+  const prev = document.getElementById('book-prev'), next = document.getElementById('book-next');
+  if (prev) { prev.disabled = index <= 0; prev.onclick = () => { if (index > 0) tab(ids[index - 1], document.getElementById('nav-' + ids[index - 1])); }; }
+  if (next) { next.disabled = index >= ids.length - 1; next.onclick = () => { if (index < ids.length - 1) tab(ids[index + 1], document.getElementById('nav-' + ids[index + 1])); }; }
+}
+
 function tab(id, btn) {
-  const soloAdmin = ['menu','recetas','pruebas','proveedores','nuevosproveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario','formacion'];
-  if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
+  const mariaAllowedTabs = ['inicio','turno','produccion','stock','mermas','appcc'];
+  if (esMaria() && !mariaAllowedTabs.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
@@ -3545,6 +3602,7 @@ function tab(id, btn) {
     protocolos: initProtocolos
   };
   if (renders[id]) renders[id]();
+  actualizarNavegacionLibro(id);
 }
 
 // ══════════════════════════════════════════
