@@ -825,22 +825,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 @media(max-width:620px){.circuito-flow{grid-template-columns:1fr;gap:5px}.circuito-arrow{transform:rotate(90deg);height:14px}.circuito-grid{grid-template-columns:1fr 1fr}}
 
 </style>
-<style>
-/* Navegación tipo páginas de libro en móvil/tablet */
-#book-nav{display:none;grid-template-columns:42px 1fr 42px;gap:8px;align-items:center;width:100%;padding:4px 0}
-#book-nav button{width:42px!important;height:42px!important;padding:0!important;justify-content:center!important;border:1px solid var(--border)!important;border-radius:10px!important;background:var(--surface-2)!important;color:var(--text)!important;font-size:22px!important}
-#book-nav button:disabled{opacity:.3;cursor:default}
-#book-page{min-width:0;text-align:center;padding:3px 8px}
-#book-page strong{display:block;font-size:14px;line-height:1.2;color:var(--text)}
-#book-page small{display:block;margin-top:3px;font-size:10px;color:var(--text-3);letter-spacing:.5px;text-transform:uppercase}
-.maria-hidden{display:none!important}
-@media (max-width:1024px){
-  #main-nav{display:block;max-height:none;overflow:visible;padding:8px 10px}
-  #book-nav{display:grid}
-  #main-nav > :not(#book-nav){display:none!important}
-}
-@media (max-width:560px){#main-nav{padding:7px 8px}#book-page strong{font-size:13px}}
-</style>
 </head>
 <body>
 
@@ -888,10 +872,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div class="logo-sub">Kitchen OS · A Coruña</div>
   </div>
   <p>¿Quién eres hoy?</p>
-  <div id="firebase-auth-box" style="max-width:340px;width:100%;margin:0 auto 18px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);text-align:center">
-    <button id="firebase-google-login" type="button" onclick="window._fbSignInGoogle && window._fbSignInGoogle()" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-weight:700;cursor:pointer">🔐 Entrar con Google para sincronizar</button>
-    <div id="firebase-auth-status" style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.4">Necesario para proteger y sincronizar los datos de la cocina.</div>
-  </div>
   <div class="bourdain" id="bourdain-quote"></div>
 
   <div id="login-roles">
@@ -946,11 +926,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
 <div id="app-layout">
 <nav id="main-nav">
-  <div id="book-nav" aria-label="Navegación por páginas">
-    <button id="book-prev" type="button" aria-label="Página anterior">‹</button>
-    <div id="book-page"><strong id="book-page-title">Inicio</strong><small id="book-page-count">Página 1</small></div>
-    <button id="book-next" type="button" aria-label="Página siguiente">›</button>
-  </div>
   <!-- Dashboard -->
   <button class="active" onclick="tab('inicio',this)" id="nav-inicio">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -2790,12 +2765,10 @@ De [hora] a [hora]. Ven con quien quieras.
 <!-- FIREBASE SDK (compat — funciona en todos los navegadores) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
 (function() {
   // Fallback offline si Firebase no carga (Firefox con bloqueo de scripts externos)
   if (typeof firebase === 'undefined') {
-    window._fbAuthEnabled = false;
     window._fbCargar = async function(k, def) {
       try { const v = localStorage.getItem('urb_'+k); return v ? JSON.parse(v) : def; } catch(e) { return def; }
     };
@@ -2816,60 +2789,11 @@ De [hora] a [hora]. Ven con quien quieras.
   };
   try { firebase.initializeApp(firebaseConfig); } catch(e) {}
   const db = firebase.firestore();
-  const auth = firebase.auth();
-  const ALLOWED_EMAILS = new Set(['lorelofisterra@gmail.com','cesar@laurbana.es']);
   const _cache = {};
-  let resolveInitialAuth;
-  let initialAuthResolved = false;
 
-  window._fbAuthEnabled = true;
-  window._fbAuthUser = null;
   window._fbCache = _cache;
-  window._fbAuthReady = new Promise(resolve => { resolveInitialAuth = resolve; });
-
-  function allowed(user) {
-    return !!(user && user.email && ALLOWED_EMAILS.has(user.email.toLowerCase()));
-  }
-  function status(text, error) {
-    const el = document.getElementById('firebase-auth-status');
-    if (el) { el.textContent = text; el.style.color = error ? 'var(--rojo)' : 'var(--text-3)'; }
-    const btn = document.getElementById('firebase-google-login');
-    if (btn) btn.textContent = window._fbAuthUser ? '✅ Cuenta Google conectada' : '🔐 Entrar con Google para sincronizar';
-  }
-  window._fbSignInGoogle = async function() {
-    const btn = document.getElementById('firebase-google-login');
-    if (btn) { btn.disabled = true; btn.textContent = 'Conectando…'; }
-    try {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const result = await auth.signInWithPopup(provider);
-      if (!allowed(result.user)) {
-        await auth.signOut();
-        status('Esta cuenta no está autorizada para La Urbana.', true);
-        return false;
-      }
-      status('Cuenta conectada. Ya puedes elegir tu persona y usar la app.');
-      return true;
-    } catch (e) {
-      if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
-        try { await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); return false; } catch (_) {}
-      }
-      status('No se pudo conectar la cuenta. Inténtalo de nuevo.', true);
-      return false;
-    } finally {
-      if (btn) btn.disabled = false;
-    }
-  };
-  window._fbEnsureAuth = async function() {
-    await window._fbAuthReady;
-    if (allowed(auth.currentUser)) { window._fbAuthUser = auth.currentUser; return true; }
-    return !!(await window._fbSignInGoogle());
-  };
-  window._fbSignOut = function() { return auth.signOut(); };
-
   window._fbCargar = async function(k, def) {
     try {
-      await window._fbAuthReady;
-      if (!window._fbAuthUser) return _cache[k] !== undefined ? _cache[k] : def;
       const snap = await db.collection('laurbana').doc(k).get();
       const val = snap.exists ? snap.data().v : def;
       _cache[k] = val;
@@ -2880,56 +2804,26 @@ De [hora] a [hora]. Ven con quien quieras.
   };
   window._fbGuardar = async function(k, v) {
     _cache[k] = v;
-    try {
-      await window._fbAuthReady;
-      if (!window._fbAuthUser) throw new Error('auth-required');
-      await db.collection('laurbana').doc(k).set({ v });
-    } catch(e) {
-      try { localStorage.setItem('urb_'+k, JSON.stringify(v)); } catch(_) {}
-    }
+    try { await db.collection('laurbana').doc(k).set({ v }); }
+    catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
   };
 
   const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom','memorias_gastronomicas','appcc_' + new Date().toISOString().slice(0,10)];
-  let syncing = false;
-  async function sincronizarNube() {
-    if (syncing || !window._fbAuthUser) return;
-    syncing = true;
-    try {
-      await Promise.all(CLAVES.map(k => window._fbCargar(k, null)));
-      window._firebaseReady = true;
-      if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
-      if (typeof migrarStockCarta === 'function') migrarStockCarta();
-      if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
-      if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
-      if (typeof migrarBancoPinchos === 'function') migrarBancoPinchos();
-      if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
-        initInicio();
-        if (typeof actualizarWidgetCaja === 'function') actualizarWidgetCaja();
-        if (typeof renderKanban === 'function' && document.getElementById('tab-produccion')?.classList.contains('active')) renderKanban();
-        if (typeof renderTurnoTareas === 'function' && document.getElementById('tab-turno')?.classList.contains('active')) { migrarChecklistTurno(); renderTurnoTareas(); }
-      }
-    } finally { syncing = false; }
-  }
-  window._fbRecargarNube = sincronizarNube;
-  auth.onAuthStateChanged(async user => {
-    if (!initialAuthResolved) { initialAuthResolved = true; resolveInitialAuth(user); }
-    if (user && allowed(user)) {
-      window._fbAuthUser = user;
-      status('Cuenta conectada. Ya puedes elegir tu persona y usar la app.');
-      await sincronizarNube();
-      // Al volver de segundo plano, recuperar el perfil local de esta pestaña.
-      try {
-        const savedRole = sessionStorage.getItem('laurbana_role');
-        if (savedRole && ['lore','cesar','maria'].includes(savedRole)
-            && typeof USUARIO !== 'undefined' && !USUARIO
-            && typeof iniciarSesion === 'function') {
-          setTimeout(() => iniciarSesion(savedRole), 0);
-        }
-      } catch (e) {}
-    } else {
-      window._fbAuthUser = null;
-      if (user) await auth.signOut();
-      status('Necesario para proteger y sincronizar los datos de la cocina.');
+  Promise.all(CLAVES.map(k => window._fbCargar(k, null))).then(() => {
+    window._firebaseReady = true;
+    // Tras cargar la nube, sincronizamos listas compartidas y refrescamos la pestaña activa.
+    if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
+    if (typeof migrarStockCarta === 'function') migrarStockCarta();
+    if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
+    if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
+    if (typeof migrarBancoPinchos === 'function') migrarBancoPinchos();
+    // No relanzar arrancarApp — ya arrancó sin esperar Firebase
+    // Solo refrescar datos si ya hay usuario activo
+    if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
+      initInicio();
+      if (typeof actualizarWidgetCaja === 'function') actualizarWidgetCaja();
+      if (typeof renderKanban === 'function' && document.getElementById('tab-produccion')?.classList.contains('active')) renderKanban();
+      if (typeof renderTurnoTareas === 'function' && document.getElementById('tab-turno')?.classList.contains('active')) { migrarChecklistTurno(); renderTurnoTareas(); }
     }
   });
 })();
@@ -3066,13 +2960,23 @@ function addIdea() {
 function renderMkIdeas() {
   const el = document.getElementById('mk-ideas-lista');
   if (!el) return;
-  const ideas = cargar('mk_ideas', []);
+  let ideas = cargar('mk_ideas', []);
+  const reelId = 'reel-DcCjbWhvge5';
+  if (!ideas.some(i => i.id === reelId)) {
+    ideas.unshift({
+      id: reelId,
+      fecha: '2026-08-23',
+      fuente: 'https://www.instagram.com/reel/DcCjbWhvge5/?igsi=MThzY2UwaWZoMng2bg==',
+      texto: '<b>40 ideas de contenido para restaurantes · reel de social.bennett</b><br><br>1. Historias de quienes fundaron el local · 2. Inspiración de quienes lo fundaron · 3. Plato antes y después · 4. Pase de diapositivas · 5. Testimonios de clientes · 6. B-roll de clientes · 7. B-roll de la experiencia en sala · 8. La sensación del primer bocado · 9. La sensación del primer trago · 10. B-roll de cocina · 11. Del nombre del menú al plato · 12. Un día en la vida de la persona propietaria · 13. Un día en la vida de la persona gerente · 14. Un día en la vida de quien cocina · 15. Un día en la vida de quien atiende · 16. Concurso tipo programa de televisión sobre un plato · 17. Videojuego con un plato del menú · 18. POV del tenedor · 19. Cocinar hacia atrás · 20. Preparación de comida · 21. B-roll de preparación · 22. Perfiles del equipo · 23. Testimonios del equipo · 24. Proceso de importación de alimentos · 25. Preparación de ingredientes · 26. Instantáneas · 27. Sketches de cocina a mesa · 28. Desglose de una receta · 29. Desglose de imágenes de cocina · 30. Resumen semanal · 31. Videoclip musical de cocina · 32. Razones únicas para venir · 33. Planificación de un plato · 34. Lugares destacados cercanos · 35. Historia de cómo se resolvió un problema · 36. Inspiración de un plato · 37. POV del chef · 38. POV del cliente · 39–40. Pendientes de confirmar: no se distinguen en el reel consultado.<br><br><b>Lectura para La Urbana:</b> no copiar el formato como una lista de publicaciones. Usarlo como banco de recursos para documentar producto, equipo, cocina, sala, memoria del plato y relación con A Coruña. Encajan especialmente: antes/después de un plato, preparación real, día en la vida del equipo, desglose de una receta, razones para venir, lugares cercanos y POV del cliente.'
+    });
+    guardar('mk_ideas', ideas);
+  }
   if (!ideas.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px">Sin ideas aún. ¡Apunta la primera!</div>'; return; }
   el.innerHTML = ideas.map(i => `
     <div style="display:flex;align-items:flex-start;gap:8px;background:var(--surface-2);border-radius:10px;padding:10px;margin-bottom:8px">
-      <div style="flex:1;font-size:13px;color:var(--text)">${i.texto}</div>
+      <div style="flex:1;font-size:13px;color:var(--text);line-height:1.5">${i.texto}${i.fuente?`<div style="font-size:11px;color:var(--text-3);margin-top:8px">Fuente: <a href="${i.fuente}" target="_blank" rel="noopener" style="color:var(--accent)">reel original</a></div>`:''}</div>
       <div style="font-size:10px;color:var(--text-3);white-space:nowrap">${i.fecha||''}</div>
-      <button onclick="borrarIdea(${i.id})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px;padding:0 4px">×</button>
+      <button onclick="borrarIdea(${JSON.stringify(i.id)})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px;padding:0 4px">×</button>
     </div>`).join('');
 }
 
@@ -3347,11 +3251,6 @@ function verificarPin() {
 }
 
 function iniciarSesion(rol) {
-  if (window._fbAuthEnabled && !window._fbAuthUser) {
-    toast('Primero entra con Google para sincronizar la app', 'error');
-    return;
-  }
-  try { sessionStorage.setItem('laurbana_role', rol); } catch (e) {}
   USUARIO = rol;
   document.getElementById('login-screen').style.display = 'none';
   // Mostrar header y nav
@@ -3377,7 +3276,6 @@ function iniciarSesion(rol) {
   }
 }
 function cerrarSesion() {
-  try { sessionStorage.removeItem('laurbana_role'); } catch (e) {}
   USUARIO = null;
   _lang = 'es'; // reset idioma
   document.getElementById('login-screen').style.display = 'flex';
@@ -3387,19 +3285,6 @@ function cerrarSesion() {
   initBourdain();
 }
 function aplicarPermisos() {
-  const MARIA_ALLOWED_TABS = ['inicio','turno','produccion','stock','mermas','appcc'];
-  document.querySelectorAll('#main-nav button[id^="nav-"]:not([id^="nav-grupo-"])').forEach(btn => {
-    const tabId = btn.id.replace(/^nav-/, '');
-    if (tabId) btn.classList.toggle('maria-hidden', esMaria() && !MARIA_ALLOWED_TABS.includes(tabId));
-  });
-  ['nav-grupo-bar','nav-grupo-compras','nav-grupo-cultura','nav-grupo-gestion'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('maria-hidden', esMaria());
-  });
-  document.querySelectorAll('#accesos-rapidos .acceso-card').forEach(card => {
-    const m = (card.getAttribute('onclick') || '').match(/tab\('(.*?)'/);
-    if (m) card.classList.toggle('maria-hidden', esMaria() && !MARIA_ALLOWED_TABS.includes(m[1]));
-  });
   ['nav-recetas','nav-pruebas','nav-proveedores','nav-nuevosproveedores','nav-historial','nav-formacion','nav-instagram','nav-contabilidad','nav-diario','nav-programacion'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('oculto', esMaria());
@@ -3552,32 +3437,9 @@ function renderFormacion(){
 }
 function borrarRevisionFormacion(id){guardar('form_revisiones',cargar('form_revisiones',[]).filter(x=>x.id!==id));renderFormacion();toast('Revisión eliminada');}
 
-const BOOK_ALL_TABS = ['inicio','turno','produccion','stock','mermas','appcc','pedidos','caja','menu','raciones','recetas','pruebas','proveedores','nuevosproveedores','historial','formacion','diario','programacion','instagram','contabilidad','controlcostes','protocolos','spotify'];
-const BOOK_MARIA_TABS = ['inicio','turno','produccion','stock','mermas','appcc'];
-function actualizarNavegacionLibro(activeId) {
-  const nav = document.getElementById('book-nav');
-  if (!nav) return;
-  const ids = (esMaria() ? BOOK_MARIA_TABS : BOOK_ALL_TABS).filter(id => {
-    const panel = document.getElementById('tab-' + id);
-    const button = document.getElementById('nav-' + id);
-    return panel && (!button || !button.classList.contains('oculto'));
-  });
-  if (!ids.length) return;
-  let index = Math.max(0, ids.indexOf(activeId));
-  const current = ids[index];
-  const guide = (typeof TAB_GUIAS !== 'undefined' && TAB_GUIAS[current]) ? TAB_GUIAS[current] : null;
-  const title = document.getElementById('book-page-title');
-  const count = document.getElementById('book-page-count');
-  if (title) title.textContent = guide ? guide[esMaria() ? 'hu' : 'es'][0] : current;
-  if (count) count.textContent = `Página ${index + 1} de ${ids.length}`;
-  const prev = document.getElementById('book-prev'), next = document.getElementById('book-next');
-  if (prev) { prev.disabled = index <= 0; prev.onclick = () => { if (index > 0) tab(ids[index - 1], document.getElementById('nav-' + ids[index - 1])); }; }
-  if (next) { next.disabled = index >= ids.length - 1; next.onclick = () => { if (index < ids.length - 1) tab(ids[index + 1], document.getElementById('nav-' + ids[index + 1])); }; }
-}
-
 function tab(id, btn) {
-  const mariaAllowedTabs = ['inicio','turno','produccion','stock','mermas','appcc'];
-  if (esMaria() && !mariaAllowedTabs.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
+  const soloAdmin = ['menu','recetas','pruebas','proveedores','nuevosproveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario','formacion'];
+  if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
@@ -3602,7 +3464,6 @@ function tab(id, btn) {
     protocolos: initProtocolos
   };
   if (renders[id]) renders[id]();
-  actualizarNavegacionLibro(id);
 }
 
 // ══════════════════════════════════════════
