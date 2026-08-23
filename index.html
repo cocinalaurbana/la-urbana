@@ -2961,16 +2961,28 @@ function renderMkIdeas() {
   const el = document.getElementById('mk-ideas-lista');
   if (!el) return;
   let ideas = cargar('mk_ideas', []);
-  const reelId = 'reel-DcCjbWhvge5';
-  if (!ideas.some(i => i.id === reelId)) {
-    ideas.unshift({
-      id: reelId,
-      fecha: '2026-08-23',
+  const ideasExternas = [
+    {
+      id: 'reel-DcCjbWhvge5', fecha: '2026-08-23',
       fuente: 'https://www.instagram.com/reel/DcCjbWhvge5/?igsi=MThzY2UwaWZoMng2bg==',
-      texto: '<b>40 ideas de contenido para restaurantes · reel de social.bennett</b><br><br>1. Historias de quienes fundaron el local · 2. Inspiración de quienes lo fundaron · 3. Plato antes y después · 4. Pase de diapositivas · 5. Testimonios de clientes · 6. B-roll de clientes · 7. B-roll de la experiencia en sala · 8. La sensación del primer bocado · 9. La sensación del primer trago · 10. B-roll de cocina · 11. Del nombre del menú al plato · 12. Un día en la vida de la persona propietaria · 13. Un día en la vida de la persona gerente · 14. Un día en la vida de quien cocina · 15. Un día en la vida de quien atiende · 16. Concurso tipo programa de televisión sobre un plato · 17. Videojuego con un plato del menú · 18. POV del tenedor · 19. Cocinar hacia atrás · 20. Preparación de comida · 21. B-roll de preparación · 22. Perfiles del equipo · 23. Testimonios del equipo · 24. Proceso de importación de alimentos · 25. Preparación de ingredientes · 26. Instantáneas · 27. Sketches de cocina a mesa · 28. Desglose de una receta · 29. Desglose de imágenes de cocina · 30. Resumen semanal · 31. Videoclip musical de cocina · 32. Razones únicas para venir · 33. Planificación de un plato · 34. Lugares destacados cercanos · 35. Historia de cómo se resolvió un problema · 36. Inspiración de un plato · 37. POV del chef · 38. POV del cliente · 39–40. Pendientes de confirmar: no se distinguen en el reel consultado.<br><br><b>Lectura para La Urbana:</b> no copiar el formato como una lista de publicaciones. Usarlo como banco de recursos para documentar producto, equipo, cocina, sala, memoria del plato y relación con A Coruña. Encajan especialmente: antes/después de un plato, preparación real, día en la vida del equipo, desglose de una receta, razones para venir, lugares cercanos y POV del cliente.'
-    });
-    guardar('mk_ideas', ideas);
-  }
+      texto: '<b>40 ideas de contenido para restaurantes · reel de social.bennett</b><br><br>Banco de recursos: historias de fundadores, inspiración del equipo, antes/después de platos, testimonios de clientes y personal, b-roll de cocina y sala, primer bocado y primer trago, un día en la vida del equipo, juegos con platos, POV del tenedor, preparación, perfiles, sketches de cocina a mesa, desglose de recetas, resumen semanal, razones únicas para venir, lugares cercanos, resolución de problemas, inspiración de platos y POV del chef y del cliente. Los puntos 39–40 no se distinguen bien en el reel.<br><br><b>Lectura para La Urbana:</b> usarlo como banco de recursos para documentar producto, equipo, cocina, sala, memoria del plato y relación con A Coruña; no como una lista de publicaciones genéricas.'
+    },
+    {
+      id: 'reel-DcRFdJVC2Jr', fecha: '2026-08-24',
+      fuente: 'https://www.instagram.com/reel/DcRFdJVC2Jr/?igsi=OXVobXFsMm84Mm0y',
+      texto: '<b>Buscar clips de vídeo por una frase o una escena</b><br><br>Idea: no descargar una película entera para sacar un fragmento. Investigar herramientas tipo <b>YARN / GetYarn</b> para localizar clips por cita o frase, y después llevar el fragmento seleccionado a CapCut u otro editor. Para La Urbana: buscar referencias visuales, gestos, escenas o frases que ayuden a construir piezas con humor y personalidad. Comprobar siempre derechos y condiciones de uso antes de publicar.'
+    },
+    {
+      id: 'reel-DZVtSt9ST_k', fecha: '2026-08-24',
+      fuente: 'https://www.instagram.com/reel/DZVtSt9ST_k/?igsi=MWdpemtvajdvcjYzMQ==',
+      texto: '<b>Mejorar el color de los vídeos</b><br><br>Buscar un tutorial de corrección y mejora de color en CapCut para conseguir una imagen más cuidada y coherente. Aplicarlo a las grabaciones de La Urbana sin convertirlas en algo artificial: comparar antes/después y crear una referencia de color cálida, real y reconocible.'
+    }
+  ];
+  let ideasNuevas = false;
+  ideasExternas.forEach(function(idea) {
+    if (!ideas.some(i => i.id === idea.id)) { ideas.unshift(idea); ideasNuevas = true; }
+  });
+  if (ideasNuevas) guardar('mk_ideas', ideas);
   if (!ideas.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px">Sin ideas aún. ¡Apunta la primera!</div>'; return; }
   el.innerHTML = ideas.map(i => `
     <div style="display:flex;align-items:flex-start;gap:8px;background:var(--surface-2);border-radius:10px;padding:10px;margin-bottom:8px">
