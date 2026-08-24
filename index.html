@@ -6522,6 +6522,19 @@ function seedPruebasRecetas() {
     notas: 'Primera prueba del circuito producto → preparación → plato.',
     creado: Date.now()
   });
+  const glaceId = 'glace-vegetal-mediterranea-20260824';
+  if (!borradas.includes(glaceId) && !lista.some(x => x.id === glaceId)) lista.unshift({
+    id: glaceId,
+    nombre: 'Glace vegetal mediterránea · base para tomate y salmorreta',
+    fecha: '2026-08-24',
+    estado: 'En prueba',
+    cantidades: 'Para unos 2 litros de fondo: 500 g cebolla, 300 g puerro, 250 g zanahoria, 150 g apio, 250–300 g champiñón o tallos de setas, 1 cabeza de ajo, 150 g tomate, 50–60 g concentrado de tomate, 3 cucharadas de aceite de oliva, 4 litros de agua, laurel, tomillo, tallos de perejil y pimienta. Opcional: 10 g kombu o 10–15 g de seta seca.',
+    metodo: 'Sin horno: dorar las verduras troceadas en una olla ancha durante 30–40 minutos, sin quemarlas. Añadir el concentrado de tomate y cocinar 4–5 minutos; sumar el tomate y reducir. Cubrir con agua fría, añadir aromáticos y cocer suavemente 1,5–2 horas. Retirar el kombu a los 20–25 minutos. Colar sin apretar. Reducir una parte hasta 750 ml para fondo concentrado y otra hasta 250–300 ml para glace. No salar o salar muy poco hasta el uso final.',
+    emplatado: 'No aplica: registrar el color, la textura en frío y la intensidad aromática en cada reducción.',
+    sabor: '', textura: '', acidez: '', visual: '',
+    notas: 'Prueba madre para tres caminos: salsa de tomate (1–2 cucharaditas de glace por 500 g de tomate), salmorreta (fondo ligero para aligerar y dar profundidad) y arroz vegetal (fondo claro, no la reducción más oscura). Objetivo: profundidad y umami sin que domine la seta ni quede dulce. Medir rendimiento final, color, sal, acidez y sensación en boca.',
+    creado: Date.now()
+  });
   guardar('pruebas_recetas', lista);
 }
 function limpiarFormularioPrueba() {
