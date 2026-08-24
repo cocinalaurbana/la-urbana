@@ -1233,6 +1233,9 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
   <div id="turno-contenido">
 
+    <!-- ASIGNACIÓN AUTOMÁTICA DEL TURNO -->
+    <div id="turno-asignado" style="margin-bottom:14px"></div>
+
     <!-- ALERTAS APPCC — elaborados que caducan hoy o mañana -->
     <div id="turno-appcc-alertas" style="display:none;margin-bottom:12px"></div>
 
@@ -3225,6 +3228,63 @@ function initBourdain() {
 // LOGIN / ROLES / PIN
 // ══════════════════════════════════════════
 const PINS_DEFAULT = { lore:'1974', cesar:'1234', maria:'0000' };
+
+// ── TURNOS FIJOS Y RESPONSABLE DEL DÍA ─────────────────────
+// La app usa este calendario como pauta semanal. Los registros siguen
+// guardándose con el perfil que ha iniciado sesión; el calendario solo
+// decide qué turno y qué controles debe mostrar hoy.
+const TURNOS_FIJOS_BASE = {
+  lore: {
+    lun: [{inicio:'18:00', fin:'00:00', nota:'Turno de tarde/noche'}],
+    vie: [{inicio:'20:00', fin:'00:00', nota:'Turno extra · limpieza y orden'}],
+    sab: [{inicio:'12:00', fin:'17:00', nota:'Turno de mediodía'}, {inicio:'19:00', fin:'23:00', nota:'Turno de noche'}],
+    dom: [{inicio:'11:00', fin:'17:00', nota:'Turno de mediodía'}]
+  },
+  // Se deja preparado para introducir el cuadrante fijo de María sin inventar horarios.
+  maria: {}
+};
+const DIAS_TURNO = ['dom','lun','mar','mie','jue','vie','sab'];
+function getTurnosFijos() {
+  const guardados = cargar('turnos_fijos', null);
+  return guardados && typeof guardados === 'object' ? guardados : TURNOS_FIJOS_BASE;
+}
+function minutosTurno(hora) {
+  const [h,m] = String(hora||'00:00').split(':').map(Number);
+  return (h||0)*60 + (m||0);
+}
+function turnosDeHoy(rol=USUARIO) {
+  const dia = DIAS_TURNO[new Date().getDay()];
+  return (((getTurnosFijos()||{})[rol]||{})[dia]||[]);
+}
+function turnoFijoActual(rol=USUARIO) {
+  const ahora = new Date();
+  const minuto = ahora.getHours()*60 + ahora.getMinutes();
+  return turnosDeHoy(rol).find(t => {
+    const ini = minutosTurno(t.inicio), fin = minutosTurno(t.fin);
+    return fin <= ini ? minuto >= ini || minuto < fin : minuto >= ini && minuto < fin;
+  }) || null;
+}
+function renderTurnoAsignado() {
+  const el = document.getElementById('turno-asignado');
+  if (!el || !USUARIO) return;
+  const hu = esMaria();
+  const turnos = turnosDeHoy(USUARIO);
+  const actual = turnoFijoActual(USUARIO);
+  const nombre = USUARIO === 'lore' ? 'Lore' : USUARIO === 'maria' ? 'María' : 'César';
+  if (!turnos.length) {
+    el.innerHTML = `<div style="padding:12px 14px;border:1px dashed var(--border);border-radius:12px;color:var(--text-2);font-size:13px;background:var(--surface-2)">${hu ? 'Ma nincs beállított műszakod.' : 'Hoy no tienes un turno fijo configurado.'}${USUARIO==='maria' ? (hu ? ' Kérd meg Lore-t, hogy töltse ki a heti beosztásodat.' : ' Falta introducir el cuadrante fijo de María.') : ''}</div>`;
+    return;
+  }
+  const lista = turnos.map(t => `${t.inicio}–${t.fin}${t.nota ? ' · '+t.nota : ''}`).join('<br>');
+  const estado = actual
+    ? (hu ? '🔴 Most te vagy soron' : '🔴 Ahora estás de turno')
+    : (hu ? '🟢 A mai beosztásod' : '🟢 Tu turno de hoy');
+  el.innerHTML = `<div style="padding:13px 14px;border:1.5px solid var(--accent);border-radius:13px;background:linear-gradient(135deg,var(--accent-l),var(--surface));font-size:13px">
+    <div style="font-weight:800;font-size:14px;margin-bottom:5px">${estado} · ${nombre}</div>
+    <div style="color:var(--text-2);line-height:1.55">${lista}</div>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--text-2)">${hu ? '🌡️ A hőmérsékletet te rögzíted; a bejegyzés a saját profilodhoz kerül.' : '🌡️ Las temperaturas las registras tú; quedan asociadas automáticamente a tu perfil.'}</div>
+  </div>`;
+}
 // Compatibilidad táctil: algunos navegadores Android no activan bien botones con eventos inline.
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('#login-roles .login-btn').forEach(function(btn){
@@ -5577,6 +5637,7 @@ function initTurno() {
   renderTurnoHistorial();
   // Cargar sugerencia meteorológica automática
   cargarTiempoAuto();
+  renderTurnoAsignado();
 }
 
 function sincronizarListaConDefaults(actual, defaults, obsoletos=[]) {
