@@ -822,7 +822,12 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 .circuito-grid label{font-size:11px;color:var(--text-3)}
 .circuito-grid input{margin-top:4px;width:100%}
 .circuito-nota{font-size:11px;line-height:1.45;color:var(--text-3);margin-top:9px}
-@media(max-width:620px){.circuito-flow{grid-template-columns:1fr;gap:5px}.circuito-arrow{transform:rotate(90deg);height:14px}.circuito-grid{grid-template-columns:1fr 1fr}}
+.mk-page-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 14px;padding:8px 10px;border:1px solid rgba(255,255,255,.16);border-radius:10px;background:rgba(0,0,0,.12)}
+.mk-page-nav button{border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.08);color:#fff;padding:7px 10px;font-size:12px;cursor:pointer}
+.mk-page-nav button:disabled{opacity:.35;cursor:default}
+.mk-page-num{font-size:11px;color:rgba(255,255,255,.72);text-align:center;flex:1}
+@media(max-width:620px){.circuito-flow{grid-template-columns:1fr;gap:5px}.circuito-arrow{transform:rotate(90deg);height:14px}.circuito-grid{grid-template-columns:1fr 1fr}.mk-page-nav button{padding:8px 7px}}
+
 
 </style>
 </head>
@@ -2143,6 +2148,11 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
       <button onclick="mkTab('ideas')" id="mk-btn-ideas" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">💡 Ideas</button>
       <button onclick="mkTab('guia')" id="mk-btn-guia" class="mk-tab-btn" style="background:transparent;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:none;cursor:pointer">📷 Academia de mirada</button>
     </div>
+    <div class="mk-page-nav" aria-label="Páginas de marketing">
+      <button id="mk-page-prev" onclick="mkPagina(-1)" disabled>← Anterior</button>
+      <div id="mk-page-num" class="mk-page-num">Página 1 de 5 · Visión</div>
+      <button id="mk-page-next" onclick="mkPagina(1)">Siguiente →</button>
+    </div>
   </div>
 
   <div class="card" style="margin-bottom:14px;border-left:3px solid var(--accent)"><div style="font-size:12px;color:var(--text-2);line-height:1.55"><strong>Esta pestaña es solo comunicación:</strong> identidad, fotografía, vídeo, calendario y relatos. Las actividades presenciales, sus precios y su organización están en <strong>Actividades y experiencias</strong>.</div></div>
@@ -2612,6 +2622,11 @@ De [hora] a [hora]. Ven con quien quieras.
     </div>
   </div>
 
+  <div class="mk-page-nav" aria-label="Páginas de marketing">
+    <button onclick="mkPagina(-1)">← Anterior</button>
+    <div id="mk-page-num-bottom" class="mk-page-num">Página 1 de 5 · Visión</div>
+    <button onclick="mkPagina(1)">Siguiente →</button>
+  </div>
 </div>
 
 <!-- MODALES -->
@@ -2945,6 +2960,22 @@ function renderMemoriasGastro(){
   if(!lista.length){listaEl.innerHTML='<div style="font-size:12px;color:var(--text-3)">Todavía no hay recuerdos recogidos.</div>';return;}
   listaEl.innerHTML=lista.slice(0,30).map(function(x){const e=ESTADOS_MEMORIA_GASTRO[x.estado]||ESTADOS_MEMORIA_GASTRO.memoria;return '<div style="background:var(--surface-2);border-radius:9px;padding:9px;margin-bottom:7px"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700">'+e.icon+' '+e.label+'</span><span style="font-size:10px;color:var(--text-3);margin-left:auto">'+escPrueba(x.fecha)+'</span><button onclick="borrarMemoriaGastro('+x.id+')" style="background:none;border:0;color:var(--text-3);cursor:pointer">×</button></div><div style="font-size:12px;color:var(--text);line-height:1.45;margin:5px 0">'+escPrueba(x.texto)+'</div>'+(x.origen?'<div style="font-size:10px;color:var(--text-3)">Origen: '+escPrueba(x.origen)+'</div>':'')+'<select onchange="cambiarEstadoMemoria('+x.id+',this.value)" style="margin-top:6px;padding:4px 6px;border-radius:7px;border:1px solid var(--border);font-size:11px;color:var(--text);background:var(--surface)"><option value="memoria" '+(x.estado==='memoria'?'selected':'')+'>💭 Memoria</option><option value="prueba" '+(x.estado==='prueba'?'selected':'')+'>🧪 En prueba</option><option value="urbana" '+(x.estado==='urbana'?'selected':'')+'>🍽️ En La Urbana</option></select></div>';}).join('');
 }
+const MK_PAGINAS = [
+  ['vision','Visión'], ['estrategia','Estrategia'], ['calendario','Calendario'], ['ideas','Ideas'], ['guia','Academia de mirada']
+];
+function mkPagina(delta) {
+  const activo = MK_PAGINAS.findIndex(p => document.getElementById('mk-'+p[0])?.style.display !== 'none');
+  const siguiente = Math.max(0, Math.min(MK_PAGINAS.length-1, (activo < 0 ? 0 : activo) + delta));
+  mkTab(MK_PAGINAS[siguiente][0]);
+  document.getElementById('mk-'+MK_PAGINAS[siguiente][0])?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function actualizarMkPager(name) {
+  const i = Math.max(0, MK_PAGINAS.findIndex(p => p[0] === name));
+  const txt = `Página ${i+1} de ${MK_PAGINAS.length} · ${MK_PAGINAS[i][1]}`;
+  ['mk-page-num','mk-page-num-bottom'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=txt; });
+  const prev=document.getElementById('mk-page-prev'), next=document.getElementById('mk-page-next');
+  if(prev) prev.disabled=i===0; if(next) next.disabled=i===MK_PAGINAS.length-1;
+}
 function mkTab(name) {
   ['vision','estrategia','calendario','ideas','guia'].forEach(t => {
     const el = document.getElementById('mk-'+t);
@@ -2958,6 +2989,7 @@ function mkTab(name) {
   if (name === 'calendario') { renderCalendarioContenidos(); renderMkPubs(); }
   if (name === 'ideas') renderMkIdeas();
   if (name === 'vision') renderMemoriasGastro();
+  actualizarMkPager(name);
 }
 
 function addIdea() {
