@@ -7878,6 +7878,7 @@ const PROGRAMAS_INVIERNO = [
 ];
 let progFiltro = 'todas';
 let progPaginaActual = 1;
+let progListaPagina = 1;
 function initProgramacion(){ mostrarPaginaProgramacion(1); filtrarProgramacion('todas'); calcularEvento(); }
 function mostrarPaginaProgramacion(n){
   progPaginaActual = Math.max(1, Math.min(4, Number(n)||1));
@@ -7894,13 +7895,30 @@ function mostrarPaginaProgramacion(n){
   if (main) main.scrollTo({top:0, behavior:'smooth'});
 }
 function filtrarProgramacion(filtro){
-function filtrarProgramacion(filtro){
   progFiltro = filtro || 'todas';
+  progListaPagina = 1;
+  renderProgramacionPagina();
+}
+function renderProgramacionPagina(){
   const el = document.getElementById('programacion-lista'); if (!el) return;
   const lista = PROGRAMAS_INVIERNO.filter(p => progFiltro==='todas' || p.tipo===progFiltro);
-  el.innerHTML = lista.map(p => `<div style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px;background:var(--surface-2)">
+  const porPagina = 4;
+  const paginas = Math.max(1, Math.ceil(lista.length / porPagina));
+  progListaPagina = Math.max(1, Math.min(paginas, progListaPagina));
+  const visibles = lista.slice((progListaPagina-1)*porPagina, progListaPagina*porPagina);
+  el.innerHTML = visibles.map(p => `<div style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px;background:var(--surface-2)">
     <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:25px">${p.icono}</div><div style="flex:1"><div style="font-weight:700;font-size:15px">${p.titulo}</div><div style="font-size:12px;color:var(--amber);font-weight:700;margin-top:3px">${p.frecuencia}</div><div style="font-size:13px;margin-top:7px">${p.formato}</div>${p.precio?`<div style="font-size:12px;color:var(--accent-d);font-weight:700;margin-top:6px">💶 ${p.precio}</div>`:''}<div style="font-size:12px;color:var(--text-3);margin-top:5px">${p.objetivo}</div></div></div>
-  </div>`).join('');
+  </div>`).join('') + `<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px">
+    <button class="btn btn-outline btn-sm" onclick="cambiarPaginaProgramacion(-1)" ${progListaPagina===1?'disabled':''}>‹ Anterior</button>
+    <span style="font-size:12px;color:var(--text-3);font-weight:700">${progListaPagina} / ${paginas}</span>
+    <button class="btn btn-outline btn-sm" onclick="cambiarPaginaProgramacion(1)" ${progListaPagina===paginas?'disabled':''}>Siguiente ›</button>
+  </div>`;
+}
+function cambiarPaginaProgramacion(delta){
+  progListaPagina += Number(delta)||0;
+  renderProgramacionPagina();
+  const el = document.getElementById('programacion-lista');
+  if (el) el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function calcularEvento(){
   const personas = Number(document.getElementById('prog-personas')?.value || 0);
