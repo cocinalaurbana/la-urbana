@@ -1919,7 +1919,16 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div style="font-size:14px;opacity:.85">Propuestas para conectar cocina y sala y dar vida a la experiencia de La Urbana.</div>
   </div>
 
-  <div class="card" style="border-left:3px solid var(--accent);margin-bottom:14px">
+  <!-- NAVEGACIÓN POR PÁGINAS · formato libro -->
+  <div id="prog-book-nav" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:8px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2)">
+    <button class="btn btn-oro btn-sm prog-page-btn" data-page="1" onclick="mostrarPaginaProgramacion(1)">1 · Idea</button>
+    <button class="btn btn-outline btn-sm prog-page-btn" data-page="2" onclick="mostrarPaginaProgramacion(2)">2 · Formatos</button>
+    <button class="btn btn-outline btn-sm prog-page-btn" data-page="3" onclick="mostrarPaginaProgramacion(3)">3 · Selección</button>
+    <button class="btn btn-outline btn-sm prog-page-btn" data-page="4" onclick="mostrarPaginaProgramacion(4)">4 · Cuenta</button>
+    <span id="prog-page-label" style="margin-left:auto;font-size:11px;color:var(--text-3);font-weight:700">Página 1 de 4</span>
+  </div>
+
+  <div class="card" data-prog-page="1" style="border-left:3px solid var(--accent);margin-bottom:14px">
     <div class="card-title">🤝 La Urbana como escaparate de oficios y aficiones</div>
     <div style="font-size:13px;color:var(--text-2);line-height:1.6">Una persona puede venir a mostrar algo que sabe hacer —una profesión, un oficio o una afición— y explicar cómo funciona. La actividad se prueba en pequeño, con la cocina y la sala funcionando con normalidad, sin convertirla en una feria.</div>
     <div style="background:var(--surface-2);border-radius:10px;padding:10px;margin-top:10px;font-size:12px;line-height:1.55"><strong>Ejemplo:</strong> Juan Carlos Guerra pasa una tarde cosiendo y explicando sus clases. Lore atiende, prepara cafés y lleva prendas hechas en sus clases para que la clientela vea que no es solo un hobby: es aprendizaje, oficio y una actividad posible.</div>
@@ -1927,7 +1936,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   </div>
 
   <!-- 🗣️ Nuevos formatos de encuentro -->
-  <div class="card" style="border-left:3px solid #6d8fa3;margin-bottom:14px">
+  <div class="card" data-prog-page="1" style="border-left:3px solid #6d8fa3;margin-bottom:14px">
     <div class="card-title">🗣️ La Urbana conversa · idiomas y encuentros</div>
     <div style="font-size:13px;color:var(--text-2);line-height:1.55">
       Propuestas de desayunos, meriendas o cenas con algo de comer y una conversación guiada para practicar idiomas y conocer gente. Formato especialmente interesante para personas extranjeras y vecindario local.
@@ -1938,7 +1947,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     </div>
   </div>
 
-  <div class="card" style="border-left:3px solid #9b7b61;margin-bottom:14px">
+  <div class="card" data-prog-page="2" style="border-left:3px solid #9b7b61;margin-bottom:14px">
     <div class="card-title">🍽️ Cenas adivinas · conocer a gente interesante</div>
     <div style="font-size:13px;color:var(--text-2);line-height:1.55">
       Una persona invitada —fotógrafa, escritora, DJ, viajera o alguien con una historia singular— comparte su trayectoria en un ambiente íntimo, como una cena en casa. Las personas asistentes pagan un precio cerrado por la cena y la oportunidad de conocer a gente que no conocían.
@@ -1949,12 +1958,12 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     </div>
   </div>
 
-  <div class="card" style="border-left:3px solid var(--amber);margin-bottom:14px">
+  <div class="card" data-prog-page="2" style="border-left:3px solid var(--amber);margin-bottom:14px">
     <div class="card-title">⚖️ Antes de activar una actividad</div>
     <div style="font-size:12px;color:var(--text-2);line-height:1.55">Confirmar permisos, seguros, condiciones de la persona invitada, aforo, horarios y si existe alguna regulación específica. No apuestas, no dinero entre participantes y ningún premio que convierta el encuentro en juego de azar. El bingo queda fuera hasta revisar bien la normativa.</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-prog-page="3">
     <div class="card-title">📌 Selección de propuestas</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
       <button class="btn btn-oro btn-sm" onclick="filtrarProgramacion('todas')">Todas</button>
@@ -1963,7 +1972,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     </div>
     <div id="programacion-lista"></div>
   </div>
-  <div class="card">
+  <div class="card" data-prog-page="4">
     <div class="card-title">📈 Cuenta mínima del evento</div>
     <div style="font-size:13px;color:var(--text-3);margin-bottom:10px">Ajusta asistentes y precio para saber el ingreso bruto orientativo.</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -1973,7 +1982,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div id="prog-total" style="background:var(--surface-2);border-radius:10px;padding:12px;font-size:14px"></div>
     <div style="font-size:11px;color:var(--text-3);margin-top:8px">Es una primera cuenta de ingresos, no beneficio: después añadiremos costes de comida, DJ, personal y promoción.</div>
   </div>
-  <div class="card">
+  <div class="card" data-prog-page="4">
     <div class="card-title">🖼️ Gráfico base para comunicar</div>
     <div id="prog-grafico" style="border-radius:14px;padding:24px 18px;background:linear-gradient(145deg,#f3ede2,#d9e5dc);color:#21352f;text-align:center">
       <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase">LA URBANA · INVIERNO</div>
@@ -7868,7 +7877,23 @@ const PROGRAMAS_INVIERNO = [
   {tipo:'noche', icono:'🌕', titulo:'Noche de luna llena', frecuencia:'Cada luna llena', formato:'Menú especial de pinchos + música ambiente + ritual creativo', objetivo:'Dar a La Urbana un sello reconocible y propio.'}
 ];
 let progFiltro = 'todas';
-function initProgramacion(){ filtrarProgramacion('todas'); calcularEvento(); }
+let progPaginaActual = 1;
+function initProgramacion(){ mostrarPaginaProgramacion(1); filtrarProgramacion('todas'); calcularEvento(); }
+function mostrarPaginaProgramacion(n){
+  progPaginaActual = Math.max(1, Math.min(4, Number(n)||1));
+  document.querySelectorAll('#tab-programacion [data-prog-page]').forEach(el => {
+    el.style.display = el.dataset.progPage === String(progPaginaActual) ? '' : 'none';
+  });
+  document.querySelectorAll('#prog-book-nav .prog-page-btn').forEach(btn => {
+    const activo = Number(btn.dataset.page) === progPaginaActual;
+    btn.className = 'btn btn-sm prog-page-btn ' + (activo ? 'btn-oro' : 'btn-outline');
+  });
+  const label = document.getElementById('prog-page-label');
+  if (label) label.textContent = `Página ${progPaginaActual} de 4`;
+  const main = document.getElementById('main-content');
+  if (main) main.scrollTo({top:0, behavior:'smooth'});
+}
+function filtrarProgramacion(filtro){
 function filtrarProgramacion(filtro){
   progFiltro = filtro || 'todas';
   const el = document.getElementById('programacion-lista'); if (!el) return;
