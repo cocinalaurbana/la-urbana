@@ -855,7 +855,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
 
 </style>
-<style>.maria-hidden{display:none!important}</style>
 </head>
 <body>
 
@@ -903,10 +902,6 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <div class="logo-sub">Kitchen OS · A Coruña</div>
   </div>
   <p>¿Quién eres hoy?</p>
-  <div id="firebase-auth-box" style="max-width:340px;width:100%;margin:0 auto 18px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);text-align:center">
-    <button id="firebase-google-login" type="button" onclick="window._fbSignInGoogle && window._fbSignInGoogle()" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-weight:700;cursor:pointer">🔐 Entrar con Google para sincronizar</button>
-    <div id="firebase-auth-status" style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.4">Necesario para proteger y sincronizar los datos de la cocina.</div>
-  </div>
   <div class="bourdain" id="bourdain-quote"></div>
 
   <div id="login-roles">
@@ -2871,12 +2866,10 @@ De [hora] a [hora]. Ven con quien quieras.
 <!-- FIREBASE SDK (compat — funciona en todos los navegadores) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
 (function() {
   // Fallback offline si Firebase no carga (Firefox con bloqueo de scripts externos)
   if (typeof firebase === 'undefined') {
-    window._fbAuthEnabled = false;
     window._fbCargar = async function(k, def) {
       try { const v = localStorage.getItem('urb_'+k); return v ? JSON.parse(v) : def; } catch(e) { return def; }
     };
@@ -2897,60 +2890,11 @@ De [hora] a [hora]. Ven con quien quieras.
   };
   try { firebase.initializeApp(firebaseConfig); } catch(e) {}
   const db = firebase.firestore();
-  const auth = firebase.auth();
-  const ALLOWED_EMAILS = new Set(['lorelofisterra@gmail.com','cesar@laurbana.es']);
   const _cache = {};
-  let resolveInitialAuth;
-  let initialAuthResolved = false;
 
-  window._fbAuthEnabled = true;
-  window._fbAuthUser = null;
   window._fbCache = _cache;
-  window._fbAuthReady = new Promise(resolve => { resolveInitialAuth = resolve; });
-
-  function allowed(user) {
-    return !!(user && user.email && ALLOWED_EMAILS.has(user.email.toLowerCase()));
-  }
-  function status(text, error) {
-    const el = document.getElementById('firebase-auth-status');
-    if (el) { el.textContent = text; el.style.color = error ? 'var(--rojo)' : 'var(--text-3)'; }
-    const btn = document.getElementById('firebase-google-login');
-    if (btn) btn.textContent = window._fbAuthUser ? '✅ Cuenta Google conectada' : '🔐 Entrar con Google para sincronizar';
-  }
-  window._fbSignInGoogle = async function() {
-    const btn = document.getElementById('firebase-google-login');
-    if (btn) { btn.disabled = true; btn.textContent = 'Conectando…'; }
-    try {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const result = await auth.signInWithPopup(provider);
-      if (!allowed(result.user)) {
-        await auth.signOut();
-        status('Esta cuenta no está autorizada para La Urbana.', true);
-        return false;
-      }
-      status('Cuenta conectada. Ya puedes elegir tu persona y usar la app.');
-      return true;
-    } catch (e) {
-      if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
-        try { await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); return false; } catch (_) {}
-      }
-      status('No se pudo conectar la cuenta. Inténtalo de nuevo.', true);
-      return false;
-    } finally {
-      if (btn) btn.disabled = false;
-    }
-  };
-  window._fbEnsureAuth = async function() {
-    await window._fbAuthReady;
-    if (allowed(auth.currentUser)) { window._fbAuthUser = auth.currentUser; return true; }
-    return !!(await window._fbSignInGoogle());
-  };
-  window._fbSignOut = function() { return auth.signOut(); };
-
   window._fbCargar = async function(k, def) {
     try {
-      await window._fbAuthReady;
-      if (!window._fbAuthUser) return _cache[k] !== undefined ? _cache[k] : def;
       const snap = await db.collection('laurbana').doc(k).get();
       const val = snap.exists ? snap.data().v : def;
       _cache[k] = val;
@@ -2961,58 +2905,27 @@ De [hora] a [hora]. Ven con quien quieras.
   };
   window._fbGuardar = async function(k, v) {
     _cache[k] = v;
-    try {
-      await window._fbAuthReady;
-      if (!window._fbAuthUser) throw new Error('auth-required');
-      await db.collection('laurbana').doc(k).set({ v });
-    } catch(e) {
-      try { localStorage.setItem('urb_'+k, JSON.stringify(v)); } catch(_) {}
-    }
+    try { await db.collection('laurbana').doc(k).set({ v }); }
+    catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
   };
 
   const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom','memorias_gastronomicas','pendientes_laurbana','appcc_' + new Date().toISOString().slice(0,10)];
-  let syncing = false;
-  async function sincronizarNube() {
-    if (syncing || !window._fbAuthUser) return;
-    syncing = true;
-    try {
-      await Promise.all(CLAVES.map(k => window._fbCargar(k, null)));
-      window._firebaseReady = true;
-      if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
-      if (typeof migrarPendientesLaUrbana === 'function') migrarPendientesLaUrbana();
-      if (typeof migrarStockCarta === 'function') migrarStockCarta();
-      if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
-      if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
-      if (typeof migrarBancoPinchos === 'function') migrarBancoPinchos();
-      if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
-        initInicio();
-        if (typeof actualizarWidgetCaja === 'function') actualizarWidgetCaja();
-        if (typeof renderKanban === 'function' && document.getElementById('tab-produccion')?.classList.contains('active')) renderKanban();
-        if (typeof renderTurnoTareas === 'function' && document.getElementById('tab-turno')?.classList.contains('active')) { migrarChecklistTurno(); renderTurnoTareas(); }
-        if (typeof renderPendientes === 'function' && document.getElementById('tab-pendientes')?.classList.contains('active')) renderPendientes();
-      }
-    } finally { syncing = false; }
-  }
-  window._fbRecargarNube = sincronizarNube;
-  auth.onAuthStateChanged(async user => {
-    if (!initialAuthResolved) { initialAuthResolved = true; resolveInitialAuth(user); }
-    if (user && allowed(user)) {
-      window._fbAuthUser = user;
-      status('Cuenta conectada. Ya puedes elegir tu persona y usar la app.');
-      await sincronizarNube();
-      // Al volver de segundo plano, recuperar el perfil local de esta pestaña.
-      try {
-        const savedRole = sessionStorage.getItem('laurbana_role');
-        if (savedRole && ['lore','cesar','maria'].includes(savedRole)
-            && typeof USUARIO !== 'undefined' && !USUARIO
-            && typeof iniciarSesion === 'function') {
-          setTimeout(() => iniciarSesion(savedRole), 0);
-        }
-      } catch (e) {}
-    } else {
-      window._fbAuthUser = null;
-      if (user) await auth.signOut();
-      status('Necesario para proteger y sincronizar los datos de la cocina.');
+  Promise.all(CLAVES.map(k => window._fbCargar(k, null))).then(() => {
+    window._firebaseReady = true;
+    // Tras cargar la nube, sincronizamos listas compartidas y refrescamos la pestaña activa.
+    if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
+    if (typeof migrarPendientesLaUrbana === 'function') migrarPendientesLaUrbana();
+    if (typeof migrarStockCarta === 'function') migrarStockCarta();
+    if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
+    if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
+    if (typeof migrarBancoPinchos === 'function') migrarBancoPinchos();
+    // No relanzar arrancarApp — ya arrancó sin esperar Firebase
+    // Solo refrescar datos si ya hay usuario activo
+    if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
+      initInicio();
+      if (typeof actualizarWidgetCaja === 'function') actualizarWidgetCaja();
+      if (typeof renderKanban === 'function' && document.getElementById('tab-produccion')?.classList.contains('active')) renderKanban();
+      if (typeof renderTurnoTareas === 'function' && document.getElementById('tab-turno')?.classList.contains('active')) { migrarChecklistTurno(); renderTurnoTareas(); }
     }
   });
 })();
@@ -3561,11 +3474,6 @@ function verificarPin() {
 }
 
 function iniciarSesion(rol) {
-  if (window._fbAuthEnabled && !window._fbAuthUser) {
-    toast('Primero entra con Google para sincronizar la app', 'error');
-    return;
-  }
-  try { sessionStorage.setItem('laurbana_role', rol); } catch (e) {}
   USUARIO = rol;
   document.getElementById('login-screen').style.display = 'none';
   // Mostrar header y nav
@@ -3591,7 +3499,6 @@ function iniciarSesion(rol) {
   }
 }
 function cerrarSesion() {
-  try { sessionStorage.removeItem('laurbana_role'); } catch (e) {}
   USUARIO = null;
   _lang = 'es'; // reset idioma
   document.getElementById('login-screen').style.display = 'flex';
@@ -3601,19 +3508,6 @@ function cerrarSesion() {
   initBourdain();
 }
 function aplicarPermisos() {
-  const MARIA_ALLOWED_TABS = ['inicio','turno','produccion','stock','mermas','appcc'];
-  document.querySelectorAll('#main-nav button[id^="nav-"]:not([id^="nav-grupo-"])').forEach(btn => {
-    const tabId = btn.id.replace(/^nav-/, '');
-    if (tabId) btn.classList.toggle('maria-hidden', esMaria() && !MARIA_ALLOWED_TABS.includes(tabId));
-  });
-  ['nav-grupo-bar','nav-grupo-compras','nav-grupo-cultura','nav-grupo-gestion'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('maria-hidden', esMaria());
-  });
-  document.querySelectorAll('#accesos-rapidos .acceso-card').forEach(card => {
-    const m = (card.getAttribute('onclick') || '').match(/tab\('(.*?)'/);
-    if (m) card.classList.toggle('maria-hidden', esMaria() && !MARIA_ALLOWED_TABS.includes(m[1]));
-  });
   ['nav-recetas','nav-pruebas','nav-proveedores','nav-nuevosproveedores','nav-historial','nav-formacion','nav-instagram','nav-contabilidad','nav-diario','nav-programacion'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('oculto', esMaria());
@@ -3777,7 +3671,7 @@ const PENDIENTES_LA_URBANA_DEFAULT = [
   {id:'pend-gadis-marineiras-20260825', pagina:2, titulo:'Comprar 2 bolsas grandes de mariñeiras', detalle:'Para probar la ensaladilla. Llevarlas a La Urbana.', responsable:'Lore', prioridad:'Compra'},
   {id:'pend-huevos-formato-20260825', pagina:2, titulo:'Verificar el formato de las 5 cajas de huevos', detalle:'Comprobar físicamente si son bandejas de 30 o de 20 unidades. No pedir más esta semana.', responsable:'Lore', prioridad:'Comprobación'},
   {id:'pend-pedidos-revision-20260825', pagina:2, titulo:'Revisar pedidos después de las entregas', detalle:'Comprobar si queda algo pendiente tras Grupo Silva, Hermida y la compra de Gadis, sin duplicar lo que ya hizo César.', responsable:'Lore', prioridad:'Después de las entregas'},
-  {id:'pend-silva-pedido-20260825', pagina:2, titulo:'Comprobar pedido programado a Grupo Silva', detalle:'2 botes de mayonesa en el formato habitual y 3 garrafas de aceite. Revisar la confirmación y la entrega.', responsable:'Lore', prioridad:'Pedido programado'},
+  {id:'pend-silva-pedido-20260825', rev:2, pagina:2, titulo:'Comprobar pedido programado a Grupo Silva', detalle:'2 botes de mayonesa en el formato habitual, 3 garrafas de aceite y 1 botella de aceite de oliva. Revisar la confirmación y la entrega.', responsable:'Lore', prioridad:'Pedido programado'},
   {id:'pend-hermida-pedido-20260825', pagina:2, titulo:'Comprobar pedido programado a Hermida', detalle:'1 caja de burrata, croquetas de cecina y una botella del aceite de oliva virgen habitual. Confirmar formato y precios.', responsable:'Lore', prioridad:'Pedido programado'},
   {id:'pend-tortilla-prueba-20260825', pagina:3, titulo:'Probar mezcla de patata para tortilla mediana', detalle:'Comparar 400–450 g de segunda fritura + 50 g crujiente frente a 500 g de segunda fritura. Valorar textura, jugosidad y unión.', responsable:'Lore', prioridad:'Prueba'},
   {id:'pend-huevos-consumo-20260825', pagina:3, titulo:'Medir el consumo semanal de huevos', detalle:'Contar tortillas medianas y grandes y el uso en otras elaboraciones antes de decidir si se aumenta el pedido.', responsable:'Lore', prioridad:'Medición'},
@@ -3792,10 +3686,17 @@ let pendPaginaActual = 1;
 function migrarPendientesLaUrbana(){
   const actuales = cargar('pendientes_laurbana', null);
   const lista = Array.isArray(actuales) ? actuales.slice() : [];
+  let cambios = !Array.isArray(actuales) || lista.length !== (actuales || []).length;
   PENDIENTES_LA_URBANA_DEFAULT.forEach(base => {
-    if (!lista.some(x => x.id === base.id)) lista.push({...base});
+    const existente = lista.find(x => x.id === base.id);
+    if (!existente) { lista.push({...base}); cambios = true; }
+    else if (base.rev && existente.rev !== base.rev && existente.estado !== 'hecho') {
+      const estado = existente.estado || 'pendiente';
+      Object.assign(existente, {...base, estado});
+      cambios = true;
+    }
   });
-  if (!Array.isArray(actuales) || lista.length !== actuales.length) guardar('pendientes_laurbana', lista);
+  if (cambios) guardar('pendientes_laurbana', lista);
   return lista;
 }
 function renderPendientes(){
@@ -3824,8 +3725,8 @@ function mostrarPaginaPendientes(n, scroll=true){
 }
 
 function tab(id, btn) {
-  const mariaAllowedTabs = ['inicio','turno','produccion','stock','mermas','appcc'];
-  if (esMaria() && !mariaAllowedTabs.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
+  const soloAdmin = ['menu','recetas','pruebas','proveedores','nuevosproveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario','formacion'];
+  if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
