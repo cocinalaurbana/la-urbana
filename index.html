@@ -926,6 +926,9 @@ header .sub{font-size:.85rem}
 .dash-hoy-kicker{font-size:14px;font-weight:800;letter-spacing:1.4px;color:var(--amber);margin-bottom:10px}
 .dash-hoy-row{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-top:1px solid var(--border)}
 .dash-hoy-row:first-child{border-top:0;padding-top:0}.dash-hoy-icon{font-size:21px;line-height:1.1}.dash-hoy-body{flex:1}.dash-hoy-label{font-size:16px;font-weight:800}.dash-hoy-detail{font-size:15px;color:var(--text-2);line-height:1.5;margin-top:3px}.dash-hoy-action{font-size:14px;color:var(--accent-d);white-space:nowrap;font-weight:700;cursor:pointer}
+.dash-rutina-title{border-top:1px solid var(--border);margin-top:13px;padding-top:13px;font-size:15px;font-weight:800;color:var(--text-2)}
+.dash-rutina-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--border);cursor:pointer}
+.dash-rutina-row input{width:20px;height:20px;accent-color:var(--amber);flex:0 0 auto}.dash-rutina-row span{font-size:15px;line-height:1.4}.dash-rutina-row.done span{text-decoration:line-through;color:var(--text-3)}
 .nav-directo-wrap{display:none}
 @media (max-width:1280px), (pointer:coarse){
   body{font-size:19px!important}
@@ -949,7 +952,7 @@ header .sub{font-size:.85rem}
   #tab-inicio .dash-flat-card .card-title{font-size:16px}
   #tab-inicio #accesos-rapidos .acceso-label{font-size:17px}
   #tab-inicio #accesos-rapidos .acceso-desc{font-size:16px}
-  .dash-hoy-card{padding:17px}.dash-hoy-kicker{font-size:16px}.dash-hoy-label{font-size:18px}.dash-hoy-detail{font-size:17px}.dash-hoy-action{font-size:16px}
+  .dash-hoy-card{padding:17px}.dash-hoy-kicker{font-size:16px}.dash-hoy-label{font-size:18px}.dash-hoy-detail{font-size:17px}.dash-hoy-action{font-size:16px}.dash-rutina-title{font-size:17px}.dash-rutina-row span{font-size:17px}
   #main-nav button,#main-nav .nav-group-btn{font-size:17px!important;padding:13px 14px!important}
 }
 .escandallo-linea{border-top:1px solid var(--border);padding:11px 0;display:grid;grid-template-columns:1.4fr .65fr .65fr;gap:9px;align-items:end}
@@ -1102,12 +1105,11 @@ header .sub{font-size:.85rem}
 
   <div class="nav-separator"></div>
   <div id="nav-grupos" class="nav-groups">
-    <button class="nav-group-btn" onclick="abrirGrupoNav('bar')" id="nav-grupo-bar" title="Menú, raciones y caja">🍽️ <span>Servicio y caja</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('cocina')" id="nav-grupo-cocina">👩‍🍳 <span>La cocina</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('turnos')" id="nav-grupo-turnos">🕐 <span>Turnos</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('compras')" id="nav-grupo-compras">🛒 <span>Compras</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('cultura')" id="nav-grupo-cultura">🎭 <span>Comunicación</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('gestion')" id="nav-grupo-gestion">📊 <span>Gestión</span></button>
+    <button class="nav-group-btn" onclick="abrirGrupoNav('hoy')" id="nav-grupo-hoy" title="Qué toca hoy">📋 <span>HOY</span></button>
+    <button class="nav-group-btn" onclick="abrirGrupoNav('cocina')" id="nav-grupo-cocina">👩‍🍳 <span>COCINA</span></button>
+    <button class="nav-group-btn" onclick="abrirGrupoNav('laboratorio')" id="nav-grupo-laboratorio">🧪 <span>LABORATORIO</span></button>
+    <button class="nav-group-btn" onclick="abrirGrupoNav('historias')" id="nav-grupo-historias">🎥 <span>HISTORIAS</span></button>
+    <button class="nav-group-btn" onclick="abrirGrupoNav('negocio')" id="nav-grupo-negocio">📊 <span>NEGOCIO</span></button>
   </div>
   <button class="nav-back-btn" id="nav-volver-grupos" onclick="volverGruposNav()">‹ Todos los apartados</button>
   <div class="nav-section-label nav-legacy-label">Prioritario</div>
@@ -1217,6 +1219,8 @@ header .sub{font-size:.85rem}
   <section class="dash-hoy-card" aria-label="Qué toca hoy">
     <div class="dash-hoy-kicker">HOY · QUÉ TOCA</div>
     <div id="dashboard-hoy-flujo"></div>
+    <div class="dash-rutina-title">☑ Rutina diaria de cocina y mirada</div>
+    <div id="dashboard-rutina-lista"></div>
   </section>
 
   <section class="dash-editorial-section">
@@ -2016,6 +2020,9 @@ header .sub{font-size:.85rem}
       <div class="form-group"><label>Coste aproximado por ración (€)</label><input id="prueba-coste-racion" type="number" min="0" step="0.01" placeholder="Pendiente"></div>
       <div class="form-group"><label>Resultado / destino</label><select id="prueba-resultado"><option value="">—</option><option value="Personal">Personal</option><option value="Pincho">Pincho</option><option value="Plato fin de semana">Plato fin de semana</option><option value="Carta">Carta</option><option value="Descartado">Descartado</option></select></div>
     </div>
+    <div class="form-group"><label>Ejercicio de mirada asociado</label><select id="prueba-mirada"><option value="">— No asociar ahora —</option><option value="Luz · 3 fotos">Luz · 3 fotos del mismo plato</option><option value="Textura · detalle">Textura · una foto de detalle</option><option value="Secuencia · vídeo">Secuencia · vídeo de la transformación</option><option value="Sonido · escucha">Sonido · grabar ambiente y gesto</option><option value="Historia · voz">Historia · recoger una voz o conversación</option></select></div>
+    <div class="form-group"><label>Material que hay que producir</label><textarea id="prueba-material" rows="2" placeholder="Ej. 3 fotos, un plano de manos, sonido de la freidora..."></textarea></div>
+    <div class="form-group"><label>Pieza o resultado creado</label><input id="prueba-pieza" type="text" placeholder="Se completa después: foto elegida, vídeo, texto..." /></div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
       <div class="form-group"><label>Sabor (1–5)</label><select id="prueba-sabor"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
       <div class="form-group"><label>Textura (1–5)</label><select id="prueba-textura"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
@@ -4244,9 +4251,29 @@ function renderHoyUnificado(){
   el.innerHTML=filas.slice(0,4).map(x=>`<div class="dash-hoy-row"><div class="dash-hoy-icon">${x.i}</div><div class="dash-hoy-body"><div class="dash-hoy-label">${x.l}</div><div class="dash-hoy-detail">${x.d}</div></div><button class="dash-hoy-action" onclick="${x.f}">${x.t} →</button></div>`).join('');
 }
 
+const RUTINA_HOY_DEFAULT=[
+  {id:'entrada',texto:'Revisar qué toca hoy: pedidos, menú y prioridades'},
+  {id:'stock',texto:'Comprobar stock crítico, caducidades y FIFO'},
+  {id:'produccion',texto:'Hacer mise en place y registrar lo que queda preparado'},
+  {id:'prueba',texto:'Si hay prueba: cocinar para el personal y anotar resultado'},
+  {id:'mirada',texto:'Si hay material: hacer el ejercicio de foto o vídeo'},
+  {id:'cierre',texto:'Cerrar: mermas, limpieza, relevo y pendientes'}
+];
+function renderRutinaHoy(){
+  const el=document.getElementById('dashboard-rutina-lista'); if(!el)return;
+  const key='rutina_hoy_'+hoy(), estado=cargar(key,{});
+  el.innerHTML=RUTINA_HOY_DEFAULT.map(x=>`<label class="dash-rutina-row ${estado[x.id]?'done':''}"><input type="checkbox" ${estado[x.id]?'checked':''} onchange="toggleRutinaHoy('${x.id}',this.checked)"><span>${x.texto}</span></label>`).join('');
+  const hechas=RUTINA_HOY_DEFAULT.filter(x=>estado[x.id]).length;
+  el.insertAdjacentHTML('afterbegin',`<div style="font-size:13px;color:var(--text-2);margin:6px 0 4px">${hechas}/${RUTINA_HOY_DEFAULT.length} pasos completados</div>`);
+}
+function toggleRutinaHoy(id,checked){
+  const key='rutina_hoy_'+hoy(), estado=cargar(key,{}); estado[id]=checked; guardar(key,estado); renderRutinaHoy();
+}
+
 function initInicio() {
   try {
   renderHoyUnificado();
+  renderRutinaHoy();
   renderPersonalHoyWidget();
   renderDashboardProduccion();
   actualizarWidgetCaja();
@@ -7211,15 +7238,16 @@ function seedPruebasRecetas() {
   guardar('pruebas_recetas', lista);
 }
 function limpiarFormularioPrueba() {
-  ['prueba-nombre','prueba-cantidades','prueba-metodo','prueba-emplatado','prueba-notas','prueba-coste-racion','prueba-sabor','prueba-textura','prueba-acidez','prueba-visual'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
+  ['prueba-nombre','prueba-cantidades','prueba-metodo','prueba-emplatado','prueba-notas','prueba-coste-racion','prueba-material','prueba-pieza','prueba-sabor','prueba-textura','prueba-acidez','prueba-visual'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
   const f=document.getElementById('prueba-fecha'); if(f) f.value=hoy();
   const est=document.getElementById('prueba-estado'); if(est) est.value='En prueba';
   const res=document.getElementById('prueba-resultado'); if(res) res.value='';
+  const mirada=document.getElementById('prueba-mirada'); if(mirada) mirada.value='';
 }
 function guardarPruebaReceta() {
   const nombre = document.getElementById('prueba-nombre').value.trim();
   if (!nombre) { toast('Pon un nombre a la prueba','error'); return; }
-  const prueba = { id:'prueba-'+Date.now(), nombre, fecha:document.getElementById('prueba-fecha').value||hoy(), estado:document.getElementById('prueba-estado').value, resultado:document.getElementById('prueba-resultado')?.value||'', costeRacion:document.getElementById('prueba-coste-racion')?.value||'', cantidades:document.getElementById('prueba-cantidades').value.trim(), metodo:document.getElementById('prueba-metodo').value.trim(), emplatado:document.getElementById('prueba-emplatado').value.trim(), sabor:document.getElementById('prueba-sabor').value, textura:document.getElementById('prueba-textura').value, acidez:document.getElementById('prueba-acidez').value, visual:document.getElementById('prueba-visual').value, notas:document.getElementById('prueba-notas').value.trim(), creado:Date.now() };
+  const prueba = { id:'prueba-'+Date.now(), nombre, fecha:document.getElementById('prueba-fecha').value||hoy(), estado:document.getElementById('prueba-estado').value, resultado:document.getElementById('prueba-resultado')?.value||'', costeRacion:document.getElementById('prueba-coste-racion')?.value||'', mirada:document.getElementById('prueba-mirada')?.value||'', material:document.getElementById('prueba-material')?.value.trim()||'', pieza:document.getElementById('prueba-pieza')?.value.trim()||'', cantidades:document.getElementById('prueba-cantidades').value.trim(), metodo:document.getElementById('prueba-metodo').value.trim(), emplatado:document.getElementById('prueba-emplatado').value.trim(), sabor:document.getElementById('prueba-sabor').value, textura:document.getElementById('prueba-textura').value, acidez:document.getElementById('prueba-acidez').value, visual:document.getElementById('prueba-visual').value, notas:document.getElementById('prueba-notas').value.trim(), creado:Date.now() };
   const lista=cargar('pruebas_recetas',[]); lista.unshift(prueba); guardar('pruebas_recetas',lista); addHistorial('menu','🧪 Prueba de receta: '+nombre); limpiarFormularioPrueba(); renderPruebasRecetas(); toast('Prueba guardada ✓','verde');
 }
 function borrarPruebaReceta(id) {
@@ -7266,7 +7294,7 @@ function renderPruebasRecetas() {
   const colores={'Aprobada':'var(--verde)','Pasa a la siguiente prueba':'var(--accent)','En prueba':'var(--amber)','Mejorar':'var(--amber)','Descartada':'var(--rojo)','Propuesta':'var(--text-3)'};
   el.innerHTML=lista.map(p=>{
     const notas=[['Sabor',p.sabor],['Textura',p.textura],['Acidez',p.acidez],['Visual',p.visual]].filter(x=>x[1]);
-    return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${colores[p.estado]||'var(--border)'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">${escPrueba(p.nombre)}</div><div style="font-size:11px;color:var(--text-3)">${p.fecha||''}</div></div><span class="badge" style="color:${colores[p.estado]||'var(--text)'}">${escPrueba(p.estado)}</span></div>${p.resultado||p.costeRacion?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${p.resultado?`<span class="badge">Destino: ${escPrueba(p.resultado)}</span>`:''}${p.costeRacion?`<span class="badge">Coste/ración: ${escPrueba(p.costeRacion)} €</span>`:''}</div>`:''}${p.cantidades?`<div style="margin-top:12px"><div class="prueba-label">Cantidades</div><div class="prueba-texto">${escPrueba(p.cantidades)}</div></div>`:''}${p.metodo?`<div style="margin-top:10px"><div class="prueba-label">Método</div><div class="prueba-texto">${escPrueba(p.metodo)}</div></div>`:''}${p.emplatado?`<div style="margin-top:10px"><div class="prueba-label">Emplatado</div><div class="prueba-texto">${escPrueba(p.emplatado)}</div></div>`:''}${notas.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${notas.map(x=>`<span class="badge">${x[0]}: ${x[1]}/5</span>`).join('')}</div>`:''}${p.notas?`<div style="margin-top:10px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:12px;line-height:1.5">${escPrueba(p.notas)}</div>`:''}<button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="borrarPruebaReceta(${JSON.stringify(p.id)})">Borrar</button></div>`;
+    return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${colores[p.estado]||'var(--border)'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">${escPrueba(p.nombre)}</div><div style="font-size:11px;color:var(--text-3)">${p.fecha||''}</div></div><span class="badge" style="color:${colores[p.estado]||'var(--text)'}">${escPrueba(p.estado)}</span></div>${p.resultado||p.costeRacion||p.mirada?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${p.resultado?`<span class="badge">Destino: ${escPrueba(p.resultado)}</span>`:''}${p.costeRacion?`<span class="badge">Coste/ración: ${escPrueba(p.costeRacion)} €</span>`:''}${p.mirada?`<span class="badge">📷 ${escPrueba(p.mirada)}</span>`:''}</div>`:''}${p.material?`<div style="margin-top:10px"><div class="prueba-label">Material que producir</div><div class="prueba-texto">${escPrueba(p.material)}</div></div>`:''}${p.pieza?`<div style="margin-top:10px"><div class="prueba-label">Pieza creada</div><div class="prueba-texto">${escPrueba(p.pieza)}</div></div>`:''}${p.cantidades?`<div style="margin-top:12px"><div class="prueba-label">Cantidades</div><div class="prueba-texto">${escPrueba(p.cantidades)}</div></div>`:''}${p.metodo?`<div style="margin-top:10px"><div class="prueba-label">Método</div><div class="prueba-texto">${escPrueba(p.metodo)}</div></div>`:''}${p.emplatado?`<div style="margin-top:10px"><div class="prueba-label">Emplatado</div><div class="prueba-texto">${escPrueba(p.emplatado)}</div></div>`:''}${notas.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${notas.map(x=>`<span class="badge">${x[0]}: ${x[1]}/5</span>`).join('')}</div>`:''}${p.notas?`<div style="margin-top:10px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:12px;line-height:1.5">${escPrueba(p.notas)}</div>`:''}<button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="borrarPruebaReceta(${JSON.stringify(p.id)})">Borrar</button></div>`;
   }).join('');
 }
 
@@ -8219,12 +8247,11 @@ function actualizarWidgetCaja() {
 
 // Navegación agrupada: menos pestañas, mismas funciones.
 const NAV_GRUPOS = {
-  bar: ['menu','raciones','caja'],
-  cocina: ['recetas','pruebas','produccion','stock','mermas','turno','appcc','protocolos'],
-  turnos: ['appcc','turno'],
-  compras: ['pedidos','proveedores','nuevosproveedores'],
-  cultura: ['diario','programacion','instagram'],
-  gestion: ['formacion','controlcostes','contabilidad','historial'],
+  hoy: ['inicio','pendientes','menu','raciones','caja'],
+  cocina: ['produccion','stock','mermas','turno','appcc','protocolos'],
+  laboratorio: ['recetas','pruebas'],
+  historias: ['instagram','diario','programacion'],
+  negocio: ['pedidos','proveedores','nuevosproveedores','contabilidad','controlcostes','historial','formacion'],
 };
 
 const PILOTO_FOOD_COST = [
