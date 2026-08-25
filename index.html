@@ -3055,6 +3055,7 @@ De [hora] a [hora]. Ven con quien quieras.
       if (typeof migrarStockCarta === 'function') migrarStockCarta();
       if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
       if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
+      if (typeof integrarTarifaHermida === 'function') integrarTarifaHermida();
       if (typeof migrarBancoPinchos === 'function') migrarBancoPinchos();
       if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
         initInicio();
@@ -7127,6 +7128,90 @@ const QUIQUE_TARIFA = [
   {producto:'Sugerencias', precio:'—', unidad:'', formato:'Secreto, presa, pluma, lágrima, abanico, pulpo, cola de gambón, langostino y zamburiñas', nota:'Sin precio en el listado recibido'}
 ];
 
+const HERMIDA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1QVGzq-Zw3VWd1Smh2slsPcymLvRdSQOx_kk1ljd1_yA/edit?usp=drivesdk';
+// Tarifa recibida de Hermida/Disgalchef el 25/08/2026. Precios sin IVA.
+const HERMIDA_TARIFA = [
+  {producto:'Aceite oliva virgen extra HOSTEOLEO',precio:'24,95 €',formato:'pet 5 l'},
+  {producto:'Aceite orujo oliva HOSTEOLEO',precio:'14,95 €',formato:'pet 5 l'},
+  {producto:'Aceite girasol + alto oleico 80% HOSTEOLEO',precio:'23,29 €',formato:'pet 10 l'},
+  {producto:'Atún claro en aceite de girasol ÁGORA',precio:'5,99 €',formato:'bolsa 950 g PNE'},
+  {producto:'Ventresca de atún claro FRISCOS',precio:'16,95 €',formato:'RO-900 · 650 g PNE'},
+  {producto:'Calamares en trozos en tinta CALVO',precio:'9,90 €',formato:'b/1 kg · 600 g PNE'},
+  {producto:'Cayena / guindilla CARMENCITA',precio:'2,99 €',formato:'pet 90 g'},
+  {producto:'Salsa teriyaki',precio:'6,75 €',formato:'biberón 500 ml'},
+  {producto:"Pesto genovese GINO's",precio:'9,95 €',formato:'frasco 510 g'},
+  {producto:'Salsa mayonesa especiada picante',precio:'6,95 €',formato:'biberón 500 ml'},
+  {producto:'Salsa pimiento rojo-jalapeño La Vieja Fábrica',precio:'5,89 €',formato:'frasco 850 g'},
+  {producto:'Gildas de anchoa cantábrico LOTAMAR',precio:'29,95 € · 0,75 €/ud',formato:'40 uds · 2 kg · 650 g PNE'},
+  {producto:'Torrezno extra de Soria',precio:'15,85 €',formato:'kg'},
+  {producto:'Ensaladilla BAR PAMPÍN',precio:'8,49 €',formato:'bandeja 1 kg'},
+  {producto:'Callos EL COCINERO DEL PAZO',precio:'9,95 €',formato:'bandeja 1 kg'},
+  {producto:'Langostino kataifi',precio:'18,95 € · 0,95 €/ud',formato:'20 uds · 25 g'},
+  {producto:'Croquetas de cecina',precio:'28,79 € · 0,36 €/ud',formato:'caja 2 kg · 25 g'},
+  {producto:'Tortilla premium de camarón',precio:'25,95 € · 1,30 €/ud',formato:'caja 20 uds · 85 g'},
+  {producto:'Mejillón tigre gallego picante',precio:'27,95 € · 0,62 €/ud',formato:'caja 2 kg · 45 g'},
+  {producto:'Gyozas de marisco IDG',precio:'8,25 € · 0,28 €/ud',formato:'bolsa 600 g · 20 g'},
+  {producto:'Risotto al funghi porcini',precio:'5,95 €',formato:'estuche 270 g'},
+  {producto:'Burrata IQF Puglia in Tavola',precio:'4,25 € · 2,13 €/ud',formato:'2 × 125 g'},
+  {producto:'Queso pasta dura italiano GRAN BONI',precio:'15,95 €',formato:'cuña 1 kg aprox. · kg'},
+  {producto:'Parmigiano Reggiano DOP',precio:'7,95 €',formato:'cuña 300 g'},
+  {producto:'Grana Padano DOP',precio:'7,49 €',formato:'cuña 300 g'},
+  {producto:'Pulpo 1 pata AGUINAGA',precio:'39,95 €',formato:'kg · 200–300 o 300–400 g'},
+  {producto:'Aguacate congelado en dados',precio:'6,29 €',formato:'bolsa 1 kg'},
+  {producto:'Mango congelado en dados',precio:'4,79 €',formato:'bolsa 1 kg'},
+  {producto:'Vino Ribeira Sacra tinto mencía MATILDA NIEVES',precio:'6,30 €',formato:'botella 75 cl'},
+  {producto:'Vino Ribeira Sacra blanco godello PASAL DE ESILE',precio:'6,30 €',formato:'botella 75 cl'},
+  {producto:'Vino Rías Baixas COLLEITA DE MARTIS',precio:'5,60 €',formato:'botella 75 cl'},
+  {producto:'Vino Rioja tinto ZINIO crianza',precio:'4,99 €',formato:'botella 75 cl'},
+  {producto:'Vermú MEZCLADITO',precio:'7,49 €',formato:'botella 1 l'},
+  {producto:'Caramelos de goma DAMEL',precio:'3,95 €',formato:'bolsa 1 kg'},
+  {producto:'Cóctel de frutos secos CASAMAYOR',precio:'3,95 €',formato:'bolsa 1 kg'}
+];
+function integrarTarifaHermida() {
+  let proveedores = cargar('proveedores', []);
+  if (!Array.isArray(proveedores)) proveedores = [];
+  let p = proveedores.find(x => /hermida|disgal/i.test(x.nombre||''));
+  if (!p) {
+    p = {id:15,nombre:'Hermida / Disgal Chef',categoria:'General',telefono:'604015283',productos:'Burrata, aceites, salsas, patatas 4ª gama, elaborados y postres',dias:'Según disponibilidad',notas:'GALDIS S.L. · contacto@grupodisgal.com · pedidos@comercialdisgal.com'};
+    proveedores.push(p);
+  }
+  let cambio = false;
+  if (JSON.stringify(p.tarifa||[]) !== JSON.stringify(HERMIDA_TARIFA)) { p.tarifa = HERMIDA_TARIFA; cambio = true; }
+  if (p.tarifaFecha !== '25/08/2026') { p.tarifaFecha = '25/08/2026'; cambio = true; }
+  if (p.tarifaFuenteUrl !== HERMIDA_SHEET_URL) { p.tarifaFuenteUrl = HERMIDA_SHEET_URL; cambio = true; }
+  if (cambio) guardar('proveedores', proveedores);
+
+  // Vincula al stock los productos que ya existen, sin inventar cantidades.
+  const precios = [
+    {re:/^aove$|aceite oliva virgen extra|aceite de oliva virgen/i, coste:24.95, formato:'pet 5 l'},
+    {re:/aceite de semillas|aceite girasol/i, coste:23.29, formato:'pet 10 l'},
+    {re:/at[uú]n desmigado|at[uú]n claro/i, coste:5.99, formato:'bolsa 950 g PNE'},
+    {re:/cayena|guindilla/i, coste:2.99, formato:'pet 90 g'},
+    {re:/salsa teriyaki/i, coste:6.75, formato:'biberón 500 ml'},
+    {re:/^pesto$|pesto genovese/i, coste:9.95, formato:'frasco 510 g'},
+    {re:/ensaladilla/i, coste:8.49, formato:'bandeja 1 kg'},
+    {re:/callos/i, coste:9.95, formato:'bandeja 1 kg'},
+    {re:/croqueta.*cecina|croquetas de cecina/i, coste:0.36, formato:'25 g · caja 2 kg'},
+    {re:/tortilla.*camar[oó]n/i, coste:1.30, formato:'85 g · caja 20 uds'},
+    {re:/mejill[oó]n tigre/i, coste:0.62, formato:'45 g'},
+    {re:/gyoza.*marisco/i, coste:0.28, formato:'20 g'},
+    {re:/risotto/i, coste:5.95, formato:'estuche 270 g'},
+    {re:/^burrata$|burrata iqf/i, coste:2.13, formato:'125 g · pack 2 uds'}
+  ];
+  let productos = cargar('stock_productos', null);
+  if (Array.isArray(productos)) {
+    let cambioStock = false;
+    productos.forEach(item => {
+      const hit = precios.find(x => x.re.test(item.nombre||''));
+      if (!hit) return;
+      if (item.costeUnitario !== hit.coste) { item.costeUnitario = hit.coste; cambioStock = true; }
+      if (item.proveedor !== 'Hermida / Disgal Chef') { item.proveedor = 'Hermida / Disgal Chef'; cambioStock = true; }
+      if (JSON.stringify(item.formatos||[]) !== JSON.stringify([hit.formato])) { item.formatos = [hit.formato]; cambioStock = true; }
+    });
+    if (cambioStock) guardar('stock_productos', productos);
+  }
+}
+
 const HERMIDA_CATALOGO = [
   {id:'patata-10x10',cat:'Patata · 4ª gama',nombre:'Patata frita corte 10×10 NATUBER',detalle:'Formato congelado / consultar bolsa, peso y rendimiento.'},
   {id:'patata-panadera',cat:'Patata · 4ª gama',nombre:'Patata panadera 4 mm NATUBER',detalle:'Interesa comparar con la patata panadera actual de 5 kg.'},
@@ -7213,6 +7298,7 @@ function renderProveedores() {
   const proveedores = cargar('proveedores',[]);
   if (!proveedores.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-3)"><div style="font-size:3rem">🤝</div><div>Sin proveedores.</div></div>'; return; }
   el.innerHTML = proveedores.map(p => {
+    const tarifaFuente = p.tarifaFuenteUrl ? `<div style="margin-top:6px;font-size:11px"><a href="${p.tarifaFuenteUrl}" target="_blank" rel="noopener" style="color:var(--accent-d)">📊 Abrir hoja de precios</a>${p.tarifaFecha?' · '+p.tarifaFecha:''}</div>` : '';
     const tarifaHtml = p.tarifa && p.tarifa.length ? `<details style="margin-top:9px"><summary style="cursor:pointer;font-size:12px;color:var(--accent-d);font-weight:700">💶 Ver tarifa recibida (${p.tarifa.length} referencias)</summary><div style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px">${p.tarifa.map(tar => `<div style="display:grid;grid-template-columns:1fr auto;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px"><span>${tar.producto}${tar.formato && tar.formato!=='—' ? ` <span style=\"color:var(--text-3)\">· ${tar.formato}</span>` : ''}${tar.nota ? `<br><span style=\"color:var(--text-3);font-size:10px\">${tar.nota}</span>` : ''}</span><strong style="white-space:nowrap">${tar.precio}${tar.unidad ? ' '+tar.unidad : ''}</strong></div>`).join('')}</div></details>` : '';
     return `<div class="prov-card">
     <div class="prov-emoji">${PROV_EMOJIS[p.categoria]||'📦'}</div>
@@ -7224,7 +7310,7 @@ function renderProveedores() {
         ${p.telefono?`📞 ${p.telefono} `:''}
         ${p.dias?`<span style="font-size:11px;color:var(--text-3)">📅 ${p.dias}</span><br>`:''}
         ${p.notas?`<span style="color:var(--text-3);font-size:11px">${p.notas}</span>`:''}
-        ${tarifaHtml}
+        ${tarifaHtml}${tarifaFuente}
       </div>
       ${p.telefono?`<button class="btn btn-oro btn-sm" style="margin-top:8px" onclick="pedirAProveedor(${p.id})">📲 Pedir por WhatsApp</button>`:'<span style="font-size:11px;color:var(--text-3)">Sin teléfono — edita para añadir</span>'}
     </div>
@@ -7790,6 +7876,7 @@ function arrancarApp() {
   migrarStockCarta();
   limpiarCatalogoObsoleto();
   integrarTarifaQuique();
+  integrarTarifaHermida();
   migrarChecklistTurno();
   seedPruebasRecetas();
   initHeader();
