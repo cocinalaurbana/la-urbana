@@ -253,7 +253,30 @@ body.light .nav-section-label,body.light .nav-back-btn{color:var(--text-2)}
 .nav-group-active #nav-grupos{display:none}
 .nav-group-active #nav-volver-grupos{display:block}
 /* Los apartados del mundo elegido deben aparecer también en escritorio/tablet. */
-#main-nav.nav-group-active .nav-subitem{display:flex!important}
+#main-nav.nav-group-active .nav-subitem{display:none!important}
+/* Menú principal reducido: los apartados aparecen solo dentro de su mundo. */
+#main-nav > button[id^="nav-"]:not(#nav-inicio):not(#nav-pendientes):not(#nav-volver-grupos):not([id^="nav-grupo-"]){display:none!important}
+#main-nav.nav-group-active.nav-world-hoy #nav-menu,
+#main-nav.nav-group-active.nav-world-hoy #nav-raciones,
+#main-nav.nav-group-active.nav-world-hoy #nav-caja,
+#main-nav.nav-group-active.nav-world-cocina #nav-produccion,
+#main-nav.nav-group-active.nav-world-cocina #nav-stock,
+#main-nav.nav-group-active.nav-world-cocina #nav-mermas,
+#main-nav.nav-group-active.nav-world-cocina #nav-turno,
+#main-nav.nav-group-active.nav-world-cocina #nav-appcc,
+#main-nav.nav-group-active.nav-world-cocina #nav-protocolos,
+#main-nav.nav-group-active.nav-world-laboratorio #nav-recetas,
+#main-nav.nav-group-active.nav-world-laboratorio #nav-pruebas,
+#main-nav.nav-group-active.nav-world-historias #nav-instagram,
+#main-nav.nav-group-active.nav-world-historias #nav-diario,
+#main-nav.nav-group-active.nav-world-historias #nav-programacion,
+#main-nav.nav-group-active.nav-world-negocio #nav-pedidos,
+#main-nav.nav-group-active.nav-world-negocio #nav-proveedores,
+#main-nav.nav-group-active.nav-world-negocio #nav-nuevosproveedores,
+#main-nav.nav-group-active.nav-world-negocio #nav-contabilidad,
+#main-nav.nav-group-active.nav-world-negocio #nav-controlcostes,
+#main-nav.nav-group-active.nav-world-negocio #nav-historial,
+#main-nav.nav-group-active.nav-world-negocio #nav-formacion{display:flex!important}
 
 /* ─── CONTENIDO PRINCIPAL ─── */
 #main-content{
@@ -8385,13 +8408,14 @@ function initNavegacionAgrupada(){
 }
 function abrirGrupoNav(grupo){
   const nav=document.getElementById('main-nav'); if(!nav) return;
-  nav.classList.add('nav-group-active');
+  nav.classList.remove('nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');
+  nav.classList.add('nav-group-active','nav-world-'+grupo);
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   (NAV_GRUPOS[grupo]||[]).forEach(id=>{ const b=document.getElementById('nav-'+id); if(b) b.style.display='flex'; });
 }
 function volverGruposNav(){
   const nav=document.getElementById('main-nav'); if(!nav) return;
-  nav.classList.remove('nav-group-active');
+  nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   tab('inicio',document.getElementById('nav-inicio'));
 }
