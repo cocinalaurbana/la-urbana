@@ -922,6 +922,10 @@ header .sub{font-size:.85rem}
   #main-content .tab .card-title{font-size:17px!important}
   #main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:17px!important}
 }
+.dash-hoy-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--amber);border-radius:12px;padding:16px;margin-bottom:22px;box-shadow:var(--sombra-s)}
+.dash-hoy-kicker{font-size:14px;font-weight:800;letter-spacing:1.4px;color:var(--amber);margin-bottom:10px}
+.dash-hoy-row{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-top:1px solid var(--border)}
+.dash-hoy-row:first-child{border-top:0;padding-top:0}.dash-hoy-icon{font-size:21px;line-height:1.1}.dash-hoy-body{flex:1}.dash-hoy-label{font-size:16px;font-weight:800}.dash-hoy-detail{font-size:15px;color:var(--text-2);line-height:1.5;margin-top:3px}.dash-hoy-action{font-size:14px;color:var(--accent-d);white-space:nowrap;font-weight:700;cursor:pointer}
 .nav-directo-wrap{display:none}
 @media (max-width:1280px), (pointer:coarse){
   body{font-size:19px!important}
@@ -945,6 +949,7 @@ header .sub{font-size:.85rem}
   #tab-inicio .dash-flat-card .card-title{font-size:16px}
   #tab-inicio #accesos-rapidos .acceso-label{font-size:17px}
   #tab-inicio #accesos-rapidos .acceso-desc{font-size:16px}
+  .dash-hoy-card{padding:17px}.dash-hoy-kicker{font-size:16px}.dash-hoy-label{font-size:18px}.dash-hoy-detail{font-size:17px}.dash-hoy-action{font-size:16px}
   #main-nav button,#main-nav .nav-group-btn{font-size:17px!important;padding:13px 14px!important}
 }
 .escandallo-linea{border-top:1px solid var(--border);padding:11px 0;display:grid;grid-template-columns:1.4fr .65fr .65fr;gap:9px;align-items:end}
@@ -1208,6 +1213,11 @@ header .sub{font-size:.85rem}
     <h2 id="dash-saludo">Hola, Lore.</h2>
     <p id="header-fecha-dash">—</p>
   </div>
+
+  <section class="dash-hoy-card" aria-label="Qué toca hoy">
+    <div class="dash-hoy-kicker">HOY · QUÉ TOCA</div>
+    <div id="dashboard-hoy-flujo"></div>
+  </section>
 
   <section class="dash-editorial-section">
     <div class="dash-editorial-title">HOY</div>
@@ -2002,6 +2012,10 @@ header .sub{font-size:.85rem}
     <div class="form-group"><label>Cantidades utilizadas</label><textarea id="prueba-cantidades" rows="5" placeholder="Ingrediente — cantidad exacta"></textarea></div>
     <div class="form-group"><label>Método y cambios de esta prueba</label><textarea id="prueba-metodo" rows="4" placeholder="Qué hicimos diferente y cómo lo hicimos"></textarea></div>
     <div class="form-group"><label>Emplatado / presentación</label><textarea id="prueba-emplatado" rows="3" placeholder="Forma, plato, altura, crujiente, garnish..."></textarea></div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px">
+      <div class="form-group"><label>Coste aproximado por ración (€)</label><input id="prueba-coste-racion" type="number" min="0" step="0.01" placeholder="Pendiente"></div>
+      <div class="form-group"><label>Resultado / destino</label><select id="prueba-resultado"><option value="">—</option><option value="Personal">Personal</option><option value="Pincho">Pincho</option><option value="Plato fin de semana">Plato fin de semana</option><option value="Carta">Carta</option><option value="Descartado">Descartado</option></select></div>
+    </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
       <div class="form-group"><label>Sabor (1–5)</label><select id="prueba-sabor"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
       <div class="form-group"><label>Textura (1–5)</label><select id="prueba-textura"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
@@ -2010,6 +2024,22 @@ header .sub{font-size:.85rem}
     </div>
     <div class="form-group"><label>Observaciones y siguiente cambio</label><textarea id="prueba-notas" rows="3" placeholder="Qué nos gustó, qué no, qué probamos después"></textarea></div>
     <button class="btn btn-oro" onclick="guardarPruebaReceta()">💾 Guardar prueba</button>
+  </div>
+  <div class="card" style="margin-bottom:14px;border-left:3px solid var(--olive)">
+    <div class="card-title">📣 Resultado de la prueba con clientes</div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.55;margin-bottom:10px">Después de probarlo fuera del equipo, registramos qué ocurrió antes de decidir si vuelve, cambia, pasa a carta o se descarta.</div>
+    <div class="form-group"><label>Prueba relacionada</label><select id="prueba-publica-id" onchange="cargarResultadoPublico()"></select></div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+      <div class="form-group"><label>Raciones preparadas</label><input id="publica-preparadas" type="number" min="0" step="1"></div>
+      <div class="form-group"><label>Raciones vendidas / servidas</label><input id="publica-vendidas" type="number" min="0" step="1"></div>
+      <div class="form-group"><label>¿Pidieron repetir?</label><select id="publica-repetir"><option value="">—</option><option>Sí</option><option>No</option><option>No se preguntó</option></select></div>
+      <div class="form-group"><label>¿Lo volverían a pedir?</label><select id="publica-volverian"><option value="">—</option><option>Sí</option><option>No</option><option>No se preguntó</option></select></div>
+      <div class="form-group"><label>Coste real de la prueba (€)</label><input id="publica-coste" type="number" min="0" step="0.01"></div>
+      <div class="form-group"><label>Decisión final</label><select id="publica-decision"><option value="">—</option><option>Se queda</option><option>Vuelve a probarse</option><option>Se transforma</option><option>Descartado</option></select></div>
+    </div>
+    <div class="form-group"><label>Comentarios de clientes y observaciones</label><textarea id="publica-comentarios" rows="3" placeholder="Qué dijeron, qué dejaron, qué se pidió repetir..."></textarea></div>
+    <button class="btn btn-oro btn-sm" onclick="guardarResultadoPublico()">Guardar resultado</button>
+    <div id="pruebas-publicas-lista" style="margin-top:12px"></div>
   </div>
   <div id="pruebas-recetas-lista"></div>
 </div>
@@ -2789,6 +2819,12 @@ header .sub{font-size:.85rem}
         <input type="text" id="mk-idea-input" placeholder="Escribe una idea..." style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--bg)">
         <button class="btn btn-oro" onclick="addIdea()" style="white-space:nowrap">➕ Añadir</button>
       </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <label style="font-size:13px;color:var(--text-2);font-weight:700" for="mk-ideas-filtro">Mostrar:</label>
+        <select id="mk-ideas-filtro" onchange="renderMkIdeas()" style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px">
+          <option value="activo">🟢 Activo</option><option value="espera">🟡 En espera</option><option value="archivo">⚪ Archivo</option><option value="todos">Todas</option>
+        </select>
+      </div>
       <div id="mk-ideas-lista"></div>
     </div>
 
@@ -3408,7 +3444,7 @@ function addIdea() {
   const txt = inp.value.trim();
   if (!txt) return;
   const ideas = cargar('mk_ideas', []);
-  ideas.unshift({id: Date.now(), texto: txt, fecha: hoy()});
+  ideas.unshift({id: Date.now(), texto: txt, fecha: hoy(), estado:'activo'});
   guardar('mk_ideas', ideas);
   inp.value = '';
   renderMkIdeas();
@@ -3473,18 +3509,28 @@ function renderMkIdeas() {
   ];
   let ideasNuevas = false;
   ideasExternas.forEach(function(idea) {
-    if (!ideas.some(i => i.id === idea.id)) { ideas.unshift(idea); ideasNuevas = true; }
+    if (!ideas.some(i => i.id === idea.id)) { ideas.unshift({...idea, estado:idea.estado||'espera'}); ideasNuevas = true; }
   });
   if (ideasNuevas) guardar('mk_ideas', ideas);
-  if (!ideas.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px">Sin ideas aún. ¡Apunta la primera!</div>'; return; }
-  el.innerHTML = ideas.map(i => `
+  let ideasCambio=false;
+  ideas=ideas.map(i=>{if(!i.estado){ideasCambio=true;return {...i,estado:i.fuente?'espera':'activo'};}return i;});
+  if(ideasCambio)guardar('mk_ideas',ideas);
+  const filtro=document.getElementById('mk-ideas-filtro')?.value||'activo';
+  const visibles=ideas.filter(i=>filtro==='todos'||(i.estado||'activo')===filtro);
+  if (!visibles.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px">No hay ideas en este estado.</div>'; return; }
+  const estados={activo:'🟢 Activo',espera:'🟡 En espera',archivo:'⚪ Archivo'};
+  el.innerHTML = visibles.map(i => `
     <div style="display:flex;align-items:flex-start;gap:8px;background:var(--surface-2);border-radius:10px;padding:10px;margin-bottom:8px">
       <div style="flex:1;font-size:13px;color:var(--text);line-height:1.5">${i.texto}${i.fuente?`<div style="font-size:11px;color:var(--text-3);margin-top:8px">Fuente: <a href="${i.fuente}" target="_blank" rel="noopener" style="color:var(--accent)">reel original</a></div>`:''}</div>
       <div style="font-size:10px;color:var(--text-3);white-space:nowrap">${i.fecha||''}</div>
+      <select aria-label="Estado de idea" onchange="cambiarEstadoIdea(${JSON.stringify(i.id)},this.value)" style="font-size:11px;padding:4px 5px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text)">${Object.entries(estados).map(([k,v])=>`<option value="${k}" ${i.estado===k?'selected':''}>${v}</option>`).join('')}</select>
       <button onclick="borrarIdea(${JSON.stringify(i.id)})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px;padding:0 4px">×</button>
     </div>`).join('');
 }
 
+function cambiarEstadoIdea(id, estado){
+  const ideas=cargar('mk_ideas',[]).map(i=>i.id===id?{...i,estado}:i); guardar('mk_ideas',ideas); renderMkIdeas(); toast('Estado actualizado ✓','verde');
+}
 function borrarIdea(id) {
   guardar('mk_ideas', cargar('mk_ideas',[]).filter(i => i.id !== id));
   renderMkIdeas();
@@ -4177,8 +4223,26 @@ function renderDashboardProduccion() {
   }).join('');
 }
 
+function renderHoyUnificado(){
+  const el=document.getElementById('dashboard-hoy-flujo'); if(!el)return;
+  const esc=x=>escPrueba(String(x||''));
+  const pendientes=typeof migrarPendientesLaUrbana==='function' ? migrarPendientesLaUrbana().filter(x=>x.estado!=='hecho') : [];
+  const produccion=cargar('produccion_tareas',[]).filter(x=>x.estado!=='listo').slice(0,3);
+  const pruebas=cargar('pruebas_recetas',[]).filter(x=>!['Descartada','Aprobada'].includes(x.estado)).slice(0,2);
+  const compras=pendientes.filter(x=>Number(x.pagina)===2).slice(0,2);
+  const stock=pendientes.filter(x=>Number(x.pagina)===4).slice(0,2);
+  const filas=[];
+  if(produccion.length) filas.push({i:'🍳',l:'Producción',d:produccion.map(x=>esc(x.nombre)+(x.cantidad?' · '+esc(x.cantidad):'')).join(' · '),t:'Abrir',f:"tab('produccion',document.getElementById('nav-produccion'))"});
+  if(pruebas.length) filas.push({i:'🧪',l:'Laboratorio',d:pruebas.map(x=>esc(x.nombre)).join(' · '),t:'Abrir',f:"tab('pruebas',document.getElementById('nav-pruebas'))"});
+  if(compras.length) filas.push({i:'🛒',l:'Compras',d:compras.map(x=>esc(x.titulo)).join(' · '),t:'Abrir',f:"tab('pedidos',document.getElementById('nav-pedidos'))"});
+  if(stock.length) filas.push({i:'📦',l:'Stock y decisiones',d:stock.map(x=>esc(x.titulo)).join(' · '),t:'Abrir',f:"tab('stock',document.getElementById('nav-stock'))"});
+  if(!filas.length) filas.push({i:'🌿',l:'Sin urgencias registradas',d:'Puedes elegir una prueba, revisar el stock o dejar que el día descanse.',t:'Recetas',f:"tab('recetas',document.getElementById('nav-recetas'))"});
+  el.innerHTML=filas.slice(0,4).map(x=>`<div class="dash-hoy-row"><div class="dash-hoy-icon">${x.i}</div><div class="dash-hoy-body"><div class="dash-hoy-label">${x.l}</div><div class="dash-hoy-detail">${x.d}</div></div><button class="dash-hoy-action" onclick="${x.f}">${x.t} →</button></div>`).join('');
+}
+
 function initInicio() {
   try {
+  renderHoyUnificado();
   renderPersonalHoyWidget();
   renderDashboardProduccion();
   actualizarWidgetCaja();
@@ -7143,14 +7207,15 @@ function seedPruebasRecetas() {
   guardar('pruebas_recetas', lista);
 }
 function limpiarFormularioPrueba() {
-  ['prueba-nombre','prueba-cantidades','prueba-metodo','prueba-emplatado','prueba-notas','prueba-sabor','prueba-textura','prueba-acidez','prueba-visual'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
+  ['prueba-nombre','prueba-cantidades','prueba-metodo','prueba-emplatado','prueba-notas','prueba-coste-racion','prueba-sabor','prueba-textura','prueba-acidez','prueba-visual'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
   const f=document.getElementById('prueba-fecha'); if(f) f.value=hoy();
   const est=document.getElementById('prueba-estado'); if(est) est.value='En prueba';
+  const res=document.getElementById('prueba-resultado'); if(res) res.value='';
 }
 function guardarPruebaReceta() {
   const nombre = document.getElementById('prueba-nombre').value.trim();
   if (!nombre) { toast('Pon un nombre a la prueba','error'); return; }
-  const prueba = { id:'prueba-'+Date.now(), nombre, fecha:document.getElementById('prueba-fecha').value||hoy(), estado:document.getElementById('prueba-estado').value, cantidades:document.getElementById('prueba-cantidades').value.trim(), metodo:document.getElementById('prueba-metodo').value.trim(), emplatado:document.getElementById('prueba-emplatado').value.trim(), sabor:document.getElementById('prueba-sabor').value, textura:document.getElementById('prueba-textura').value, acidez:document.getElementById('prueba-acidez').value, visual:document.getElementById('prueba-visual').value, notas:document.getElementById('prueba-notas').value.trim(), creado:Date.now() };
+  const prueba = { id:'prueba-'+Date.now(), nombre, fecha:document.getElementById('prueba-fecha').value||hoy(), estado:document.getElementById('prueba-estado').value, resultado:document.getElementById('prueba-resultado')?.value||'', costeRacion:document.getElementById('prueba-coste-racion')?.value||'', cantidades:document.getElementById('prueba-cantidades').value.trim(), metodo:document.getElementById('prueba-metodo').value.trim(), emplatado:document.getElementById('prueba-emplatado').value.trim(), sabor:document.getElementById('prueba-sabor').value, textura:document.getElementById('prueba-textura').value, acidez:document.getElementById('prueba-acidez').value, visual:document.getElementById('prueba-visual').value, notas:document.getElementById('prueba-notas').value.trim(), creado:Date.now() };
   const lista=cargar('pruebas_recetas',[]); lista.unshift(prueba); guardar('pruebas_recetas',lista); addHistorial('menu','🧪 Prueba de receta: '+nombre); limpiarFormularioPrueba(); renderPruebasRecetas(); toast('Prueba guardada ✓','verde');
 }
 function borrarPruebaReceta(id) {
@@ -7159,14 +7224,45 @@ function borrarPruebaReceta(id) {
   const borradas=cargar('pruebas_recetas_borradas',[]); if(!borradas.includes(id)) { borradas.push(id); guardar('pruebas_recetas_borradas',borradas); }
   renderPruebasRecetas(); toast('Prueba borrada');
 }
+function renderPruebaPublicaSelector(){
+  const sel=document.getElementById('prueba-publica-id'); if(!sel)return;
+  const lista=cargar('pruebas_recetas',[]); const actual=sel.value;
+  sel.innerHTML='<option value="">— Selecciona una prueba —</option>'+lista.map(p=>`<option value="${escPrueba(p.id)}">${escPrueba(p.nombre)} · ${escPrueba(p.fecha||'')}</option>`).join('');
+  if(lista.some(p=>p.id===actual))sel.value=actual;
+  cargarResultadoPublico();
+}
+function cargarResultadoPublico(){
+  const id=document.getElementById('prueba-publica-id')?.value; const x=cargar('pruebas_publicas',[]).find(r=>r.pruebaId===id)||{};
+  [['publica-preparadas','preparadas'],['publica-vendidas','vendidas'],['publica-coste','costeReal'],['publica-comentarios','comentarios'],['publica-repetir','repetir'],['publica-volverian','volverian'],['publica-decision','decision']].forEach(([a,b])=>{const e=document.getElementById(a);if(e)e.value=x[b]||'';});
+}
+function limpiarResultadoPublico(){
+  ['publica-preparadas','publica-vendidas','publica-coste','publica-comentarios'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['publica-repetir','publica-volverian','publica-decision'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+}
+function guardarResultadoPublico(){
+  const pruebaId=document.getElementById('prueba-publica-id')?.value;
+  if(!pruebaId){toast('Selecciona una prueba','error');return;}
+  const lista=cargar('pruebas_publicas',[]);
+  const dato={id:'publica-'+pruebaId,pruebaId,preparadas:document.getElementById('publica-preparadas')?.value||'',vendidas:document.getElementById('publica-vendidas')?.value||'',repetir:document.getElementById('publica-repetir')?.value||'',volverian:document.getElementById('publica-volverian')?.value||'',costeReal:document.getElementById('publica-coste')?.value||'',comentarios:document.getElementById('publica-comentarios')?.value.trim()||'',decision:document.getElementById('publica-decision')?.value||'',actualizado:hoy()};
+  const pos=lista.findIndex(x=>x.pruebaId===pruebaId); if(pos>=0)lista[pos]=dato; else lista.unshift(dato);
+  guardar('pruebas_publicas',lista); renderPruebasPublicas(); toast('Resultado de clientes guardado ✓','verde');
+}
+function renderPruebasPublicas(){
+  renderPruebaPublicaSelector();
+  const el=document.getElementById('pruebas-publicas-lista'); if(!el)return;
+  const pruebas=cargar('pruebas_recetas',[]), resultados=cargar('pruebas_publicas',[]);
+  if(!resultados.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3)">Todavía no hay resultados de clientes registrados.</div>';return;}
+  el.innerHTML=resultados.map(x=>{const p=pruebas.find(y=>y.id===x.pruebaId)||{};return `<div style="border-top:1px solid var(--border);padding:10px 0;font-size:13px"><strong>${escPrueba(p.nombre||'Prueba')}</strong><div style="color:var(--text-2);margin-top:4px">${x.preparadas||'—'} preparadas · ${x.vendidas||'—'} servidas${x.repetir?` · Repetir: ${escPrueba(x.repetir)}`:''}${x.volverian?` · Volverían: ${escPrueba(x.volverian)}`:''}</div>${x.costeReal?`<div style="color:var(--text-2);margin-top:3px">Coste real: ${escPrueba(x.costeReal)} €</div>`:''}${x.decision?`<div style="color:var(--accent-d);font-weight:700;margin-top:3px">Decisión: ${escPrueba(x.decision)}</div>`:''}${x.comentarios?`<div style="margin-top:5px;white-space:pre-line">${escPrueba(x.comentarios)}</div>`:''}</div>`;}).join('');
+}
 function renderPruebasRecetas() {
   seedPruebasRecetas();
   const el=document.getElementById('pruebas-recetas-lista'); if(!el) return;
+  renderPruebasPublicas();
   const lista=cargar('pruebas_recetas',[]);
   const colores={'Aprobada':'var(--verde)','Pasa a la siguiente prueba':'var(--accent)','En prueba':'var(--amber)','Mejorar':'var(--amber)','Descartada':'var(--rojo)','Propuesta':'var(--text-3)'};
   el.innerHTML=lista.map(p=>{
     const notas=[['Sabor',p.sabor],['Textura',p.textura],['Acidez',p.acidez],['Visual',p.visual]].filter(x=>x[1]);
-    return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${colores[p.estado]||'var(--border)'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">${escPrueba(p.nombre)}</div><div style="font-size:11px;color:var(--text-3)">${p.fecha||''}</div></div><span class="badge" style="color:${colores[p.estado]||'var(--text)'}">${escPrueba(p.estado)}</span></div>${p.cantidades?`<div style="margin-top:12px"><div class="prueba-label">Cantidades</div><div class="prueba-texto">${escPrueba(p.cantidades)}</div></div>`:''}${p.metodo?`<div style="margin-top:10px"><div class="prueba-label">Método</div><div class="prueba-texto">${escPrueba(p.metodo)}</div></div>`:''}${p.emplatado?`<div style="margin-top:10px"><div class="prueba-label">Emplatado</div><div class="prueba-texto">${escPrueba(p.emplatado)}</div></div>`:''}${notas.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${notas.map(x=>`<span class="badge">${x[0]}: ${x[1]}/5</span>`).join('')}</div>`:''}${p.notas?`<div style="margin-top:10px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:12px;line-height:1.5">${escPrueba(p.notas)}</div>`:''}<button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="borrarPruebaReceta(${JSON.stringify(p.id)})">Borrar</button></div>`;
+    return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${colores[p.estado]||'var(--border)'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">${escPrueba(p.nombre)}</div><div style="font-size:11px;color:var(--text-3)">${p.fecha||''}</div></div><span class="badge" style="color:${colores[p.estado]||'var(--text)'}">${escPrueba(p.estado)}</span></div>${p.resultado||p.costeRacion?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${p.resultado?`<span class="badge">Destino: ${escPrueba(p.resultado)}</span>`:''}${p.costeRacion?`<span class="badge">Coste/ración: ${escPrueba(p.costeRacion)} €</span>`:''}</div>`:''}${p.cantidades?`<div style="margin-top:12px"><div class="prueba-label">Cantidades</div><div class="prueba-texto">${escPrueba(p.cantidades)}</div></div>`:''}${p.metodo?`<div style="margin-top:10px"><div class="prueba-label">Método</div><div class="prueba-texto">${escPrueba(p.metodo)}</div></div>`:''}${p.emplatado?`<div style="margin-top:10px"><div class="prueba-label">Emplatado</div><div class="prueba-texto">${escPrueba(p.emplatado)}</div></div>`:''}${notas.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${notas.map(x=>`<span class="badge">${x[0]}: ${x[1]}/5</span>`).join('')}</div>`:''}${p.notas?`<div style="margin-top:10px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:12px;line-height:1.5">${escPrueba(p.notas)}</div>`:''}<button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="borrarPruebaReceta(${JSON.stringify(p.id)})">Borrar</button></div>`;
   }).join('');
 }
 
