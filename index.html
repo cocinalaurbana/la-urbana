@@ -1110,6 +1110,15 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   </section>
 
   <section class="dash-editorial-section">
+    <div class="dash-editorial-title">CUADERNO</div>
+    <div class="dash-flat-card" style="cursor:pointer" onclick="tab('pendientes',document.getElementById('nav-pendientes'))">
+      <div class="card-title">📖 Pendientes por tema</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.5">Turno, compras, pruebas y stock, cada uno en su propia página.</div>
+      <div style="font-size:12px;color:var(--amber);font-weight:800;margin-top:8px">Abrir cuaderno →</div>
+    </div>
+  </section>
+
+  <section class="dash-editorial-section">
     <div class="dash-editorial-title">ACCESOS</div>
     <div id="accesos-rapidos"></div>
   </section>
@@ -3662,13 +3671,16 @@ const PENDIENTES_LA_URBANA_DEFAULT = [
   {id:'pend-gadis-marineiras-20260825', pagina:2, titulo:'Comprar 2 bolsas grandes de mariñeiras', detalle:'Para probar la ensaladilla. Llevarlas a La Urbana.', responsable:'Lore', prioridad:'Compra'},
   {id:'pend-huevos-formato-20260825', pagina:2, titulo:'Verificar el formato de las 5 cajas de huevos', detalle:'Comprobar físicamente si son bandejas de 30 o de 20 unidades. No pedir más esta semana.', responsable:'Lore', prioridad:'Comprobación'},
   {id:'pend-pedidos-revision-20260825', pagina:2, titulo:'Revisar pedidos después de las entregas', detalle:'Comprobar si queda algo pendiente tras Grupo Silva, Hermida y la compra de Gadis, sin duplicar lo que ya hizo César.', responsable:'Lore', prioridad:'Después de las entregas'},
+  {id:'pend-silva-pedido-20260825', pagina:2, titulo:'Comprobar pedido programado a Grupo Silva', detalle:'2 botes de mayonesa en el formato habitual y 3 garrafas de aceite. Revisar la confirmación y la entrega.', responsable:'Lore', prioridad:'Pedido programado'},
+  {id:'pend-hermida-pedido-20260825', pagina:2, titulo:'Comprobar pedido programado a Hermida', detalle:'1 caja de burrata, croquetas de cecina y una botella del aceite de oliva virgen habitual. Confirmar formato y precios.', responsable:'Lore', prioridad:'Pedido programado'},
   {id:'pend-tortilla-prueba-20260825', pagina:3, titulo:'Probar mezcla de patata para tortilla mediana', detalle:'Comparar 400–450 g de segunda fritura + 50 g crujiente frente a 500 g de segunda fritura. Valorar textura, jugosidad y unión.', responsable:'Lore', prioridad:'Prueba'},
   {id:'pend-huevos-consumo-20260825', pagina:3, titulo:'Medir el consumo semanal de huevos', detalle:'Contar tortillas medianas y grandes y el uso en otras elaboraciones antes de decidir si se aumenta el pedido.', responsable:'Lore', prioridad:'Medición'},
   {id:'pend-ensaladilla-prueba-20260825', pagina:3, titulo:'Probar la ensaladilla', detalle:'Hacer la prueba con las mariñeiras de Gadis y registrar resultado antes de fijar receta y escandallo.', responsable:'Equipo', prioridad:'Prueba'},
   {id:'pend-pesto-prueba-20260825', pagina:3, titulo:'Probar el pesto Gino’s Genovese', detalle:'Formato del catálogo Disgalchef: 510 g. No pedirlo todavía; decidir después de probar si gusta.', responsable:'Lore', prioridad:'No comprar aún'},
   {id:'pend-pollo-fifo-20260825', pagina:4, titulo:'Revisar las bolsas de pollo aplicando FIFO', detalle:'Hay aproximadamente 17 bolsas de 2,5 kg. Identificar qué parte corresponde a cada elaboración y fecha.', responsable:'Lore', prioridad:'Stock'},
   {id:'pend-mercadona-salsas-20260825', pagina:4, titulo:'Actualizar la lista habitual de Mercadona', detalle:'Mantener teriyaki y tahini. No reponer el pesto de Mercadona mientras se prueba el Gino’s Genovese.', responsable:'Lore', prioridad:'Compra'},
-  {id:'pend-aceite-formato-20260825', pagina:4, titulo:'Confirmar el formato del aceite de oliva virgen', detalle:'Hermida traerá una botella del formato habitual; confirmar si es de 2 o 3 litros.', responsable:'Hermida', prioridad:'Pedido programado'}
+  {id:'pend-aceite-formato-20260825', pagina:4, titulo:'Confirmar el formato del aceite de oliva virgen', detalle:'Hermida traerá una botella del formato habitual; confirmar si es de 2 o 3 litros.', responsable:'Hermida', prioridad:'Pedido programado'},
+  {id:'pend-croquetas-stock-20260825', pagina:4, titulo:'Revisar y ventilar el stock de croquetas', detalle:'Hay muchas en el congelador. No quedan Angus y la línea prevista es jamón ibérico, puerro confitado, boletus y cecina.', responsable:'Lore', prioridad:'Stock'}
 ].map(x => ({...x, estado:'pendiente', creado:'2026-08-25'}));
 let pendPaginaActual = 1;
 function migrarPendientesLaUrbana(){
