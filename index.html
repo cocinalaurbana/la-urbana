@@ -249,6 +249,8 @@ body.light .nav-section-label,body.light .nav-back-btn{color:var(--text-2)}
 .nav-group-btn{width:100%;background:var(--surface-2)!important;border:1px solid var(--border)!important;color:var(--text)!important;padding:12px 14px!important;font-size:0.9rem!important;font-weight:600!important;cursor:pointer;border-radius:10px!important;text-align:left;font-family:inherit;display:flex;align-items:center;gap:10px}
 .nav-group-btn:hover{background:var(--amber-l)!important;border-color:var(--amber)!important;color:var(--amber)!important}
 .nav-back-btn{display:none;width:100%;background:none;border:0;color:var(--text-3);padding:8px 10px;font-size:12px;cursor:pointer;text-align:left;font-family:inherit}
+.nav-world-links{display:none;flex-direction:column;gap:3px;width:100%}.nav-world-links button{width:100%;display:flex!important}
+.nav-group-active .nav-world-links{display:flex}
 .nav-legacy-label{display:none}
 .nav-group-active #nav-grupos{display:none}
 .nav-group-active #nav-volver-grupos{display:block}
@@ -852,6 +854,8 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     width:auto;min-width:max-content;flex:0 0 auto;
     padding:10px 12px!important;white-space:nowrap;
   }
+  #main-nav .nav-world-links{flex-direction:row;align-items:center;gap:7px;width:max-content;overflow:visible}
+  #main-nav .nav-world-links button{width:auto;flex:0 0 auto;padding:10px 12px;white-space:nowrap}
   #main-nav .nav-subitem{display:none!important}
   #main-nav.nav-group-active{flex-direction:row;max-height:74px}
   #main-nav.nav-group-active #nav-grupos{display:none!important}
@@ -1137,6 +1141,7 @@ header .sub{font-size:.85rem}
     <button class="nav-group-btn" onclick="abrirGrupoNav('negocio')" id="nav-grupo-negocio">📊 <span>NEGOCIO</span></button>
   </div>
   <button class="nav-back-btn" id="nav-volver-grupos" onclick="volverGruposNav()">‹ Todos los apartados</button>
+  <div id="nav-world-links" class="nav-world-links" aria-live="polite"></div>
   <div class="nav-section-label nav-legacy-label">Prioritario</div>
 
   <button onclick="tab('appcc',this)" id="nav-appcc">
@@ -8406,17 +8411,21 @@ function initNavegacionAgrupada(){
   nav.querySelectorAll('.nav-separator,.nav-section-label').forEach(e=>e.classList.add('nav-legacy'));
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
+const NAV_LABELS={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
 function abrirGrupoNav(grupo){
   const nav=document.getElementById('main-nav'); if(!nav) return;
   nav.classList.remove('nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');
   nav.classList.add('nav-group-active','nav-world-'+grupo);
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
-  (NAV_GRUPOS[grupo]||[]).forEach(id=>{ const b=document.getElementById('nav-'+id); if(b) b.style.display='flex'; });
+  const links=document.getElementById('nav-world-links'); if(!links)return;
+  links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).map(id=>`<button class="nav-world-link" onclick="tab('${id}',this)">${NAV_LABELS[id]||id}</button>`).join('');
+  links.style.display='flex';
 }
 function volverGruposNav(){
   const nav=document.getElementById('main-nav'); if(!nav) return;
   nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
+  const links=document.getElementById('nav-world-links'); if(links){links.innerHTML='';links.style.display='none';}
   tab('inicio',document.getElementById('nav-inicio'));
 }
 
