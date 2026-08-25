@@ -922,6 +922,11 @@ header .sub{font-size:.85rem}
   #main-content .tab .card-title{font-size:17px!important}
   #main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:17px!important}
 }
+.escandallo-linea{border-top:1px solid var(--border);padding:11px 0;display:grid;grid-template-columns:1.4fr .65fr .65fr;gap:9px;align-items:end}
+.escandallo-linea strong{font-size:14px}.escandallo-cant{font-size:12px;color:var(--text-2);line-height:1.45;margin-top:3px}.escandallo-linea label{font-size:11px;color:var(--text-3)}
+.escandallo-linea input{width:100%;margin-top:4px;padding:8px 7px;border:1px solid var(--border);border-radius:7px;background:var(--surface-2);color:var(--text);font:inherit;font-size:14px}
+.escandallo-resultado{font-size:12px;color:var(--text-2);margin-top:5px;line-height:1.4}.escandallo-resultado b{color:var(--accent-d)}
+@media(max-width:560px){.escandallo-linea{grid-template-columns:1fr 1fr}.escandallo-linea>div:first-child{grid-column:1/-1}.escandallo-linea label{font-size:13px}.escandallo-linea input{font-size:17px;padding:10px 8px}.escandallo-cant{font-size:15px}.escandallo-linea strong{font-size:17px}.escandallo-resultado{font-size:15px}}
 </style>
 <style>.maria-hidden{display:none!important}</style>
 </head>
@@ -2239,6 +2244,21 @@ header .sub{font-size:.85rem}
     <div class="card-title">📐 Cómo funciona</div>
     <div style="font-size:13px;color:var(--text-2);line-height:1.55">El <b>food cost teórico</b> muestra lo que deberían costar las ventas según las recetas. El <b>food cost real</b> se calcula con el almacén: stock inicial + compras − stock final.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12px"><span class="badge">Teórico: receta + ventas</span><span class="badge">Real: inventario</span><span class="badge" style="background:var(--amber-l);color:var(--amber)">🟡 Precios provisionales</span></div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px;border-left:3px solid var(--accent)">
+    <div class="card-title">🧮 Comparativa de escandallos</div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.55;margin-bottom:10px">Separamos el escandallo antiguo del nuevo para poder rehacer los cálculos desde cero. Introduce el <b>coste total de ingredientes</b> y el <b>PVP sin IVA</b>; la app calcula el porcentaje de coste y el margen.</div>
+    <div style="padding:9px 10px;border-radius:9px;background:var(--amber-l);color:var(--text-2);font-size:12px;margin-bottom:12px">El antiguo conserva las cantidades del Inventario v2. El nuevo recoge las cantidades de trabajo confirmadas, especialmente Pollo Urbana y tortilla. No se sustituye ningún precio hasta que lo revisemos.</div>
+    <details open>
+      <summary style="cursor:pointer;font-weight:800;font-size:14px">📁 Escandallo antiguo</summary>
+      <div id="escandallo-antiguo-lista" style="margin-top:9px"></div>
+    </details>
+    <details open style="margin-top:12px">
+      <summary style="cursor:pointer;font-weight:800;font-size:14px">✨ Escandallo nuevo</summary>
+      <div id="escandallo-nuevo-lista" style="margin-top:9px"></div>
+    </details>
+    <div id="escandallo-comparativa-resumen" style="margin-top:12px"></div>
   </div>
 
   <div class="card" id="circuito-brava-card" style="margin-bottom:14px;border-left:3px solid var(--olive)">
@@ -8083,9 +8103,57 @@ function guardarCircuitoBrava(){
   renderCircuitoBrava(); toast('Circuito y plato de prueba guardados','verde');
 }
 
+const COMPARATIVA_ESCANDALLOS = [
+  {key:'raxo-media',plato:'Raxo con patatas',formato:'Media ración',antiguo:'140 g lomo · 90 g patata · 50 g pimiento · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'140 g lomo · 90 g patata · 50 g pimiento · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:8.50},
+  {key:'raxo-racion',plato:'Raxo con patatas',formato:'Ración',antiguo:'250 g lomo · 175 g patata · 50 g pimiento · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'250 g lomo · 175 g patata · 50 g pimiento · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:15.00},
+  {key:'pollo-urbana-media',plato:'Pollo Urbana',formato:'Media ración',antiguo:'240 g pollo · 25 g chips · adobo de tahini y soja',nuevo:'250 g pollo · 25 g chips · adobo de tahini y soja',pvp:8.50},
+  {key:'pollo-urbana-racion',plato:'Pollo Urbana',formato:'Ración',antiguo:'350 g pollo · 40 g chips · adobo de tahini y soja',nuevo:'350 g pollo · 40 g chips · adobo de tahini y soja',pvp:15.00},
+  {key:'flambeado-media',plato:'Pollo flambeado',formato:'Media ración',antiguo:'220 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'220 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:9.20},
+  {key:'flambeado-racion',plato:'Pollo flambeado',formato:'Ración',antiguo:'320 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'320 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:16.70},
+  {key:'ensaladilla-tapa',plato:'Ensaladilla rusa',formato:'Tapa',antiguo:'215 g ensaladilla · 2 aceitunas · pan',nuevo:'215 g ensaladilla · 2 aceitunas · pan',pvp:4.70},
+  {key:'ensaladilla-racion',plato:'Ensaladilla rusa',formato:'Ración',antiguo:'340 g ensaladilla · 2 aceitunas · pan',nuevo:'340 g ensaladilla · 2 aceitunas · pan',pvp:8.50},
+  {key:'tortilla-mediana',plato:'Tortilla',formato:'Mediana · 4 porciones',antiguo:'6 huevos · 750 g patata cruda → 630 g pochada',nuevo:'7 huevos · 500 g patata después de la segunda fritura',pvp:12.00},
+  {key:'tortilla-grande',plato:'Tortilla',formato:'Grande · 8 porciones',antiguo:'12 huevos · 1.500 g patata cruda → 1.260 g pochada',nuevo:'12 huevos · 900 g patata después de la segunda fritura',pvp:23.00},
+  {key:'bravas-tapa',plato:'Patatas bravas',formato:'Tapa',antiguo:'300 g patata · 20 g salsa bravas · 20 g alioli',nuevo:'300 g patata · 20 g salsa bravas · 20 g alioli',pvp:4.70},
+  {key:'criollo-tapa',plato:'Criollo con patatas',formato:'Tapa',antiguo:'175 g patata · 1 chorizo criollo de 80 g · 20 g chimichurri',nuevo:'175 g patata · 1 chorizo criollo de 80 g · 20 g chimichurri',pvp:4.50},
+  {key:'croquetas-tapa',plato:'Croquetas',formato:'Tapa · 3 unidades',antiguo:'3 unidades · 0,19 €/unidad en la ficha antigua',nuevo:'3 unidades · confirmar formato actual de Makro',pvp:3.20},
+  {key:'croquetas-racion',plato:'Croquetas',formato:'Ración · 8 unidades',antiguo:'8 unidades · 0,19 €/unidad en la ficha antigua',nuevo:'Formato pendiente de confirmar con César',pvp:8.50},
+  {key:'tequenos-tapa',plato:'Tequeños',formato:'Tapa · 3 unidades',antiguo:'3 unidades · 0,40 €/unidad',nuevo:'3 unidades · revisar precio actual',pvp:4.70}
+];
+function renderBloqueEscandallo(tipo){
+  const el=document.getElementById('escandallo-'+tipo+'-lista'); if(!el)return;
+  const saved=cargar('escandallo_comparativa_'+tipo,{});
+  el.innerHTML=COMPARATIVA_ESCANDALLOS.map(r=>{
+    const d=saved[r.key]||{}; const coste=d.coste??''; const pvp=d.pvp??(r.pvp/1.1).toFixed(2);
+    return `<div class="escandallo-linea" data-esc-row="${tipo}" data-key="${r.key}">
+      <div><strong>${r.plato} · ${r.formato}</strong><div class="escandallo-cant">${r[tipo]}</div><div class="escandallo-resultado" data-result>Introduce el coste de ingredientes para calcular.</div></div>
+      <label>Coste ingredientes €<input data-field="coste" type="number" min="0" step="0.01" value="${coste}" placeholder="0,00" oninput="calcularComparativaEscandallos('${tipo}')"></label>
+      <label>PVP sin IVA €<input data-field="pvp" type="number" min="0" step="0.01" value="${pvp}" oninput="calcularComparativaEscandallos('${tipo}')"></label>
+    </div>`;
+  }).join('');
+  calcularComparativaEscandallos(tipo);
+}
+function calcularComparativaEscandallos(tipo){
+  const datos={}; let completos=0,totalCoste=0,totalPvp=0;
+  document.querySelectorAll(`[data-esc-row="${tipo}"]`).forEach(row=>{
+    const coste=parseFloat(row.querySelector('[data-field="coste"]')?.value)||0;
+    const pvp=parseFloat(row.querySelector('[data-field="pvp"]')?.value)||0;
+    datos[row.dataset.key]={coste:row.querySelector('[data-field="coste"]')?.value||'',pvp:row.querySelector('[data-field="pvp"]')?.value||''};
+    const res=row.querySelector('[data-result]');
+    if(coste>0&&pvp>0){const pct=coste/pvp*100;const margen=pvp-coste;completos++;totalCoste+=coste;totalPvp+=pvp;if(res)res.innerHTML=`Coste <b>${coste.toFixed(2)} €</b> · food cost <b>${pct.toFixed(1)}%</b> · margen <b>${margen.toFixed(2)} €</b>`;}
+    else if(res)res.textContent='Introduce el coste de ingredientes para calcular.';
+  });
+  guardar('escandallo_comparativa_'+tipo,datos);
+  const resumen=document.getElementById('escandallo-comparativa-resumen');
+  if(resumen){const media=totalPvp?totalCoste/totalPvp*100:0;resumen.innerHTML=`<div style="padding:10px 12px;border-radius:9px;background:var(--surface-2);font-size:13px;color:var(--text-2)"><strong>${tipo==='antiguo'?'Antiguo':'Nuevo'}:</strong> ${completos}/${COMPARATIVA_ESCANDALLOS.length} escandallos calculados${completos?` · Coste acumulado ${totalCoste.toFixed(2)} € · food cost ponderado ${media.toFixed(1)}%`:''}</div>`;}
+}
+function renderComparativaEscandallos(){renderBloqueEscandallo('antiguo');renderBloqueEscandallo('nuevo');}
+
+
 function renderControlCostes(){
   const el=document.getElementById('costes-platos'); if(!el) return;
   renderQuiqueCostesResumen();
+  renderComparativaEscandallos();
   renderCircuitoBrava();
   el.innerHTML=PILOTO_FOOD_COST.map((p,i)=>`<div style="display:grid;grid-template-columns:1.3fr .8fr .8fr .8fr;gap:7px;align-items:end;border-top:1px solid var(--border);padding:10px 0">
     <div><strong style="font-size:13px">${p.nombre}</strong><div style="font-size:10px;color:var(--text-3)">${p.nota}</div></div>
