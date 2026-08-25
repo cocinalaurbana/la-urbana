@@ -286,6 +286,20 @@ body.light .nav-section-label,body.light .nav-back-btn{color:var(--text-2)}
 .pend-tag{display:inline-block;border:1px solid var(--border-s);border-radius:99px;padding:2px 7px}
 .pend-source{font-size:11px;color:var(--text-3);line-height:1.45;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
 @media(max-width:560px){.pend-book-tabs{grid-template-columns:repeat(2,1fr)}.pend-book-tab{min-height:42px;padding:8px 4px}.pend-page-head{display:block}.pend-count{display:block;margin-top:5px}}
+/* ─── LECTURA CÓMODA · presbicia y pantallas pequeñas ─── */
+.lectura-comoda{font-size:16px;line-height:1.58}
+.lectura-comoda .card{font-size:15px}
+.lectura-comoda [style*="font-size:11px"]{font-size:14px!important;line-height:1.55!important}
+.lectura-comoda [style*="font-size:12px"]{font-size:14px!important;line-height:1.55!important}
+.lectura-comoda [style*="font-size:13px"]{font-size:15px!important;line-height:1.58!important}
+.lectura-comoda .card-title{font-size:13px!important;line-height:1.35!important}
+.mk-inner-book-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:9px 10px;margin-bottom:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);position:sticky;top:0;z-index:5}
+.mk-inner-book-nav button{border:1px solid var(--border-s);background:transparent;color:var(--text);border-radius:9px;padding:9px 11px;min-width:40px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.mk-inner-book-nav button:hover{border-color:var(--amber);color:var(--amber)}
+.mk-inner-book-nav button.active{background:var(--amber);border-color:var(--amber);color:var(--bg)}
+.mk-inner-book-label{font-size:12px;color:var(--text-2);font-weight:700;margin-left:auto}
+.mk-inner-book-page{display:none}
+.mk-inner-book-page.active{display:block;animation:fadeIn .16s ease}
 .protocolo-btn{width:100%;text-align:left;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:10px;padding:10px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
 .protocolo-btn:hover,.protocolo-btn.active{background:var(--accent-l);border-color:var(--accent);color:var(--accent-d)}
 
@@ -1835,7 +1849,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 </div>
 
 <!-- NUEVOS PROVEEDORES · QUIQUE + HERMIDA -->
-<div id="tab-nuevosproveedores" class="tab">
+<div id="tab-nuevosproveedores" class="tab lectura-comoda">
   <div class="card" style="background:linear-gradient(135deg,#243b35,#5b8067);color:#fff;border:none;margin-bottom:14px">
     <div style="font-size:11px;letter-spacing:1.4px;text-transform:uppercase;opacity:.72">Compras · comparativa</div>
     <h2 style="margin:7px 0 5px;font-family:Georgia,serif;font-weight:400">Nuevos proveedores</h2>
@@ -1860,7 +1874,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 </div>
 
 <!-- PROVEEDORES -->
-<div id="tab-proveedores" class="tab">
+<div id="tab-proveedores" class="tab lectura-comoda">
   <div class="card" style="margin-bottom:14px;border-left:3px solid var(--accent)">
     <div class="card-title">🏠 Datos de La Urbana</div>
     <div style="font-size:13px;line-height:1.7;color:var(--text-2)">
@@ -1892,7 +1906,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 </div>
 
 <!-- FORMACIÓN Y EQUIPO -->
-<div id="tab-formacion" class="tab">
+<div id="tab-formacion" class="tab lectura-comoda">
   <div class="card" style="margin-bottom:14px;border-left:3px solid var(--amber)">
     <div class="card-title">📷 Curso vivo · Fotografía y marketing de La Urbana</div>
     <div style="font-size:13px;line-height:1.55;color:var(--text-2);margin-bottom:12px">Aprender haciendo: cada ejercicio de fotografía o vídeo produce una pieza real para las redes, sin construir la identidad del local alrededor de tendencias.</div>
@@ -1952,7 +1966,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 </div>
 
 <!-- DIARIO VISUAL -->
-<div id="tab-diario" class="tab">
+<div id="tab-diario" class="tab lectura-comoda">
   <div class="card" style="margin-bottom:14px">
     <div class="card-title">📸 Añadir foto al diario</div>
     <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">Guarda fotos de cocina y de los platos en sala para el histórico y las redes.</div>
@@ -1994,7 +2008,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 </div>
 
 <!-- PROGRAMACIÓN DE INVIERNO -->
-<div id="tab-programacion" class="tab">
+<div id="tab-programacion" class="tab lectura-comoda">
   <div class="card" style="background:linear-gradient(135deg,#21352f,#496b5b);color:#fff;border:none;margin-bottom:14px">
     <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7">Actividades · Cocina y Sala</div>
     <h2 style="margin:7px 0 5px;font-family:Georgia,serif;font-weight:400">Actividades y experiencias</h2>
@@ -2173,7 +2187,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 </div>
 
 <!-- CONTABILIDAD -->
-<div id="tab-contabilidad" class="tab">
+<div id="tab-contabilidad" class="tab lectura-comoda">
 
   <!-- Resumen rápido -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px" id="cont-resumen"></div>
@@ -2224,7 +2238,7 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 
 <!-- SPOTIFY -->
 <!-- INSTAGRAM -->
-<div id="tab-instagram" class="tab">
+<div id="tab-instagram" class="tab lectura-comoda">
 
   <!-- HEADER -->
   <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;border:none">
@@ -3060,6 +3074,36 @@ function renderMemoriasGastro(){
   if(!lista.length){listaEl.innerHTML='<div style="font-size:12px;color:var(--text-3)">Todavía no hay recuerdos recogidos.</div>';return;}
   listaEl.innerHTML=lista.slice(0,30).map(function(x){const e=ESTADOS_MEMORIA_GASTRO[x.estado]||ESTADOS_MEMORIA_GASTRO.memoria;return '<div style="background:var(--surface-2);border-radius:9px;padding:9px;margin-bottom:7px"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700">'+e.icon+' '+e.label+'</span><span style="font-size:10px;color:var(--text-3);margin-left:auto">'+escPrueba(x.fecha)+'</span><button onclick="borrarMemoriaGastro('+x.id+')" style="background:none;border:0;color:var(--text-3);cursor:pointer">×</button></div><div style="font-size:12px;color:var(--text);line-height:1.45;margin:5px 0">'+escPrueba(x.texto)+'</div>'+(x.origen?'<div style="font-size:10px;color:var(--text-3)">Origen: '+escPrueba(x.origen)+'</div>':'')+'<select onchange="cambiarEstadoMemoria('+x.id+',this.value)" style="margin-top:6px;padding:4px 6px;border-radius:7px;border:1px solid var(--border);font-size:11px;color:var(--text);background:var(--surface)"><option value="memoria" '+(x.estado==='memoria'?'selected':'')+'>💭 Memoria</option><option value="prueba" '+(x.estado==='prueba'?'selected':'')+'>🧪 En prueba</option><option value="urbana" '+(x.estado==='urbana'?'selected':'')+'>🍽️ En La Urbana</option></select></div>';}).join('');
 }
+// ── LIBRO INTERIOR DE MARKETING ──
+const MK_LIBRO_IDS=['vision','estrategia','calendario','ideas','guia'];
+const MK_LIBRO_PAGINAS={};
+function prepararLibroMarketing(){
+  MK_LIBRO_IDS.forEach(id=>{
+    const el=document.getElementById('mk-'+id); if(!el||el.dataset.libroPreparado==='1') return;
+    const hijos=Array.from(el.children).filter(x=>x.nodeType===1);
+    if(!hijos.length) return;
+    const porPagina=2, paginas=[];
+    for(let i=0;i<hijos.length;i+=porPagina){
+      const pagina=document.createElement('div'); pagina.className='mk-inner-book-page'; pagina.dataset.mkLibroPage=String(paginas.length);
+      hijos.slice(i,i+porPagina).forEach(x=>pagina.appendChild(x)); paginas.push(pagina);
+    }
+    const nav=document.createElement('div'); nav.className='mk-inner-book-nav'; nav.id='mk-inner-nav-'+id;
+    const wrap=document.createElement('div'); wrap.className='mk-inner-book-pages'; wrap.id='mk-inner-pages-'+id;
+    paginas.forEach(x=>wrap.appendChild(x)); el.appendChild(nav); el.appendChild(wrap); el.dataset.libroPreparado='1'; MK_LIBRO_PAGINAS[id]=paginas.length;
+  });
+}
+function mostrarPaginaLibroMarketing(id,n,scroll=true){
+  prepararLibroMarketing();
+  const total=MK_LIBRO_PAGINAS[id]||1, pagina=Math.max(0,Math.min(total-1,Number(n)||0));
+  document.querySelectorAll('#mk-'+id+' .mk-inner-book-page').forEach(x=>x.classList.toggle('active',Number(x.dataset.mkLibroPage)===pagina));
+  const nav=document.getElementById('mk-inner-nav-'+id); if(nav){
+    nav.innerHTML='<button onclick="mostrarPaginaLibroMarketing(\''+id+'\','+(pagina-1)+')" '+(pagina===0?'disabled':'')+'>‹</button>';
+      for(let i=0;i<total;i++) nav.innerHTML+='<button class="'+(i===pagina?'active':'')+'" onclick="mostrarPaginaLibroMarketing(\''+id+'\','+i+')">'+(i+1)+'</button>';
+    nav.innerHTML+='<span class="mk-inner-book-label">Hoja '+(pagina+1)+' de '+total+'</span><button onclick="mostrarPaginaLibroMarketing(\''+id+'\','+(pagina+1)+')" '+(pagina===total-1?'disabled':'')+'>›</button>';
+  }
+  if(scroll){const main=document.getElementById('main-content');if(main)main.scrollTo({top:0,behavior:'smooth'});}
+}
+
 const MK_PAGINAS = [
   ['vision','Visión'], ['estrategia','Estrategia'], ['calendario','Calendario'], ['ideas','Ideas'], ['guia','Academia de mirada']
 ];
@@ -3077,6 +3121,7 @@ function actualizarMkPager(name) {
   if(prev) prev.disabled=i===0; if(next) next.disabled=i===MK_PAGINAS.length-1;
 }
 function mkTab(name) {
+  prepararLibroMarketing();
   ['vision','estrategia','calendario','ideas','guia'].forEach(t => {
     const el = document.getElementById('mk-'+t);
     const btn = document.getElementById('mk-btn-'+t);
@@ -3089,6 +3134,7 @@ function mkTab(name) {
   if (name === 'calendario') { renderCalendarioContenidos(); renderMkPubs(); }
   if (name === 'ideas') renderMkIdeas();
   if (name === 'vision') renderMemoriasGastro();
+  mostrarPaginaLibroMarketing(name,0,false);
   actualizarMkPager(name);
 }
 
@@ -3763,6 +3809,7 @@ function tab(id, btn) {
     recetas: renderRecetas, pruebas: renderPruebasRecetas, proveedores: renderProveedores, nuevosproveedores: renderNuevosProveedores,
     historial: renderHistorial, formacion: renderFormacion, spotify: renderPlaylistsCustom,
     diario: renderDiario,
+    instagram: () => { mkTab('vision'); },
     programacion: initProgramacion,
     contabilidad: () => {
       document.getElementById('cont-fecha').value = new Date().toISOString().split('T')[0];
