@@ -885,6 +885,43 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
 @media(max-width:620px){.circuito-flow{grid-template-columns:1fr;gap:5px}.circuito-arrow{transform:rotate(90deg);height:14px}.circuito-grid{grid-template-columns:1fr 1fr}.mk-page-nav button{padding:8px 7px}}
 
 
+/* ─── ACCESIBILIDAD · lectura legible por defecto ─── */
+body{font-size:17px}
+header h1{font-size:1.1rem}
+header .sub{font-size:.85rem}
+.role-badge,.btn-salir{font-size:14px}
+#main-nav button{font-size:1rem}
+.nav-section-label{font-size:12px}
+#main-content .tab{font-size:17px;line-height:1.62}
+#main-content .tab [style*="font-size:10px"]{font-size:15px!important;line-height:1.5!important}
+#main-content .tab [style*="font-size:11px"]{font-size:16px!important;line-height:1.55!important}
+#main-content .tab [style*="font-size:12px"]{font-size:17px!important;line-height:1.62!important}
+#main-content .tab [style*="font-size:13px"]{font-size:18px!important;line-height:1.62!important}
+#main-content .tab .card-title{font-size:16px!important;line-height:1.4!important}
+#tab-inicio .dash-greeting:before{font-size:13px}
+#tab-inicio .dash-greeting h2{font-size:1.8rem}
+#tab-inicio .dash-greeting p{font-size:15px}
+#tab-inicio .dash-editorial-title{font-size:14px}
+#tab-inicio .dash-today-item .lbl{font-size:13px}
+#tab-inicio .dash-production-name{font-size:16px}
+#tab-inicio .dash-production-meta{font-size:13px}
+#tab-inicio .dash-flat-card .card-title{font-size:14px}
+#tab-inicio #accesos-rapidos .acceso-label{font-size:15px}
+#tab-inicio #accesos-rapidos .acceso-desc{font-size:14px}
+@media(max-width:768px){
+  body{font-size:18px}
+  header h1{font-size:1.2rem}
+  header .sub{font-size:.9rem}
+  #main-nav button,#main-nav .nav-group-btn{font-size:16px!important;padding:12px 14px!important}
+  #main-content .tab{font-size:18px;line-height:1.65}
+  #main-content .tab .card{font-size:17px;line-height:1.65}
+  #main-content .tab [style*="font-size:10px"]{font-size:16px!important}
+  #main-content .tab [style*="font-size:11px"]{font-size:17px!important}
+  #main-content .tab [style*="font-size:12px"]{font-size:18px!important}
+  #main-content .tab [style*="font-size:13px"]{font-size:19px!important}
+  #main-content .tab .card-title{font-size:17px!important}
+  #main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:17px!important}
+}
 </style>
 <style>.maria-hidden{display:none!important}</style>
 </head>
