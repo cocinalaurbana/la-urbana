@@ -922,6 +922,31 @@ header .sub{font-size:.85rem}
   #main-content .tab .card-title{font-size:17px!important}
   #main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:17px!important}
 }
+.nav-directo-wrap{display:none}
+@media (max-width:1280px), (pointer:coarse){
+  body{font-size:19px!important}
+  #main-nav{flex-wrap:wrap;max-height:none!important;overflow-x:hidden;overflow-y:visible}
+  #main-nav .nav-directo-wrap{display:flex;flex:0 0 100%;order:-1;align-items:center;gap:9px;padding:2px 3px 10px;border-bottom:1px solid var(--border);font-size:18px;font-weight:700}
+  #main-nav .nav-directo-wrap select{flex:1;min-width:0;padding:11px 12px;border:1px solid var(--border-s);border-radius:9px;background:var(--surface-2);color:var(--text);font:inherit;font-size:18px}
+  #main-content .tab{font-size:19px!important;line-height:1.68!important}
+  #main-content .tab .card{font-size:18px;line-height:1.68}
+  #main-content .tab [style*="font-size:10px"]{font-size:17px!important;line-height:1.55!important}
+  #main-content .tab [style*="font-size:11px"]{font-size:18px!important;line-height:1.6!important}
+  #main-content .tab [style*="font-size:12px"]{font-size:19px!important;line-height:1.68!important}
+  #main-content .tab [style*="font-size:13px"]{font-size:20px!important;line-height:1.68!important}
+  #main-content .tab .card-title{font-size:18px!important;line-height:1.45!important}
+  #tab-inicio .dash-greeting:before{font-size:15px}
+  #tab-inicio .dash-greeting h2{font-size:2rem}
+  #tab-inicio .dash-greeting p{font-size:17px}
+  #tab-inicio .dash-editorial-title{font-size:16px}
+  #tab-inicio .dash-today-item .lbl{font-size:15px}
+  #tab-inicio .dash-production-name{font-size:18px}
+  #tab-inicio .dash-production-meta{font-size:15px}
+  #tab-inicio .dash-flat-card .card-title{font-size:16px}
+  #tab-inicio #accesos-rapidos .acceso-label{font-size:17px}
+  #tab-inicio #accesos-rapidos .acceso-desc{font-size:16px}
+  #main-nav button,#main-nav .nav-group-btn{font-size:17px!important;padding:13px 14px!important}
+}
 .escandallo-linea{border-top:1px solid var(--border);padding:11px 0;display:grid;grid-template-columns:1.4fr .65fr .65fr;gap:9px;align-items:end}
 .escandallo-linea strong{font-size:14px}.escandallo-cant{font-size:12px;color:var(--text-2);line-height:1.45;margin-top:3px}.escandallo-linea label{font-size:11px;color:var(--text-3)}
 .escandallo-linea input{width:100%;margin-top:4px;padding:8px 7px;border:1px solid var(--border);border-radius:7px;background:var(--surface-2);color:var(--text);font:inherit;font-size:14px}
@@ -1034,6 +1059,32 @@ header .sub{font-size:.85rem}
 
 <div id="app-layout">
 <nav id="main-nav">
+  <div class="nav-directo-wrap">
+    <label for="nav-directo">Ir a:</label>
+    <select id="nav-directo" onchange="if(this.value) tab(this.value,null)">
+      <option value="inicio">Portada</option>
+      <option value="pendientes">Pendientes</option>
+      <option value="menu">Menú</option>
+      <option value="raciones">Raciones</option>
+      <option value="caja">Caja</option>
+      <option value="stock">Inventario</option>
+      <option value="recetas">Recetas</option>
+      <option value="pruebas">Laboratorio</option>
+      <option value="produccion">Producción</option>
+      <option value="mermas">Mermas</option>
+      <option value="turno">Checklist</option>
+      <option value="appcc">APPCC</option>
+      <option value="controlcostes">Control de costes</option>
+      <option value="contabilidad">Contabilidad</option>
+      <option value="pedidos">Compras</option>
+      <option value="proveedores">Proveedores</option>
+      <option value="nuevosproveedores">Nuevos proveedores</option>
+      <option value="historial">Historial</option>
+      <option value="formacion">Formación y equipo</option>
+      <option value="diario">Diario</option>
+      <option value="programacion">Propuestas</option>
+    </select>
+  </div>
   <!-- Dashboard -->
   <button class="active" onclick="tab('inicio',this)" id="nav-inicio">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -1913,10 +1964,10 @@ header .sub{font-size:.85rem}
       <summary style="cursor:pointer;font-weight:800;font-size:13px">📋 Inventario v2 · cantidades por ración</summary>
       <div style="font-size:12px;color:var(--text-2);line-height:1.6;margin-top:8px">
         <div><strong>Raxo con patatas:</strong> media 140 g de lomo, 90 g de patata, 50 g de pimiento, 15 g de soja, 10 g de ajo-aceite, 15 g de whisky y 20 g de aceite; ración 250 g de lomo y 175 g de patata, con el resto igual.</div>
-        <div><strong>Pollo Urbana:</strong> media 250 g de pollo y 25 g de chips; ración 350 g de pollo y 40 g de chips. El adobo lleva tahini, soja, pimienta, ajo-perejil, perejil seco y ajo seco.</div>
+        <div><strong>Pollo Urbana:</strong> media 250 g de pollo y 150 g de patata gajo; ración 350 g de pollo y 150 g de patata gajo. La patata gajo queda provisional hasta volver a pesarla. El adobo lleva tahini, soja, pimienta, ajo-perejil, perejil seco y ajo seco.</div>
         <div><strong>Pollo flambeado:</strong> media 220 g de pollo y ración 320 g; 25 g de queso gallego, 25 g de parmesano, 65 g de nata, 15 g de soja, 10 g de ajo-aceite, 15 g de whisky y 20 g de aceite.</div>
         <div><strong>Ensaladilla rusa:</strong> 215 g por tapa y 340 g por ración, más aceitunas y pan. La tanda incluye patata, zanahoria, huevos, atún y mayonesa.</div>
-        <div><strong>Tortilla:</strong> cantidades de trabajo actuales: mediana, 7 huevos y 500 g de patata; grande, 12 huevos y 900 g de patata. La patata se pesa después de la segunda fritura. Mediana: 4 porciones; grande: 8.</div>
+        <div><strong>Tortilla:</strong> referencia nueva pendiente de cerrar: mediana, 7 huevos y aproximadamente 700 g de patata ya frita antes de la segunda fritura; la cantidad de la grande queda pendiente de pesar. Mediana: 4 porciones; grande: 8.</div>
         <div><strong>Bravas:</strong> 300 g de patata, 20 g de salsa bravas y 20 g de alioli. <strong>Criollo:</strong> 175 g de patata, 1 chorizo de 80 g y 20 g de chimichurri.</div>
         <div><strong>Croquetas:</strong> ficha antigua de 3 unidades por tapa y 8 por ración; la propuesta actual de croquetas de Makro queda pendiente de confirmar.</div>
       </div>
@@ -4035,6 +4086,8 @@ function tab(id, btn) {
   const mariaAllowedTabs = ['inicio','turno','produccion','stock','mermas','appcc'];
   if (esMaria() && !mariaAllowedTabs.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   window._tabActual = id;
+  const selectorDirecto = document.getElementById('nav-directo');
+  if (selectorDirecto) selectorDirecto.value = id;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
@@ -4888,23 +4941,23 @@ const ESCANDALLOS = [
   {
     plato: 'Pollo Urbana', formatos: [
       { nombre: 'Media ración', ingredientes: [
-        {nombre:'Pechuga de pollo IQF', g:240}, {nombre:'Patata pelada al vacío', g:64}
+        {nombre:'Pechuga de pollo IQF', g:250}, {nombre:'Patata gajo envasada', g:150}
       ]},
       { nombre: 'Ración', ingredientes: [
-        {nombre:'Pechuga de pollo IQF', g:350}, {nombre:'Patata pelada al vacío', g:103}
+        {nombre:'Pechuga de pollo IQF', g:350}, {nombre:'Patata gajo envasada', g:150}
       ]}
     ]
   },
   {
     plato: 'Pollo Flambeado', formatos: [
       { nombre: 'Media ración', ingredientes: [
-        {nombre:'Pechuga de pollo IQF', g:220},
+        {nombre:'Pechuga de pollo IQF', g:150},
         {nombre:'Queso parmesano', g:25}, {nombre:'Nata para cocinar', g:65},
         {nombre:'Salsa de soja', g:15}, {nombre:'Aceite de semillas', g:20},
         {nombre:'Whisky (cocina)', g:15}
       ]},
       { nombre: 'Ración', ingredientes: [
-        {nombre:'Pechuga de pollo IQF', g:320},
+        {nombre:'Pechuga de pollo IQF', g:250},
         {nombre:'Queso parmesano', g:25}, {nombre:'Nata para cocinar', g:65},
         {nombre:'Salsa de soja', g:15}, {nombre:'Aceite de semillas', g:20},
         {nombre:'Whisky (cocina)', g:15}
@@ -7727,7 +7780,7 @@ function limpiarCatalogoObsoleto() {
       if(Array.isArray(q.ingredientes)){ const antes=q.ingredientes.length; q.ingredientes=q.ingredientes.filter(i=>!/(teque|coulant|arz[uú]a)/i.test(i.nombre||'')).map(i=>({...i,nombre:limpiarTexto(i.nombre),cantidad:limpiarTexto(i.cantidad)})); if(q.ingredientes.length!==antes)cambio=true; }
       if((q.id==='r02' || q.nombre==='Pollo Flambeado') && Array.isArray(q.ingredientes)){
         q.ingredientes=q.ingredientes.map(i=>{
-          if(i.nombre==='Pechuga de pollo' && i.cantidad!=='125g (media) · 250g (ración)'){ cambio=true; return {...i,cantidad:'125g (media) · 250g (ración)'}; }
+          if(i.nombre==='Pechuga de pollo' && i.cantidad!=='150g (media) · 250g (ración)'){ cambio=true; return {...i,cantidad:'125g (media) · 250g (ración)'}; }
           return i;
         });
       }
@@ -7748,25 +7801,45 @@ function migrarRecetasActuales() {
         if (/pechuga pollo iqf|pollo \(freidora\)/i.test(i.nombre||'') && i.cantidad !== '250g (media) · 350g (ración)') {
           cambio = true; return {...i, cantidad:'250g (media) · 350g (ración)'};
         }
+        if (/panko|chips/i.test(i.nombre||'')) {
+          cambio = true; return {...i, nombre:'Patata gajo envasada', cantidad:'150g (media) · 150g (ración) · provisional'};
+        }
         return i;
       });
       q.notas = (q.notas||'').replace(/\s*Cantidad media pendiente[^.]*\.?/ig,'').trim();
     }
+    if (q.nombre === 'Pollo Flambeado' && Array.isArray(q.ingredientes)) {
+      q.ingredientes = q.ingredientes.map(i => {
+        if (/pechuga de pollo|pechuga pollo iqf/i.test(i.nombre||'') && i.cantidad !== '150g (media) · 250g (ración)') { cambio=true; return {...i,cantidad:'150g (media) · 250g (ración)'}; }
+        return i;
+      });
+      q.notas = 'Peso de trabajo actualizado: 150 g media / 250 g ración. Revisar coste con el nuevo escandallo.';
+    }
     if (q.nombre === 'Tortilla de patatas' && Array.isArray(q.ingredientes)) {
       q.ingredientes = q.ingredientes.map(i => {
         if (/huevos/i.test(i.nombre||'') && i.cantidad !== '7 uds (mediana) · 12 uds (grande)') { cambio=true; return {...i,cantidad:'7 uds (mediana) · 12 uds (grande)'}; }
-        if (/patata/i.test(i.nombre||'') && i.cantidad !== '500g mediana · 900g grande, pesados después de la segunda fritura') { cambio=true; return {...i,cantidad:'500g mediana · 900g grande, pesados después de la segunda fritura'}; }
+        if (/patata/i.test(i.nombre||'') && i.cantidad !== '~700g ya frita antes de la segunda fritura (mediana) · cantidad grande pendiente de pesar') { cambio=true; return {...i,cantidad:'~700g ya frita antes de la segunda fritura (mediana) · cantidad grande pendiente de pesar'}; }
         return i;
       });
-      const elab='1. Preparar la patata de segunda fritura.
-2. Mediana: 7 huevos y 500 g de patata. Grande: 12 huevos y 900 g de patata.
-3. Pesar la patata después de la segunda fritura.
-4. Dividir la mediana en 4 porciones y la grande en 8.';
+      const elab=['1. Preparar la patata de la primera fritura.','2. Para la mediana, partir de aproximadamente 700 g de patata ya frita y pasarla por la segunda fritura.','3. Pesar el resultado final; la cantidad de la tortilla grande queda pendiente de confirmar.','4. Mediana: 7 huevos y 4 porciones. Grande: 12 huevos y 8 porciones.'].join('\\n');
       if (q.elaboracion !== elab) { q.elaboracion=elab; cambio=true; }
       q.notas='Cantidades de trabajo actualizadas el 25/08/2026.';
     }
     return q;
   });
+  if (!salida.some(r => r.nombre === 'Pollo Teriyaki')) {
+    salida.push({
+      id:'r09', nombre:'Pollo Teriyaki', categoria:'carta', pvp_media:null, pvp_racion:null,
+      ingredientes:[
+        {nombre:'Raxo de pollo',cantidad:'150g (media) · 250g (ración)'},
+        {nombre:'Salsa teriyaki',cantidad:'Pendiente de pesar y confirmar'},
+        {nombre:'Acompañamiento',cantidad:'Pendiente de confirmar'}
+      ],
+      elaboracion:'Ficha nueva de trabajo: usar el raxo de pollo pesado. Completar cantidad de salsa y acompañamiento antes de cerrar receta y escandallo.',
+      notas:'No confundir con Pollo Urbana. Receta pendiente de completar.'
+    });
+    cambio = true;
+  }
   if (cambio) guardar('recetas', salida);
 }
 
@@ -8104,14 +8177,16 @@ function guardarCircuitoBrava(){
 const COMPARATIVA_ESCANDALLOS = [
   {key:'raxo-media',plato:'Raxo con patatas',formato:'Media ración',antiguo:'140 g lomo · 90 g patata · 50 g pimiento · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'140 g lomo · 90 g patata · 50 g pimiento · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:8.50},
   {key:'raxo-racion',plato:'Raxo con patatas',formato:'Ración',antiguo:'250 g lomo · 175 g patata · 50 g pimiento · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'250 g lomo · 175 g patata · 50 g pimiento · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:15.00},
-  {key:'pollo-urbana-media',plato:'Pollo Urbana',formato:'Media ración',antiguo:'240 g pollo · 25 g chips · adobo de tahini y soja',nuevo:'250 g pollo · 25 g chips · adobo de tahini y soja',pvp:8.50},
-  {key:'pollo-urbana-racion',plato:'Pollo Urbana',formato:'Ración',antiguo:'350 g pollo · 40 g chips · adobo de tahini y soja',nuevo:'350 g pollo · 40 g chips · adobo de tahini y soja',pvp:15.00},
-  {key:'flambeado-media',plato:'Pollo flambeado',formato:'Media ración',antiguo:'220 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'220 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:9.20},
-  {key:'flambeado-racion',plato:'Pollo flambeado',formato:'Ración',antiguo:'320 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'320 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:16.70},
+  {key:'pollo-urbana-media',plato:'Pollo Urbana',formato:'Media ración',antiguo:'240 g pollo · 25 g chips · adobo de tahini y soja',nuevo:'250 g pollo · 150 g patata gajo (provisional) · adobo de tahini y soja',pvp:8.50},
+  {key:'pollo-urbana-racion',plato:'Pollo Urbana',formato:'Ración',antiguo:'350 g pollo · 40 g chips · adobo de tahini y soja',nuevo:'350 g pollo · 150 g patata gajo (provisional) · adobo de tahini y soja',pvp:15.00},
+  {key:'teriyaki-media',plato:'Pollo Teriyaki',formato:'Media ración',antiguo:'No consta en el escandallo antiguo',nuevo:'150 g de raxo de pollo · salsa teriyaki: cantidad pendiente de pesar',pvp:null},
+  {key:'teriyaki-racion',plato:'Pollo Teriyaki',formato:'Ración',antiguo:'No consta en el escandallo antiguo',nuevo:'250 g de raxo de pollo · salsa teriyaki: cantidad pendiente de pesar',pvp:null},
+  {key:'flambeado-media',plato:'Pollo flambeado',formato:'Media ración',antiguo:'220 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'150 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:9.20},
+  {key:'flambeado-racion',plato:'Pollo flambeado',formato:'Ración',antiguo:'320 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'250 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:16.70},
   {key:'ensaladilla-tapa',plato:'Ensaladilla rusa',formato:'Tapa',antiguo:'215 g ensaladilla · 2 aceitunas · pan',nuevo:'215 g ensaladilla · 2 aceitunas · pan',pvp:4.70},
   {key:'ensaladilla-racion',plato:'Ensaladilla rusa',formato:'Ración',antiguo:'340 g ensaladilla · 2 aceitunas · pan',nuevo:'340 g ensaladilla · 2 aceitunas · pan',pvp:8.50},
-  {key:'tortilla-mediana',plato:'Tortilla',formato:'Mediana · 4 porciones',antiguo:'6 huevos · 750 g patata cruda → 630 g pochada',nuevo:'7 huevos · 500 g patata después de la segunda fritura',pvp:12.00},
-  {key:'tortilla-grande',plato:'Tortilla',formato:'Grande · 8 porciones',antiguo:'12 huevos · 1.500 g patata cruda → 1.260 g pochada',nuevo:'12 huevos · 900 g patata después de la segunda fritura',pvp:23.00},
+  {key:'tortilla-mediana',plato:'Tortilla',formato:'Mediana · 4 porciones',antiguo:'6 huevos · 750 g patata cruda → 630 g pochada',nuevo:'7 huevos · aproximadamente 700 g de patata ya frita antes de la segunda fritura · pendiente pesar resultado final',pvp:12.00},
+  {key:'tortilla-grande',plato:'Tortilla',formato:'Grande · 8 porciones',antiguo:'12 huevos · 1.500 g patata cruda → 1.260 g pochada',nuevo:'12 huevos · cantidad pendiente de pesar; mantener como referencia la proporción de la mediana',pvp:23.00},
   {key:'bravas-tapa',plato:'Patatas bravas',formato:'Tapa',antiguo:'300 g patata · 20 g salsa bravas · 20 g alioli',nuevo:'300 g patata · 20 g salsa bravas · 20 g alioli',pvp:4.70},
   {key:'criollo-tapa',plato:'Criollo con patatas',formato:'Tapa',antiguo:'175 g patata · 1 chorizo criollo de 80 g · 20 g chimichurri',nuevo:'175 g patata · 1 chorizo criollo de 80 g · 20 g chimichurri',pvp:4.50},
   {key:'croquetas-tapa',plato:'Croquetas',formato:'Tapa · 3 unidades',antiguo:'3 unidades · 0,19 €/unidad en la ficha antigua',nuevo:'3 unidades · confirmar formato actual de Makro',pvp:3.20},
@@ -8122,7 +8197,7 @@ function renderBloqueEscandallo(tipo){
   const el=document.getElementById('escandallo-'+tipo+'-lista'); if(!el)return;
   const saved=cargar('escandallo_comparativa_'+tipo,{});
   el.innerHTML=COMPARATIVA_ESCANDALLOS.map(r=>{
-    const d=saved[r.key]||{}; const coste=d.coste??''; const pvp=d.pvp??(r.pvp/1.1).toFixed(2);
+    const d=saved[r.key]||{}; const coste=d.coste??''; const pvp=d.pvp??(r.pvp!=null?(r.pvp/1.1).toFixed(2):'');
     return `<div class="escandallo-linea" data-esc-row="${tipo}" data-key="${r.key}">
       <div><strong>${r.plato} · ${r.formato}</strong><div class="escandallo-cant">${r[tipo]}</div><div class="escandallo-resultado" data-result>Introduce el coste de ingredientes para calcular.</div></div>
       <label>Coste ingredientes €<input data-field="coste" type="number" min="0" step="0.01" value="${coste}" placeholder="0,00" oninput="calcularComparativaEscandallos('${tipo}')"></label>
