@@ -849,6 +849,25 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   #main-nav button{font-size:12px}
   #main-content .tab{padding:14px 12px 36px}
 }
+/* ─── MÓVIL VERTICAL · lectura cómoda ───
+   En teléfono vertical no se reduce el contenido a letra de escritorio. */
+@media (max-width:768px){
+  body{font-size:16px}
+  #main-nav button{font-size:14px!important}
+  #main-nav .nav-group-btn{font-size:14px!important}
+  #main-content .tab{font-size:16px;line-height:1.58}
+  #main-content .tab .card{font-size:15px;line-height:1.58}
+  #main-content .tab [style*="font-size:10px"]{font-size:13px!important;line-height:1.5!important}
+  #main-content .tab [style*="font-size:11px"]{font-size:14px!important;line-height:1.55!important}
+  #main-content .tab [style*="font-size:12px"]{font-size:15px!important;line-height:1.58!important}
+  #main-content .tab [style*="font-size:13px"]{font-size:16px!important;line-height:1.58!important}
+  #main-content .tab .card-title{font-size:14px!important;line-height:1.4!important}
+  #main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:14px!important}
+  #tab-instagram .mk-tab-btn{font-size:14px!important;padding:9px 13px!important}
+  #tab-instagram .mk-page-nav button,#tab-instagram .mk-inner-book-nav button{font-size:14px!important;padding:10px 12px!important}
+  #tab-instagram .mk-page-num,#tab-instagram .mk-inner-book-label{font-size:13px!important}
+  #tab-instagram .pend-book-title{font-size:1.45rem}
+}
 
 
 /* ─── PRIMER CIRCUITO: producto → preparación → plato ─── */
