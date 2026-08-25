@@ -7666,6 +7666,39 @@ function limpiarCatalogoObsoleto() {
   }
 }
 
+function migrarRecetasActuales() {
+  const recetas = cargar('recetas', null);
+  if (!Array.isArray(recetas)) return;
+  let cambio = false;
+  const salida = recetas.map(r => {
+    const q = {...r};
+    if (q.nombre === 'Pollo Urbana' && Array.isArray(q.ingredientes)) {
+      q.ingredientes = q.ingredientes.map(i => {
+        if (/pechuga pollo iqf|pollo \(freidora\)/i.test(i.nombre||'') && i.cantidad !== '250g (media) · 350g (ración)') {
+          cambio = true; return {...i, cantidad:'250g (media) · 350g (ración)'};
+        }
+        return i;
+      });
+      q.notas = (q.notas||'').replace(/\s*Cantidad media pendiente[^.]*\.?/ig,'').trim();
+    }
+    if (q.nombre === 'Tortilla de patatas' && Array.isArray(q.ingredientes)) {
+      q.ingredientes = q.ingredientes.map(i => {
+        if (/huevos/i.test(i.nombre||'') && i.cantidad !== '7 uds (mediana) · 12 uds (grande)') { cambio=true; return {...i,cantidad:'7 uds (mediana) · 12 uds (grande)'}; }
+        if (/patata/i.test(i.nombre||'') && i.cantidad !== '500g mediana · 900g grande, pesados después de la segunda fritura') { cambio=true; return {...i,cantidad:'500g mediana · 900g grande, pesados después de la segunda fritura'}; }
+        return i;
+      });
+      const elab='1. Preparar la patata de segunda fritura.
+2. Mediana: 7 huevos y 500 g de patata. Grande: 12 huevos y 900 g de patata.
+3. Pesar la patata después de la segunda fritura.
+4. Dividir la mediana en 4 porciones y la grande en 8.';
+      if (q.elaboracion !== elab) { q.elaboracion=elab; cambio=true; }
+      q.notas='Cantidades de trabajo actualizadas el 25/08/2026.';
+    }
+    return q;
+  });
+  if (cambio) guardar('recetas', salida);
+}
+
 function seedData() {
   if (!cargar('proveedores', null)) {
     guardar('proveedores', [
@@ -7900,6 +7933,7 @@ function arrancarApp() {
   migrarContactosProveedores();
   migrarBancoPinchos();
   migrarStockCarta();
+  migrarRecetasActuales();
   limpiarCatalogoObsoleto();
   integrarTarifaQuique();
   integrarTarifaHermida();
