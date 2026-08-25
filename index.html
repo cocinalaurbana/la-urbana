@@ -4034,6 +4034,7 @@ function mostrarPaginaPendientes(n, scroll=true){
 function tab(id, btn) {
   const mariaAllowedTabs = ['inicio','turno','produccion','stock','mermas','appcc'];
   if (esMaria() && !mariaAllowedTabs.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
+  window._tabActual = id;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
@@ -8010,15 +8011,12 @@ function arrancarApp() {
   migrarChecklistTurno();
   seedPruebasRecetas();
   initHeader();
-  // Forzar tab inicio activo y renderizar
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  const tabInicio = document.getElementById('tab-inicio');
-  if (tabInicio) tabInicio.classList.add('active');
-  renderTabGuia('inicio');
-  const btnInicio = document.querySelector('nav button[onclick*="inicio"]');
-  if (btnInicio) btnInicio.classList.add('active');
-  initInicio();
+  // Renderizar la pestaña actual sin devolver a Inicio al sincronizar.
+  // Firebase puede volver a llamar a esta función después de que Lore ya haya navegado.
+  const pestañaActual = window._tabActual || 'inicio';
+  const botonActual = document.querySelector(`nav button[onclick*="'${pestañaActual}'"]`);
+  tab(pestañaActual, botonActual);
+  window._tabActual = pestañaActual;
 }
 function actualizarWidgetCaja() {
   const fecha = hoy();
