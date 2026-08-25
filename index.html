@@ -261,6 +261,31 @@ body.light .nav-section-label,body.light .nav-back-btn{color:var(--text-2)}
 }
 .tab{display:none;padding:24px;max-width:900px;padding-bottom:60px}
 .tab.active{display:block}
+/* ─── CUADERNO DE PENDIENTES · navegación tipo libro ─── */
+.pend-book-intro{padding:16px 18px;border:1px solid var(--border);border-left:4px solid var(--amber);border-radius:0 14px 14px 0;background:linear-gradient(135deg,var(--surface-2),var(--surface));margin-bottom:14px}
+.pend-book-kicker{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--amber);font-weight:800;margin-bottom:6px}
+.pend-book-title{font-size:1.35rem;font-weight:800;margin-bottom:5px}
+.pend-book-subtitle{font-size:13px;color:var(--text-2);line-height:1.5}
+.pend-book-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:7px;border:1px solid var(--border);border-radius:13px;background:var(--surface-2);margin-bottom:14px;position:sticky;top:0;z-index:4}
+.pend-book-tab{border:1px solid transparent;background:transparent;color:var(--text-2);border-radius:9px;padding:10px 6px;cursor:pointer;font:inherit;font-size:11px;font-weight:700;line-height:1.25;min-height:48px}
+.pend-book-tab:hover{border-color:var(--border-s);color:var(--text)}
+.pend-book-tab.active{background:var(--amber);color:var(--bg);border-color:var(--amber)}
+.pend-book-page{display:none}
+.pend-book-page.active{display:block;animation:fadeIn .15s ease}
+.pend-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.pend-page-title{font-weight:800;font-size:1.05rem}
+.pend-page-note{font-size:12px;color:var(--text-3);line-height:1.45;margin-top:3px}
+.pend-count{font-size:11px;color:var(--amber);font-weight:800;white-space:nowrap}
+.pend-item{display:flex;gap:11px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+.pend-item.done{opacity:.58}
+.pend-check{width:20px;height:20px;accent-color:var(--olive);flex:0 0 auto;margin-top:1px;cursor:pointer}
+.pend-item-body{flex:1;min-width:0}
+.pend-item-title{font-size:13px;font-weight:800;line-height:1.35}
+.pend-item-detail{font-size:12px;color:var(--text-2);line-height:1.5;margin-top:4px;white-space:pre-line}
+.pend-item-meta{font-size:10px;color:var(--text-3);margin-top:7px;display:flex;flex-wrap:wrap;gap:6px}
+.pend-tag{display:inline-block;border:1px solid var(--border-s);border-radius:99px;padding:2px 7px}
+.pend-source{font-size:11px;color:var(--text-3);line-height:1.45;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+@media(max-width:560px){.pend-book-tabs{grid-template-columns:repeat(2,1fr)}.pend-book-tab{min-height:42px;padding:8px 4px}.pend-page-head{display:block}.pend-count{display:block;margin-top:5px}}
 .protocolo-btn{width:100%;text-align:left;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:10px;padding:10px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
 .protocolo-btn:hover,.protocolo-btn.active{background:var(--accent-l);border-color:var(--accent);color:var(--accent-d)}
 
@@ -936,6 +961,10 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Dashboard
   </button>
+  <button onclick="tab('pendientes',this)" id="nav-pendientes">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+    Pendientes
+  </button>
 
   <div class="nav-separator"></div>
   <div id="nav-grupos" class="nav-groups">
@@ -1125,6 +1154,26 @@ tr:hover td{color:var(--text);background:var(--surface-2)}
   <div class="dash-flat-card" id="wa-config-card" style="display:none;margin-top:12px">
     <div id="wa-config-panel"></div>
   </div>
+</div>
+
+<!-- ══════════════════════════════════ CUADERNO DE PENDIENTES ══ -->
+<div id="tab-pendientes" class="tab">
+  <div class="pend-book-intro">
+    <div class="pend-book-kicker">La Urbana · cuaderno operativo</div>
+    <div class="pend-book-title">📖 Pendientes</div>
+    <div class="pend-book-subtitle">Cada tema vive en su propia página. Así puedes entrar directamente en compras, producción o pruebas sin recorrer una lista interminable.</div>
+  </div>
+  <div class="pend-book-tabs" aria-label="Temas de pendientes">
+    <button class="pend-book-tab active" data-pend-page="1" onclick="mostrarPaginaPendientes(1)">👩‍🍳<br>Turno</button>
+    <button class="pend-book-tab" data-pend-page="2" onclick="mostrarPaginaPendientes(2)">🛒<br>Compras</button>
+    <button class="pend-book-tab" data-pend-page="3" onclick="mostrarPaginaPendientes(3)">🧪<br>Pruebas</button>
+    <button class="pend-book-tab" data-pend-page="4" onclick="mostrarPaginaPendientes(4)">📦<br>Stock y decisiones</button>
+  </div>
+  <div id="pend-page-1" class="pend-book-page active"></div>
+  <div id="pend-page-2" class="pend-book-page"></div>
+  <div id="pend-page-3" class="pend-book-page"></div>
+  <div id="pend-page-4" class="pend-book-page"></div>
+  <div class="pend-source">Fuente: conversaciones y comprobaciones de La Urbana. Las recetas, gramajes y pruebas siguen siendo provisionales hasta validarlas en servicio.</div>
 </div>
 
 <!-- ══════════════════════════════════ APPCC ══ -->
@@ -2851,11 +2900,12 @@ De [hora] a [hora]. Ven con quien quieras.
     catch(e) { localStorage.setItem('urb_'+k, JSON.stringify(v)); }
   };
 
-  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom','memorias_gastronomicas','appcc_' + new Date().toISOString().slice(0,10)];
+  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom','memorias_gastronomicas','pendientes_laurbana','appcc_' + new Date().toISOString().slice(0,10)];
   Promise.all(CLAVES.map(k => window._fbCargar(k, null))).then(() => {
     window._firebaseReady = true;
     // Tras cargar la nube, sincronizamos listas compartidas y refrescamos la pestaña activa.
     if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
+    if (typeof migrarPendientesLaUrbana === 'function') migrarPendientesLaUrbana();
     if (typeof migrarStockCarta === 'function') migrarStockCarta();
     if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
     if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
@@ -3521,6 +3571,7 @@ function aplicarPermisos() {
 
 const TAB_GUIAS = {
   inicio:{es:['Inicio','Aquí ves el estado general de La Urbana y las alertas que requieren atención.','Revisa el resumen y actúa solo sobre lo que aparezca como pendiente o crítico.'],hu:['Kezdőlap','Itt látható a La Urbana általános állapota és a figyelmet igénylő riasztások.','Ellenőrizd az összefoglalót, és csak a függőben lévő vagy kritikus feladatokkal foglalkozz.']},
+  pendientes:{es:['Cuaderno de pendientes','Aquí cada tema tiene su propia página para no perderse en un scroll infinito.','Entra en la página correspondiente y marca una tarea solo cuando esté realmente hecha.'],hu:['Függő feladatok füzete','Minden téma külön oldalon jelenik meg, így nem kell végtelenül görgetni.','Nyisd meg a megfelelő oldalt, és csak akkor jelöld késznek, amikor valóban elkészült.']},
   turno:{es:['Turnos y relevo','Aquí se registra qué se hace al entrar, al cerrar y qué queda comunicado al siguiente turno.','Marca lo que realmente has comprobado y escribe en el relevo lo que queda para mañana.'],hu:['Műszak és átadás','Itt rögzítjük a nyitási és zárási feladatokat, valamint azt, amit a következő műszaknak átadunk.','Csak azt jelöld késznek, amit valóban ellenőriztél; a holnapi feladatokat írd be az átadásba.']},
   produccion:{es:['Producción','Aquí se ve qué elaboraciones y preparaciones hay que hacer hoy o mañana.','Realiza las tareas y márcalas cuando estén terminadas; si no se pueden hacer, deja una nota.'],hu:['Előkészítés','Itt látható, mit kell ma vagy holnap elkészíteni és előkészíteni.','A feladatot csak akkor jelöld késznek, amikor elkészült; ha nem lehet elvégezni, írj megjegyzést.']},
   stock:{es:['Inventario','Aquí se comprueba qué productos hay físicamente, dónde están y qué queda por reponer.','Cuenta sin mover género, respeta las zonas y comunica cualquier diferencia.'],hu:['Készlet','Itt ellenőrizzük, milyen termékek vannak ténylegesen, hol vannak, és miből kell rendelni.','Számolás közben ne mozgasd az árut; tartsd be a zónákat, és jelezd az eltéréseket.']},
@@ -3601,6 +3652,59 @@ function renderFormacion(){
 }
 function borrarRevisionFormacion(id){guardar('form_revisiones',cargar('form_revisiones',[]).filter(x=>x.id!==id));renderFormacion();toast('Revisión eliminada');}
 
+// ══════════════════════════════════════════
+// CUADERNO DE PENDIENTES · formato libro
+// ══════════════════════════════════════════
+const PENDIENTES_LA_URBANA_DEFAULT = [
+  {id:'pend-maria-chimichurri-20260825', pagina:1, titulo:'Preparar salsa chimichurri', detalle:'Pedir a María que la prepare.', responsable:'María', prioridad:'Pendiente de pedir'},
+  {id:'pend-maria-alioli-20260825', pagina:1, titulo:'Preparar salsa alioli con aceite y ajo nuevos', detalle:'No usar el ajoaceite con perejil del 13 o 14 de agosto: huele y sale raro.', responsable:'María', prioridad:'Importante'},
+  {id:'pend-croquetas-raciones-20260825', pagina:1, titulo:'Calcular raciones de croquetas', detalle:'Separar pequeñas/redondas y grandes: definir unidades de tapa y ración para puerro, cecina, boletus y jamón ibérico.', responsable:'Lore', prioridad:'Pendiente'},
+  {id:'pend-gadis-marineiras-20260825', pagina:2, titulo:'Comprar 2 bolsas grandes de mariñeiras', detalle:'Para probar la ensaladilla. Llevarlas a La Urbana.', responsable:'Lore', prioridad:'Compra'},
+  {id:'pend-huevos-formato-20260825', pagina:2, titulo:'Verificar el formato de las 5 cajas de huevos', detalle:'Comprobar físicamente si son bandejas de 30 o de 20 unidades. No pedir más esta semana.', responsable:'Lore', prioridad:'Comprobación'},
+  {id:'pend-pedidos-revision-20260825', pagina:2, titulo:'Revisar pedidos después de las entregas', detalle:'Comprobar si queda algo pendiente tras Grupo Silva, Hermida y la compra de Gadis, sin duplicar lo que ya hizo César.', responsable:'Lore', prioridad:'Después de las entregas'},
+  {id:'pend-tortilla-prueba-20260825', pagina:3, titulo:'Probar mezcla de patata para tortilla mediana', detalle:'Comparar 400–450 g de segunda fritura + 50 g crujiente frente a 500 g de segunda fritura. Valorar textura, jugosidad y unión.', responsable:'Lore', prioridad:'Prueba'},
+  {id:'pend-huevos-consumo-20260825', pagina:3, titulo:'Medir el consumo semanal de huevos', detalle:'Contar tortillas medianas y grandes y el uso en otras elaboraciones antes de decidir si se aumenta el pedido.', responsable:'Lore', prioridad:'Medición'},
+  {id:'pend-ensaladilla-prueba-20260825', pagina:3, titulo:'Probar la ensaladilla', detalle:'Hacer la prueba con las mariñeiras de Gadis y registrar resultado antes de fijar receta y escandallo.', responsable:'Equipo', prioridad:'Prueba'},
+  {id:'pend-pesto-prueba-20260825', pagina:3, titulo:'Probar el pesto Gino’s Genovese', detalle:'Formato del catálogo Disgalchef: 510 g. No pedirlo todavía; decidir después de probar si gusta.', responsable:'Lore', prioridad:'No comprar aún'},
+  {id:'pend-pollo-fifo-20260825', pagina:4, titulo:'Revisar las bolsas de pollo aplicando FIFO', detalle:'Hay aproximadamente 17 bolsas de 2,5 kg. Identificar qué parte corresponde a cada elaboración y fecha.', responsable:'Lore', prioridad:'Stock'},
+  {id:'pend-mercadona-salsas-20260825', pagina:4, titulo:'Actualizar la lista habitual de Mercadona', detalle:'Mantener teriyaki y tahini. No reponer el pesto de Mercadona mientras se prueba el Gino’s Genovese.', responsable:'Lore', prioridad:'Compra'},
+  {id:'pend-aceite-formato-20260825', pagina:4, titulo:'Confirmar el formato del aceite de oliva virgen', detalle:'Hermida traerá una botella del formato habitual; confirmar si es de 2 o 3 litros.', responsable:'Hermida', prioridad:'Pedido programado'}
+].map(x => ({...x, estado:'pendiente', creado:'2026-08-25'}));
+let pendPaginaActual = 1;
+function migrarPendientesLaUrbana(){
+  const actuales = cargar('pendientes_laurbana', null);
+  const lista = Array.isArray(actuales) ? actuales.slice() : [];
+  PENDIENTES_LA_URBANA_DEFAULT.forEach(base => {
+    if (!lista.some(x => x.id === base.id)) lista.push({...base});
+  });
+  if (!Array.isArray(actuales) || lista.length !== actuales.length) guardar('pendientes_laurbana', lista);
+  return lista;
+}
+function renderPendientes(){
+  const lista = migrarPendientesLaUrbana();
+  [1,2,3,4].forEach(pagina => {
+    const el = document.getElementById('pend-page-'+pagina); if (!el) return;
+    const items = lista.filter(x => Number(x.pagina) === pagina);
+    const pendientes = items.filter(x => x.estado !== 'hecho').length;
+    const nombres = {1:'Turno y producción',2:'Compras',3:'Pruebas y validaciones',4:'Stock y decisiones'};
+    const notas = {1:'Lo que hay que dejar preparado o comunicar.',2:'Lo que hay que comprar, pedir o comprobar en una entrega.',3:'Nada pasa a receta oficial hasta probarlo.',4:'Datos que requieren revisión antes de convertirlos en decisión.'};
+    el.innerHTML = `<div class="pend-page-head"><div><div class="pend-page-title">${nombres[pagina]}</div><div class="pend-page-note">${notas[pagina]}</div></div><div class="pend-count">${pendientes} pendiente${pendientes===1?'':'s'}</div></div>` + items.map(item => `<label class="pend-item ${item.estado==='hecho'?'done':''}"><input class="pend-check" type="checkbox" ${item.estado==='hecho'?'checked':''} onchange="cambiarEstadoPendiente('${item.id}',this.checked)"><span class="pend-item-body"><span class="pend-item-title">${escPrueba(item.titulo)}</span><span class="pend-item-detail">${escPrueba(item.detalle)}</span><span class="pend-item-meta"><span class="pend-tag">${escPrueba(item.responsable||'Sin responsable')}</span><span class="pend-tag">${escPrueba(item.prioridad||'Pendiente')}</span></span></span></label>`).join('');
+  });
+  mostrarPaginaPendientes(pendPaginaActual, false);
+}
+function cambiarEstadoPendiente(id, hecho){
+  const lista = cargar('pendientes_laurbana', PENDIENTES_LA_URBANA_DEFAULT.map(x=>({...x})));
+  const item = lista.find(x => x.id === id); if (!item) return;
+  item.estado = hecho ? 'hecho' : 'pendiente'; item.completado = hecho ? ahora() : '';
+  guardar('pendientes_laurbana', lista); renderPendientes(); toast(hecho ? 'Pendiente marcado ✓' : 'Pendiente reabierto');
+}
+function mostrarPaginaPendientes(n, scroll=true){
+  pendPaginaActual = Math.max(1, Math.min(4, Number(n)||1));
+  document.querySelectorAll('#tab-pendientes .pend-book-page').forEach(el => el.classList.toggle('active', el.id === 'pend-page-'+pendPaginaActual));
+  document.querySelectorAll('#tab-pendientes .pend-book-tab').forEach(btn => btn.classList.toggle('active', Number(btn.dataset.pendPage) === pendPaginaActual));
+  if (scroll) { const main=document.getElementById('main-content'); if(main) main.scrollTo({top:0,behavior:'smooth'}); }
+}
+
 function tab(id, btn) {
   const soloAdmin = ['menu','recetas','pruebas','proveedores','nuevosproveedores','historial','spotify','instagram','contabilidad','controlcostes','protocolos','diario','formacion'];
   if (esMaria() && soloAdmin.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
@@ -3610,7 +3714,7 @@ function tab(id, btn) {
   if (btn) btn.classList.add('active');
   renderTabGuia(id);
   const renders = {
-    inicio: initInicio, stock: renderStock, produccion: renderKanban,
+    inicio: initInicio, pendientes: renderPendientes, stock: renderStock, produccion: renderKanban,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
     raciones: () => { initRaciones(); },
     produccion: () => { renderKanban(); },
@@ -7333,6 +7437,7 @@ function seedData() {
 // ══════════════════════════════════════════
 function arrancarApp() {
   seedData();
+  migrarPendientesLaUrbana();
   migrarContactosProveedores();
   migrarBancoPinchos();
   migrarStockCarta();
@@ -7457,7 +7562,7 @@ function calcularFoodCost(){
 }
 function initNavegacionAgrupada(){
   const nav = document.getElementById('main-nav'); if (!nav) return;
-  nav.querySelectorAll('button[id^="nav-"]:not(#nav-inicio):not([id^="nav-grupo-"]):not(#nav-volver-grupos)').forEach(b=>b.classList.add('nav-subitem'));
+  nav.querySelectorAll('button[id^="nav-"]:not(#nav-inicio):not(#nav-pendientes):not([id^="nav-grupo-"]):not(#nav-volver-grupos)').forEach(b=>b.classList.add('nav-subitem'));
   nav.querySelectorAll('.nav-separator,.nav-section-label').forEach(e=>e.classList.add('nav-legacy'));
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
