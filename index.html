@@ -1134,11 +1134,11 @@ header .sub{font-size:.85rem}
 
   <div class="nav-separator"></div>
   <div id="nav-grupos" class="nav-groups">
-    <button class="nav-group-btn" onclick="abrirGrupoNav('hoy')" id="nav-grupo-hoy" title="Qué toca hoy">📋 <span>HOY</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('cocina')" id="nav-grupo-cocina">👩‍🍳 <span>COCINA</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('laboratorio')" id="nav-grupo-laboratorio">🧪 <span>LABORATORIO</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('historias')" id="nav-grupo-historias">🎥 <span>HISTORIAS</span></button>
-    <button class="nav-group-btn" onclick="abrirGrupoNav('negocio')" id="nav-grupo-negocio">📊 <span>NEGOCIO</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('hoy',this)" id="nav-grupo-hoy" title="Qué toca hoy">📋 <span>HOY</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('cocina',this)" id="nav-grupo-cocina">👩‍🍳 <span>COCINA</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('laboratorio',this)" id="nav-grupo-laboratorio">🧪 <span>LABORATORIO</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('historias',this)" id="nav-grupo-historias">🎥 <span>HISTORIAS</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('negocio',this)" id="nav-grupo-negocio">📊 <span>NEGOCIO</span></button>
   </div>
   <button class="nav-back-btn" id="nav-volver-grupos" onclick="volverGruposNav()">‹ Todos los apartados</button>
   <div id="nav-world-links" class="nav-world-links" aria-live="polite"></div>
@@ -1310,13 +1310,12 @@ header .sub{font-size:.85rem}
     <div class="dash-editorial-title">MENÚ Y PERSONA</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
       <div class="dash-flat-card">
-        <div class="card-title">🧑‍🍳 Personal</div>
-        <div style="font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:10px" id="personal-hoy-plato">Sin anotar</div>
-        <span id="personal-hoy-label" style="font-size:11px;color:var(--text-3);display:block;margin-bottom:8px"></span>
-        <div style="display:flex;gap:6px;align-items:center">
-          <input type="text" id="personal-hoy-input" placeholder="¿Qué comemos?" style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter')guardarPersonalHoy()">
-          <input type="number" id="personal-hoy-coste" placeholder="€" step="0.5" min="0" style="width:52px;font-size:13px">
-          <button class="btn btn-primary btn-sm" onclick="guardarPersonalHoy()">✓</button>
+        <div class="card-title">🧑‍🍳 Comida del personal</div>
+        <div style="font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:7px" id="personal-hoy-plato">Sin menú ni producción registrada</div>
+        <span id="personal-hoy-label" style="font-size:12px;color:var(--text-3);display:block;line-height:1.45">Este cuadro se nutre del Menú y de Producción. No se escribe aquí.</span>
+        <div style="display:flex;gap:7px;margin-top:11px">
+          <button class="btn btn-outline btn-sm" style="flex:1" onclick="tab('menu',document.getElementById('nav-menu'))">Ver menú</button>
+          <button class="btn btn-outline btn-sm" style="flex:1" onclick="tab('produccion',document.getElementById('nav-produccion'))">Ver producción</button>
         </div>
       </div>
       <div class="dash-flat-card" style="cursor:pointer" onclick="tab('menu',document.getElementById('nav-menu'))">
@@ -4223,16 +4222,21 @@ function initHeader() {
 // ══════════════════════════════════════════
 
 function renderPersonalHoyWidget() {
-  const datos = cargar('personal_hoy_' + hoy(), null);
   const el = document.getElementById('personal-hoy-plato');
   const lbl = document.getElementById('personal-hoy-label');
   if (!el) return;
-  if (datos && datos.plato) {
-    el.textContent = datos.plato;
-    if (lbl) lbl.textContent = datos.coste ? datos.coste.toFixed(2) + '€' : '';
+  const menu = cargar('menu_' + hoy(), null) || {};
+  const platosMenu = [menu.p1, menu.p2, menu.postre].filter(Boolean);
+  const tareas = cargar('produccion_tareas', []).filter(t => t.estado !== 'listo' && t.nombre).slice(0,3);
+  if (platosMenu.length) {
+    el.textContent = platosMenu.join(' · ');
+    if (lbl) lbl.textContent = 'Fuente: Menú del día · sin coste manual aquí';
+  } else if (tareas.length) {
+    el.textContent = tareas.map(t => t.nombre).join(' · ');
+    if (lbl) lbl.textContent = 'Fuente: Producción · confirma el destino dentro de Producción';
   } else {
-    el.textContent = 'Sin anotar hoy';
-    if (lbl) lbl.textContent = '';
+    el.textContent = 'Sin menú ni producción registrada';
+    if (lbl) lbl.textContent = 'Este cuadro se nutre de Menú y Producción. No se escribe aquí.';
   }
 }
 
@@ -8412,6 +8416,12 @@ function initNavegacionAgrupada(){
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
 const NAV_LABELS={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
+const NAV_MUNDO_PRINCIPAL={hoy:'inicio',cocina:'produccion',laboratorio:'pruebas',historias:'instagram',negocio:'controlcostes'};
+function irAMundoNav(grupo,btn){
+  abrirGrupoNav(grupo);
+  const id=NAV_MUNDO_PRINCIPAL[grupo];
+  if(id) tab(id,document.getElementById('nav-'+id)||btn);
+}
 function abrirGrupoNav(grupo){
   const nav=document.getElementById('main-nav'); if(!nav) return;
   nav.classList.remove('nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');
