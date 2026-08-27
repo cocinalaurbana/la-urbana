@@ -2342,6 +2342,18 @@ header .sub{font-size:.85rem}
     <div id="protocolos-prioritarios-lista" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div>
     <div id="protocolo-detalle" style="display:none;margin-top:14px;padding:14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border)"></div>
   </div>
+  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px">
+      <div>
+        <div class="card-title" style="margin-bottom:4px">🧹 Checklist de limpieza</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.5">Cocina y almacén por separado. Marca lo que queda hecho y deja la incidencia si algo no se puede completar.</div>
+      </div>
+      <button class="btn btn-outline btn-xs" onclick="reiniciarLimpiezaPeriodo()">Reiniciar</button>
+    </div>
+    <div style="padding:9px 10px;border-radius:9px;background:var(--amber-l);font-size:11px;color:var(--text-2);line-height:1.5;margin:10px 0"><b>Regla:</b> útiles de limpieza separados para cocina y baño del almacén. No guardar productos químicos junto a alimentos. Si algo no se puede hacer, se anota la incidencia; no se marca como hecho.</div>
+    <div id="limpieza-checklist-app"></div>
+  </div>
+
   <div class="card">
     <div class="card-title">📝 Plantilla para crear un protocolo</div>
     <div style="font-size:13px;line-height:1.6;color:var(--text-2)">
@@ -4104,7 +4116,7 @@ function renderTabGuia(id) {
 
 const PROTOCOLOS_PRIORITARIOS = [
   {id:'appcc',icon:'🌡️',nombre:'APPCC y temperaturas',objetivo:'Mantener neveras y congeladores dentro de rango y dejar constancia.',pasos:['Entrar en APPCC desde Entrada o Cierre.','Medir los equipos que correspondan.','Registrar cada temperatura real.','Si sale de rango, avisar y anotar la acción tomada.','La casilla de la checklist se marca automáticamente.'],responsable:'Quien realiza el turno; Lore revisa las incidencias.'},
-  {id:'limpieza',icon:'🧼',nombre:'Limpieza y cierre',objetivo:'Dejar la cocina segura y lista para el siguiente turno.',pasos:['Cubrir y etiquetar recipientes.','Limpiar cocina y los tres fogones.','Apagar y asegurar freidoras y lavavajillas.','Vaciar cubos y revisar temperaturas.','Cerrar cámaras y congeladores.','Preparar al salir el pedido de fruta y verdura.'],responsable:'La persona que cierra el turno.'},
+  {id:'limpieza',icon:'🧼',nombre:'Limpieza · cocina y almacén',objetivo:'Dejar la cocina y el almacén seguros, limpios y listos para el siguiente turno.',pasos:['Abrir la checklist de limpieza y elegir la frecuencia que corresponda.','Cubrir y etiquetar recipientes antes de limpiar.','Limpiar y desinfectar superficies, utensilios, equipos y suelo de la cocina.','Limpiar suelo, fregadero, superficies y zonas de paso del almacén.','Vaciar cubos y guardar los útiles de cocina separados de los del baño.','Registrar cualquier tarea pendiente o incidencia; no marcarla como hecha si no se ha comprobado.'],responsable:'La persona que realiza la limpieza o cierra el turno.'},
   {id:'recepcion',icon:'📦',nombre:'Recepción de pedidos',objetivo:'Que cada entrega quede fotografiada y trazable.',pasos:['César recibe el miércoles.','Fotografiar albarán.','Fotografiar etiquetas de pollo y raxo.','Anotar incidencias, faltas o sustituciones.','Lore valida el domingo.'],responsable:'César recibe; Lore valida.'},
   {id:'almacenamiento',icon:'🧊',nombre:'Almacenamiento',objetivo:'Saber qué hay, dónde está y qué debe utilizarse primero.',pasos:['Guardar cada producto en su zona real.','Aplicar FIFO: lo nuevo detrás.','Etiquetar abiertos y elaborados.','Guardar lote, caducidad y foto si procede.','En formatos variables, registrar el peso real del envase.'],responsable:'Toda la cocina según su tarea; Lore controla el sistema.'},
   {id:'produccion',icon:'👩‍🍳',nombre:'Producción y porciones',objetivo:'Repetir las elaboraciones con la misma calidad y cantidad.',pasos:['Consultar la receta antes de empezar.','Hacer la mise en place en Entrada.','Registrar pruebas o cambios.','Respetar gramajes y formatos.','Marcar la tarea solo cuando esté realmente terminada.'],responsable:'La persona que elabora; Lore valida cambios.'},
@@ -4124,6 +4136,82 @@ function initProtocolos() {
   const el=document.getElementById('protocolos-prioritarios-lista'); if(!el) return;
   el.innerHTML=PROTOCOLOS_PRIORITARIOS.map(p=>`<button class="protocolo-btn" data-protocolo="${p.id}" onclick="mostrarProtocolo('${p.id}')">${p.icon} ${p.nombre}<span style="float:right;color:var(--text-3)">›</span></button>`).join('');
   cerrarProtocolo();
+  renderLimpiezaChecklist();
+}
+
+const LIMPIEZA_CHECKLIST = {
+  diaria: {
+    titulo:'Hoy · cocina', icon:'🍳', periodo:'diaria', tareas:[
+      ['coc-superficies','Limpiar y desinfectar superficies de trabajo y mesas'],
+      ['coc-utensilios','Lavar y guardar tablas, cuchillos y utensilios'],
+      ['coc-fregadero','Limpiar fregadero y desagüe'],
+      ['coc-equipos','Limpiar cocina, fogones, plancha y zonas de salpicadura'],
+      ['coc-lavavajillas','Limpiar filtro y bandeja del lavavajillas'],
+      ['coc-tiradores','Limpiar tiradores de neveras y congeladores'],
+      ['coc-residuos','Vaciar y limpiar cubos y contenedores'],
+      ['coc-suelo','Barrer y fregar el suelo'],
+      ['coc-orden','Cubrir y etiquetar abiertos; dejar la estación despejada']
+    ]
+  },
+  diaria_almacen: {
+    titulo:'Hoy · almacén y cocinita', icon:'🗄️', periodo:'diaria', tareas:[
+      ['alm-superficies','Limpiar y desinfectar superficies'],
+      ['alm-fregadero','Limpiar fregadero y desagüe'],
+      ['alm-suelo','Barrer y fregar el suelo'],
+      ['alm-carton','Retirar cartones y residuos de las zonas de trabajo'],
+      ['alm-utiles','Dejar cubo, escurridor y fregona limpios y en su sitio'],
+      ['alm-paso','Dejar despejadas las zonas de paso y la entrada']
+    ]
+  },
+  semanal: {
+    titulo:'Esta semana · limpieza profunda', icon:'🧽', periodo:'semanal', tareas:[
+      ['sem-camaras','Limpiar interior de neveras, estanterías y juntas'],
+      ['sem-equipos','Limpiar horno y plancha a fondo'],
+      ['sem-campana','Limpiar campana y filtros según corresponda'],
+      ['sem-coc-paredes','Limpiar paredes, zócalos y rincones de la cocina'],
+      ['sem-estantes','Limpiar estanterías del almacén'],
+      ['sem-detras','Limpiar detrás y debajo de equipos accesibles'],
+      ['sem-fifo','Revisar envases abiertos, etiquetas y orden FIFO'],
+      ['sem-utiles','Comprobar que los útiles de cocina y baño siguen separados']
+    ]
+  },
+  mensual: {
+    titulo:'Este mes · revisión general', icon:'🧴', periodo:'mensual', tareas:[
+      ['mes-equipos','Mover equipos cuando sea posible y limpiar detrás'],
+      ['mes-frio','Hacer limpieza profunda de neveras y congeladores'],
+      ['mes-almacen','Revisar caducidades y productos sin identificar del almacén'],
+      ['mes-quimicos','Revisar productos de limpieza y guardarlos separados de alimentos'],
+      ['mes-material','Comprobar existencias de guantes, estropajos y bolsas'],
+      ['mes-incidencias','Revisar incidencias y decidir qué necesita reparación o cambio']
+    ]
+  }
+};
+function periodoLimpieza(tipo){
+  const base=hoy();
+  if(tipo==='mensual') return base.slice(0,7);
+  if(tipo==='semanal'){
+    const d=new Date(base+'T12:00:00'); const day=(d.getDay()+6)%7; d.setDate(d.getDate()-day);
+    return d.toISOString().slice(0,10);
+  }
+  return base;
+}
+function claveLimpieza(tipo){ return 'limpieza_checklist_'+tipo+'_'+periodoLimpieza(tipo); }
+function renderLimpiezaChecklist(){
+  const el=document.getElementById('limpieza-checklist-app'); if(!el)return;
+  const grupos=Object.values(LIMPIEZA_CHECKLIST);
+  el.innerHTML=grupos.map(g=>{
+    const estado=cargar(claveLimpieza(g.periodo),{});
+    const hechas=g.tareas.filter(t=>estado[t[0]]).length;
+    return `<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:7px"><div style="font-weight:800;font-size:13px">${g.icon} ${g.titulo}</div><span class="badge ${hechas===g.tareas.length?'badge-verde':'badge-gris'}">${hechas}/${g.tareas.length}</span></div>${g.tareas.map(t=>`<label style="display:flex;align-items:flex-start;gap:9px;padding:8px 4px;border-bottom:1px solid var(--border);font-size:12px;line-height:1.4;cursor:pointer"><input type="checkbox" ${estado[t[0]]?'checked':''} onchange="marcarLimpieza('${t[0]}','${g.periodo}',this.checked)" style="width:19px;height:19px;flex:0 0 auto;margin:0"> <span style="${estado[t[0]]?'text-decoration:line-through;color:var(--text-3)':''}">${t[1]}</span></label>`).join('')}</div>`;
+  }).join('');
+}
+function marcarLimpieza(id,tipo,hecho){
+  const key=claveLimpieza(tipo), estado=cargar(key,{}); if(hecho)estado[id]=true;else delete estado[id]; guardar(key,estado); renderLimpiezaChecklist();
+}
+function reiniciarLimpiezaPeriodo(){
+  if(!confirm('¿Reiniciar las marcas de limpieza del periodo actual?'))return;
+  Object.keys(LIMPIEZA_CHECKLIST).forEach(k=>guardar(claveLimpieza(LIMPIEZA_CHECKLIST[k].periodo),{}));
+  renderLimpiezaChecklist(); toast('Checklist reiniciada','verde');
 }
 
 const FORM_PUESTOS = ['Entrada y preparación','Cocina y salida','Sala','Barra','Limpieza y cierre','Recepción y almacén','Organización de turno'];
