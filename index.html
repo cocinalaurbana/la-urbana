@@ -3602,6 +3602,11 @@ function renderMkIdeas() {
       id: 'reel-DbTmyeotD9y', fecha: '2026-08-27', estado: 'activo',
       fuente: 'https://www.instagram.com/reel/DbTmyeotD9y/?igsi=bzQwNmVseGxpd25x',
       texto: '<b>Duración de los Reels: probar, no perseguir una cifra mágica</b><br><br>El reel plantea que los vídeos de más de 90 segundos funcionan peor y relaciona los Reels más cortos con el alcance. Es una hipótesis útil para experimentar, pero no una ley: la duración adecuada depende de la historia, el ritmo y de si la pieza mantiene la atención.<br><br><b>Para La Urbana:</b> usar como punto de partida piezas de 20–45 segundos, con una idea clara y sin relleno; probar alguna pieza más larga cuando la transformación, la conversación o el relato lo necesiten. Medir retención, respuestas, visitas y reservas, no solo reproducciones.<br><br><b>Criterio:</b> primero decidir qué queremos contar y después elegir la duración. La identidad no se construye copiando una fórmula viral.'
+    },
+    {
+      id: 'reel-DbJNNc8IBxh', fecha: '2026-08-27', estado: 'activo',
+      fuente: 'https://www.instagram.com/reel/DbJNNc8IBxh/?igsi=Mmk5d3Z3NHd6NGZr',
+      texto: '<b>Una salsa maestra para muchas elaboraciones</b><br><br>Referencia sobre la idea de dominar una salsa base y sus proporciones para construir distintas preparaciones salteadas, en vez de memorizar muchas recetas aisladas. El reel no deja aquí una ficha completa con cantidades, así que no se incorpora ninguna fórmula sin comprobarla.<br><br><b>Para La Urbana:</b> investigar si podemos crear una o dos salsas base propias, con proporciones pesadas, usos definidos y una ficha de prueba. Adaptar solo lo que tenga sentido para nuestros platos y no convertir una referencia asiática en una copia automática.'
     }
   ];
   let ideasNuevas = false;
@@ -9042,6 +9047,60 @@ function descargarGraficoProgramacion(){
   const a=document.createElement('a'); a.href='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); a.download='la-urbana-sesion-vermouth.svg'; a.click();
 }
 
+</script>
+
+<!-- Navegación de respaldo: los mundos y el selector deben funcionar aunque falle un evento inline. -->
+<script>
+(function(){
+  var grupos={
+    hoy:['inicio','pendientes','menu','raciones','caja'],
+    cocina:['produccion','stock','mermas','turno','appcc','protocolos'],
+    laboratorio:['recetas','pruebas'],
+    historias:['instagram','diario','programacion'],
+    negocio:['pedidos','proveedores','nuevosproveedores','contabilidad','controlcostes','historial','formacion']
+  };
+  var labels={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
+  function renderFor(id){
+    try{
+      var f={inicio:window.initInicio,pendientes:window.renderPendientes,menu:window.initMenu,raciones:window.initRaciones,caja:window.initCaja,produccion:window.renderKanban,stock:window.renderStock,mermas:function(){window.poblarSelectorProductos&&window.poblarSelectorProductos();window.renderMermas&&window.renderMermas();},turno:window.initTurno,appcc:window.initAppcc,protocolos:window.initProtocolos,recetas:window.renderRecetas,pruebas:window.renderPruebasRecetas,pedidos:window.renderPedidos,proveedores:window.renderProveedores,nuevosproveedores:window.renderNuevosProveedores,contabilidad:window.renderContabilidad,controlcostes:window.renderControlCostes,historial:window.renderHistorial,formacion:window.renderFormacion,instagram:function(){},diario:window.renderDiario,programacion:window.initProgramacion}[id];
+      if(typeof f==='function')f();
+    }catch(e){console.warn('No se pudo actualizar el contenido de '+id,e);}
+  }
+  function mostrar(id,btn){
+    var dest=document.getElementById('tab-'+id); if(!dest)return;
+    document.querySelectorAll('#main-content > .tab').forEach(function(t){t.classList.remove('active');t.style.display='none';});
+    dest.classList.add('active');dest.style.display='block';
+    document.querySelectorAll('#main-nav button').forEach(function(b){b.classList.remove('active');});
+    if(btn)btn.classList.add('active');
+    window._tabActual=id;
+    try{window.renderTabGuia&&window.renderTabGuia(id);}catch(e){}
+    renderFor(id);
+    var main=document.getElementById('main-content');if(main)main.scrollTop=0;
+  }
+  function abrir(grupo,btn){
+    var nav=document.getElementById('main-nav');if(!nav)return;
+    ['hoy','cocina','laboratorio','historias','negocio'].forEach(function(g){nav.classList.remove('nav-world-'+g);});
+    nav.classList.add('nav-group-active','nav-world-'+grupo);
+    var volver=document.getElementById('nav-volver-grupos');if(volver)volver.style.display='flex';
+    var links=document.getElementById('nav-world-links');if(!links)return;
+    links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).map(function(id){return '<button type="button" class="nav-world-link" data-fallback-tab="'+id+'">'+(labels[id]||id)+'<span style="margin-left:auto">›</span></button>';}).join('');
+    links.style.display='flex';
+    mostrar((grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';})[0]||'inicio',btn);
+  }
+  document.addEventListener('click',function(ev){
+    var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
+    if(!target)return;
+    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}mostrar('inicio',document.getElementById('nav-inicio'));return;}
+    var gm={"nav-grupo-hoy":'hoy',"nav-grupo-cocina":'cocina',"nav-grupo-laboratorio":'laboratorio',"nav-grupo-historias":'historias',"nav-grupo-negocio":'negocio'};
+    if(gm[target.id]){ev.preventDefault();ev.stopImmediatePropagation();abrir(gm[target.id],target);return;}
+    var fid=target.getAttribute('data-fallback-tab')||((target.id||'').indexOf('nav-')===0?(target.id||'').slice(4):'');
+    if(fid && document.getElementById('tab-'+fid)){ev.preventDefault();ev.stopImmediatePropagation();mostrar(fid,target);}
+  },true);
+  document.addEventListener('change',function(ev){
+    var el=ev.target;if(!el||el.id!=='nav-directo'||!el.value)return;
+    ev.preventDefault();ev.stopImmediatePropagation();mostrar(el.value,null);
+  },true);
+})();
 </script>
 
 <script>
