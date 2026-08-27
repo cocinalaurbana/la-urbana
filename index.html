@@ -3450,9 +3450,9 @@ function mostrarPaginaLibroMarketing(id,n,scroll=true){
   const total=MK_LIBRO_PAGINAS[id]||1, pagina=Math.max(0,Math.min(total-1,Number(n)||0));
   document.querySelectorAll('#mk-'+id+' .mk-inner-book-page').forEach(x=>x.classList.toggle('active',Number(x.dataset.mkLibroPage)===pagina));
   const nav=document.getElementById('mk-inner-nav-'+id); if(nav){
-    nav.innerHTML='<button onclick="mostrarPaginaLibroMarketing(\\''+id+'\\','+(pagina-1)+')" '+(pagina===0?'disabled':'')+'>‹</button>';
-      for(let i=0;i<total;i++) nav.innerHTML+='<button class="'+(i===pagina?'active':'')+'" onclick="mostrarPaginaLibroMarketing(\\''+id+'\\','+i+')">'+(i+1)+'</button>';
-    nav.innerHTML+='<span class="mk-inner-book-label">Hoja '+(pagina+1)+' de '+total+'</span><button onclick="mostrarPaginaLibroMarketing(\\''+id+'\\','+(pagina+1)+')" '+(pagina===total-1?'disabled':'')+'>›</button>';
+    nav.innerHTML='<button onclick="mostrarPaginaLibroMarketing(\''+id+'\','+(pagina-1)+')" '+(pagina===0?'disabled':'')+'>‹</button>';
+      for(let i=0;i<total;i++) nav.innerHTML+='<button class="'+(i===pagina?'active':'')+'" onclick="mostrarPaginaLibroMarketing(\''+id+'\','+i+')">'+(i+1)+'</button>';
+    nav.innerHTML+='<span class="mk-inner-book-label">Hoja '+(pagina+1)+' de '+total+'</span><button onclick="mostrarPaginaLibroMarketing(\''+id+'\','+(pagina+1)+')" '+(pagina===total-1?'disabled':'')+'>›</button>';
   }
   if(scroll){const main=document.getElementById('main-content');if(main)main.scrollTo({top:0,behavior:'smooth'});}
 }
