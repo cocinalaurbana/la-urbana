@@ -1008,6 +1008,21 @@ button,input,select,textarea{font-size:18px}
 #main-content .tab .book-nav button{font-size:18px!important}
 header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-badge{font-size:14px!important}.btn-theme,.btn-salir{font-size:16px!important}
 </style>
+<style id="jerarquia-navegacion">
+#app-context-bar{display:flex;align-items:center;gap:12px;margin:0;padding:13px 18px;border-bottom:1px solid var(--border);background:var(--surface-2);border-left:6px solid var(--amber);min-height:62px}
+.app-context-world{font-size:12px;font-weight:900;letter-spacing:1.3px;color:var(--amber);white-space:nowrap}
+.app-context-main{display:flex;flex-direction:column;gap:2px;min-width:0}.app-context-main strong{font-size:22px;line-height:1.15;color:var(--text)}.app-context-note{font-size:14px;color:var(--text-2)}
+.app-context-bar.world-cocina{border-left-color:#5f8a70}.app-context-bar.world-laboratorio{border-left-color:#8b70a8}.app-context-bar.world-historias{border-left-color:#648caf}.app-context-bar.world-equipo{border-left-color:#4f9b96}.app-context-bar.world-negocio{border-left-color:#b27b45}.app-context-position{margin-left:auto;padding:6px 10px;border-radius:9px;background:var(--amber-l);color:var(--amber);font-size:15px;font-weight:800;white-space:nowrap}
+.nav-world-heading{display:none;align-items:center;gap:7px;padding:7px 11px;border-radius:9px;background:var(--amber-l);border:1px solid var(--amber);color:var(--amber);font-size:15px;font-weight:900;white-space:nowrap}
+.nav-group-active .nav-world-heading{display:flex}
+#main-nav.nav-group-active .nav-world-links{border-left:3px solid var(--amber);padding-left:7px}
+#main-nav .nav-world-link{background:var(--surface-2);border:1px solid var(--border);font-weight:700;color:var(--text)}
+#main-nav .nav-world-link:hover{border-color:var(--amber);background:var(--amber-l);color:var(--amber)}
+#main-nav .nav-world-link.maria-locked{border-style:dashed;color:var(--text-3)}
+.book-nav{border-left:5px solid var(--amber);background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.book-nav-title{font-size:17px!important;letter-spacing:.1px}.book-nav .book-page-label{padding:5px 8px;border-radius:7px;background:var(--amber-l);color:var(--amber);font-size:16px!important}
+@media(max-width:560px){#app-context-bar{padding:12px 13px;gap:9px}.app-context-main strong{font-size:20px}.app-context-note{font-size:15px}.app-context-position{font-size:14px;padding:5px 7px}.nav-world-heading{font-size:16px}}
+</style>
 <style id="conservacion-historico">
 /* La información operativa se corrige o se anula; no se borra desde la interfaz. */
 button[onclick*="borrar"],button[onclick*="eliminar"]{display:none!important}
@@ -1081,7 +1096,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
 
 <div id="login-screen">
   <div class="login-logo-wrap">
-    <div class="logo-title">LA URBANA <span style="font-size:10px;letter-spacing:1px;opacity:.65">COCINA</span></div>
+    <div class="logo-title">LA URBANA <span style="font-size:10px;letter-spacing:1px;opacity:.65">Cocina</span></div>
     <div class="logo-sub">Kitchen OS · A Coruña</div>
   </div>
   <p>¿Quién eres hoy?</p>
@@ -1181,14 +1196,15 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
 
   <div class="nav-separator"></div>
   <div id="nav-grupos" class="nav-groups">
-    <button class="nav-group-btn" onclick="irAMundoNav('hoy',this)" id="nav-grupo-hoy" title="Qué toca hoy">📋 <span>HOY</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('hoy',this)" id="nav-grupo-hoy" title="Qué toca hoy">📋 <span>Hoy</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('cocina',this)" id="nav-grupo-cocina">👩‍🍳 <span>COCINA</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('equipo',this)" id="nav-grupo-equipo">👥 <span>EQUIPO</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('laboratorio',this)" id="nav-grupo-laboratorio">🧪 <span>LABORATORIO</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('historias',this)" id="nav-grupo-historias">🎥 <span>HISTORIAS</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('negocio',this)" id="nav-grupo-negocio">📊 <span>NEGOCIO</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('equipo',this)" id="nav-grupo-equipo">👥 <span>Equipo</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('laboratorio',this)" id="nav-grupo-laboratorio">🧪 <span>Laboratorio</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('historias',this)" id="nav-grupo-historias">🎥 <span>Historias</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('negocio',this)" id="nav-grupo-negocio">📊 <span>Negocio</span></button>
   </div>
   <button class="nav-back-btn" id="nav-volver-grupos" onclick="volverGruposNav()">‹ Todos los apartados</button>
+  <div id="nav-world-heading" class="nav-world-heading" aria-live="polite"></div>
   <div id="nav-world-links" class="nav-world-links" aria-live="polite"></div>
   <div class="nav-section-label nav-legacy-label">Prioritario</div>
 
@@ -1294,6 +1310,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
   </button>
 </nav>
 <div id="main-content">
+<div id="app-context-bar" aria-live="polite"><div class="app-context-world">LA URBANA</div><div class="app-context-main"><strong id="app-context-section">Inicio</strong><span id="app-context-note">Vista general</span></div><div id="app-context-position" class="app-context-position"></div></div>
 <!-- INICIO -->
 <div id="tab-inicio" class="tab active">
   <div id="maria-panel" style="display:none">
@@ -4403,6 +4420,7 @@ function tab(id, btn) {
   destinoTab.classList.add('active');
   destinoTab.style.display='block';
   if (btn) btn.classList.add('active');
+  if(typeof actualizarContextoApp==='function')actualizarContextoApp(id);
   renderTabGuia(id);
   const renders = {
     inicio: initInicio, pendientes: renderPendientes, personal: renderComidaPersonalMaria, pincho: renderPinchoMaria, stock: renderStock, produccion: renderKanban,
@@ -8505,7 +8523,7 @@ function actualizarWidgetCaja() {
 // Navegación agrupada: menos pestañas, mismas funciones.
 const NAV_GRUPOS = {
   hoy: ['inicio','pendientes','menu','raciones','caja'],
-  cocina: ['personal','pincho','produccion','menu','recetas','stock','pedidos','mermas','appcc','protocolos'],
+  cocina: ['produccion','pincho','recetas','stock','pedidos','mermas','appcc','protocolos','personal','menu'],
   laboratorio: ['pruebas','raciones'],
   historias: ['instagram','diario','programacion'],
   equipo: ['turno','formacion'],
@@ -8639,7 +8657,10 @@ function initNavegacionAgrupada(){
   nav.querySelectorAll('.nav-separator,.nav-section-label').forEach(e=>e.classList.add('nav-legacy'));
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
-const NAV_LABELS={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
+const NAV_LABELS={appcc:'APPCC',turno:'Turno y limpieza',protocolos:'Limpieza',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
+const NAV_WORLD_NAMES={hoy:'Hoy',cocina:'Cocina',laboratorio:'Laboratorio',historias:'Historias',equipo:'Equipo',negocio:'Negocio'};
+function actualizarContextoApp(id){const bar=document.getElementById('app-context-bar');if(!bar)return;let grupo=Object.keys(NAV_GRUPOS).find(g=>(NAV_GRUPOS[g]||[]).includes(id))||'hoy';const lista=(NAV_GRUPOS[grupo]||[]).filter(x=>!['inicio','pendientes'].includes(x));const pos=lista.indexOf(id);const sec=document.getElementById('app-context-section'),note=document.getElementById('app-context-note'),p=document.getElementById('app-context-position');if(sec)sec.textContent=NAV_LABELS[id]||id;if(note)note.textContent= grupo==='hoy'?'Vista general':'Mundo · '+NAV_WORLD_NAMES[grupo];if(p)p.textContent=pos>=0?(pos+1)+' de '+lista.length:'';bar.className='world-'+grupo;}
+window.actualizarContextoApp=actualizarContextoApp;
 const NAV_MUNDO_PRINCIPAL={hoy:'inicio',cocina:'produccion',laboratorio:'pruebas',historias:'instagram',equipo:'turno',negocio:'controlcostes'};
 function irAMundoNav(grupo,btn){
   abrirGrupoNav(grupo);
@@ -8652,6 +8673,8 @@ function abrirGrupoNav(grupo){
   nav.classList.add('nav-group-active','nav-world-'+grupo);
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   const links=document.getElementById('nav-world-links'); if(!links)return;
+  const tituloMundo={hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo;
+  const heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+tituloMundo;
   links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).map(id=>{const permitido=!esMaria()||MARIA_ALLOWED_TABS.includes(id);return `<button class="nav-world-link${permitido?'':' maria-locked'}" ${permitido?`onclick="tab('${id}',this)"`:'disabled aria-disabled="true"'}>${NAV_LABELS[id]||id}</button>`;}).join('');
   links.style.display='flex';
 }
@@ -8659,7 +8682,7 @@ function volverGruposNav(){
   const nav=document.getElementById('main-nav'); if(!nav) return;
   nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
-  const links=document.getElementById('nav-world-links'); if(links){links.innerHTML='';links.style.display='none';}
+  const links=document.getElementById('nav-world-links'); if(links){links.innerHTML='';links.style.display='none';}const heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';
   tab('inicio',document.getElementById('nav-inicio'));
 }
 
@@ -9140,16 +9163,16 @@ function descargarGraficoProgramacion(){
 (function(){
   var grupos={
     hoy:['inicio','pendientes','menu','raciones','caja'],
-    cocina:['personal','pincho','produccion','menu','recetas','stock','pedidos','mermas','appcc','protocolos'],
+    cocina:['produccion','pincho','recetas','stock','pedidos','mermas','appcc','protocolos','personal','menu'],
     laboratorio:['pruebas','raciones'],
     historias:['instagram','diario','programacion'],
     equipo:['turno','formacion'],
     negocio:['caja','proveedores','nuevosproveedores','contabilidad','controlcostes','historial']
   };
-  var labels={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
+  var labels={appcc:'APPCC',turno:'Turno y limpieza',protocolos:'Limpieza',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
   function renderFor(id){
     try{
-      var f={inicio:window.initInicio,pendientes:window.renderPendientes,menu:window.initMenu,raciones:window.initRaciones,caja:window.initCaja,produccion:window.renderKanban,stock:window.renderStock,mermas:function(){window.poblarSelectorProductos&&window.poblarSelectorProductos();window.renderMermas&&window.renderMermas();},turno:window.initTurno,appcc:window.initAppcc,protocolos:window.initProtocolos,recetas:window.renderRecetas,pruebas:window.renderPruebasRecetas,pedidos:window.renderPedidos,proveedores:window.renderProveedores,nuevosproveedores:window.renderNuevosProveedores,contabilidad:window.renderContabilidad,controlcostes:window.renderControlCostes,historial:window.renderHistorial,formacion:window.renderFormacion,instagram:function(){},diario:window.renderDiario,programacion:window.initProgramacion}[id];
+      var f={inicio:window.initInicio,pendientes:window.renderPendientes,personal:window.renderComidaPersonalMaria,pincho:window.renderPinchoMaria,menu:window.initMenu,raciones:window.initRaciones,caja:window.initCaja,produccion:window.renderKanban,stock:window.renderStock,mermas:function(){window.poblarSelectorProductos&&window.poblarSelectorProductos();window.renderMermas&&window.renderMermas();},turno:window.initTurno,appcc:window.initAppcc,protocolos:window.initProtocolos,recetas:window.renderRecetas,pruebas:window.renderPruebasRecetas,pedidos:window.renderPedidos,proveedores:window.renderProveedores,nuevosproveedores:window.renderNuevosProveedores,contabilidad:window.renderContabilidad,controlcostes:window.renderControlCostes,historial:window.renderHistorial,formacion:window.renderFormacion,instagram:function(){},diario:window.renderDiario,programacion:window.initProgramacion}[id];
       if(typeof f==='function')f();
     }catch(e){console.warn('No se pudo actualizar el contenido de '+id,e);}
   }
@@ -9160,6 +9183,7 @@ function descargarGraficoProgramacion(){
     document.querySelectorAll('#main-nav button').forEach(function(b){b.classList.remove('active');});
     if(btn)btn.classList.add('active');
     window._tabActual=id;
+    try{window.actualizarContextoApp&&window.actualizarContextoApp(id);}catch(e){}
     try{window.renderTabGuia&&window.renderTabGuia(id);}catch(e){}
     renderFor(id);
     var main=document.getElementById('main-content');if(main)main.scrollTop=0;
@@ -9170,6 +9194,7 @@ function descargarGraficoProgramacion(){
     nav.classList.add('nav-group-active','nav-world-'+grupo);
     var volver=document.getElementById('nav-volver-grupos');if(volver)volver.style.display='flex';
     var links=document.getElementById('nav-world-links');if(!links)return;
+    var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+({hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo);
     links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).map(function(id){var permitido=!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0||!window.USUARIO_MARIA;return '<button type="button" class="nav-world-link'+(permitido?'':' maria-locked')+'" '+(permitido?'data-fallback-tab="'+id+'"':'disabled aria-disabled="true"')+'>'+(labels[id]||id)+(permitido?'<span style="margin-left:auto">›</span>':' 🔒 Sin acceso')+'</button>';}).join('');
     links.style.display='flex';
     mostrar((grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';})[0]||'inicio',btn);
@@ -9177,7 +9202,7 @@ function descargarGraficoProgramacion(){
   document.addEventListener('click',function(ev){
     var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-equipo,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
     if(!target)return;
-    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}mostrar('inicio',document.getElementById('nav-inicio'));return;}
+    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';mostrar('inicio',document.getElementById('nav-inicio'));return;}
     var gm={"nav-grupo-hoy":'hoy',"nav-grupo-cocina":'cocina',"nav-grupo-laboratorio":'laboratorio',"nav-grupo-historias":'historias',"nav-grupo-equipo":'equipo',"nav-grupo-negocio":'negocio'};
     if(gm[target.id]){ev.preventDefault();ev.stopImmediatePropagation();abrir(gm[target.id],target);return;}
     var fid=target.getAttribute('data-fallback-tab')||((target.id||'').indexOf('nav-')===0?(target.id||'').slice(4):'');
