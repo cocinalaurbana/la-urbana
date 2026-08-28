@@ -4607,9 +4607,18 @@ function renderComidaPersonalMaria(){
   const lista=cargar('comidas_personal',[]);
   listaEl.innerHTML=lista.slice(0,8).map(x=>'<div style="border-top:1px solid var(--border);padding:10px 0"><strong>'+escPrueba(x.plato)+'</strong><div style="color:var(--text-2);font-size:16px">'+escPrueba(x.fecha)+' · '+escPrueba(x.raciones||'—')+' personas'+(x.enviarLaboratorio?' · 🧪 enviado al Laboratorio':'')+'</div><div style="font-size:16px;color:var(--text-2);margin-top:4px;white-space:pre-line">'+escPrueba(x.ingredientes||x.notas||'')+'</div></div>').join('')||'<div style="color:var(--text-3)">Todavía no hay comidas registradas.</div>';
 }
+function calcularCosteIngredientes(texto){
+  const productos=cargar('stock_productos',[]).filter(p=>p.costeUnitario);let total=0,encontrados=0;
+  String(texto||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).forEach(linea=>{
+    const l=normalizarOCR(linea),p=productos.find(x=>l.includes(normalizarOCR(x.nombre)));if(!p)return;
+    const m=linea.match(/(\d+(?:[.,]\d+)?)/);if(!m)return;let cantidad=parseFloat(m[1].replace(',','.'));if(!cantidad)return;
+    if(/\bg\b|gramos?/i.test(linea)&&/kg/i.test(p.unidad))cantidad/=1000;if(/\bml\b/i.test(linea)&&/\bl\b/i.test(p.unidad))cantidad/=1000;
+    total+=cantidad*Number(p.costeUnitario);encontrados++;
+  });return encontrados?Math.round(total*100)/100:null;
+}
 function guardarComidaPersonalMaria(){
   const plato=(document.getElementById('maria-personal-plato')||{}).value?.trim();if(!plato){toast('Escribe el nombre del plato','error');return;}
-  const dato={id:'comida-'+Date.now(),fecha:document.getElementById('maria-personal-fecha')?.value||hoy(),plato,ingredientes:document.getElementById('maria-personal-ingredientes')?.value.trim()||'',raciones:document.getElementById('maria-personal-raciones')?.value||'',notas:document.getElementById('maria-personal-notas')?.value.trim()||'',enviarLaboratorio:document.getElementById('maria-personal-lab')?.value==='si',foto:''};
+  const dato={id:'comida-'+Date.now(),fecha:document.getElementById('maria-personal-fecha')?.value||hoy(),plato,ingredientes:document.getElementById('maria-personal-ingredientes')?.value.trim()||'',raciones:document.getElementById('maria-personal-raciones')?.value||'',notas:document.getElementById('maria-personal-notas')?.value.trim()||'',costeEstimado:calcularCosteIngredientes(document.getElementById('maria-personal-ingredientes')?.value||''),enviarLaboratorio:document.getElementById('maria-personal-lab')?.value==='si',foto:''};
   const file=document.getElementById('maria-personal-foto')?.files?.[0];
   const terminar=function(foto){dato.foto=foto||'';const lista=cargar('comidas_personal',[]);lista.unshift(dato);guardar('comidas_personal',lista);if(dato.enviarLaboratorio){const pruebas=cargar('pruebas_recetas',[]);pruebas.unshift({id:'prueba-'+dato.id,nombre:'Comida personal · '+dato.plato,fecha:dato.fecha,estado:'En prueba',resultado:'Personal',cantidades:dato.ingredientes,metodo:'Creada desde el registro de comida del personal.',emplatado:'',notas:dato.notas,aprendizajes:'',foto:dato.foto,origenComidaPersonal:dato.id,creado:Date.now()});guardar('pruebas_recetas',pruebas);}['maria-personal-plato','maria-personal-ingredientes','maria-personal-raciones','maria-personal-notas'].forEach(function(id){const e=document.getElementById(id);if(e)e.value='';});const img=document.getElementById('maria-personal-foto');if(img)img.value='';renderComidaPersonalMaria();renderMariaHome();toast(dato.enviarLaboratorio?'Comida guardada y enviada al Laboratorio ✓':'Comida guardada ✓','verde');};
   if(file&&typeof leerFotoPlanificada==='function')leerFotoPlanificada(file).then(terminar).catch(function(){terminar('');});else terminar('');
