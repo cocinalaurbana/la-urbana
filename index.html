@@ -2091,6 +2091,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
     <div class="form-group"><label>Observaciones y siguiente cambio</label><textarea id="prueba-notas" rows="3" placeholder="Qué nos gustó, qué no, qué probamos después"></textarea></div>
     <button class="btn btn-oro" onclick="guardarPruebaReceta()">💾 Guardar prueba</button>
   </div>
+  <div id="pruebas-recetas-lista"></div>
   <div class="card" style="margin-bottom:14px;border-left:3px solid var(--olive)">
     <div class="card-title">📣 Resultado de la prueba con clientes</div>
     <div style="font-size:13px;color:var(--text-2);line-height:1.55;margin-bottom:10px">Después de probarlo fuera del equipo, registramos qué ocurrió antes de decidir si vuelve, cambia, pasa a carta o se descarta.</div>
@@ -2107,7 +2108,6 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
     <button class="btn btn-oro btn-sm" onclick="guardarResultadoPublico()">Guardar resultado</button>
     <div id="pruebas-publicas-lista" style="margin-top:12px"></div>
   </div>
-  <div id="pruebas-recetas-lista"></div>
 </div>
 
 <!-- NUEVOS PROVEEDORES · QUIQUE + HERMIDA -->
@@ -9126,7 +9126,7 @@ function descargarGraficoProgramacion(){
     'tab-caja':{origen:'tab-caja',porPagina:2,titulo:'Caja · hojas'},
     'tab-menu':{origen:'tab-menu',porPagina:2,titulo:'Menú · hojas'},
     'tab-recetas':{origen:'tab-recetas',porPagina:2,titulo:'Recetas · hojas'},
-    'tab-pruebas':{origen:'tab-pruebas',porPagina:2,titulo:'Laboratorio · hojas'},
+    'tab-pruebas':{origen:'tab-pruebas',porPagina:1,titulo:'Laboratorio · páginas'},
     'tab-contabilidad':{origen:'tab-contabilidad',porPagina:2,titulo:'Contabilidad · hojas'},
     'tab-controlcostes':{origen:'tab-controlcostes',porPagina:2,titulo:'Control de costes · hojas'},
     'tab-proveedores':{origen:'tab-proveedores',porPagina:2,titulo:'Proveedores · hojas'},
