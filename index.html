@@ -4133,7 +4133,7 @@ function iniciarSesion(rol) {
   document.getElementById('main-nav').style.display = 'flex';
   // reset panel para próxima vez
   volverLogin();
-  const names = {lore:'Lore', cesar:'César', maria:'Maria'};
+  const names = {lore:'Lore', cesar:'César', maria:'María'};
   const badge = document.getElementById('header-role');
   badge.textContent = names[rol];
   if (rol === 'maria') badge.classList.add('maria');
@@ -4184,6 +4184,8 @@ function aplicarPermisos() {
   const selector=document.getElementById('nav-directo');
   if(selector)Array.from(selector.options).forEach(opt=>{opt.hidden=maria&&!allowed.includes(opt.value);});
   const btn=document.getElementById('btn-nuevo-prod');if(btn)btn.style.display=esAdmin()?'':'none';
+  const nombresUsuario={lore:'Lore',cesar:'César',maria:'María'};const saludoEl=document.getElementById('dash-saludo');if(saludoEl)saludoEl.textContent='Hola, '+(nombresUsuario[USUARIO]||'')+'.';
+  if(typeof initHeader==='function')initHeader();
   poblarSelectorProductos();
   window._noAccesoMsg=maria?'Ehhez a részhez nincs hozzáférésed':'No tienes acceso a esta sección';
   if(maria){
@@ -4627,6 +4629,7 @@ function prepararInicioCompacto(){
 
 function initInicio() {
   try {
+  const nombresUsuario={lore:'Lore',cesar:'César',maria:'María'};const saludoEl=document.getElementById('dash-saludo');if(saludoEl)saludoEl.textContent='Hola, '+(nombresUsuario[USUARIO]||'')+'.';
   prepararInicioCompacto();
   renderHoyUnificado();
   renderRutinaHoy();
