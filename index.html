@@ -8826,7 +8826,7 @@ function calcularFoodCost(){
 }
 function initNavegacionAgrupada(){
   const nav = document.getElementById('main-nav'); if (!nav) return;
-  nav.querySelectorAll('button[id^="nav-"]:not(#nav-inicio):not(#nav-pendientes):not([id^="nav-grupo-"]):not(#nav-volver-grupos)').forEach(b=>b.classList.add('nav-subitem'));
+  nav.querySelectorAll('button[id^="nav-"]:not(#nav-inicio):not(#nav-pendientes):not(#nav-guia):not([id^="nav-grupo-"]):not(#nav-volver-grupos)').forEach(b=>b.classList.add('nav-subitem'));
   nav.querySelectorAll('.nav-separator,.nav-section-label').forEach(e=>e.classList.add('nav-legacy'));
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
