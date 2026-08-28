@@ -949,7 +949,7 @@ header .sub{font-size:.85rem}
   #main-content .tab [style*="font-size:12px"]{font-size:18px!important}
   #main-content .tab [style*="font-size:13px"]{font-size:19px!important}
   #main-content .tab .card-title{font-size:17px!important}
-  #main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:17px!important}
+  #main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:18px!important}
 }
 .dash-hoy-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--amber);border-radius:12px;padding:16px;margin-bottom:22px;box-shadow:var(--sombra-s)}
 .dash-hoy-kicker{font-size:14px;font-weight:800;letter-spacing:1.4px;color:var(--amber);margin-bottom:10px}
@@ -993,16 +993,16 @@ header .sub{font-size:.85rem}
 <style>.maria-hidden{display:none!important}</style>
 <style id="accesibilidad-tipografia">
 /* Tipografía de trabajo: prioriza lectura cómoda sin depender del zoom. */
-body{font-size:17px!important;line-height:1.55}
-button,input,select,textarea{font-size:16px}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:18px!important;line-height:1.58}
+button,input,select,textarea{font-size:17px}
 #main-nav button,#main-nav .nav-group-btn,#main-nav .nav-world-link{font-size:17px!important;line-height:1.35}
 #main-nav .nav-directo-wrap,#main-nav .nav-directo-wrap select{font-size:17px!important}
-#main-content .tab{font-size:18px!important;line-height:1.62}
-#main-content .tab [style*="font-size:10px"],#main-content .tab [style*="font-size:11px"]{font-size:16px!important;line-height:1.5!important}
-#main-content .tab [style*="font-size:12px"]{font-size:17px!important;line-height:1.58!important}
-#main-content .tab [style*="font-size:13px"]{font-size:18px!important;line-height:1.6!important}
-#main-content .tab label{font-size:16px}
-#main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:17px!important}
+#main-content .tab{font-size:19px!important;line-height:1.65}
+#main-content .tab [style*="font-size:10px"],#main-content .tab [style*="font-size:11px"]{font-size:17px!important;line-height:1.52!important}
+#main-content .tab [style*="font-size:12px"]{font-size:18px!important;line-height:1.6!important}
+#main-content .tab [style*="font-size:13px"]{font-size:19px!important;line-height:1.62!important}
+#main-content .tab label{font-size:17px}
+#main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:18px!important}
 </style>
 <style id="formato-libro-global">
 /* Formato libro para los apartados largos: una hoja visible cada vez. */
@@ -1115,7 +1115,7 @@ button,input,select,textarea{font-size:16px}
   </div>
   <div class="header-right">
     <span class="role-badge" id="header-role">—</span>
-    <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+    <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Cambiar entre modo claro y modo oscuro" aria-label="Cambiar entre modo claro y modo oscuro">🌙</button>
     <button class="btn-salir" onclick="cerrarSesion()">Salir</button>
   </div>
 </header>
