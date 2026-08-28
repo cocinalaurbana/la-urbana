@@ -1009,6 +1009,12 @@ button,input,select,textarea{font-size:18px}
 #main-content .tab .book-nav button{font-size:18px!important}
 header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-badge{font-size:14px!important}.btn-theme,.btn-salir{font-size:16px!important}
 </style>
+<style id="appcc-maria-simple">
+body.maria-active #tab-appcc .book-nav{display:none!important}
+body.maria-active #tab-appcc .book-pages-wrap,body.maria-active #tab-appcc .book-page{display:contents!important}
+body.maria-active #tab-appcc .card:not(#maria-appcc-pending){display:none!important}
+body.maria-active #tab-appcc #maria-appcc-pending{display:block!important}
+</style>
 <style id="flujo-albaranes">
 .doc-flow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:-3px 0 11px;padding:8px 9px;border-radius:9px;background:var(--surface-2);color:var(--text-2);font-size:13px;line-height:1.35}.doc-flow span{white-space:nowrap}.doc-flow .doc-flow-active{font-weight:900;color:var(--amber)}
 </style>
@@ -1485,6 +1491,7 @@ body.maria-active #tab-protocolos .book-pages-wrap,body.maria-active #tab-protoc
 
 <!-- ══════════════════════════════════ APPCC ══ -->
 <div id="tab-appcc" class="tab">
+  <div id="maria-appcc-pending" class="card" style="display:none;border-left:4px solid var(--amber)"><div class="card-title">🛡️ APPCC · registros asignados</div><div style="color:var(--text-2);line-height:1.55">Todavía no hay registros asignados a María. No tienes que apuntar aquí tortillas, elaborados ni preparaciones: primero revisaremos el APPCC real de La Urbana y después aparecerán solo las tareas que correspondan.</div></div>
 
   <div class="card">
     <div class="card-title">🌡️ Control de temperaturas</div>
@@ -5312,9 +5319,10 @@ function actualizarMermaUnidad() {
   const prodId=parseInt(document.getElementById('m-producto')?.value); const prod=cargar('stock_productos',[]).find(p=>p.id===prodId);
   const lab=document.getElementById('m-cantidad-label'), help=document.getElementById('m-cantidad-ayuda'), inp=document.getElementById('m-cantidad');
   if(!prod || !lab || !help || !inp) return;
-  const f=getFormatoMerma(prod);
-  if(f){ lab.textContent='Cantidad de merma ('+f.unidad+')'; inp.placeholder=f.unidad==='g'?'ej. 100':'ej. 250'; help.textContent='El stock está en '+prod.unidad+'. La app descontará la fracción equivalente, no una unidad entera.'; }
-  else { lab.textContent='Cantidad ('+prod.unidad+')'; inp.placeholder='ej. 1'; help.textContent='Indica la cantidad en la unidad del stock.'; }
+  const f=getFormatoMerma(prod),unidadSel=document.getElementById('m-unidad');
+  if(/pan/i.test(prod.nombre)){if(unidadSel)unidadSel.value='g';lab.textContent='Gramos de pan tirado';inp.placeholder='ej. 250';help.textContent='Se registra el peso real para ajustar el pedido. No se cuentan tortillas ni elaborados aquí.';}
+  else if(f){if(unidadSel)unidadSel.value=f.unidad;lab.textContent='Cantidad de merma ('+f.unidad+')';inp.placeholder=f.unidad==='g'?'ej. 100':'ej. 250';help.textContent='El stock está en '+prod.unidad+'. La app descontará la fracción equivalente, no una unidad entera.';}
+  else {const base=String(prod.unidad||'').match(/^(kg|g|l|ml|ud|unidad|bolsa|bandeja)/i)?.[1]?.toLowerCase();if(unidadSel&&Array.from(unidadSel.options).some(o=>o.value===base))unidadSel.value=base==='ud'?'unidad':base;lab.textContent='Cantidad ('+prod.unidad+')';inp.placeholder='ej. 1';help.textContent='Indica la cantidad en la unidad del stock.';}
 }
 function poblarSelectorProductos() {
   const sel = document.getElementById('m-producto'); if (!sel) return;
@@ -5328,6 +5336,7 @@ function actualizarMermaCosteInfo() {
   const prodId = parseInt(document.getElementById('m-producto')?.value); const cantidad = parseFloat(document.getElementById('m-cantidad')?.value); const infoEl = document.getElementById('merma-coste-info');
   if (!prodId || !cantidad || cantidad <= 0) { if (infoEl) infoEl.style.display = 'none'; return; }
   const prod = cargar('stock_productos',[]).find(p => p.id === prodId); if (!prod || !prod.costeUnitario) { if (infoEl) infoEl.style.display = 'none'; return; }
+  if(/pan/i.test(prod.nombre)){if(infoEl){infoEl.style.display='';infoEl.innerHTML='🍞 Peso operativo para ajustar el pedido de pan';}return;}
   const f=getFormatoMerma(prod); const stockQty=f ? cantidad/f.contenido : cantidad; const coste=(prod.costeUnitario*stockQty).toFixed(2);
   if (infoEl) { infoEl.style.display=''; infoEl.innerHTML=`💰 Coste estimado: <strong>${coste}€</strong> <span style="color:var(--text-3)">${f?`(${formatStockQty(stockQty)} ${prod.unidad})`:`(${prod.costeUnitario.toFixed(2)}€/${prod.unidad})`}</span>`; }
 }
@@ -5359,8 +5368,9 @@ function guardarMerma() {
   if (!prod) { toast('Producto no encontrado','error'); return; }
 
   // Para formatos como “bolsa 2,5kg”, la cantidad se introduce en gramos y se descuenta la fracción de bolsa.
-  const formatoMerma = getFormatoMerma(prod);
-  const cantidadStock = formatoMerma ? cantidad / formatoMerma.contenido : cantidad;
+  const formatoMerma = getFormatoMerma(prod), unidadMerma=document.getElementById('m-unidad')?.value || (formatoMerma ? formatoMerma.unidad : prod.unidad);
+  let cantidadStock = formatoMerma ? (unidadMerma===formatoMerma.unidad ? cantidad / formatoMerma.contenido : cantidad) : cantidad;
+  if(/pan/i.test(prod.nombre)&&unidadMerma==='g')cantidadStock=0;
   const costeUnit = prod.costeUnitario || null;
   const costeTotal = costeUnit ? Math.round(costeUnit * cantidadStock * 100) / 100 : null;
 
@@ -5375,7 +5385,7 @@ function guardarMerma() {
   const productosActualizados = productos.map(p => p.id === prodId ? {...p, lotes: lotesActualizados} : p);
   guardar('stock_productos', productosActualizados);
 
-  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidadStock:prod.unidad, cantidad, cantidadStock, motivo, detalle, unidad:document.getElementById('m-unidad')?.value || (formatoMerma ? formatoMerma.unidad : prod.unidad), costeUnit, costeTotal, foto:'', quien:USUARIO, cuando:ahora()};
+  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidadStock:prod.unidad, cantidad, cantidadStock, motivo, detalle, unidad:unidadMerma, costeUnit, costeTotal, stockAjustado:cantidadStock>0, foto:'', quien:USUARIO, cuando:ahora()};
   const mermas = cargar('mermas',[]);
   mermas.unshift(merma);
   guardar('mermas', mermas);
@@ -6098,6 +6108,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // ── FIN ELABORADOS ───────────────────────────────────────
 
 function initAppcc() {
+  if(esMaria()){
+    const aviso=document.getElementById('maria-appcc-pending');if(aviso)aviso.style.display='block';
+    document.querySelectorAll('#tab-appcc .card:not(#maria-appcc-pending)').forEach(c=>c.style.display='none');
+    return;
+  }
   var ahora = new Date();
   document.getElementById('appcc-fecha-txt').textContent =
     ahora.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}) +
