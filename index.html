@@ -1009,6 +1009,15 @@ button,input,select,textarea{font-size:18px}
 #main-content .tab .book-nav button{font-size:18px!important}
 header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-badge{font-size:14px!important}.btn-theme,.btn-salir{font-size:16px!important}
 </style>
+<style id="inicio-compacto">
+#inicio-prioridad{display:block;margin:0 0 14px;padding:13px;border:1px solid var(--border);border-left:5px solid var(--red);border-radius:12px;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.inicio-block-title{font-size:15px;letter-spacing:1px;font-weight:900;color:var(--text);margin-bottom:10px}.inicio-block-title span{font-size:14px;letter-spacing:0;font-weight:500;color:var(--text-2);margin-left:5px}
+#inicio-prioridad-stats .dash-today-strip{border-top:0;border-bottom:1px solid var(--border);margin-bottom:10px}.inicio-primeros-pasos{margin:0 0 16px;padding:13px;border:1px solid var(--border);border-left:5px solid var(--amber);border-radius:12px;background:var(--surface)}
+.inicio-primeros-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.inicio-primeros-grid button{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text);font:inherit;text-align:left;cursor:pointer}.inicio-primeros-grid button:first-child{border-color:var(--amber);background:var(--amber-l)}.inicio-primeros-grid b{font-size:17px}.inicio-primeros-grid small{font-size:14px;color:var(--text-2);line-height:1.35}
+#inicio-hoy-antiguo,#inicio-cuaderno,#inicio-accesos,#inicio-menu-persona,#inicio-stats-original,#inicio-alertas-original{display:none!important}
+#inicio-produccion{margin-top:0}
+@media(max-width:560px){.inicio-primeros-grid{grid-template-columns:1fr}.inicio-block-title{font-size:16px}.inicio-block-title span{font-size:15px}}
+</style>
 <style id="jerarquia-navegacion">
 #app-context-bar{display:flex;align-items:center;gap:12px;margin:0;padding:13px 18px;border-bottom:1px solid var(--border);background:var(--surface-2);border-left:6px solid var(--amber);min-height:62px}
 .app-context-world{font-size:12px;font-weight:900;letter-spacing:1.3px;color:var(--amber);white-space:nowrap}
@@ -1337,14 +1346,27 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
     <p id="header-fecha-dash">—</p>
   </div>
 
-  <section class="dash-hoy-card" aria-label="Qué toca hoy">
+  <section id="inicio-prioridad" class="inicio-prioridad" aria-label="Qué falla o falta">
+    <div class="inicio-block-title">ATENCIÓN AHORA <span>lo que necesita revisión</span></div>
+    <div id="inicio-prioridad-stats"></div>
+    <div id="inicio-prioridad-alertas"></div>
+  </section>
+  <section id="inicio-primeros-pasos" class="inicio-primeros-pasos" aria-label="Primeros pasos">
+    <div class="inicio-block-title">PRIMEROS PASOS <span>al entrar</span></div>
+    <div class="inicio-primeros-grid">
+      <button onclick="tab('appcc',document.getElementById('nav-appcc'))"><b>1 · 🛡️ APPCC</b><small>Primero: revisar y registrar lo que corresponda</small></button>
+      <button onclick="tab('turno',document.getElementById('nav-turno'))"><b>2 · ✅ Checklist</b><small>Después: completar la lista asignada</small></button>
+    </div>
+  </section>
+
+  <section id="inicio-hoy-antiguo" class="dash-hoy-card" aria-label="Qué toca hoy">
     <div class="dash-hoy-kicker">HOY · QUÉ TOCA</div>
     <div id="dashboard-hoy-flujo"></div>
     <div class="dash-rutina-title">☑ Rutina diaria de cocina y mirada</div>
     <div id="dashboard-rutina-lista"></div>
   </section>
 
-  <section class="dash-editorial-section">
+  <section id="inicio-stats-original" class="dash-editorial-section">
     <div class="dash-editorial-title">HOY</div>
     <div class="dash-today-strip">
       <div class="dash-today-item ok" onclick="irAStock('verde')" title="Ver stock correcto">
@@ -1362,18 +1384,18 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
     </div>
   </section>
 
-  <section class="dash-editorial-section">
+  <section id="inicio-alertas-original" class="dash-editorial-section">
     <div class="dash-editorial-title">ATENCIÓN</div>
     <div id="alertas-banner"></div>
     <div id="alertas-detalle" style="display:none"></div>
   </section>
 
-  <section class="dash-editorial-section">
+  <section id="inicio-produccion" class="dash-editorial-section">
     <div class="dash-editorial-title">PRODUCCIÓN</div>
     <div id="dashboard-produccion" class="dash-production-preview"></div>
   </section>
 
-  <section class="dash-editorial-section">
+  <section id="inicio-cuaderno" class="dash-editorial-section">
     <div class="dash-editorial-title">CUADERNO</div>
     <div class="dash-flat-card" style="cursor:pointer" onclick="tab('pendientes',document.getElementById('nav-pendientes'))">
       <div class="card-title">📖 Pendientes por tema</div>
@@ -1382,7 +1404,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
     </div>
   </section>
 
-  <section class="dash-editorial-section">
+  <section id="inicio-accesos" class="dash-editorial-section">
     <div class="dash-editorial-title">ACCESOS</div>
     <div id="accesos-rapidos"></div>
   </section>
@@ -1397,7 +1419,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
     <div id="cw-alerta" style="margin-top:8px;font-size:12px;font-weight:600;display:none"></div>
   </div>
 
-  <section class="dash-editorial-section" style="margin-top:2px">
+  <section id="inicio-menu-persona" class="dash-editorial-section" style="margin-top:2px">
     <div class="dash-editorial-title">MENÚ Y PERSONA</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
       <div class="dash-flat-card">
@@ -4585,8 +4607,16 @@ function guardarPinchoMaria(){
   if(file&&typeof leerFotoPlanificada==='function')leerFotoPlanificada(file).then(terminar).catch(function(){terminar('');});else terminar('');
 }
 
+function prepararInicioCompacto(){
+  const stats=document.querySelector('#inicio-stats-original .dash-today-strip'),statsSlot=document.getElementById('inicio-prioridad-stats');
+  if(stats&&statsSlot&&!statsSlot.contains(stats))statsSlot.appendChild(stats);
+  const alertas=document.getElementById('inicio-alertas-original'),alertSlot=document.getElementById('inicio-prioridad-alertas');
+  if(alertas&&alertSlot){const banner=document.getElementById('alertas-banner'),detalle=document.getElementById('alertas-detalle');if(banner&&!alertSlot.contains(banner))alertSlot.appendChild(banner);if(detalle&&!alertSlot.contains(detalle))alertSlot.appendChild(detalle);}
+}
+
 function initInicio() {
   try {
+  prepararInicioCompacto();
   renderHoyUnificado();
   renderRutinaHoy();
   renderPersonalHoyWidget();
