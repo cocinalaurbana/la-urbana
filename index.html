@@ -1004,6 +1004,19 @@ button,input,select,textarea{font-size:16px}
 #main-content .tab label{font-size:16px}
 #main-content .tab input,#main-content .tab select,#main-content .tab textarea{font-size:17px!important}
 </style>
+<style id="formato-libro-global">
+/* Formato libro para los apartados largos: una hoja visible cada vez. */
+.book-page{display:none}
+.book-page.book-page-active{display:block;animation:fadeIn .16s ease}
+.book-nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:9px 10px;margin:0 0 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);position:sticky;top:0;z-index:8}
+.book-nav-title{font-size:13px;font-weight:800;color:var(--text);margin-right:auto}
+.book-nav button{border:1px solid var(--border-s);background:transparent;color:var(--text);border-radius:9px;padding:9px 11px;min-width:42px;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.book-nav button:hover:not(:disabled),.book-nav button.book-number-active{border-color:var(--amber);color:var(--amber)}
+.book-nav button.book-number-active{background:var(--amber);color:var(--bg)}
+.book-nav button:disabled{opacity:.42;cursor:default}
+.book-nav .book-page-label{font-size:15px;color:var(--text-2);font-weight:700}
+@media(max-width:560px){.book-nav{padding:8px;gap:6px}.book-nav-title{flex:0 0 100%;margin:0 0 2px}.book-nav button{padding:10px 11px}.book-nav .book-page-label{font-size:16px}}
+</style>
 </head>
 <body>
 
@@ -9115,6 +9128,68 @@ function descargarGraficoProgramacion(){
     var el=ev.target;if(!el||el.id!=='nav-directo'||!el.value)return;
     ev.preventDefault();ev.stopImmediatePropagation();mostrar(el.value,null);
   },true);
+})();
+</script>
+
+<script>
+/* Convertir los apartados largos en hojas navegables, sin perder sus formularios ni datos. */
+(function(){
+  var configuracion={
+    'tab-appcc':{origen:'tab-appcc',porPagina:2,titulo:'APPCC · hojas de control'},
+    'tab-turno':{origen:'turno-contenido',porPagina:3,titulo:'Checklist · hojas del turno'},
+    'tab-protocolos':{origen:'tab-protocolos',porPagina:2,titulo:'Protocolos · hojas de trabajo'},
+    'tab-produccion':{origen:'tab-produccion',porPagina:2,titulo:'Producción · hojas'},
+    'tab-stock':{origen:'tab-stock',porPagina:2,titulo:'Inventario · hojas'},
+    'tab-mermas':{origen:'tab-mermas',porPagina:2,titulo:'Mermas · hojas'},
+    'tab-pedidos':{origen:'tab-pedidos',porPagina:2,titulo:'Compras · hojas'},
+    'tab-caja':{origen:'tab-caja',porPagina:2,titulo:'Caja · hojas'},
+    'tab-menu':{origen:'tab-menu',porPagina:2,titulo:'Menú · hojas'},
+    'tab-recetas':{origen:'tab-recetas',porPagina:2,titulo:'Recetas · hojas'},
+    'tab-pruebas':{origen:'tab-pruebas',porPagina:2,titulo:'Laboratorio · hojas'},
+    'tab-contabilidad':{origen:'tab-contabilidad',porPagina:2,titulo:'Contabilidad · hojas'},
+    'tab-controlcostes':{origen:'tab-controlcostes',porPagina:2,titulo:'Control de costes · hojas'},
+    'tab-proveedores':{origen:'tab-proveedores',porPagina:2,titulo:'Proveedores · hojas'},
+    'tab-nuevosproveedores':{origen:'tab-nuevosproveedores',porPagina:2,titulo:'Nuevos proveedores · hojas'},
+    'tab-formacion':{origen:'tab-formacion',porPagina:2,titulo:'Formación · hojas'}
+  };
+  var estados={};
+  function hijosReales(el){return Array.prototype.slice.call(el.children||[]).filter(function(x){return !x.classList.contains('book-pages-wrap');});}
+  function preparar(tabId,cfg){
+    var tab=document.getElementById(tabId),origen=document.getElementById(cfg.origen);
+    if(!tab||!origen||origen.getAttribute('data-formato-libro')==='1')return;
+    if(origen.getAttribute('data-formato-libro')==='1')return;
+    var hijos=hijosReales(origen); if(hijos.length<=cfg.porPagina)return;
+    var nav=document.createElement('div');nav.className='book-nav';nav.id='book-nav-'+tabId;nav.setAttribute('aria-label',cfg.titulo);
+    var pagesWrap=document.createElement('div');pagesWrap.className='book-pages-wrap';pagesWrap.id='book-pages-'+tabId;
+    var paginas=[];
+    for(var i=0;i<hijos.length;i+=cfg.porPagina){
+      var page=document.createElement('div');page.className='book-page';page.setAttribute('data-book-page',String(paginas.length));
+      hijos.slice(i,i+cfg.porPagina).forEach(function(child){page.appendChild(child);});
+      pagesWrap.appendChild(page);paginas.push(page);
+    }
+    origen.appendChild(pagesWrap);origen.setAttribute('data-formato-libro','1');
+    if(origen===tab)tab.insertBefore(nav,pagesWrap);else origen.parentNode.insertBefore(nav,origen);
+    estados[tabId]={tab:tab,origen:origen,nav:nav,paginas:paginas,indice:0,titulo:cfg.titulo};
+    mostrarPaginaApp(tabId,0,false);
+  }
+  function navHtml(st){
+    var total=st.paginas.length,n=st.indice;
+    var h='<div class="book-nav-title">'+st.titulo+'</div>';
+    h+='<button type="button" '+(n===0?'disabled':'')+' onclick="mostrarPaginaApp(\''+st.tab.id+'\','+(n-1)+')">‹ Anterior</button>';
+    for(var i=0;i<total;i++)h+='<button type="button" class="'+(i===n?'book-number-active':'')+'" onclick="mostrarPaginaApp(\''+st.tab.id+'\','+i+')">'+(i+1)+'</button>';
+    h+='<span class="book-page-label">Hoja '+(n+1)+' de '+total+'</span>';
+    h+='<button type="button" '+(n===total-1?'disabled':'')+' onclick="mostrarPaginaApp(\''+st.tab.id+'\','+(n+1)+')">Siguiente ›</button>';
+    return h;
+  }
+  window.mostrarPaginaApp=function(tabId,n,scroll){
+    var st=estados[tabId];if(!st)return;
+    st.indice=Math.max(0,Math.min(st.paginas.length-1,Number(n)||0));
+    st.paginas.forEach(function(p,i){p.classList.toggle('book-page-active',i===st.indice);});
+    st.nav.innerHTML=navHtml(st);
+    if(scroll!==false){var main=document.getElementById('main-content');if(main)main.scrollTo({top:0,behavior:'smooth'});}
+  };
+  function iniciar(){Object.keys(configuracion).forEach(function(id){preparar(id,configuracion[id]);});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar);else iniciar();
 })();
 </script>
 
