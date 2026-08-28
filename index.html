@@ -2346,7 +2346,7 @@ header .sub{font-size:.85rem}
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px">
       <div>
         <div class="card-title" style="margin-bottom:4px">🧹 Checklist de limpieza</div>
-        <div style="font-size:12px;color:var(--text-2);line-height:1.5">Cocina y almacén por separado. Marca lo que queda hecho y deja la incidencia si algo no se puede completar.</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.5">Cocina y almacén por separado. En la cocinita hay una máquina de envasar al vacío, una nevera, un congelador y estanterías; no hay fregadero ni desagüe. Marca lo que queda hecho y deja la incidencia si algo no se puede completar.</div>
       </div>
       <button class="btn btn-outline btn-xs" onclick="reiniciarLimpiezaPeriodo()">Reiniciar</button>
     </div>
@@ -4121,7 +4121,7 @@ function renderTabGuia(id) {
 
 const PROTOCOLOS_PRIORITARIOS = [
   {id:'appcc',icon:'🌡️',nombre:'APPCC y temperaturas',objetivo:'Mantener neveras y congeladores dentro de rango y dejar constancia.',pasos:['Entrar en APPCC desde Entrada o Cierre.','Medir los equipos que correspondan.','Registrar cada temperatura real.','Si sale de rango, avisar y anotar la acción tomada.','La casilla de la checklist se marca automáticamente.'],responsable:'Quien realiza el turno; Lore revisa las incidencias.'},
-  {id:'limpieza',icon:'🧼',nombre:'Limpieza · cocina y almacén',objetivo:'Dejar la cocina y el almacén seguros, limpios y listos para el siguiente turno.',pasos:['Abrir la checklist de limpieza y elegir la frecuencia que corresponda.','Cubrir y etiquetar recipientes antes de limpiar.','Limpiar y desinfectar superficies, utensilios, equipos y suelo de la cocina.','Limpiar suelo, fregadero, superficies y zonas de paso del almacén.','Vaciar cubos y guardar los útiles de cocina separados de los del baño.','Registrar cualquier tarea pendiente o incidencia; no marcarla como hecha si no se ha comprobado.'],responsable:'La persona que realiza la limpieza o cierra el turno.'},
+  {id:'limpieza',icon:'🧼',nombre:'Limpieza · cocina y almacén',objetivo:'Dejar la cocina y el almacén seguros, limpios y listos para el siguiente turno.',pasos:['Abrir la checklist de limpieza y elegir la frecuencia que corresponda.','Cubrir y etiquetar recipientes antes de limpiar.','Limpiar y desinfectar superficies, utensilios, equipos y suelo de la cocina.','Limpiar suelo, superficies, estanterías y zonas de paso del almacén y la cocinita.','Vaciar cubos y guardar los útiles de cocina separados de los del baño.','Registrar cualquier tarea pendiente o incidencia; no marcarla como hecha si no se ha comprobado.'],responsable:'La persona que realiza la limpieza o cierra el turno.'},
   {id:'recepcion',icon:'📦',nombre:'Recepción de pedidos',objetivo:'Que cada entrega quede fotografiada y trazable.',pasos:['César recibe el miércoles.','Fotografiar albarán.','Fotografiar etiquetas de pollo y raxo.','Anotar incidencias, faltas o sustituciones.','Lore valida el domingo.'],responsable:'César recibe; Lore valida.'},
   {id:'almacenamiento',icon:'🧊',nombre:'Almacenamiento',objetivo:'Saber qué hay, dónde está y qué debe utilizarse primero.',pasos:['Guardar cada producto en su zona real.','Aplicar FIFO: lo nuevo detrás.','Etiquetar abiertos y elaborados.','Guardar lote, caducidad y foto si procede.','En formatos variables, registrar el peso real del envase.'],responsable:'Toda la cocina según su tarea; Lore controla el sistema.'},
   {id:'produccion',icon:'👩‍🍳',nombre:'Producción y porciones',objetivo:'Repetir las elaboraciones con la misma calidad y cantidad.',pasos:['Consultar la receta antes de empezar.','Hacer la mise en place en Entrada.','Registrar pruebas o cambios.','Respetar gramajes y formatos.','Marcar la tarea solo cuando esté realmente terminada.'],responsable:'La persona que elabora; Lore valida cambios.'},
@@ -4150,7 +4150,7 @@ const LIMPIEZA_CHECKLIST = {
       ['coc-superficies','Limpiar y desinfectar superficies de trabajo y mesas'],
       ['coc-utensilios','Lavar y guardar tablas, cuchillos y utensilios'],
       ['coc-fregadero','Limpiar fregadero y desagüe'],
-      ['coc-equipos','Limpiar cocina, fogones, plancha y zonas de salpicadura'],
+      ['coc-equipos','Limpiar la cocina y los fogones si se han usado y se puede hacer con seguridad'],
       ['coc-lavavajillas','Limpiar filtro y bandeja del lavavajillas'],
       ['coc-tiradores','Limpiar tiradores de neveras y congeladores'],
       ['coc-residuos','Vaciar y limpiar cubos y contenedores'],
@@ -4160,21 +4160,23 @@ const LIMPIEZA_CHECKLIST = {
   },
   diaria_almacen: {
     titulo:'Hoy · almacén y cocinita', icon:'🗄️', periodo:'diaria', tareas:[
-      ['alm-superficies','Limpiar y desinfectar superficies'],
-      ['alm-fregadero','Limpiar fregadero y desagüe'],
+      ['alm-superficies','Limpiar y desinfectar superficies y estanterías accesibles'],
+      ['alm-vacio','Limpiar por fuera la máquina de envasar al vacío y su zona'],
+      ['alm-frio','Limpiar tiradores y superficies exteriores de nevera y congelador'],
       ['alm-suelo','Barrer y fregar el suelo'],
       ['alm-carton','Retirar cartones y residuos de las zonas de trabajo'],
-      ['alm-utiles','Dejar cubo, escurridor y fregona limpios y en su sitio'],
+      ['alm-utiles','Comprobar que los útiles de limpieza están limpios y guardados fuera de los alimentos'],
       ['alm-paso','Dejar despejadas las zonas de paso y la entrada']
     ]
   },
   semanal: {
     titulo:'Esta semana · limpieza profunda', icon:'🧽', periodo:'semanal', tareas:[
-      ['sem-camaras','Limpiar interior de neveras, estanterías y juntas'],
-      ['sem-equipos','Limpiar horno y plancha a fondo'],
+      ['sem-camaras','Limpiar interior de neveras y congelador, estanterías y juntas'],
+      ['sem-equipos','Limpiar horno, plancha y fogones a fondo'],
       ['sem-campana','Limpiar campana y filtros según corresponda'],
       ['sem-coc-paredes','Limpiar paredes, zócalos y rincones de la cocina'],
-      ['sem-estantes','Limpiar estanterías del almacén'],
+      ['sem-estantes','Limpiar estanterías del almacén y de la cocinita'],
+      ['sem-vacio','Limpiar la máquina de envasar al vacío y revisar su zona'],
       ['sem-detras','Limpiar detrás y debajo de equipos accesibles'],
       ['sem-fifo','Revisar envases abiertos, etiquetas y orden FIFO'],
       ['sem-utiles','Comprobar que los útiles de cocina y baño siguen separados']
