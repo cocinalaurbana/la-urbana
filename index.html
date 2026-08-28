@@ -4241,6 +4241,7 @@ window.MARIA_ALLOWED_TABS = MARIA_ALLOWED_TABS;
 function aplicarPermisos() {
   const maria=esMaria();
   document.body.classList.toggle('maria-active',maria);window.USUARIO_MARIA=maria;
+  const mariaPanel=document.getElementById('maria-panel');if(mariaPanel)mariaPanel.style.display=maria?'block':'none';
   const allowed=MARIA_ALLOWED_TABS;
   document.querySelectorAll('#main-nav button[id^="nav-"]:not([id^="nav-grupo-"])').forEach(btn=>{
     const tabId=btn.id.replace(/^nav-/,'');
@@ -4252,7 +4253,7 @@ function aplicarPermisos() {
   document.querySelectorAll('#nav-grupos button[id^="nav-grupo-"]').forEach(btn=>{
     const grupo=btn.id.replace('nav-grupo-','');
     const ids=(typeof NAV_GRUPOS!=='undefined'&&NAV_GRUPOS[grupo])||[];
-    const visible=!maria||grupo==='hoy'||ids.some(id=>allowed.includes(id));
+    const visible=!maria||grupo==='hoy'||grupo==='cocina';
     btn.classList.toggle('maria-hidden',maria&&!visible);
   });
   const selector=document.getElementById('nav-directo');
