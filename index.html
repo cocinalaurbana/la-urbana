@@ -1009,6 +1009,9 @@ button,input,select,textarea{font-size:18px}
 #main-content .tab .book-nav button{font-size:18px!important}
 header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-badge{font-size:14px!important}.btn-theme,.btn-salir{font-size:16px!important}
 </style>
+<style id="flujo-albaranes">
+.doc-flow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:-3px 0 11px;padding:8px 9px;border-radius:9px;background:var(--surface-2);color:var(--text-2);font-size:13px;line-height:1.35}.doc-flow span{white-space:nowrap}.doc-flow .doc-flow-active{font-weight:900;color:var(--amber)}
+</style>
 <style id="estados-operativos">
 .estado-legend{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px;padding:10px 12px;border:1px solid var(--border);border-left:5px solid var(--amber);border-radius:10px;background:var(--surface-2);font-size:14px}.estado-legend strong{font-size:15px;margin-right:3px}.estado-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:7px;font-size:13px;font-weight:800;white-space:nowrap}.estado-validado{background:var(--olive-l);color:var(--olive)}.estado-provisional{background:var(--amber-l);color:var(--amber)}.estado-pendiente{background:var(--red-l);color:var(--rojo)}
 </style>
@@ -1679,6 +1682,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
   <div class="card" id="doc-scan-card" style="margin-bottom:14px;border-left:4px solid var(--amber)">
     <div class="card-title">📷 Escanear ticket, factura o albarán</div>
     <div style="font-size:12px;color:var(--text-2);line-height:1.5;margin:-4px 0 11px">Sube una foto o un PDF. La aplicación leerá los productos y cantidades, los comparará con el inventario y preparará la entrada. <strong>El stock solo cambia cuando pulses «Aplicar al stock».</strong></div>
+    <div id="doc-scan-flow" class="doc-flow"><span>📷 Subido por María</span><span>→ 🔎 Pendiente de revisión</span><span>→ ✓ Validado por Lore/César</span><span>→ 📦 Aplicado al stock</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
       <select id="doc-scan-tipo" style="flex:1;min-width:150px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
         <option value="albaran">📦 Albarán de entrega</option><option value="factura">🧾 Factura</option><option value="ticket">🎟️ Ticket de compra</option>
@@ -6856,6 +6860,7 @@ let _docScanFile = null;
 let _docScanTexto = '';
 let _docScanLineas = [];
 let _docScanTipo = 'albaran';
+let _docScanSubidoPor = '';
 function normalizarOCR(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim(); }
 function poblarProveedorOCR(){
   const sel=document.getElementById('doc-scan-proveedor'); if(!sel) return;
@@ -6863,8 +6868,11 @@ function poblarProveedorOCR(){
   sel.innerHTML='<option value="">— Proveedor —</option>'+provs.map(x=>`<option value="${escPrueba(x.nombre)}">${escPrueba(x.nombre)}</option>`).join('');
   if(val) sel.value=val;
 }
+function actualizarFlujoDocumento(estado){const el=document.getElementById('doc-scan-flow');if(!el)return;const quien=_docScanSubidoPor||USUARIO||'María';const aplicado=estado==='aplicado';el.innerHTML='<span class="'+(!aplicado?'doc-flow-active':'')+'">📷 Subido por '+(quien==='maria'?'María':quien==='lore'?'Lore':quien==='cesar'?'César':quien)+'</span><span>→</span><span class="'+(!aplicado?'doc-flow-active':'')+'">🔎 Pendiente de revisión</span><span>→</span><span class="'+(aplicado?'doc-flow-active':'')+'">✓ '+(aplicado?'Validado por '+(USUARIO==='cesar'?'César':'Lore/César'):'Validado por Lore/César')+'</span><span>→</span><span class="'+(aplicado?'doc-flow-active':'')+'">📦 '+(aplicado?'Aplicado al stock':'Aplicado al stock')+'</span>';}
 function seleccionarDocumentoOCR(input){
   _docScanFile=input.files&&input.files[0]?input.files[0]:null;
+  _docScanSubidoPor=_docScanFile?(USUARIO||'maria'):'';
+  actualizarFlujoDocumento(_docScanFile?'pendiente':'inicial');
   const nombre=document.getElementById('doc-scan-nombre'), btn=document.getElementById('doc-scan-btn');
   if(nombre) nombre.textContent=_docScanFile?`${_docScanFile.name} · ${Math.round(_docScanFile.size/1024)} KB`:'Ningún documento seleccionado.';
   if(btn) btn.disabled=!_docScanFile;
@@ -6934,18 +6942,20 @@ async function leerDocumentoOCR(){
     const res=document.getElementById('doc-scan-resultado');if(res){res.style.display='block';res.innerHTML=`<div style="padding:9px 10px;border-radius:9px;background:var(--olive-l);color:var(--olive);font-size:12px;font-weight:700">Documento leído. ${_docScanLineas.length} coincidencia${_docScanLineas.length===1?'':'s'} encontrada${_docScanLineas.length===1?'':'s'}.</div>`;}
     const aplicar=document.getElementById('doc-scan-aplicar');if(aplicar){aplicar.style.display='block';aplicar.disabled=!_docScanLineas.length;}
     const nota=document.getElementById('doc-scan-nota');if(nota)nota.style.display='block';
+    actualizarFlujoDocumento('pendiente');
     informarOCR('Lectura terminada. Revisa las líneas antes de aplicar.');
   }catch(e){ informarOCR('No se ha podido leer el documento. Puedes introducir la entrada manualmente.',true); const res=document.getElementById('doc-scan-resultado');if(res){res.style.display='block';res.innerHTML='<div style="padding:9px 10px;border-radius:9px;background:var(--red-l);color:var(--rojo);font-size:12px">Prueba con una foto más nítida o usa la entrada manual.</div>'; } }
   finally{if(btn)btn.disabled=false;}
 }
 function aplicarDocumentoAlStock(){
+  if(!esAdmin()){toast('La validación y aplicación la hacen Lore o César','error');return;}
   const lineas=_docScanLineas.filter(x=>x.productoId&&Number(x.cantidad)>0);if(!lineas.length){toast('Revisa las líneas del documento','error');return;}
   const fecha=hoy(), proveedor=document.getElementById('doc-scan-proveedor')?.value||'Proveedor del documento', productos=cargar('stock_productos',[]);
   lineas.forEach(l=>{const p=productos.find(x=>String(x.id)===String(l.productoId));if(!p)return;p.lotes=p.lotes||[];p.lotes.push({id:Date.now()+Math.random(),cantidad:Number(l.cantidad),fecha,quien:USUARIO,origen:'OCR',documento:_docScanFile?.name||'',tipoDocumento:_docScanTipo});});
   guardar('stock_productos',productos);window.PRODUCTOS_STOCK=productos;
-  const entradas=cargar('entradas_mercancias',[]);entradas.unshift({id:Date.now(),fecha,proveedor,quien:USUARIO,origen:'OCR',tipoDocumento:_docScanTipo,documento:_docScanFile?.name||'',textoOCR:_docScanTexto.slice(0,6000),lineas:lineas.map(l=>({nombre:l.nombre,cantidad:Number(l.cantidad),productoId:l.productoId}))});if(entradas.length>200)entradas.splice(200);guardar('entradas_mercancias',entradas);
-  const docs=cargar('documentos_ocr',[]);docs.unshift({id:Date.now(),fecha,proveedor,tipo:_docScanTipo,nombre:_docScanFile?.name||'',texto:_docScanTexto.slice(0,6000),lineas:lineas.map(l=>({nombre:l.nombre,cantidad:Number(l.cantidad),productoId:l.productoId})),quien:USUARIO});if(docs.length>100)docs.splice(100);guardar('documentos_ocr',docs);
-  addHistorial('entradas',`📷 Entrada por ${_docScanTipo}: ${lineas.length} producto(s) · ${proveedor}`);toast('Entrada OCR aplicada al stock ✓','verde');
+  const entradas=cargar('entradas_mercancias',[]);entradas.unshift({id:Date.now(),fecha,proveedor,quien:USUARIO,subidoPor:_docScanSubidoPor||'maria',validadoPor:USUARIO,validadoEn:ahora(),estado:'aplicado_al_stock',origen:'OCR',tipoDocumento:_docScanTipo,documento:_docScanFile?.name||'',textoOCR:_docScanTexto.slice(0,6000),lineas:lineas.map(l=>({nombre:l.nombre,cantidad:Number(l.cantidad),productoId:l.productoId}))});if(entradas.length>200)entradas.splice(200);guardar('entradas_mercancias',entradas);
+  const docs=cargar('documentos_ocr',[]);docs.unshift({id:Date.now(),fecha,proveedor,tipo:_docScanTipo,nombre:_docScanFile?.name||'',texto:_docScanTexto.slice(0,6000),lineas:lineas.map(l=>({nombre:l.nombre,cantidad:Number(l.cantidad),productoId:l.productoId})),quien:USUARIO,subidoPor:_docScanSubidoPor||'maria',validadoPor:USUARIO,validadoEn:ahora(),estado:'aplicado_al_stock'});if(docs.length>100)docs.splice(100);guardar('documentos_ocr',docs);
+  addHistorial('entradas',`📷 Entrada por ${_docScanTipo}: ${lineas.length} producto(s) · ${proveedor}`);actualizarFlujoDocumento('aplicado');toast('Entrada OCR aplicada al stock ✓','verde');
   _docScanFile=null;_docScanTexto='';_docScanLineas=[];const input=document.getElementById('doc-scan-file');if(input)input.value='';seleccionarDocumentoOCR({files:[]});const progreso=document.getElementById('doc-scan-progreso');if(progreso)progreso.textContent='Entrada aplicada. Documento guardado en el registro.';if(typeof renderStock==='function')renderStock();cargarCaja();
 }
 
