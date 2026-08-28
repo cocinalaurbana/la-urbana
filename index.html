@@ -1009,6 +1009,9 @@ button,input,select,textarea{font-size:18px}
 #main-content .tab .book-nav button{font-size:18px!important}
 header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-badge{font-size:14px!important}.btn-theme,.btn-salir{font-size:16px!important}
 </style>
+<style id="estados-operativos">
+.estado-legend{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px;padding:10px 12px;border:1px solid var(--border);border-left:5px solid var(--amber);border-radius:10px;background:var(--surface-2);font-size:14px}.estado-legend strong{font-size:15px;margin-right:3px}.estado-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:7px;font-size:13px;font-weight:800;white-space:nowrap}.estado-validado{background:var(--olive-l);color:var(--olive)}.estado-provisional{background:var(--amber-l);color:var(--amber)}.estado-pendiente{background:var(--red-l);color:var(--rojo)}
+</style>
 <style id="inicio-compacto">
 #inicio-prioridad{display:block;margin:0 0 14px;padding:13px;border:1px solid var(--border);border-left:5px solid var(--red);border-radius:12px;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .inicio-block-title{font-size:15px;letter-spacing:1px;font-weight:900;color:var(--text);margin-bottom:10px}.inicio-block-title span{font-size:14px;letter-spacing:0;font-weight:500;color:var(--text-2);margin-left:5px}
@@ -1961,6 +1964,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
     <div class="card-title">📉 Registrar merma</div>
     <div class="form-group"><label>Producto</label><select id="m-producto" style="color:var(--text);background:var(--bg)"></select></div>
     <div class="form-group"><label id="m-cantidad-label">Cantidad</label><input type="number" id="m-cantidad" placeholder="ej. 2" min="0.1" step="0.1"><div id="m-cantidad-ayuda" style="font-size:11px;color:var(--text-3);margin-top:4px"></div></div>
+    <div class="form-group"><label>Unidad</label><select id="m-unidad" style="color:var(--text);background:var(--bg)"><option value="g">g</option><option value="kg">kg</option><option value="ml">ml</option><option value="l">l</option><option value="unidad">unidad</option><option value="bolsa">bolsa</option><option value="bandeja">bandeja</option></select></div>
     <div id="merma-coste-info" style="display:none;font-size:13px;color:var(--text-3);margin-bottom:10px;padding:8px 10px;background:var(--surface-2);border-radius:8px"></div>
     <div class="form-group">
       <label>Motivo <span style="color:var(--rojo)">*obligatorio</span></label>
@@ -2078,8 +2082,6 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
           <option value="lun">Lunes</option><option value="mar">Martes</option><option value="mie">Miércoles</option>
           <option value="jue">Jueves</option><option value="vie">Viernes</option><option value="sab">Sábado</option><option value="dom">Domingo</option>
         </select>
-        <input type="number" id="personal-coste" step="0.5" min="0" placeholder="€ coste"
-          style="width:90px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
       </div>
       <input type="text" id="personal-plato" placeholder="¿Qué coméis? ej. Arroz caldoso con costilla"
         style="width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:15px;color:var(--text);background:var(--surface);margin-bottom:8px"
@@ -2130,6 +2132,8 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
 
 <!-- RECETAS -->
 <div id="tab-recetas" class="tab">
+  <div class="estado-legend" aria-label="Estados de receta"><strong>Estado:</strong><span class="estado-badge estado-validado">🟢 Validada</span><span class="estado-badge estado-provisional">🟡 Provisional</span><span class="estado-badge estado-pendiente">🔴 Pendiente de validar</span></div>
+  <div style="font-size:14px;color:var(--text-2);margin:-5px 0 12px">Las fichas antiguas sin estado se consideran provisionales hasta revisarlas.</div>
   <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
     <button class="btn btn-oro btn-sm" onclick="abrirModalReceta()">➕ Nueva receta</button>
     <select id="filtro-receta" onchange="renderRecetas()" style="padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
@@ -2294,7 +2298,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
     <div style="font-size:13px;line-height:1.55;color:var(--text-2);margin-bottom:12px">Aprender haciendo: cada ejercicio de fotografía o vídeo produce una pieza real para las redes, sin construir la identidad del local alrededor de tendencias.</div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px">
       <div style="background:var(--surface-2);border-radius:9px;padding:10px"><strong>🎯 Objetivo</strong><br><span style="font-size:11px;color:var(--text-2)">Mirar, fotografiar y contar el oficio de La Urbana con una voz propia.</span></div>
-      <div style="background:var(--surface-2);border-radius:9px;padding:10px"><strong>📦 Resultado semanal</strong><br><span style="font-size:11px;color:var(--text-2)">1 pieza publicable + archivo de fotos y vídeos reutilizables.</span></div>
+      <div style="background:var(--surface-2);border-radius:9px;padding:10px"><strong>📦 Resultado</strong><br><span style="font-size:11px;color:var(--text-2)">Material con intención; la publicación depende de si existe una historia que merezca ser contada.</span></div>
     </div>
     <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:7px">RECORRIDO</div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;font-size:11px;line-height:1.4">
@@ -3208,6 +3212,7 @@ De [hora] a [hora]. Ven con quien quieras.
         </select>
       </div>
     </div>
+    <div class="form-group" style="margin-top:10px"><label>Estado de la receta</label><select id="r-estado"><option value="provisional">🟡 Provisional</option><option value="pendiente">🔴 Pendiente de validar</option><option value="validado">🟢 Validada</option></select></div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px">
       <div class="form-group" style="margin:0"><label>Raciones</label><input type="number" id="r-raciones" min="1" placeholder="ej. 4"></div>
@@ -3261,7 +3266,7 @@ De [hora] a [hora]. Ven con quien quieras.
 
 <div class="modal-overlay" id="modal-ver-receta">
   <div class="modal">
-    <div class="modal-title"><span id="ver-receta-nombre"></span><button class="modal-close" onclick="cerrarModal('modal-ver-receta')">×</button></div>
+    <div class="modal-title"><span id="ver-receta-nombre"></span><span id="ver-receta-estado" class="estado-badge estado-provisional"></span><button class="modal-close" onclick="cerrarModal('modal-ver-receta')">×</button></div>
     <div id="ver-receta-contenido"></div>
     <div style="display:flex;gap:10px;margin-top:16px">
       <button class="btn btn-outline btn-sm" id="ver-receta-editar">✏️ Editar</button>
@@ -5351,7 +5356,7 @@ function guardarMerma() {
   const productosActualizados = productos.map(p => p.id === prodId ? {...p, lotes: lotesActualizados} : p);
   guardar('stock_productos', productosActualizados);
 
-  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidad:formatoMerma ? formatoMerma.unidad : prod.unidad, unidadStock:prod.unidad, cantidad, cantidadStock, motivo, detalle, costeUnit, costeTotal, foto:'', quien:USUARIO, cuando:ahora()};
+  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidadStock:prod.unidad, cantidad, cantidadStock, motivo, detalle, unidad:document.getElementById('m-unidad')?.value || (formatoMerma ? formatoMerma.unidad : prod.unidad), costeUnit, costeTotal, foto:'', quien:USUARIO, cuando:ahora()};
   const mermas = cargar('mermas',[]);
   mermas.unshift(merma);
   guardar('mermas', mermas);
@@ -5362,6 +5367,7 @@ function guardarMerma() {
   document.getElementById('m-cantidad').value = '';
   document.getElementById('m-motivo').value = '';
   document.getElementById('m-detalle').value = '';
+  const unidadMermaEl=document.getElementById('m-unidad');if(unidadMermaEl)unidadMermaEl.value='g';
   const fotoMermaEl=document.getElementById('m-foto');if(fotoMermaEl)fotoMermaEl.value='';
   document.getElementById('merma-coste-info').style.display = 'none';
   renderMermas(); renderStock(); initInicio();
@@ -7236,7 +7242,7 @@ function guardarPersonal() {
   const plato = document.getElementById('personal-plato').value.trim();
   if (!plato) { toast('Escribe qué coméis'); return; }
   const dia = document.getElementById('personal-dia-sel').value;
-  const coste = parseFloat(document.getElementById('personal-coste').value) || 0;
+  const coste = parseFloat(document.getElementById('personal-coste')?.value) || 0;
 
   // comprobar si supera presupuesto
   const presupuesto = parseFloat(cargar('personal_presupuesto', 0)) || 0;
@@ -7253,7 +7259,7 @@ function guardarPersonal() {
   semana[dia] = { plato, coste };
   guardar('personal_semana_' + getSemanaKey(), semana);
   document.getElementById('personal-plato').value = '';
-  document.getElementById('personal-coste').value = '';
+  const costeEl=document.getElementById('personal-coste');if(costeEl)costeEl.value = '';
   renderPersonalSemana();
   toast(`${DIAS_LABELS[dia]}: ${plato} ✓`, 'verde');
 }
@@ -7281,7 +7287,7 @@ function renderPersonalPropuestas() {
 
 function usarPropuestaPersonal(nombre, coste) {
   document.getElementById('personal-plato').value = nombre;
-  if (coste && parseFloat(coste) > 0) document.getElementById('personal-coste').value = coste;
+  if (coste && parseFloat(coste) > 0 && document.getElementById('personal-coste')) document.getElementById('personal-coste').value = coste;
   document.getElementById('personal-plato').scrollIntoView({behavior:'smooth'});
   document.getElementById('personal-plato').focus();
 }
@@ -7295,6 +7301,7 @@ function abrirModalReceta(id) {
   recetaEditId = id || null;
   document.getElementById('modal-receta-titulo').textContent = id ? 'Editar receta' : 'Nueva receta';
   ['r-nombre','r-ingredientes','r-elaboracion','r-raciones','r-coste','r-precio','r-notas'].forEach(i => document.getElementById(i).value='');
+  document.getElementById('r-estado').value = 'provisional';
   document.getElementById('r-categoria').value = 'carta';
   document.getElementById('r-escandallo-preview').style.display = 'none';
   if (id) {
@@ -7302,6 +7309,7 @@ function abrirModalReceta(id) {
     if (r) {
       document.getElementById('r-nombre').value = r.nombre||'';
       document.getElementById('r-categoria').value = r.categoria||'carta';
+      document.getElementById('r-estado').value = r.estado || (r.validada ? 'validado' : 'provisional');
       document.getElementById('r-ingredientes').value = r.ingredientes||'';
       document.getElementById('r-elaboracion').value = r.elaboracion||'';
       document.getElementById('r-raciones').value = r.raciones||'';
@@ -7341,7 +7349,8 @@ function guardarReceta() {
     raciones: document.getElementById('r-raciones').value,
     coste: document.getElementById('r-coste').value,
     precio: document.getElementById('r-precio').value,
-    notas: document.getElementById('r-notas').value.trim()
+    notas: document.getElementById('r-notas').value.trim(),
+    estado: document.getElementById('r-estado').value || 'provisional'
   };
   let recetas = cargar('recetas',[]);
   if (recetaEditId) recetas = recetas.map(r => r.id==recetaEditId ? receta : r);
@@ -7352,6 +7361,7 @@ function guardarReceta() {
   renderRecetas();
   toast('Receta guardada ✓','verde');
 }
+function estadoReceta(r){const e=String(r.estado||'').toLowerCase();if(e==='validado'||e==='oficial'||r.validada)return {clase:'estado-validado',texto:'🟢 Validada'};if(e==='pendiente'||e==='pendiente_validar'||e==='revisar')return {clase:'estado-pendiente',texto:'🔴 Pendiente de validar'};return {clase:'estado-provisional',texto:'🟡 Provisional'};}
 function renderRecetas() {
   const filtro = document.getElementById('filtro-receta').value;
   let recetas = cargar('recetas',[]);
@@ -7364,6 +7374,7 @@ function renderRecetas() {
     const pvp = r.pvp_media || r.pvp_tapa || r.pvp_racion || r.precio || null;
     const coste = r.coste_media || r.coste_tapa || r.coste || null;
     const margen = r.margen_media || r.margen_tapa || null;
+    const estado = estadoReceta(r);
     let margenHtml = '';
     if (margen) {
       const color = margen > 60 ? 'var(--olive)' : margen >= 30 ? 'var(--amber)' : 'var(--rojo)';
@@ -7377,7 +7388,7 @@ function renderRecetas() {
       <div class="receta-card-body">
         <div class="receta-nombre">${r.nombre}</div>
         <div class="receta-meta">
-          <span class="badge ${CB[r.categoria]||'badge-gris'}">${CL[r.categoria]||r.categoria}</span>
+          <span class="badge ${CB[r.categoria]||'badge-gris'}">${CL[r.categoria]||r.categoria}</span><span class="estado-badge ${estado.clase}">${estado.texto}</span>
           ${pvp ? `<span>desde ${pvp}€</span>` : ''}
           ${margenHtml}
         </div>
@@ -7409,6 +7420,7 @@ function verReceta(id) {
   const r = cargar('recetas',[]).find(x => x.id==id);
   if (!r) return;
   document.getElementById('ver-receta-nombre').textContent = r.nombre;
+  const estadoEl=document.getElementById('ver-receta-estado');if(estadoEl){const e=estadoReceta(r);estadoEl.className='estado-badge '+e.clase;estadoEl.textContent=e.texto;}
   let html = '';
 
   // Escandallo por formato (nueva estructura)
