@@ -1166,6 +1166,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
   <div id="nav-grupos" class="nav-groups">
     <button class="nav-group-btn" onclick="irAMundoNav('hoy',this)" id="nav-grupo-hoy" title="Qué toca hoy">📋 <span>HOY</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('cocina',this)" id="nav-grupo-cocina">👩‍🍳 <span>COCINA</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('equipo',this)" id="nav-grupo-equipo">👥 <span>EQUIPO</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('laboratorio',this)" id="nav-grupo-laboratorio">🧪 <span>LABORATORIO</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('historias',this)" id="nav-grupo-historias">🎥 <span>HISTORIAS</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('negocio',this)" id="nav-grupo-negocio">📊 <span>NEGOCIO</span></button>
@@ -2089,6 +2090,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       <div class="form-group"><label>Visual (1–5)</label><select id="prueba-visual"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
     </div>
     <div class="form-group"><label>Observaciones y siguiente cambio</label><textarea id="prueba-notas" rows="3" placeholder="Qué nos gustó, qué no, qué probamos después"></textarea></div>
+    <div class="form-group"><label>¿Qué hemos aprendido?</label><textarea id="prueba-aprendizajes" rows="3" placeholder="Funcionó: … / No funcionó: … / Próxima vez: …"></textarea></div>
     <button class="btn btn-oro" onclick="guardarPruebaReceta()">💾 Guardar prueba</button>
   </div>
   <div id="pruebas-recetas-lista"></div>
@@ -2187,7 +2189,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
     <div style="margin-top:10px;padding:10px;border:1px solid var(--accent);border-radius:9px;background:var(--accent-l);font-size:12px;line-height:1.55"><strong>👁️ Ejercicio: mirar antes de disparar:</strong> elegir un fondo dentro de La Urbana y esperar a que ocurra algo en él. Repetir trabajando una sombra, un patrón, un marco del entorno y una transformación —por ejemplo, ingrediente → elaboración → plato—. En cada intento anotar qué se esperaba, qué ocurrió y qué sensación transmite la imagen.</div>
     <div style="margin-top:10px;padding:10px;border:1px solid var(--accent);border-radius:9px;background:var(--surface-2);font-size:12px;line-height:1.55"><strong>🎬 Lenguaje audiovisual: cada plano tiene una intención:</strong> no usar ángulos como trucos aislados. Plano general para dar contexto o mostrar distancia; primer plano para cercanía; plano bajo para reforzar presencia; plano alto para vulnerabilidad; cámara en mano para urgencia; POV para inmersión; cambio de enfoque para dirigir la mirada; espacio negativo para espera. El sentido depende también de la atmósfera, el sonido, lo que ha ocurrido antes y el lenguaje corporal. En La Urbana: decidir primero qué queremos que sienta quien mira y después elegir el plano. No todas las técnicas son necesarias ni posibles con el móvil.</div>
     <div style="margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--surface-2);font-size:12px;line-height:1.55"><strong>🧼 Estándar profesional visible:</strong> una cocina también se fotografía y se cuenta por sus detalles. La estación de trabajo debe estar despejada: sin móviles, objetos personales, paños sucios, recipientes vacíos ni distracciones. En la nevera, trabajar con categorías, fechas, FIFO en proteínas y salsas visibles y etiquetadas. Para redes, esto puede convertirse en una serie de aprendizaje real —«cómo preparamos la estación» o «cómo ordenamos la nevera»— sin mostrar datos sensibles y sin sustituir el APPCC oficial.</div>
-    <div style="margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:9px;font-size:11px;line-height:1.5"><strong>📐 Formatos a explorar:</strong><br>· <b>16:9 horizontal</b> — relato amplio, cocina, sala y piezas para web.<br>· <b>4:3 horizontal</b> — mirada más íntima y fotográfica; lo probaremos como formato propio.<br>· <b>9:16 vertical</b> — reels y stories.<br>· <b>4:5</b> es vertical para fotografía; <b>5:4</b> no lo fijamos como estándar porque es poco habitual. La misma escena se grabará en 16:9 y 4:3 para comparar.</div>
+    <div style="margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:9px;font-size:11px;line-height:1.5"><strong>📐 Formatos a explorar:</strong><br>· <b>16:9 horizontal</b> — relato amplio, cocina, sala y piezas para web.<br>· <b>4:3 horizontal</b> — mirada más íntima y fotográfica; lo probaremos como formato propio.<br>· <b>9:16 vertical</b> — reels y stories.<br>· <b>4:5</b> es vertical para fotografía; <b>5:4</b> no lo fijamos como estándar porque es poco habitual. La grabación maestra será 16:9 horizontal cuando la historia lo permita; después se adaptará al formato de publicación. El 9:16 se usará cuando la pieza nazca para móvil vertical.</div>
     <div style="margin-top:10px;font-size:11px;color:var(--text-3);line-height:1.45"><strong>Marketing integrado:</strong> cada pieza tendrá objetivo, público, formato, texto breve, llamada a la acción y una métrica para revisar. Las tendencias sirven para analizar, no para decidir la identidad.</div>
     <div style="margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:9px;font-size:11px;line-height:1.5"><strong>🧵 Hilos para empezar a contar La Urbana:</strong><br>1. <b>Del ingrediente al plato:</b> origen, preparación y resultado.<br>2. <b>El gesto del oficio:</b> manos, fuego, cuchillo, sartén y ritmo.<br>3. <b>La vida del local:</b> luz, barra, cocina y la plaza a la que llegan cuatro caminos.<br>4. <b>Lo que se aprende:</b> una persona, una técnica y el siguiente paso.<br>5. <b>La prueba:</b> una elaboración experimental, qué se buscaba y qué se descubrió.<br><br><strong>Plantilla de cada sesión:</strong> 1 plano de contexto + 1 ingrediente + 2 gestos de trabajo + 1 sonido + 1 resultado. Grabar una versión 16:9 y otra 4:3 antes de decidir.</div>
   </div>
@@ -2564,9 +2566,16 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       <div><b>05 · ESCUCHAR</b><br>Sonido real, voz y silencio.</div><div><b>06 · PUBLICAR</b><br>Edición, texto, QR y archivo.</div>
     </div>
     <div style="padding:10px;border-radius:9px;background:var(--amber-l);font-size:12px;line-height:1.5;margin-bottom:10px"><b>APRENDO → PRACTICO → PRODUZCO → PUBLICO → ARCHIVO → REVISO</b><br>El curso no termina en aprender la cámara: cada ejercicio deja una pieza real y un archivo reutilizable.</div>
+    <div class="academy-five" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px">
+      <div style="padding:9px;background:var(--surface-2);border-radius:9px"><b>APRENDO</b><br><span>Qué concepto estudiamos.</span></div>
+      <div style="padding:9px;background:var(--surface-2);border-radius:9px"><b>HAGO</b><br><span>El ejercicio concreto con el Xiaomi.</span></div>
+      <div style="padding:9px;background:var(--surface-2);border-radius:9px"><b>GRABO</b><br><span>El material que necesito conseguir.</span></div>
+      <div style="padding:9px;background:var(--surface-2);border-radius:9px"><b>PUBLICO</b><br><span>La pieza que puede salir de ahí.</span></div>
+      <div style="padding:9px;background:var(--surface-2);border-radius:9px"><b>APRENDO DE NUEVO</b><br><span>Qué descubrí al verla.</span></div>
+    </div>
     <div style="border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:10px;font-size:12px;line-height:1.55"><b>📒 Primer recorrido práctico · Luz</b><br><b>Lección:</b> observar cómo cambia un plato con la luz lateral, frontal y de sombra.<br><b>Ejercicio con el Xiaomi:</b> hacer tres fotografías del mismo plato sin moverlo.<br><b>Material real:</b> un plato de prueba de La Urbana, la ventana y la mesa del local.<br><b>Resultado:</b> tres fotos y una elegida para carta, archivo o redes.<br><b>Revisión:</b> anotar cuál transmite mejor la textura y por qué.</div>
     <div style="font-size:12px;color:var(--text-2);line-height:1.55"><b>La protagonista no tiene que ser Lore.</b> Puede ser la cocina, una mano, una herramienta, un ingrediente, una persona invitada, una conversación, la plaza o el sonido de la noche. Lore puede estar detrás de la cámara, narrar con voz, escribir o aparecer solo cuando le apetezca.</div>
-    <div style="margin-top:9px;font-size:11px;color:var(--text-3);line-height:1.5"><b>Formato base:</b> microdocumentales de 20–45 segundos con contexto → materia → gesto → transformación → pausa → resultado → persona. Se explorarán 16:9 y 4:3 en horizontal, además de 9:16 cuando el contenido lo pida. <b>TikTok queda fuera del plan por ahora.</b></div>
+    <div style="margin-top:9px;font-size:11px;color:var(--text-3);line-height:1.5"><b>Formato base:</b> pequeñas piezas documentales. La duración depende de la historia. La grabación maestra será 16:9 horizontal cuando la historia lo permita; después se adapta a publicación. El 9:16 se reserva para piezas nacidas para móvil vertical. <b>TikTok queda fuera del plan por ahora.</b></div>
     <div style="margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:9px;font-size:11px;line-height:1.5"><b>🍽️ Serie: La comida del equipo</b><br><i>Antes de poner un plato en la carta, alguien tiene que comérselo.</i><br><br><b>Pregunta central: «¿Esto se queda?»</b><br><br>Idea → preparación → mesa → reacción real → prueba abierta → decisión. Según el momento, se puede preguntar: ¿lo volverías a comer?, ¿qué le cambiarías?, ¿qué le falta?, ¿qué es lo que más te gusta?, ¿esto lo pondrías en La Urbana?, ¿lo pedirías si lo vieras en la carta?, ¿qué nombre le pondrías?, ¿a quién se lo darías a probar?<br><br>También valen las frases espontáneas: «A ver, sé sincero», «¿Esto se queda o lo jubilo?», «¿Está para la carta o todavía no?». No hace falta entrevistar siempre: a veces es mejor grabar la mesa y recoger la conversación natural. Se conserva también el “no me gusta”. Siempre con permiso; quien no quiera salir puede quedar en manos, plato o voz fuera de plano.</div>
     <div style="margin-top:10px;padding:10px;border:1px solid var(--accent);border-radius:9px;font-size:11px;line-height:1.5;background:var(--accent-l)"><b>🧪 Del personal a la carta</b><br><b>Lunes:</b> Lore cocina para el equipo; nace la prueba y se graba. <b>Martes:</b> se piensa qué cambiar y si merece continuar. <b>Jueves:</b> se anuncia que el plato sobrevivió al lunes. <b>Viernes–domingo:</b> se ofrecen solo 20 raciones para que lo pruebe la gente. <b>Lunes siguiente:</b> se decide: se queda, se transforma o se jubila.<br><br><i>«Esto todavía no está en carta. Lo probó primero el equipo. Ahora queremos saber qué pensáis vosotros.»</i><br><br><b>Llamada a la acción:</b> «Si quieres probarlo, escríbenos FIN DE SEMANA». No se hace una reserva automática: la conversación pasa a una persona real. Las 20 raciones son un límite de cocina, no una falsa urgencia.</div>
     <div style="margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:9px;font-size:11px;line-height:1.5"><b>🌶️ Pincho del domingo</b><br>Un formato paralelo para probar algo directamente con público: elegir entre A y B, cocinar el ganador el domingo y registrar qué ocurre. Si un plato del equipo funciona mejor en pequeño formato, puede convertirse en pincho antes de pasar a carta.</div>
@@ -2589,6 +2598,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end">
       <div class="form-group"><label>Origen (opcional)</label><input id="memoria-gastro-origen" type="text" placeholder="Persona, lugar o conversación"></div>
       <div class="form-group"><label>Estado</label><select id="memoria-gastro-estado"><option value="memoria">💭 Memoria</option><option value="prueba">🧪 En prueba</option><option value="urbana">🍽️ En La Urbana</option></select></div>
+      <div class="form-group"><label>¿Qué hacemos con esta memoria?</label><select id="memoria-gastro-destino"><option value="historia">🎥 Solo historia</option><option value="investigar">🔎 Investigar</option><option value="cocinar">🧪 Cocinar</option><option value="pincho">🥢 Convertir en pincho</option><option value="fin_de_semana">🍽️ Plato de fin de semana</option><option value="carta">⭐ Carta</option><option value="archivo">📚 Archivo</option></select></div>
     </div>
     <button class="btn btn-oro btn-sm" onclick="guardarMemoriaGastro()">💾 Guardar recuerdo</button>
     <div id="memorias-gastro-resumen" style="margin-top:12px"></div>
@@ -2611,8 +2621,8 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
           <div style="font-size:12px;color:var(--text-2);margin-top:4px">No bueno — buenísimo. El plato que no te puedes hacer en casa. El que te hacía tu abuela. Que justifica volver.</div>
         </div>
         <div style="background:#edf3fd;border-radius:12px;padding:12px 14px">
-          <div style="font-weight:700;font-size:.9rem;color:#2980b9">💎 Escasez</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Porque hay un cocinero y una calidad que mantener. No es truco de marketing — es honestidad. Reserva, curratelo un poco.</div>
+          <div style="font-weight:700;font-size:.9rem;color:#2980b9">🧪 Curiosidad</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Probar, equivocarse, aprender y volver a probar. La escasez solo aparece cuando es una limitación real de producción.</div>
         </div>
       </div>
     </div>
@@ -2652,9 +2662,9 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
         <div><strong>📰 Periódico o suplemento:</strong> edición de temporada con titulares, cotilleos de los platos y carta en el interior.</div>
         <div><strong>🎟️ Entrada de concierto:</strong> menú como ticket de una experiencia; ideal para sesiones vermú, DJ o eventos.</div>
         <div><strong>📮 Postal:</strong> una cara con ilustración de La Urbana y otra con la carta; sencilla, barata y fácil de guardar.</div>
-        <div><strong>🎴 Mini cómic — aparcado:</strong> idea interesante, pero requiere una ilustración y una producción que ahora mismo no compensa.</div>
-        <div><strong>🃏 Baraja / juego de cartas — en exploración:</strong> cartas tipo baraja que podrían convertirse en un juego propio de La Urbana, quizá con una dinámica sencilla parecida a UNO. No usarlo por ahora como menú; darle una vuelta más adelante.</div>
-        <div><strong>🗺️ Mapa desplegable:</strong> mapa imaginario de La Urbana, con cada plato como territorio o personaje.</div>
+        <div><strong>⚪ ARCHIVO · Mini cómic — aparcado:</strong> idea interesante, pero requiere una ilustración y una producción que ahora mismo no compensa.</div>
+        <div><strong>⚪ ARCHIVO · Baraja / juego de cartas — en exploración:</strong> cartas tipo baraja que podrían convertirse en un juego propio de La Urbana, quizá con una dinámica sencilla parecida a UNO. No usarlo por ahora como menú; darle una vuelta más adelante.</div>
+        <div><strong>⚪ ARCHIVO · Mapa desplegable:</strong> mapa imaginario de La Urbana, con cada plato como territorio o personaje.</div>
         <div><strong>📜 Hoja de periódico antiguo:</strong> papel envejecido, tipografía editorial y “últimas noticias” de la cocina.</div>
         <div><strong>🧵 Cartón troquelado con textura:</strong> sin plástico, pero con una silueta inesperada: cerilla gigante, etiqueta de mercado, sobre, posavasos grueso o pieza de puzzle.</div>
       </div>
@@ -2693,11 +2703,11 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
           <div style="font-size:11px;color:var(--text-3);margin-top:2px">"Bolsa" → "Pelamos" → "La plantamos". Que la gente quiera esperar media hora porque lo vale.</div>
         </div>
         <div style="background:var(--surface-2);border-radius:10px;padding:10px 12px">
-          <div style="font-weight:700;font-size:.85rem">🏅 Dorsales de carrera · idea de comunicación</div>
+          <div style="font-weight:700;font-size:.85rem">⚪ ARCHIVO · Dorsales de carrera · idea de comunicación</div>
           <div style="font-size:11px;color:var(--text-3);margin-top:5px;line-height:1.55"><strong>Qué era:</strong> una forma humorística de explicar los tamaños de los platos comparándolos con distancias de una carrera. No se trata de organizar una carrera ni de entregar dorsales reales.<br><br><strong>Cómo funcionaría:</strong> una tapa sería el recorrido corto —<strong>5K</strong>—; media ración sería una <strong>media maratón</strong>; y una ración completa sería una <strong>ultra</strong>. Podría aparecer como un pequeño sello en la carta, en un cartel o en Instagram: «Croquetas · modalidad 5K» o «Raxo · modalidad ultra».<br><br><strong>Estado:</strong> idea aparcada, pendiente de decidir si encaja con el tono de La Urbana.</div>
         </div>
         <div style="background:var(--surface-2);border-radius:10px;padding:10px 12px">
-          <div style="font-weight:700;font-size:.85rem">🍽️ Menú Ozempic</div>
+          <div style="font-weight:700;font-size:.85rem">⚪ ARCHIVO · Menú Ozempic</div>
           <div style="font-size:11px;color:var(--text-3);margin-top:2px">Media ración sin drama. Nadie en A Coruña lo está haciendo. Nicho real y creciente.</div>
         </div>
         <div style="background:var(--surface-2);border-radius:10px;padding:10px 12px">
@@ -2730,7 +2740,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       <div style="display:flex;flex-direction:column;gap:10px">
         <div style="background:var(--verde-l);border-radius:12px;padding:12px 14px">
           <div style="font-weight:700;font-size:.9rem;color:var(--verde)">🍽️ Plato del día</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Foto del plato antes del servicio + texto corto. Mínimo 3 veces/semana. El mejor contenido que podéis hacer.</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Foto del plato antes del servicio + texto corto. Cuando haya algo que contar. Una historia buena vale más que una obligación semanal.</div>
         </div>
         <div style="background:var(--accent-l);border-radius:12px;padding:12px 14px">
           <div style="font-weight:700;font-size:.9rem;color:var(--accent-d)">🥢 Pinchos del finde</div>
@@ -2742,7 +2752,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
         </div>
         <div style="background:var(--rojo-l);border-radius:12px;padding:12px 14px">
           <div style="font-weight:700;font-size:.9rem;color:var(--rojo)">🎥 Cocina en vídeo</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Reels cortos: elaboración de un plato, el mercado, detrás del mostrador. Sin guion, auténtico. El formato que más crece ahora.</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">Reels cortos: elaboración de un plato, el mercado, detrás del mostrador. Sin guion, auténtico. Pequeñas piezas documentales nacidas de lo que ocurre en la cocina.</div>
         </div>
         <div style="background:var(--surface-2);border-radius:12px;padding:12px 14px">
           <div style="font-weight:700;font-size:.9rem;color:var(--text)">🤝 Comunidad & Momentos</div>
@@ -2753,7 +2763,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
 
     <!-- PROYECTO QR -->
     <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)">
-      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">⭐ Proyecto estrella: Menú abanico + QR</div>
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:8px">🟡 SIGUIENTE · Menú abanico + QR</div>
       <div style="font-size:13px;color:var(--text-2);line-height:1.6">
         El menú llega en un abanico físico. Cada plato tiene un QR. El cliente lo escanea y entra en un vídeo corto (con humor) donde se explica el plato: qué es, de dónde viene el producto, cómo se hace.<br><br>
         <strong>Por qué funciona:</strong> es diferenciador, es compartible en redes, genera conversación y refuerza la identidad del local.<br><br>
@@ -2773,19 +2783,19 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       <div style="font-weight:800;font-size:.95rem;margin-bottom:12px">📆 Frecuencia realista</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div style="background:var(--surface-2);border-radius:10px;padding:10px;text-align:center">
-          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">3-4</div>
-          <div style="font-size:11px;color:var(--text-3)">posts/semana</div>
-          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Instagram feed</div>
+          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">1</div>
+          <div style="font-size:11px;color:var(--text-3)">historia buena</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Objetivo semanal</div>
         </div>
         <div style="background:var(--surface-2);border-radius:10px;padding:10px;text-align:center">
-          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">5-7</div>
-          <div style="font-size:11px;color:var(--text-3)">stories/semana</div>
-          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Más espontáneas</div>
+          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">↗</div>
+          <div style="font-size:11px;color:var(--text-3)">si ocurre algo</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Sin cuota fija</div>
         </div>
         <div style="background:var(--surface-2);border-radius:10px;padding:10px;text-align:center">
-          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">1-2</div>
-          <div style="font-size:11px;color:var(--text-3)">reels/semana</div>
-          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Máximo alcance</div>
+          <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">0+</div>
+          <div style="font-size:11px;color:var(--text-3)">piezas</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:2px">Solo si merece salir</div>
         </div>
         <div style="background:var(--surface-2);border-radius:10px;padding:10px;text-align:center">
           <div style="font-size:1.6rem;font-weight:800;color:var(--verde)">✓</div>
@@ -2800,7 +2810,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       <div style="font-weight:800;font-size:.95rem;margin-bottom:10px">✍️ Bio para Instagram</div>
       <div style="background:var(--surface-2);border-radius:10px;padding:12px;font-size:13px;line-height:1.7;color:var(--text)" onclick="copiarTexto(this,'Bio copiada ✓')" id="bio-urbana">🥘 Cocina gallega de verdad
 📍 Rúa Pastoriza 10 · A Coruña
-🌿 Producto local · Hecho aquí
+🍃 Cocina de temporada · Hecho aquí
 📞 881 884 875</div>
       <div style="font-size:11px;color:var(--accent);margin-top:6px;font-weight:600">Toca para copiar</div>
     </div>
@@ -2822,6 +2832,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
         <div class="form-group"><label>Fecha</label><input id="mk-plan-fecha" type="date" value=""></div>
         <div class="form-group"><label>Campaña o serie</label><input id="mk-plan-campana" placeholder="Ej. Historias que continúan"></div>
+        <div class="form-group"><label>Prueba de Laboratorio <span style="font-size:10px;color:var(--text-3);font-weight:400">opcional</span></label><select id="mk-plan-prueba"><option value="">— Sin vincular —</option></select></div>
         <div class="form-group"><label>Título / capítulo</label><input id="mk-plan-titulo" placeholder="Ej. Capítulo 01 · La tortilla desaparece"></div>
         <div class="form-group"><label>Formato</label><select id="mk-plan-formato"><option>Foto</option><option>Reel</option><option>Story</option><option>Carrusel</option><option>Texto</option></select></div>
         <div class="form-group"><label>Estado</label><select id="mk-plan-estado"><option>Idea</option><option>Preparar</option><option>Listo</option><option>Publicado</option></select></div>
@@ -2850,34 +2861,12 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       </div>
       <!-- Plantilla semanal fija -->
       <div style="display:flex;flex-direction:column;gap:8px" id="mk-semana-plan">
-        <div style="background:var(--verde-l);border-radius:10px;padding:10px">
-          <div style="font-weight:700;font-size:12px;color:var(--verde)">Lunes — Arranque de semana</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">📸 Foto menú del día · Story horario de la semana</div>
-        </div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px">
-          <div style="font-weight:700;font-size:12px">Martes — Producto</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">📷 Ingrediente estrella de la semana · De dónde viene, quién lo trae</div>
-        </div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px">
-          <div style="font-weight:700;font-size:12px">Miércoles — Descanso o reel</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">🎥 Reel de elaboración o día libre de publicación</div>
-        </div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px">
-          <div style="font-weight:700;font-size:12px">Jueves — Adelanto del finde</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">💬 Story: "Este finde en La Urbana..." · Pinchos, cócteles, terraza</div>
-        </div>
-        <div style="background:var(--amarillo-l);border-radius:10px;padding:10px">
-          <div style="font-weight:700;font-size:12px;color:#b8860b">Viernes — Pinchos & Terraza</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">📸 Foto pinchos del finde · Post terraza si hay plan especial</div>
-        </div>
-        <div style="background:var(--accent-l);border-radius:10px;padding:10px">
-          <div style="font-weight:700;font-size:12px;color:var(--accent-d)">Sábado — En vivo</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">📱 Stories desde el servicio · Ambiente, momentos, platos saliendo</div>
-        </div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px">
-          <div style="font-weight:700;font-size:12px">Domingo — Menú mediodía</div>
-          <div style="font-size:12px;color:var(--text-2);margin-top:4px">🍽️ Foto menú del domingo · Cierre de semana</div>
-        </div>
+        <div style="background:var(--verde-l);border-radius:10px;padding:10px"><div style="font-weight:700;font-size:12px;color:var(--verde)">🍽️ Cocina</div><div style="font-size:12px;color:var(--text-2);margin-top:4px">¿Qué estamos cocinando esta semana?</div></div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px"><div style="font-weight:700;font-size:12px">🧪 Prueba</div><div style="font-size:12px;color:var(--text-2);margin-top:4px">¿Qué estamos investigando?</div></div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px"><div style="font-weight:700;font-size:12px">📚 Historia</div><div style="font-size:12px;color:var(--text-2);margin-top:4px">¿Qué nos ha contado alguien?</div></div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px"><div style="font-weight:700;font-size:12px">🎥 Material</div><div style="font-size:12px;color:var(--text-2);margin-top:4px">¿Qué hemos grabado?</div></div>
+        <div style="background:var(--amarillo-l);border-radius:10px;padding:10px"><div style="font-weight:700;font-size:12px;color:#b8860b">🥢 Fin de semana</div><div style="font-size:12px;color:var(--text-2);margin-top:4px">¿Qué puede venir a probar la gente?</div></div>
+        <div style="background:var(--accent-l);border-radius:10px;padding:10px"><div style="font-weight:700;font-size:12px;color:var(--accent-d)">📝 Publicación</div><div style="font-size:12px;color:var(--text-2);margin-top:4px">¿Qué merece salir?</div></div>
       </div>
     </div>
 
@@ -2894,7 +2883,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
   <!-- IDEAS -->
   <div id="mk-ideas" style="display:none">
     <div class="card" style="margin-bottom:14px">
-      <div style="font-weight:800;font-size:.95rem;margin-bottom:10px">💡 Banco de ideas</div>
+      <div style="font-weight:800;font-size:.95rem;margin-bottom:6px">💡 Banco de ideas</div><div style="font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:10px"><b>AHORA</b> es lo que estamos haciendo. <b>SIGUIENTE</b> es lo que probaremos cuando haya capacidad. <b>ARCHIVO</b> conserva ideas sin ocupar la cabeza.</div>
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <input type="text" id="mk-idea-input" placeholder="Escribe una idea..." style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--bg)">
         <button class="btn btn-oro" onclick="addIdea()" style="white-space:nowrap">➕ Añadir</button>
@@ -2902,7 +2891,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
         <label style="font-size:13px;color:var(--text-2);font-weight:700" for="mk-ideas-filtro">Mostrar:</label>
         <select id="mk-ideas-filtro" onchange="renderMkIdeas()" style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px">
-          <option value="activo">🟢 Activo</option><option value="espera">🟡 En espera</option><option value="archivo">⚪ Archivo</option><option value="todos">Todas</option>
+          <option value="activo">🔵 AHORA</option><option value="espera">🟡 SIGUIENTE</option><option value="archivo">⚪ ARCHIVO</option><option value="todos">Todas</option>
         </select>
       </div>
       <div id="mk-ideas-lista"></div>
@@ -2912,14 +2901,14 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
     <div class="card">
       <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;color:var(--text-3)">⭐ Ideas ya apuntadas</div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="background:var(--accent-l);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🎴 Menú en abanico físico con QR en cada plato → vídeo con humor explicando el plato</div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🍹 Día de cócteles en la terraza — propuesta temática</div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🥢 Pinchos del fin de semana — anuncio el viernes</div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🍽️ Especialidad del día — foto antes del servicio</div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">📰 Crónica de la tortilla — contar un plato como una noticia o una crónica deportiva</div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🎬 Historias que continúan — personajes y conflictos de los platos para Stories, Reels y QR</div>
-        <div style="background:var(--accent-l);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🍽️ La comida del equipo — antes de poner un plato en carta, alguien tiene que comérselo; grabar la prueba, las opiniones honestas y la evolución hasta decidir si vuelve</div>
-        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🐾 Pet friendly — comunicarlo con imágenes reales de agua, bebedero y perros bienvenidos</div>
+        <div style="background:var(--accent-l);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🟡 SIGUIENTE · 🎴 Menú en abanico físico con QR en cada plato → vídeo con humor explicando el plato</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🟡 SIGUIENTE · 🍹 Día de cócteles en la terraza — propuesta temática</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🔵 AHORA · 🥢 Pinchos del fin de semana — anuncio cuando haya algo que contar</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🔵 AHORA · 🍽️ Especialidad del día — foto cuando merezca la pena</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🟡 SIGUIENTE · 📰 Crónica de la tortilla — contar un plato como una noticia o una crónica</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">⚪ ARCHIVO · 🎬 Historias que continúan — conservar como referencia, no como obligación</div>
+        <div style="background:var(--accent-l);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🔵 AHORA · 🍽️ La comida del equipo — antes de poner un plato en carta, alguien tiene que comérselo; grabar la prueba, las opiniones honestas y la evolución hasta decidir si vuelve</div>
+        <div style="background:var(--surface-2);border-radius:10px;padding:10px;font-size:13px;color:var(--text)">🟡 SIGUIENTE · 🐾 Pet friendly — comunicarlo con imágenes reales de agua, bebedero y perros bienvenidos</div>
       </div>
     </div>
   </div>
@@ -3433,13 +3422,15 @@ function guardarMemoriaGastro(){
   const origen=(document.getElementById('memoria-gastro-origen')||{}).value?.trim()||'';
   const historia=(document.getElementById('memoria-gastro-historia')||{}).value?.trim()||'';
   const estado=(document.getElementById('memoria-gastro-estado')||{}).value||'memoria';
+  const destino=(document.getElementById('memoria-gastro-destino')||{}).value||'historia';
   const lista=cargar('memorias_gastronomicas',[]);
-  lista.unshift({id:Date.now(),texto,origen,historia,estado,fecha:hoy()});
+  lista.unshift({id:Date.now(),texto,origen,historia,estado,destino,fecha:hoy()});
   guardar('memorias_gastronomicas',lista);
   document.getElementById('memoria-gastro-texto').value='';
   document.getElementById('memoria-gastro-historia').value='';
   document.getElementById('memoria-gastro-origen').value='';
   document.getElementById('memoria-gastro-estado').value='memoria';
+  const destinoEl=document.getElementById('memoria-gastro-destino');if(destinoEl)destinoEl.value='historia';
   renderMemoriasGastro(); toast('Recuerdo guardado ✓','verde');
 }
 function cambiarEstadoMemoria(id,estado){
@@ -3455,7 +3446,7 @@ function renderMemoriasGastro(){
   const lista=cargar('memorias_gastronomicas',[]); const c={memoria:0,prueba:0,urbana:0}; lista.forEach(x=>c[x.estado]=(c[x.estado]||0)+1);
   resumen.innerHTML='<div style="display:flex;gap:6px;flex-wrap:wrap;font-size:11px"><span class="badge badge-gris">💭 '+c.memoria+' recuerdos</span><span class="badge badge-oro">🧪 '+c.prueba+' en investigación</span><span class="badge badge-verde">🍽️ '+c.urbana+' en La Urbana</span></div>';
   if(!lista.length){listaEl.innerHTML='<div style="font-size:12px;color:var(--text-3)">Todavía no hay recuerdos recogidos.</div>';return;}
-  listaEl.innerHTML=lista.slice(0,30).map(function(x){const e=ESTADOS_MEMORIA_GASTRO[x.estado]||ESTADOS_MEMORIA_GASTRO.memoria;return '<div style="background:var(--surface-2);border-radius:9px;padding:9px;margin-bottom:7px"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700">'+e.icon+' '+e.label+'</span><span style="font-size:10px;color:var(--text-3);margin-left:auto">'+escPrueba(x.fecha)+'</span><button onclick="borrarMemoriaGastro('+x.id+')" style="background:none;border:0;color:var(--text-3);cursor:pointer">×</button></div><div style="font-size:12px;color:var(--text);line-height:1.45;margin:5px 0">'+escPrueba(x.texto)+'</div>'+(x.origen?'<div style="font-size:10px;color:var(--text-3)">Origen: '+escPrueba(x.origen)+'</div>':'')+(x.historia?'<div style="font-size:12px;color:var(--text-2);line-height:1.5;margin-top:5px"><b>Historia:</b> '+escPrueba(x.historia)+'</div>':'')+'<select onchange="cambiarEstadoMemoria('+x.id+',this.value)" style="margin-top:6px;padding:4px 6px;border-radius:7px;border:1px solid var(--border);font-size:11px;color:var(--text);background:var(--surface)"><option value="memoria" '+(x.estado==='memoria'?'selected':'')+'>💭 Memoria</option><option value="prueba" '+(x.estado==='prueba'?'selected':'')+'>🧪 En prueba</option><option value="urbana" '+(x.estado==='urbana'?'selected':'')+'>🍽️ En La Urbana</option></select></div>';}).join('');
+  listaEl.innerHTML=lista.slice(0,30).map(function(x){const e=ESTADOS_MEMORIA_GASTRO[x.estado]||ESTADOS_MEMORIA_GASTRO.memoria;return '<div style="background:var(--surface-2);border-radius:9px;padding:9px;margin-bottom:7px"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700">'+e.icon+' '+e.label+'</span><span style="font-size:10px;color:var(--text-3);margin-left:auto">'+escPrueba(x.fecha)+'</span><button onclick="borrarMemoriaGastro('+x.id+')" style="background:none;border:0;color:var(--text-3);cursor:pointer">×</button></div><div style="font-size:12px;color:var(--text);line-height:1.45;margin:5px 0">'+escPrueba(x.texto)+'</div>'+(x.origen?'<div style="font-size:10px;color:var(--text-3)">Origen: '+escPrueba(x.origen)+'</div>':'')+(x.historia?'<div style="font-size:12px;color:var(--text-2);line-height:1.5;margin-top:5px"><b>Historia:</b> '+escPrueba(x.historia)+'</div>':'')+(x.destino?'<div style="font-size:12px;color:var(--accent-d);margin-top:5px"><b>Destino:</b> '+escPrueba(x.destino)+'</div>':'')+'<select onchange="cambiarEstadoMemoria('+x.id+',this.value)" style="margin-top:6px;padding:4px 6px;border-radius:7px;border:1px solid var(--border);font-size:11px;color:var(--text);background:var(--surface)"><option value="memoria" '+(x.estado==='memoria'?'selected':'')+'>💭 Memoria</option><option value="prueba" '+(x.estado==='prueba'?'selected':'')+'>🧪 En prueba</option><option value="urbana" '+(x.estado==='urbana'?'selected':'')+'>🍽️ En La Urbana</option></select></div>';}).join('');
 }
 // ── LIBRO INTERIOR DE MARKETING ──
 const MK_LIBRO_IDS=['vision','estrategia','calendario','ideas','guia'];
@@ -3650,7 +3641,7 @@ function renderMkIdeas() {
   const filtro=document.getElementById('mk-ideas-filtro')?.value||'activo';
   const visibles=ideas.filter(i=>filtro==='todos'||(i.estado||'activo')===filtro);
   if (!visibles.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px">No hay ideas en este estado.</div>'; return; }
-  const estados={activo:'🟢 Activo',espera:'🟡 En espera',archivo:'⚪ Archivo'};
+  const estados={activo:'🔵 AHORA',espera:'🟡 SIGUIENTE',archivo:'⚪ ARCHIVO'};
   el.innerHTML = visibles.map(i => `
     <div style="display:flex;align-items:flex-start;gap:8px;background:var(--surface-2);border-radius:10px;padding:10px;margin-bottom:8px">
       <div style="flex:1;font-size:13px;color:var(--text);line-height:1.5">${i.texto}${i.fuente?`<div style="font-size:11px;color:var(--text-3);margin-top:8px">Fuente: <a href="${i.fuente}" target="_blank" rel="noopener" style="color:var(--accent)">reel original</a></div>`:''}</div>
@@ -3684,12 +3675,30 @@ function guardarContenidoPlanificado(){
   const file=document.getElementById('mk-plan-foto')?.files?.[0];
   leerFotoPlanificada(file).then(foto=>{
     const lista=cargar('mk_contenidos',[]);
-    lista.push({id:Date.now(),fecha,campana,titulo,formato:document.getElementById('mk-plan-formato').value,estado:document.getElementById('mk-plan-estado').value,orden:document.getElementById('mk-plan-orden').value,enlace:document.getElementById('mk-plan-enlace').value.trim(),foto,nota:document.getElementById('mk-plan-nota').value.trim(),quien:USUARIO});
+    lista.push({id:Date.now(),fecha,campana,titulo,formato:document.getElementById('mk-plan-formato').value,estado:document.getElementById('mk-plan-estado').value,orden:document.getElementById('mk-plan-orden').value,pruebaId:document.getElementById('mk-plan-prueba')?.value||'',enlace:document.getElementById('mk-plan-enlace').value.trim(),foto,nota:document.getElementById('mk-plan-nota').value.trim(),quien:USUARIO});
     lista.sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||'') || (+a.orden||999)-(+b.orden||999)); guardar('mk_contenidos',lista);
-    ['mk-plan-campana','mk-plan-titulo','mk-plan-orden','mk-plan-enlace','mk-plan-nota'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';}); const fEl=document.getElementById('mk-plan-foto');if(fEl)fEl.value='';
+    ['mk-plan-campana','mk-plan-titulo','mk-plan-orden','mk-plan-enlace','mk-plan-nota'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';}); const fEl=document.getElementById('mk-plan-foto');if(fEl)fEl.value=''; const pruebaEl=document.getElementById('mk-plan-prueba');if(pruebaEl)pruebaEl.value='';
     renderCalendarioContenidos(); toast('Contenido añadido al calendario ✓','verde');
   }).catch(()=>toast('No se pudo cargar la foto','error'));
 }
+function crearContenidoDesdePrueba(id){
+  const prueba=cargar('pruebas_recetas',[]).find(x=>x.id===id);if(!prueba)return;
+  const lista=cargar('mk_contenidos',[]);
+  const existente=lista.find(x=>x.pruebaId===id&&x.estado!=='Publicado');
+  const item=existente||{id:Date.now(),fecha:hoy(),campana:'Prueba → contenido',titulo:prueba.nombre,formato:'A elegir',estado:'Idea',orden:'',enlace:'',foto:'',pruebaId:id,nota:'Historia, material, reacción y aprendizaje: '+(prueba.aprendizajes||'pendiente de completar'),quien:USUARIO};
+  if(!existente)lista.unshift(item);else item.nota='Historia, material, reacción y aprendizaje: '+(prueba.aprendizajes||'pendiente de completar');
+  guardar('mk_contenidos',lista);
+  if(typeof tab==='function')tab('instagram',document.getElementById('nav-instagram'));
+  if(typeof mkTab==='function')mkTab('calendario');
+  const camp=document.getElementById('mk-plan-campana'),tit=document.getElementById('mk-plan-titulo'),sel=document.getElementById('mk-plan-prueba');
+  if(camp)camp.value='Prueba → contenido';if(tit)tit.value=prueba.nombre;if(sel)sel.value=id;
+  renderCalendarioContenidos();toast('Borrador de contenido vinculado a la prueba ✓','verde');
+}
+function abrirPruebaDesdeContenido(id){
+  if(typeof tab==='function')tab('pruebas',document.getElementById('nav-pruebas'));
+  if(typeof mostrarPaginaApp==='function')mostrarPaginaApp('tab-pruebas',2,false);
+}
+
 function renderCalendarioContenidos(){
   var grid=document.getElementById('mk-calendario-real'), listaEl=document.getElementById('mk-contenidos-lista');
   if(!grid||!listaEl) return;
@@ -3698,6 +3707,8 @@ function renderCalendarioContenidos(){
   var mesEl=document.getElementById('mk-plan-mes');
   if(mesEl&&!mesEl.value) mesEl.value=hoy().slice(0,7);
   var mes=mesEl ? mesEl.value : '';
+  var pruebaSel=document.getElementById('mk-plan-prueba');
+  if(pruebaSel){var pruebaActual=pruebaSel.value;var pruebasLab=cargar('pruebas_recetas',[]);pruebaSel.innerHTML='<option value="">— Sin vincular —</option>'+pruebasLab.map(function(p){return '<option value="'+escPrueba(p.id)+'">'+escPrueba(p.nombre)+'</option>';}).join('');if(pruebasLab.some(function(p){return p.id===pruebaActual;}))pruebaSel.value=pruebaActual;}
   var items=cargar('mk_contenidos',[]).filter(function(x){ return !mes || String(x.fecha||'').startsWith(mes); });
   var by={};
   items.forEach(function(x){ if(!by[x.fecha]) by[x.fecha]=[]; by[x.fecha].push(x); });
@@ -3721,7 +3732,8 @@ function renderCalendarioContenidos(){
     var thumb=x.foto ? '<img src="'+escPrueba(x.foto)+'" style="width:56px;height:56px;object-fit:cover;border-radius:8px">' : '<div style="width:56px;height:56px;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:22px">'+(x.formato==='Reel'?'🎬':x.formato==='Story'?'📱':'📌')+'</div>';
     var cap=x.orden ? '<span class="badge">Cap. '+escPrueba(x.orden)+'</span>' : '';
     var link=x.enlace ? '<a href="'+escPrueba(x.enlace)+'" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent-d);display:inline-block;margin-top:4px">🔗 Abrir enlace</a>' : '';
-    return '<div style="display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border)">'+thumb+'<div style="flex:1"><div style="font-size:11px;color:var(--accent-d);font-weight:700">'+formatFecha(x.fecha)+' · '+escPrueba(x.campana)+'</div><div style="font-size:13px;font-weight:700;margin-top:2px">'+escPrueba(x.titulo)+' '+cap+'</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">'+escPrueba(x.formato)+' · '+escPrueba(x.estado)+(x.nota?' · '+escPrueba(x.nota):'')+'</div>'+link+'</div><button onclick="borrarContenidoPlanificado('+x.id+')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px">×</button></div>';
+    var pruebaLink=x.pruebaId ? '<button onclick="abrirPruebaDesdeContenido(\''+escPrueba(x.pruebaId)+'\')" style="display:inline-block;margin-top:4px;border:0;background:none;padding:0;color:var(--accent-d);font:inherit;font-size:13px;cursor:pointer">🧪 Ver ficha de prueba</button>' : '';
+    return '<div style="display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border)">'+thumb+'<div style="flex:1"><div style="font-size:11px;color:var(--accent-d);font-weight:700">'+formatFecha(x.fecha)+' · '+escPrueba(x.campana)+'</div><div style="font-size:13px;font-weight:700;margin-top:2px">'+escPrueba(x.titulo)+' '+cap+'</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">'+escPrueba(x.formato)+' · '+escPrueba(x.estado)+(x.nota?' · '+escPrueba(x.nota):'')+'</div>'+link+pruebaLink+'</div><button onclick="borrarContenidoPlanificado('+x.id+')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px">×</button></div>';
   }).join('');
 }
 function borrarContenidoPlanificado(id){ guardar('mk_contenidos',cargar('mk_contenidos',[]).filter(x=>x.id!==id)); renderCalendarioContenidos(); toast('Contenido eliminado'); }
@@ -7419,7 +7431,7 @@ function seedPruebasRecetas() {
   guardar('pruebas_recetas', lista);
 }
 function limpiarFormularioPrueba() {
-  ['prueba-nombre','prueba-cantidades','prueba-metodo','prueba-emplatado','prueba-notas','prueba-coste-racion','prueba-material','prueba-pieza','prueba-sabor','prueba-textura','prueba-acidez','prueba-visual'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
+  ['prueba-nombre','prueba-cantidades','prueba-metodo','prueba-emplatado','prueba-notas','prueba-coste-racion','prueba-material','prueba-pieza','prueba-aprendizajes','prueba-sabor','prueba-textura','prueba-acidez','prueba-visual'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
   const f=document.getElementById('prueba-fecha'); if(f) f.value=hoy();
   const est=document.getElementById('prueba-estado'); if(est) est.value='En prueba';
   const res=document.getElementById('prueba-resultado'); if(res) res.value='';
@@ -7428,7 +7440,7 @@ function limpiarFormularioPrueba() {
 function guardarPruebaReceta() {
   const nombre = document.getElementById('prueba-nombre').value.trim();
   if (!nombre) { toast('Pon un nombre a la prueba','error'); return; }
-  const prueba = { id:'prueba-'+Date.now(), nombre, fecha:document.getElementById('prueba-fecha').value||hoy(), estado:document.getElementById('prueba-estado').value, resultado:document.getElementById('prueba-resultado')?.value||'', costeRacion:document.getElementById('prueba-coste-racion')?.value||'', mirada:document.getElementById('prueba-mirada')?.value||'', material:document.getElementById('prueba-material')?.value.trim()||'', pieza:document.getElementById('prueba-pieza')?.value.trim()||'', cantidades:document.getElementById('prueba-cantidades').value.trim(), metodo:document.getElementById('prueba-metodo').value.trim(), emplatado:document.getElementById('prueba-emplatado').value.trim(), sabor:document.getElementById('prueba-sabor').value, textura:document.getElementById('prueba-textura').value, acidez:document.getElementById('prueba-acidez').value, visual:document.getElementById('prueba-visual').value, notas:document.getElementById('prueba-notas').value.trim(), creado:Date.now() };
+  const prueba = { id:'prueba-'+Date.now(), nombre, fecha:document.getElementById('prueba-fecha').value||hoy(), estado:document.getElementById('prueba-estado').value, resultado:document.getElementById('prueba-resultado')?.value||'', costeRacion:document.getElementById('prueba-coste-racion')?.value||'', mirada:document.getElementById('prueba-mirada')?.value||'', material:document.getElementById('prueba-material')?.value.trim()||'', pieza:document.getElementById('prueba-pieza')?.value.trim()||'', cantidades:document.getElementById('prueba-cantidades').value.trim(), metodo:document.getElementById('prueba-metodo').value.trim(), emplatado:document.getElementById('prueba-emplatado').value.trim(), sabor:document.getElementById('prueba-sabor').value, textura:document.getElementById('prueba-textura').value, acidez:document.getElementById('prueba-acidez').value, visual:document.getElementById('prueba-visual').value, notas:document.getElementById('prueba-notas').value.trim(), aprendizajes:document.getElementById('prueba-aprendizajes')?.value.trim()||'', creado:Date.now() };
   const lista=cargar('pruebas_recetas',[]); lista.unshift(prueba); guardar('pruebas_recetas',lista); addHistorial('menu','🧪 Prueba de receta: '+nombre); limpiarFormularioPrueba(); renderPruebasRecetas(); toast('Prueba guardada ✓','verde');
 }
 function borrarPruebaReceta(id) {
@@ -7475,7 +7487,7 @@ function renderPruebasRecetas() {
   const colores={'Aprobada':'var(--verde)','Pasa a la siguiente prueba':'var(--accent)','En prueba':'var(--amber)','Mejorar':'var(--amber)','Descartada':'var(--rojo)','Propuesta':'var(--text-3)'};
   el.innerHTML=lista.map(p=>{
     const notas=[['Sabor',p.sabor],['Textura',p.textura],['Acidez',p.acidez],['Visual',p.visual]].filter(x=>x[1]);
-    return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${colores[p.estado]||'var(--border)'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">${escPrueba(p.nombre)}</div><div style="font-size:11px;color:var(--text-3)">${p.fecha||''}</div></div><span class="badge" style="color:${colores[p.estado]||'var(--text)'}">${escPrueba(p.estado)}</span></div>${p.resultado||p.costeRacion||p.mirada?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${p.resultado?`<span class="badge">Destino: ${escPrueba(p.resultado)}</span>`:''}${p.costeRacion?`<span class="badge">Coste/ración: ${escPrueba(p.costeRacion)} €</span>`:''}${p.mirada?`<span class="badge">📷 ${escPrueba(p.mirada)}</span>`:''}</div>`:''}${p.material?`<div style="margin-top:10px"><div class="prueba-label">Material que producir</div><div class="prueba-texto">${escPrueba(p.material)}</div></div>`:''}${p.pieza?`<div style="margin-top:10px"><div class="prueba-label">Pieza creada</div><div class="prueba-texto">${escPrueba(p.pieza)}</div></div>`:''}${p.cantidades?`<div style="margin-top:12px"><div class="prueba-label">Cantidades</div><div class="prueba-texto">${escPrueba(p.cantidades)}</div></div>`:''}${p.metodo?`<div style="margin-top:10px"><div class="prueba-label">Método</div><div class="prueba-texto">${escPrueba(p.metodo)}</div></div>`:''}${p.emplatado?`<div style="margin-top:10px"><div class="prueba-label">Emplatado</div><div class="prueba-texto">${escPrueba(p.emplatado)}</div></div>`:''}${notas.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${notas.map(x=>`<span class="badge">${x[0]}: ${x[1]}/5</span>`).join('')}</div>`:''}${p.notas?`<div style="margin-top:10px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:12px;line-height:1.5">${escPrueba(p.notas)}</div>`:''}<button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="borrarPruebaReceta(${JSON.stringify(p.id)})">Borrar</button></div>`;
+    return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${colores[p.estado]||'var(--border)'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">${escPrueba(p.nombre)}</div><div style="font-size:11px;color:var(--text-3)">${p.fecha||''}</div></div><span class="badge" style="color:${colores[p.estado]||'var(--text)'}">${escPrueba(p.estado)}</span></div>${p.resultado||p.costeRacion||p.mirada?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${p.resultado?`<span class="badge">Destino: ${escPrueba(p.resultado)}</span>`:''}${p.costeRacion?`<span class="badge">Coste/ración: ${escPrueba(p.costeRacion)} €</span>`:''}${p.mirada?`<span class="badge">📷 ${escPrueba(p.mirada)}</span>`:''}</div>`:''}${p.material?`<div style="margin-top:10px"><div class="prueba-label">Material que producir</div><div class="prueba-texto">${escPrueba(p.material)}</div></div>`:''}${p.pieza?`<div style="margin-top:10px"><div class="prueba-label">Pieza creada</div><div class="prueba-texto">${escPrueba(p.pieza)}</div></div>`:''}${p.cantidades?`<div style="margin-top:12px"><div class="prueba-label">Cantidades</div><div class="prueba-texto">${escPrueba(p.cantidades)}</div></div>`:''}${p.metodo?`<div style="margin-top:10px"><div class="prueba-label">Método</div><div class="prueba-texto">${escPrueba(p.metodo)}</div></div>`:''}${p.emplatado?`<div style="margin-top:10px"><div class="prueba-label">Emplatado</div><div class="prueba-texto">${escPrueba(p.emplatado)}</div></div>`:''}${notas.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${notas.map(x=>`<span class="badge">${x[0]}: ${x[1]}/5</span>`).join('')}</div>`:''}${p.notas?`<div style="margin-top:10px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:12px;line-height:1.5">${escPrueba(p.notas)}</div>`:''}${p.aprendizajes?`<div style="margin-top:10px;background:var(--verde-l);padding:10px;border-radius:8px;font-size:13px;line-height:1.55"><b>📚 Aprendizajes</b><br>${escPrueba(p.aprendizajes)}</div>`:''}<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px"><button class="btn btn-outline btn-sm" onclick="crearContenidoDesdePrueba(${JSON.stringify(p.id)})">🎥 Crear contenido</button><button class="btn btn-outline btn-sm" onclick="borrarPruebaReceta(${JSON.stringify(p.id)})">Borrar</button></div></div>`;
   }).join('');
 }
 
@@ -8429,10 +8441,11 @@ function actualizarWidgetCaja() {
 // Navegación agrupada: menos pestañas, mismas funciones.
 const NAV_GRUPOS = {
   hoy: ['inicio','pendientes','menu','raciones','caja'],
-  cocina: ['produccion','stock','mermas','turno','appcc','protocolos'],
-  laboratorio: ['recetas','pruebas'],
+  cocina: ['produccion','menu','recetas','stock','pedidos','mermas','appcc','protocolos'],
+  laboratorio: ['pruebas','raciones'],
   historias: ['instagram','diario','programacion'],
-  negocio: ['pedidos','proveedores','nuevosproveedores','contabilidad','controlcostes','historial','formacion'],
+  equipo: ['turno','formacion'],
+  negocio: ['caja','proveedores','nuevosproveedores','contabilidad','controlcostes','historial'],
 };
 
 const PILOTO_FOOD_COST = [
@@ -8563,7 +8576,7 @@ function initNavegacionAgrupada(){
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
 const NAV_LABELS={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
-const NAV_MUNDO_PRINCIPAL={hoy:'inicio',cocina:'produccion',laboratorio:'pruebas',historias:'instagram',negocio:'controlcostes'};
+const NAV_MUNDO_PRINCIPAL={hoy:'inicio',cocina:'produccion',laboratorio:'pruebas',historias:'instagram',equipo:'turno',negocio:'controlcostes'};
 function irAMundoNav(grupo,btn){
   abrirGrupoNav(grupo);
   const id=NAV_MUNDO_PRINCIPAL[grupo];
@@ -8571,7 +8584,7 @@ function irAMundoNav(grupo,btn){
 }
 function abrirGrupoNav(grupo){
   const nav=document.getElementById('main-nav'); if(!nav) return;
-  nav.classList.remove('nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');
+  nav.classList.remove('nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
   nav.classList.add('nav-group-active','nav-world-'+grupo);
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   const links=document.getElementById('nav-world-links'); if(!links)return;
@@ -8580,7 +8593,7 @@ function abrirGrupoNav(grupo){
 }
 function volverGruposNav(){
   const nav=document.getElementById('main-nav'); if(!nav) return;
-  nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');
+  nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   const links=document.getElementById('nav-world-links'); if(links){links.innerHTML='';links.style.display='none';}
   tab('inicio',document.getElementById('nav-inicio'));
@@ -9063,10 +9076,11 @@ function descargarGraficoProgramacion(){
 (function(){
   var grupos={
     hoy:['inicio','pendientes','menu','raciones','caja'],
-    cocina:['produccion','stock','mermas','turno','appcc','protocolos'],
-    laboratorio:['recetas','pruebas'],
+    cocina:['produccion','menu','recetas','stock','pedidos','mermas','appcc','protocolos'],
+    laboratorio:['pruebas','raciones'],
     historias:['instagram','diario','programacion'],
-    negocio:['pedidos','proveedores','nuevosproveedores','contabilidad','controlcostes','historial','formacion']
+    equipo:['turno','formacion'],
+    negocio:['caja','proveedores','nuevosproveedores','contabilidad','controlcostes','historial']
   };
   var labels={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
   function renderFor(id){
@@ -9097,10 +9111,10 @@ function descargarGraficoProgramacion(){
     mostrar((grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';})[0]||'inicio',btn);
   }
   document.addEventListener('click',function(ev){
-    var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
+    var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-equipo,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
     if(!target)return;
     if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}mostrar('inicio',document.getElementById('nav-inicio'));return;}
-    var gm={"nav-grupo-hoy":'hoy',"nav-grupo-cocina":'cocina',"nav-grupo-laboratorio":'laboratorio',"nav-grupo-historias":'historias',"nav-grupo-negocio":'negocio'};
+    var gm={"nav-grupo-hoy":'hoy',"nav-grupo-cocina":'cocina',"nav-grupo-laboratorio":'laboratorio',"nav-grupo-historias":'historias',"nav-grupo-equipo":'equipo',"nav-grupo-negocio":'negocio'};
     if(gm[target.id]){ev.preventDefault();ev.stopImmediatePropagation();abrir(gm[target.id],target);return;}
     var fid=target.getAttribute('data-fallback-tab')||((target.id||'').indexOf('nav-')===0?(target.id||'').slice(4):'');
     if(fid && document.getElementById('tab-'+fid)){ev.preventDefault();ev.stopImmediatePropagation();mostrar(fid,target);}
