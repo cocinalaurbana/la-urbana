@@ -1008,6 +1008,23 @@ button,input,select,textarea{font-size:18px}
 #main-content .tab .book-nav button{font-size:18px!important}
 header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-badge{font-size:14px!important}.btn-theme,.btn-salir{font-size:16px!important}
 </style>
+<style id="conservacion-historico">
+/* La información operativa se corrige o se anula; no se borra desde la interfaz. */
+button[onclick*="borrar"],button[onclick*="eliminar"]{display:none!important}
+</style>
+<style id="maria-access-layout">
+#main-nav .maria-locked{opacity:.55;cursor:not-allowed!important}
+#main-nav .maria-locked::after{content:' 🔒';font-size:.9em}
+.maria-quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.maria-quick-grid button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);color:var(--text);font:inherit;cursor:pointer;text-align:left}
+.maria-quick-grid button:hover{border-color:var(--accent)}
+.maria-quick-grid button>span{font-weight:800;font-size:17px}.maria-quick-grid button small{font-size:15px;color:var(--text-2)}
+.maria-home-kicker{font-size:14px;letter-spacing:1.2px;color:var(--accent-d);font-weight:800}
+.maria-locked-panel{margin-top:14px}.maria-locked-list{display:flex;flex-direction:column;gap:9px;color:var(--text-2);font-size:17px}
+body.maria-active #tab-inicio> :not(#maria-panel){display:none!important}
+body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
+@media(max-width:560px){.maria-quick-grid{grid-template-columns:1fr}.maria-quick-grid button>span{font-size:18px}.maria-quick-grid button small{font-size:16px}}
+</style>
 <style id="formato-libro-global">
 /* Formato libro para los apartados largos: una hoja visible cada vez. */
 .book-page{display:none}
@@ -1187,6 +1204,14 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"/></svg>
     Protocolos
   </button>
+  <button onclick="tab('personal',this)" id="nav-personal" class="oculto">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M5 21c.6-4 2.8-6 7-6s6.4 2 7 6"/></svg>
+    Comida del personal
+  </button>
+  <button onclick="tab('pincho',this)" id="nav-pincho" class="oculto">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19l8-8m0 0 4-4m-4 4 4 4m-4-4-4-4M3 21h18"/></svg>
+    Pincho
+  </button>
 
   <div class="nav-separator"></div>
   <div class="nav-section-label">Operaciones</div>
@@ -1271,6 +1296,22 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
 <div id="main-content">
 <!-- INICIO -->
 <div id="tab-inicio" class="tab active">
+  <div id="maria-panel" style="display:none">
+    <div class="maria-home-kicker">LA URBANA · COCINA</div>
+    <h2 style="margin:6px 0 3px">María · hoy</h2>
+    <div id="maria-hoy-fecha" style="color:var(--text-2);margin-bottom:16px"></div>
+    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)"><div class="card-title">HOY · Tareas pendientes</div><div id="maria-hoy-tareas"></div></div>
+    <div class="maria-quick-grid">
+      <button onclick="tab('recetas',document.getElementById('nav-recetas'))">🍳<span>Recetas</span><small>Consultar y crear</small></button>
+      <button onclick="tab('pincho',document.getElementById('nav-pincho'))">🥢<span>Pincho del sábado</span><small>Preparar y registrar</small></button>
+      <button onclick="tab('personal',document.getElementById('nav-personal'))">🍽️<span>Comida del personal</span><small>Registrar comida</small></button>
+      <button onclick="tab('mermas',document.getElementById('nav-mermas'))">🗑️<span>Mermas</span><small>Anotar pérdida</small></button>
+      <button onclick="tab('protocolos',document.getElementById('nav-protocolos'))">🧽<span>Limpieza</span><small>Checklist asignada</small></button>
+      <button onclick="tab('caja',document.getElementById('nav-caja'))">📦<span>Albaranes</span><small>Fotografiar y guardar</small></button>
+      <button onclick="tab('appcc',document.getElementById('nav-appcc'))">🛡️<span>APPCC</span><small>Registros asignados</small></button>
+    </div>
+    <div class="card maria-locked-panel"><div class="card-title">Áreas de La Urbana</div><div class="maria-locked-list"><span>🔒 Laboratorio</span><span>🔒 Comunicación</span><span>🔒 Academia de Mirada</span><span>🔒 Gestión</span><span>🔒 Estrategia</span></div></div>
+  </div>
 
   <div class="dash-greeting">
     <h2 id="dash-saludo">Hola, Lore.</h2>
@@ -1891,6 +1932,9 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       </select>
     </div>
     <div class="form-group">
+      <label>Fotografía (opcional)</label><input type="file" id="m-foto" accept="image/*" capture="environment">
+    </div>
+    <div class="form-group">
       <label>Detalle <span id="detalle-req" style="color:var(--rojo);display:none">*obligatorio</span></label>
       <textarea id="m-detalle" rows="2" placeholder="ej. Se tiró la burrata porque llevaba 2 días abierta sin usar..."></textarea>
     </div>
@@ -2008,6 +2052,37 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
       <div style="font-size:12px;color:var(--text-3);margin-top:6px">Las recetas marcadas como "Personal" aparecen aquí. Toca una para añadirla al día seleccionado.</div>
     </div>
   </div>
+</div>
+
+<!-- COMIDA DEL PERSONAL · MARÍA -->
+<div id="tab-personal" class="tab">
+  <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div class="card-title">🍽️ Comida del personal</div><div style="color:var(--text-2)">Registra lo que preparaste para el equipo. Si marcas «Enviar al Laboratorio», no tendrás que volver a escribirlo.</div></div>
+  <div class="card">
+    <div class="form-group"><label>Fecha</label><input type="date" id="maria-personal-fecha"></div>
+    <div class="form-group"><label>Nombre del plato</label><input id="maria-personal-plato" placeholder="Ej. Judías verdes con chorizo y patata"></div>
+    <div class="form-group"><label>Ingredientes y cantidades</label><textarea id="maria-personal-ingredientes" rows="4" placeholder="Ingrediente — cantidad"></textarea></div>
+    <div class="form-group"><label>Raciones / personas</label><input type="number" id="maria-personal-raciones" min="1" step="1" placeholder="Ej. 4"></div>
+    <div class="form-group"><label>Observaciones</label><textarea id="maria-personal-notas" rows="3" placeholder="Qué funcionó, qué cambiarías o cualquier incidencia"></textarea></div>
+    <div class="form-group"><label>Fotografía (opcional)</label><input type="file" id="maria-personal-foto" accept="image/*" capture="environment"></div>
+    <div class="form-group"><label>¿Enviar al Laboratorio?</label><select id="maria-personal-lab"><option value="no">No</option><option value="si">Sí, crear una prueba</option></select></div>
+    <button class="btn btn-oro btn-full" onclick="guardarComidaPersonalMaria()">Guardar comida</button>
+  </div>
+  <div class="card"><div class="card-title">Registros recientes</div><div id="maria-personal-lista"></div></div>
+</div>
+
+<!-- PINCHO OPERATIVO · MARÍA -->
+<div id="tab-pincho" class="tab">
+  <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div class="card-title">🥢 Pincho del sábado</div><div style="color:var(--text-2)">Registra la elaboración del viernes y deja claro qué ocurrió.</div></div>
+  <div class="card">
+    <div class="form-group"><label>Fecha</label><input type="date" id="maria-pincho-fecha"></div>
+    <div class="form-group"><label>Nombre del pincho</label><input id="maria-pincho-nombre" placeholder="Ej. Tortilla, croqueta o prueba del día"></div>
+    <div class="form-group"><label>Cantidades y elaboración</label><textarea id="maria-pincho-elaboracion" rows="4" placeholder="Ingredientes, cantidades, proceso y raciones"></textarea></div>
+    <div class="form-group"><label>Raciones preparadas</label><input type="number" id="maria-pincho-raciones" min="0" step="1"></div>
+    <div class="form-group"><label>Observaciones e incidencias</label><textarea id="maria-pincho-notas" rows="3" placeholder="Qué salió bien, qué ocurrió y qué cambiarías"></textarea></div>
+    <div class="form-group"><label>Fotografía (opcional)</label><input type="file" id="maria-pincho-foto" accept="image/*" capture="environment"></div>
+    <button class="btn btn-oro btn-full" onclick="guardarPinchoMaria()">Guardar pincho</button>
+  </div>
+  <div class="card"><div class="card-title">Pinchos registrados</div><div id="maria-pincho-lista"></div></div>
 </div>
 
 <!-- RECETAS -->
@@ -2374,7 +2449,7 @@ header h1{font-size:17px!important} header .sub{font-size:14px!important} .role-
     <div id="protocolos-prioritarios-lista" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div>
     <div id="protocolo-detalle" style="display:none;margin-top:14px;padding:14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border)"></div>
   </div>
-  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
+  <div class="card" id="protocolos-limpieza-card" style="margin-bottom:14px;border-left:4px solid var(--verde)">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px">
       <div>
         <div class="card-title" style="margin-bottom:4px">🧹 Checklist de limpieza</div>
@@ -4042,89 +4117,27 @@ function cerrarSesion() {
   document.getElementById('header-role').textContent = '—';
   initBourdain();
 }
+const MARIA_ALLOWED_TABS = ['inicio','personal','pincho','recetas','mermas','protocolos','appcc','caja'];
+window.MARIA_ALLOWED_TABS = MARIA_ALLOWED_TABS;
 function aplicarPermisos() {
-  const MARIA_ALLOWED_TABS = ['inicio','turno','produccion','stock','mermas','appcc'];
-  document.querySelectorAll('#main-nav button[id^="nav-"]:not([id^="nav-grupo-"])').forEach(btn => {
-    const tabId = btn.id.replace(/^nav-/, '');
-    if (tabId) btn.classList.toggle('maria-hidden', esMaria() && !MARIA_ALLOWED_TABS.includes(tabId));
+  const maria=esMaria();
+  document.body.classList.toggle('maria-active',maria);window.USUARIO_MARIA=maria;
+  const allowed=MARIA_ALLOWED_TABS;
+  document.querySelectorAll('#main-nav button[id^="nav-"]:not([id^="nav-grupo-"])').forEach(btn=>{
+    const tabId=btn.id.replace(/^nav-/,'');
+    const permitido=!maria||allowed.includes(tabId);
+    btn.classList.remove('maria-hidden');
+    btn.classList.toggle('maria-locked',maria&&!permitido);
+    if(maria&&permitido)btn.classList.remove('oculto');
   });
-  ['nav-grupo-bar','nav-grupo-compras','nav-grupo-cultura','nav-grupo-gestion'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('maria-hidden', esMaria());
-  });
-  document.querySelectorAll('#accesos-rapidos .acceso-card').forEach(card => {
-    const m = (card.getAttribute('onclick') || '').match(/tab\('(.*?)'/);
-    if (m) card.classList.toggle('maria-hidden', esMaria() && !MARIA_ALLOWED_TABS.includes(m[1]));
-  });
-  ['nav-recetas','nav-pruebas','nav-proveedores','nav-nuevosproveedores','nav-historial','nav-formacion','nav-instagram','nav-contabilidad','nav-diario','nav-programacion'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('oculto', esMaria());
-  });
-  const btn = document.getElementById('btn-nuevo-prod');
-  if (btn) btn.style.display = esAdmin() ? '' : 'none';
+  const btn=document.getElementById('btn-nuevo-prod');if(btn)btn.style.display=esAdmin()?'':'none';
   poblarSelectorProductos();
-  // Traducir nav si es María
-  if (esMaria()) {
-    const navMap = {
-      'nav-stock':'🗄️ Készlet', 'nav-mermas':'📉 Veszteség', 'nav-appcc':'🌡️ HACCP',
-      'nav-inicio':'🏠 Kezdőlap', 'nav-turno':'📋 Műszak', 'nav-raciones':'🍽️ Adagok',
-      'nav-produccion':'👩‍🍳 Előkészítés', 'nav-pedidos':'📦 Rendelések', 'nav-caja':'💰 Áruátvétel'
-    };
-    Object.entries(navMap).forEach(([id, txt]) => {
-      const el = document.getElementById(id);
-      if (el) el.innerHTML = txt;
-    });
-    // Traducir stats del dashboard
-    const lblOk = document.querySelector('#stat-ok')?.closest('.stat')?.querySelector('.lbl');
-    const lblCrit = document.querySelector('#stat-critico')?.closest('.stat')?.querySelector('.lbl');
-    const lblMermas = document.querySelector('#stat-mermas')?.closest('.stat')?.querySelector('.lbl');
-    if (lblOk) lblOk.textContent = 'Készlet rendben';
-    if (lblCrit) lblCrit.textContent = 'Critic';
-    if (lblMermas) lblMermas.textContent = 'Mai veszteség';
-    const lblCritico = document.querySelector('#stat-critico')?.closest('.stat')?.querySelector('.lbl');
-    const lblPedidos = document.querySelector('#stat-pedidos')?.closest('.stat')?.querySelector('.lbl');
-    if (lblCritico) lblCritico.textContent = 'Kritikus';
-    if (lblPedidos) lblPedidos.textContent = 'Függő rendelések';
-    const gruposHu = { 'nav-grupo-bar':'Szerviz és pénztár', 'nav-grupo-cocina':'Konyha', 'nav-grupo-turnos':'Műszakok', 'nav-grupo-compras':'Beszerzés', 'nav-grupo-cultura':'Kultúra', 'nav-grupo-gestion':'Vezetés' };
-    Object.entries(gruposHu).forEach(([id,txt]) => { const el=document.getElementById(id); if(el) { const sp=el.querySelector('span'); if(sp) sp.textContent=txt; } });
-    const backHu=document.getElementById('nav-volver-grupos'); if(backHu) backHu.textContent='‹ Minden rész';
-    const salirHu=document.querySelector('.btn-salir'); if(salirHu) salirHu.textContent='Kilépés';
-    const barHu=document.querySelector('#nav-grupo-bar');
-    // Mensaje de acceso no autorizado
-    window._noAccesoMsg = 'Ehhez a részhez nincs hozzáférésed';
-    // Traducir formulario de Mermas
-    const lblMotivoSec = document.querySelector('label[for="m-motivo"], #tab-mermas label');
-    // Select de motivos
-    const selMotivo = document.getElementById('m-motivo');
-    if (selMotivo) {
-      selMotivo.options[0].text = '— Selectează —';
-      selMotivo.options[1].text = t('motivoCocinado');
-      selMotivo.options[2].text = t('motivoTirado');
-      selMotivo.options[3].text = t('motivoCaducado');
-      selMotivo.options[4].text = t('motivoRoto');
-      selMotivo.options[5].text = t('motivoOtro');
-    }
-    // Filtro de historial
-    const filtroMerma = document.getElementById('filtro-merma');
-    if (filtroMerma) {
-      if (filtroMerma.options[0]) filtroMerma.options[0].text = t('filtroHoy')||'Ma';
-      if (filtroMerma.options[1]) filtroMerma.options[1].text = t('filtroSemana')||'Ezen a héten';
-      if (filtroMerma.options[2]) filtroMerma.options[2].text = t('filtroTodo')||'Mind';
-    }
-    // Botón registrar merma
-    const btnMerma = document.querySelector('#tab-mermas .btn-rojo');
-    if (btnMerma) btnMerma.textContent = t('registrarMermaBtn')||'Înregistrează pierdere';
-    // Título sección elaborados notas placeholder
-    const elabNotas = document.getElementById('elab-notas');
-    if (elabNotas) elabNotas.placeholder = t('elaboradoNotas')||'Note (opțional)';
-    // "Mermas por motivo" label
-    const mermasPorMotivoEl = document.querySelector('#tab-mermas [style*="uppercase"]');
-    if (mermasPorMotivoEl) mermasPorMotivoEl.textContent = t('mermasPorMotivo')||'Pierderi pe motiv';
-  } else {
-    window._noAccesoMsg = 'No tienes acceso a esta sección';
+  window._noAccesoMsg=maria?'Ehhez a részhez nincs hozzáférésed':'No tienes acceso a esta sección';
+  if(maria){
+    const fecha=document.getElementById('maria-hoy-fecha');if(fecha)fecha.textContent=hoy();
+    renderMariaHome();renderComidaPersonalMaria();renderPinchoMaria();
   }
 }
-
 
 const TAB_GUIAS = {
   inicio:{es:['Inicio','Aquí ves el estado general de La Urbana y las alertas que requieren atención.','Revisa el resumen y actúa solo sobre lo que aparezca como pendiente o crítico.'],hu:['Kezdőlap','Itt látható a La Urbana általános állapota és a figyelmet igénylő riasztások.','Ellenőrizd az összefoglalót, és csak a függőben lévő vagy kritikus feladatokkal foglalkozz.']},
@@ -4181,9 +4194,19 @@ function mostrarProtocolo(id) {
 function cerrarProtocolo() { const el=document.getElementById('protocolo-detalle'); if(el) el.style.display='none'; document.querySelectorAll('.protocolo-btn').forEach(b=>b.classList.remove('active')); }
 function initProtocolos() {
   const el=document.getElementById('protocolos-prioritarios-lista'); if(!el) return;
-  el.innerHTML=PROTOCOLOS_PRIORITARIOS.map(p=>`<button class="protocolo-btn" data-protocolo="${p.id}" onclick="mostrarProtocolo('${p.id}')">${p.icon} ${p.nombre}<span style="float:right;color:var(--text-3)">›</span></button>`).join('');
-  cerrarProtocolo();
-  renderLimpiezaChecklist();
+  const limpiezaCard=document.getElementById('protocolos-limpieza-card');
+  if(esMaria()){
+    document.querySelectorAll('#tab-protocolos .card').forEach(c=>c.style.display=c===limpiezaCard?'':'none');
+    el.innerHTML='<div style="padding:10px;color:var(--text-2)">🧽 Solo se muestra la limpieza que tienes asignada.</div>';
+    cerrarProtocolo();
+    renderLimpiezaChecklist();
+    if(typeof mostrarPaginaApp==='function')mostrarPaginaApp('tab-protocolos',1,false);
+  }else{
+    document.querySelectorAll('#tab-protocolos .card').forEach(c=>c.style.display='');
+    el.innerHTML=PROTOCOLOS_PRIORITARIOS.map(p=>`<button class="protocolo-btn" data-protocolo="${p.id}" onclick="mostrarProtocolo('${p.id}')">${p.icon} ${p.nombre}<span style="float:right;color:var(--text-3)">›</span></button>`).join('');
+    cerrarProtocolo();
+    renderLimpiezaChecklist();
+  }
 }
 
 const LIMPIEZA_CHECKLIST = {
@@ -4368,7 +4391,7 @@ function mostrarPaginaPendientes(n, scroll=true){
 }
 
 function tab(id, btn) {
-  const mariaAllowedTabs = ['inicio','turno','produccion','stock','mermas','appcc'];
+  const mariaAllowedTabs = MARIA_ALLOWED_TABS;
   if (esMaria() && !mariaAllowedTabs.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
   window._tabActual = id;
   const selectorDirecto = document.getElementById('nav-directo');
@@ -4382,7 +4405,7 @@ function tab(id, btn) {
   if (btn) btn.classList.add('active');
   renderTabGuia(id);
   const renders = {
-    inicio: initInicio, pendientes: renderPendientes, stock: renderStock, produccion: renderKanban,
+    inicio: initInicio, pendientes: renderPendientes, personal: renderComidaPersonalMaria, pincho: renderPinchoMaria, stock: renderStock, produccion: renderKanban,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
     raciones: () => { initRaciones(); },
     produccion: () => { renderKanban(); },
@@ -4501,6 +4524,44 @@ function renderRutinaHoy(){
 }
 function toggleRutinaHoy(id,checked){
   const key='rutina_hoy_'+hoy(), estado=cargar(key,{}); estado[id]=checked; guardar(key,estado); renderRutinaHoy();
+}
+
+function renderMariaHome(){
+  const el=document.getElementById('maria-hoy-tareas');if(!el)return;
+  const tareas=[
+    {txt:'Revisar la limpieza asignada',id:'protocolos'},
+    {txt:'Registrar albarán si llegó mercancía',id:'caja'},
+    {txt:'Registrar una merma si ocurrió',id:'mermas'},
+    {txt:'Registrar la comida del personal',id:'personal'},
+    {txt:'Preparar o registrar el pincho',id:'pincho'}
+  ];
+  el.innerHTML=tareas.map(t=>'<div style="display:flex;align-items:center;gap:9px;padding:10px 0;border-top:1px solid var(--border);cursor:pointer" onclick="tab(\''+t.id+'\',document.getElementById(\'nav-'+t.id+'\'))"><span style="font-size:20px">☐</span><span>'+t.txt+'</span><span style="margin-left:auto;color:var(--accent-d)">›</span></div>').join('');
+  const f=document.getElementById('maria-hoy-fecha');if(f)f.textContent=new Date().toLocaleDateString('hu-HU',{weekday:'long',day:'numeric',month:'long'});
+}
+function renderComidaPersonalMaria(){
+  const listaEl=document.getElementById('maria-personal-lista');if(!listaEl)return;
+  const f=document.getElementById('maria-personal-fecha');if(f&&!f.value)f.value=hoy();
+  const lista=cargar('comidas_personal',[]);
+  listaEl.innerHTML=lista.slice(0,8).map(x=>'<div style="border-top:1px solid var(--border);padding:10px 0"><strong>'+escPrueba(x.plato)+'</strong><div style="color:var(--text-2);font-size:16px">'+escPrueba(x.fecha)+' · '+escPrueba(x.raciones||'—')+' personas'+(x.enviarLaboratorio?' · 🧪 enviado al Laboratorio':'')+'</div><div style="font-size:16px;color:var(--text-2);margin-top:4px;white-space:pre-line">'+escPrueba(x.ingredientes||x.notas||'')+'</div></div>').join('')||'<div style="color:var(--text-3)">Todavía no hay comidas registradas.</div>';
+}
+function guardarComidaPersonalMaria(){
+  const plato=(document.getElementById('maria-personal-plato')||{}).value?.trim();if(!plato){toast('Escribe el nombre del plato','error');return;}
+  const dato={id:'comida-'+Date.now(),fecha:document.getElementById('maria-personal-fecha')?.value||hoy(),plato,ingredientes:document.getElementById('maria-personal-ingredientes')?.value.trim()||'',raciones:document.getElementById('maria-personal-raciones')?.value||'',notas:document.getElementById('maria-personal-notas')?.value.trim()||'',enviarLaboratorio:document.getElementById('maria-personal-lab')?.value==='si',foto:''};
+  const file=document.getElementById('maria-personal-foto')?.files?.[0];
+  const terminar=function(foto){dato.foto=foto||'';const lista=cargar('comidas_personal',[]);lista.unshift(dato);guardar('comidas_personal',lista);if(dato.enviarLaboratorio){const pruebas=cargar('pruebas_recetas',[]);pruebas.unshift({id:'prueba-'+dato.id,nombre:'Comida personal · '+dato.plato,fecha:dato.fecha,estado:'En prueba',resultado:'Personal',cantidades:dato.ingredientes,metodo:'Creada desde el registro de comida del personal.',emplatado:'',notas:dato.notas,aprendizajes:'',foto:dato.foto,origenComidaPersonal:dato.id,creado:Date.now()});guardar('pruebas_recetas',pruebas);}['maria-personal-plato','maria-personal-ingredientes','maria-personal-raciones','maria-personal-notas'].forEach(function(id){const e=document.getElementById(id);if(e)e.value='';});const img=document.getElementById('maria-personal-foto');if(img)img.value='';renderComidaPersonalMaria();renderMariaHome();toast(dato.enviarLaboratorio?'Comida guardada y enviada al Laboratorio ✓':'Comida guardada ✓','verde');};
+  if(file&&typeof leerFotoPlanificada==='function')leerFotoPlanificada(file).then(terminar).catch(function(){terminar('');});else terminar('');
+}
+function renderPinchoMaria(){
+  const listaEl=document.getElementById('maria-pincho-lista');if(!listaEl)return;
+  const f=document.getElementById('maria-pincho-fecha');if(f&&!f.value)f.value=hoy();
+  const lista=cargar('pinchos_operativos',[]);
+  listaEl.innerHTML=lista.slice(0,8).map(x=>'<div style="border-top:1px solid var(--border);padding:10px 0"><strong>'+escPrueba(x.nombre)+'</strong><div style="color:var(--text-2);font-size:16px">'+escPrueba(x.fecha)+' · '+escPrueba(x.raciones||'—')+' raciones</div><div style="font-size:16px;color:var(--text-2);margin-top:4px;white-space:pre-line">'+escPrueba(x.elaboracion||x.notas||'')+'</div></div>').join('')||'<div style="color:var(--text-3)">Todavía no hay pinchos registrados.</div>';
+}
+function guardarPinchoMaria(){
+  const nombre=(document.getElementById('maria-pincho-nombre')||{}).value?.trim();if(!nombre){toast('Escribe el nombre del pincho','error');return;}
+  const dato={id:'pincho-'+Date.now(),fecha:document.getElementById('maria-pincho-fecha')?.value||hoy(),nombre,elaboracion:document.getElementById('maria-pincho-elaboracion')?.value.trim()||'',raciones:document.getElementById('maria-pincho-raciones')?.value||'',notas:document.getElementById('maria-pincho-notas')?.value.trim()||'',foto:''};
+  const file=document.getElementById('maria-pincho-foto')?.files?.[0],terminar=function(foto){dato.foto=foto||'';const lista=cargar('pinchos_operativos',[]);lista.unshift(dato);guardar('pinchos_operativos',lista);['maria-pincho-nombre','maria-pincho-elaboracion','maria-pincho-raciones','maria-pincho-notas'].forEach(function(id){const e=document.getElementById(id);if(e)e.value='';});const img=document.getElementById('maria-pincho-foto');if(img)img.value='';renderPinchoMaria();renderMariaHome();toast('Pincho guardado ✓','verde');};
+  if(file&&typeof leerFotoPlanificada==='function')leerFotoPlanificada(file).then(terminar).catch(function(){terminar('');});else terminar('');
 }
 
 function initInicio() {
@@ -5227,15 +5288,18 @@ function guardarMerma() {
   const productosActualizados = productos.map(p => p.id === prodId ? {...p, lotes: lotesActualizados} : p);
   guardar('stock_productos', productosActualizados);
 
-  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidad:formatoMerma ? formatoMerma.unidad : prod.unidad, unidadStock:prod.unidad, cantidad, cantidadStock, motivo, detalle, costeUnit, costeTotal, quien:USUARIO, cuando:ahora()};
+  const merma = {id:Date.now(), prodId, prodNombre:prod.nombre, unidad:formatoMerma ? formatoMerma.unidad : prod.unidad, unidadStock:prod.unidad, cantidad, cantidadStock, motivo, detalle, costeUnit, costeTotal, foto:'', quien:USUARIO, cuando:ahora()};
   const mermas = cargar('mermas',[]);
   mermas.unshift(merma);
   guardar('mermas', mermas);
+  const fotoMerma=document.getElementById('m-foto')?.files?.[0];
+  if(fotoMerma&&typeof leerFotoPlanificada==='function')leerFotoPlanificada(fotoMerma).then(function(foto){const ms=cargar('mermas',[]),m=ms.find(x=>x.id===merma.id);if(m){m.foto=foto;guardar('mermas',ms);renderMermas();}}).catch(function(){});
   addHistorial('merma', `📉 ${cantidad} ${formatoMerma ? formatoMerma.unidad : prod.unidad} de ${prod.nombre}${formatoMerma ? ` (${formatStockQty(cantidadStock)} ${prod.unidad})` : ''} · ${motivo}${detalle?' — '+detalle:''}${costeTotal?` (${costeTotal.toFixed(2)}€)`:''}`);
 
   document.getElementById('m-cantidad').value = '';
   document.getElementById('m-motivo').value = '';
   document.getElementById('m-detalle').value = '';
+  const fotoMermaEl=document.getElementById('m-foto');if(fotoMermaEl)fotoMermaEl.value='';
   document.getElementById('merma-coste-info').style.display = 'none';
   renderMermas(); renderStock(); initInicio();
   toast('Merma registrada ✓','verde');
@@ -8441,7 +8505,7 @@ function actualizarWidgetCaja() {
 // Navegación agrupada: menos pestañas, mismas funciones.
 const NAV_GRUPOS = {
   hoy: ['inicio','pendientes','menu','raciones','caja'],
-  cocina: ['produccion','menu','recetas','stock','pedidos','mermas','appcc','protocolos'],
+  cocina: ['personal','pincho','produccion','menu','recetas','stock','pedidos','mermas','appcc','protocolos'],
   laboratorio: ['pruebas','raciones'],
   historias: ['instagram','diario','programacion'],
   equipo: ['turno','formacion'],
@@ -8575,7 +8639,7 @@ function initNavegacionAgrupada(){
   nav.querySelectorAll('.nav-separator,.nav-section-label').forEach(e=>e.classList.add('nav-legacy'));
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
-const NAV_LABELS={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
+const NAV_LABELS={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
 const NAV_MUNDO_PRINCIPAL={hoy:'inicio',cocina:'produccion',laboratorio:'pruebas',historias:'instagram',equipo:'turno',negocio:'controlcostes'};
 function irAMundoNav(grupo,btn){
   abrirGrupoNav(grupo);
@@ -8588,7 +8652,7 @@ function abrirGrupoNav(grupo){
   nav.classList.add('nav-group-active','nav-world-'+grupo);
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   const links=document.getElementById('nav-world-links'); if(!links)return;
-  links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).map(id=>`<button class="nav-world-link" onclick="tab('${id}',this)">${NAV_LABELS[id]||id}</button>`).join('');
+  links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).map(id=>{const permitido=!esMaria()||MARIA_ALLOWED_TABS.includes(id);return `<button class="nav-world-link${permitido?'':' maria-locked'}" ${permitido?`onclick="tab('${id}',this)"`:'disabled aria-disabled="true"'}>${NAV_LABELS[id]||id}</button>`;}).join('');
   links.style.display='flex';
 }
 function volverGruposNav(){
@@ -9076,7 +9140,7 @@ function descargarGraficoProgramacion(){
 (function(){
   var grupos={
     hoy:['inicio','pendientes','menu','raciones','caja'],
-    cocina:['produccion','menu','recetas','stock','pedidos','mermas','appcc','protocolos'],
+    cocina:['personal','pincho','produccion','menu','recetas','stock','pedidos','mermas','appcc','protocolos'],
     laboratorio:['pruebas','raciones'],
     historias:['instagram','diario','programacion'],
     equipo:['turno','formacion'],
@@ -9102,18 +9166,18 @@ function descargarGraficoProgramacion(){
   }
   function abrir(grupo,btn){
     var nav=document.getElementById('main-nav');if(!nav)return;
-    ['hoy','cocina','laboratorio','historias','negocio'].forEach(function(g){nav.classList.remove('nav-world-'+g);});
+    ['hoy','cocina','laboratorio','historias','equipo','negocio'].forEach(function(g){nav.classList.remove('nav-world-'+g);});
     nav.classList.add('nav-group-active','nav-world-'+grupo);
     var volver=document.getElementById('nav-volver-grupos');if(volver)volver.style.display='flex';
     var links=document.getElementById('nav-world-links');if(!links)return;
-    links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).map(function(id){return '<button type="button" class="nav-world-link" data-fallback-tab="'+id+'">'+(labels[id]||id)+'<span style="margin-left:auto">›</span></button>';}).join('');
+    links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).map(function(id){var permitido=!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0||!window.USUARIO_MARIA;return '<button type="button" class="nav-world-link'+(permitido?'':' maria-locked')+'" '+(permitido?'data-fallback-tab="'+id+'"':'disabled aria-disabled="true"')+'>'+(labels[id]||id)+(permitido?'<span style="margin-left:auto">›</span>':' 🔒 Sin acceso')+'</button>';}).join('');
     links.style.display='flex';
     mostrar((grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';})[0]||'inicio',btn);
   }
   document.addEventListener('click',function(ev){
     var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-equipo,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
     if(!target)return;
-    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}mostrar('inicio',document.getElementById('nav-inicio'));return;}
+    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}mostrar('inicio',document.getElementById('nav-inicio'));return;}
     var gm={"nav-grupo-hoy":'hoy',"nav-grupo-cocina":'cocina',"nav-grupo-laboratorio":'laboratorio',"nav-grupo-historias":'historias',"nav-grupo-equipo":'equipo',"nav-grupo-negocio":'negocio'};
     if(gm[target.id]){ev.preventDefault();ev.stopImmediatePropagation();abrir(gm[target.id],target);return;}
     var fid=target.getAttribute('data-fallback-tab')||((target.id||'').indexOf('nav-')===0?(target.id||'').slice(4):'');
@@ -9121,6 +9185,7 @@ function descargarGraficoProgramacion(){
   },true);
   document.addEventListener('change',function(ev){
     var el=ev.target;if(!el||el.id!=='nav-directo'||!el.value)return;
+    if(window.USUARIO_MARIA&&window.MARIA_ALLOWED_TABS&&window.MARIA_ALLOWED_TABS.indexOf(el.value)<0){ev.preventDefault();ev.stopImmediatePropagation();if(window.toast)toast(window._noAccesoMsg||'Ehhez a részhez nincs hozzáférésed','error');return;}
     ev.preventDefault();ev.stopImmediatePropagation();mostrar(el.value,null);
   },true);
 })();
