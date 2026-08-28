@@ -9186,8 +9186,15 @@ function descargarGraficoProgramacion(){
   var paginas={};
   function paginar(id,porPagina,titulo){
     var el=document.getElementById(id);if(!el)return;
-    var hijos=Array.prototype.slice.call(el.children||[]).filter(function(x){return !x.hasAttribute('data-lista-paginas');});
-    if(hijos.length<=porPagina){var viejo=el.querySelector('[data-lista-paginas]');if(viejo)viejo.remove();paginas[id]=0;return;}
+    var existente=el.querySelector('[data-lista-paginas]'),hijos=[];
+    if(existente){
+      existente.querySelectorAll('[data-lista-hoja] > *').forEach(function(x){hijos.push(x);});
+      var navAnterior=el.querySelector('.book-nav');if(navAnterior)navAnterior.remove();
+      existente.remove();
+    }else{
+      hijos=Array.prototype.slice.call(el.children||[]);
+    }
+    if(hijos.length<=porPagina){hijos.forEach(function(x){el.appendChild(x);});paginas[id]=0;return;}
     var indice=paginas[id]||0,total=Math.ceil(hijos.length/porPagina);indice=Math.max(0,Math.min(total-1,indice));paginas[id]=indice;
     var wrap=document.createElement('div');wrap.setAttribute('data-lista-paginas','1');
     var nav=document.createElement('div');nav.className='book-nav';nav.innerHTML='<div class="book-nav-title">'+titulo+'</div><button type="button" '+(indice===0?'disabled':'')+' data-list-prev>‹ Anterior</button>'+Array.from({length:total},function(_,i){return '<button type="button" class="'+(i===indice?'book-number-active':'')+'" data-list-page="'+i+'">'+(i+1)+'</button>';}).join('')+'<span class="book-page-label">Hoja '+(indice+1)+' de '+total+'</span><button type="button" '+(indice===total-1?'disabled':'')+' data-list-next>Siguiente ›</button>';
