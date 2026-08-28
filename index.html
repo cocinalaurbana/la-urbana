@@ -1047,6 +1047,7 @@ button[onclick*="borrar"],button[onclick*="eliminar"]{display:none!important}
 .maria-home-kicker{font-size:14px;letter-spacing:1.2px;color:var(--accent-d);font-weight:800}
 .maria-locked-panel{margin-top:14px}.maria-locked-list{display:flex;flex-direction:column;gap:9px;color:var(--text-2);font-size:17px}
 body.maria-active #tab-inicio> :not(#maria-panel){display:none!important}
+body.maria-active .maria-locked-panel{display:none!important}
 body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
 @media(max-width:560px){.maria-quick-grid{grid-template-columns:1fr}.maria-quick-grid button>span{font-size:18px}.maria-quick-grid button small{font-size:16px}}
 </style>
@@ -1127,7 +1128,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
     </button>
     <button class="login-btn" onclick="seleccionarRol('maria',this)">
       <div class="role-emoji">🧑‍🍳</div>
-      <div><div class="role-name">María</div><div class="role-desc">Stock · Mermas</div></div>
+      <div><div class="role-name">María</div><div class="role-desc">Cocina · Recetas y tareas</div></div>
     </button>
   </div>
 
@@ -1338,7 +1339,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
       <button onclick="tab('caja',document.getElementById('nav-caja'))">📦<span>Albaranes</span><small>Fotografiar y guardar</small></button>
       <button onclick="tab('appcc',document.getElementById('nav-appcc'))">🛡️<span>APPCC</span><small>Registros asignados</small></button>
     </div>
-    <div class="card maria-locked-panel"><div class="card-title">Áreas de La Urbana</div><div class="maria-locked-list"><span>🔒 Laboratorio</span><span>🔒 Comunicación</span><span>🔒 Academia de Mirada</span><span>🔒 Gestión</span><span>🔒 Estrategia</span></div></div>
+    
   </div>
 
   <div class="dash-greeting">
@@ -4019,7 +4020,7 @@ const LANG = {
     mermaHoy:'Mermas hoy', registrarMerma:'Registrar merma', motivo:'Motivo',
     cargando:'Cargando...', guardado:'Guardado ✓', errorGuardar:'Error al guardar',
     temperatura:'Temperatura', entrada:'Entrada de mercancía', proveedor:'Proveedor',
-    rolMaria:'Stock · Mermas', saludo:'Bienvenida'
+    rolMaria:'Cocina · Recetas y tareas', saludo:'Bienvenida'
   },
   hu: {
     buenosDias:'Jó reggelt', buenasTardes:'Jó napot', buenasNoches:'Jó estét',
@@ -4161,6 +4162,8 @@ function cerrarSesion() {
 }
 const MARIA_ALLOWED_TABS = ['inicio','personal','pincho','recetas','mermas','protocolos','appcc','caja'];
 window.MARIA_ALLOWED_TABS = MARIA_ALLOWED_TABS;
+const MARIA_ALLOWED_TABS = ['inicio','personal','pincho','recetas','mermas','protocolos','appcc','caja'];
+window.MARIA_ALLOWED_TABS = MARIA_ALLOWED_TABS;
 function aplicarPermisos() {
   const maria=esMaria();
   document.body.classList.toggle('maria-active',maria);window.USUARIO_MARIA=maria;
@@ -4168,10 +4171,18 @@ function aplicarPermisos() {
   document.querySelectorAll('#main-nav button[id^="nav-"]:not([id^="nav-grupo-"])').forEach(btn=>{
     const tabId=btn.id.replace(/^nav-/,'');
     const permitido=!maria||allowed.includes(tabId);
-    btn.classList.remove('maria-hidden');
-    btn.classList.toggle('maria-locked',maria&&!permitido);
+    btn.classList.remove('maria-locked');
+    btn.classList.toggle('maria-hidden',maria&&!permitido);
     if(maria&&permitido)btn.classList.remove('oculto');
   });
+  document.querySelectorAll('#nav-grupos button[id^="nav-grupo-"]').forEach(btn=>{
+    const grupo=btn.id.replace('nav-grupo-','');
+    const ids=(typeof NAV_GRUPOS!=='undefined'&&NAV_GRUPOS[grupo])||[];
+    const visible=!maria||grupo==='hoy'||ids.some(id=>allowed.includes(id));
+    btn.classList.toggle('maria-hidden',maria&&!visible);
+  });
+  const selector=document.getElementById('nav-directo');
+  if(selector)Array.from(selector.options).forEach(opt=>{opt.hidden=maria&&!allowed.includes(opt.value);});
   const btn=document.getElementById('btn-nuevo-prod');if(btn)btn.style.display=esAdmin()?'':'none';
   poblarSelectorProductos();
   window._noAccesoMsg=maria?'Ehhez a részhez nincs hozzáférésed':'No tienes acceso a esta sección';
@@ -8709,7 +8720,7 @@ function abrirGrupoNav(grupo){
   const links=document.getElementById('nav-world-links'); if(!links)return;
   const tituloMundo={hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',almacen:'ALMACÉN',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo;
   const heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+tituloMundo;
-  links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).map(id=>{const permitido=!esMaria()||MARIA_ALLOWED_TABS.includes(id);return `<button class="nav-world-link${permitido?'':' maria-locked'}" ${permitido?`onclick="tab('${id}',this)"`:'disabled aria-disabled="true"'}>${NAV_LABELS[id]||id}</button>`;}).join('');
+  links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).filter(id=>!esMaria()||MARIA_ALLOWED_TABS.includes(id)).map(id=>`<button class="nav-world-link" onclick="tab('${id}',this)">${NAV_LABELS[id]||id}</button>`).join('');
   links.style.display='flex';
 }
 function volverGruposNav(){
@@ -9212,6 +9223,7 @@ function descargarGraficoProgramacion(){
     }catch(e){console.warn('No se pudo actualizar el contenido de '+id,e);}
   }
   function mostrar(id,btn){
+    if(window.USUARIO_MARIA&&window.MARIA_ALLOWED_TABS&&window.MARIA_ALLOWED_TABS.indexOf(id)<0)return;
     var dest=document.getElementById('tab-'+id); if(!dest)return;
     document.querySelectorAll('#main-content > .tab').forEach(function(t){t.classList.remove('active');t.style.display='none';});
     dest.classList.add('active');dest.style.display='block';
@@ -9230,9 +9242,10 @@ function descargarGraficoProgramacion(){
     var volver=document.getElementById('nav-volver-grupos');if(volver)volver.style.display='flex';
     var links=document.getElementById('nav-world-links');if(!links)return;
     var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+({hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',almacen:'ALMACÉN',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo);
-    links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).map(function(id){var permitido=!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0||!window.USUARIO_MARIA;return '<button type="button" class="nav-world-link'+(permitido?'':' maria-locked')+'" '+(permitido?'data-fallback-tab="'+id+'"':'disabled aria-disabled="true"')+'>'+(labels[id]||id)+(permitido?'<span style="margin-left:auto">›</span>':' 🔒 Sin acceso')+'</button>';}).join('');
+    links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).filter(function(id){return !window.USUARIO_MARIA||!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0;}).map(function(id){return '<button type="button" class="nav-world-link" data-fallback-tab="'+id+'">'+(labels[id]||id)+'<span style="margin-left:auto">›</span></button>';}).join('');
     links.style.display='flex';
-    mostrar((grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';})[0]||'inicio',btn);
+    var primera=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes'&&(!window.USUARIO_MARIA||!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0);})[0]||'inicio';
+    mostrar(primera,btn);
   }
   document.addEventListener('click',function(ev){
     var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-almacen,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-equipo,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
