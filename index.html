@@ -1104,6 +1104,9 @@ header{background:var(--surface);border-color:var(--border)}
 body.maria-active #inicio-identidad-admin{display:none!important}
 @media(max-width:919px){#inicio-identidad-admin{min-height:0;margin-bottom:14px}.identidad-imagen{height:100px}.identidad-manifiesto{font-size:22px}}
 </style>
+<style id="circuito-la-urbana-estilos">
+.circuito-explicativo{padding:18px;margin-bottom:14px;border-top:4px solid var(--accent);background:var(--surface);box-shadow:var(--sombra)}.circuito-explicativo h3{font:500 25px/1.2 Georgia,"Times New Roman",serif;margin:6px 0 17px}.circuito-pasos{display:flex;align-items:stretch;gap:5px;margin-bottom:16px;overflow-x:auto;padding-bottom:3px}.circuito-paso{flex:1 1 0;min-width:92px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2);padding:10px 8px;text-align:left;color:var(--text);cursor:pointer}.circuito-paso span{display:block;font-size:12px;color:var(--accent);font-weight:900;letter-spacing:1px}.circuito-paso strong{display:block;font-size:14px;margin-top:4px}.circuito-paso.activo{background:var(--amber-l);border-color:var(--accent);box-shadow:0 0 0 2px rgba(184,95,67,.10)}.circuito-pasos>i{align-self:center;color:var(--accent);font-style:normal;font-weight:900}.circuito-detalle{min-height:155px;padding:15px 16px;border-radius:12px;background:linear-gradient(135deg,var(--surface-2),#fffaf4);border:1px solid var(--border);margin-bottom:12px}.circuito-detalle-kicker{font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--accent)}.circuito-detalle h4{font:500 27px/1.1 Georgia,"Times New Roman",serif;margin:5px 0}.circuito-detalle p{font-size:16px;line-height:1.55;color:var(--text-2);margin:4px 0}.circuito-detalle .circuito-frase{font-weight:800;color:var(--text);font-size:17px}.circuito-modulos{display:inline-block;margin-top:9px;padding:5px 8px;border-radius:7px;background:var(--olive-l);color:var(--olive);font-size:13px;font-weight:800}.circuito-mini{font-size:10px;line-height:1.6;font-weight:900;letter-spacing:.4px;color:var(--accent);margin-bottom:13px}.circuito-mini span{color:var(--text-3);padding:0 2px}@media(max-width:700px){.circuito-explicativo{padding:15px}.circuito-paso{min-width:104px}.circuito-pasos>i{display:none}.circuito-detalle{min-height:185px}.circuito-detalle h4{font-size:25px}}
+</style>
 </head>
 <body>
 
@@ -1380,7 +1383,8 @@ body.maria-active #inicio-identidad-admin{display:none!important}
     <div class="identidad-manifiesto">Cocinamos.<br>Probamos.<br><em>Aprendemos.</em></div>
     <p>Un cuaderno de trabajo para cocinar mejor y decidir juntos qué merece quedarse.</p>
     <div class="identidad-firma">Lore &amp; César</div>
-    <button class="btn btn-outline btn-sm" onclick="tab('guia',document.getElementById('nav-guia'))">¿Cómo funciona La Urbana?</button>
+    <div class="circuito-mini">PERSONAL <span>→</span> PRUEBA <span>→</span> PINCHO <span>→</span> CARTA</div>
+    <button class="btn btn-outline btn-sm" onclick="tab('guia',document.getElementById('nav-guia'))">Ver el circuito</button>
   </aside>
   <div id="maria-panel" style="display:none">
     <div class="maria-home-kicker">LA URBANA · COCINA</div>
@@ -2157,6 +2161,12 @@ body.maria-active #inicio-identidad-admin{display:none!important}
 <!-- GUÍA GENERAL · LA URBANA -->
 <div id="tab-guia" class="tab lectura-comoda">
   <div class="guia-hero"><div class="portada-sello">LA URBANA · CUADERNO DE TRABAJO</div><h2 class="guia-title">Cómo funciona La Urbana</h2><p>La aplicación organiza. Nosotros cocinamos. El equipo aprende.</p></div>
+  <section class="circuito-explicativo card" aria-label="Circuito de La Urbana">
+    <div class="portada-sello">EL CIRCUITO</div><h3>Una cosa lleva a la siguiente</h3>
+    <div class="circuito-pasos" id="circuito-pasos"></div>
+    <div class="circuito-detalle" id="circuito-detalle"></div>
+    <button class="btn btn-oro btn-sm" id="circuito-siguiente" onclick="siguientePasoCircuito()">Ver el siguiente paso →</button>
+  </section>
   <div class="card guia-card"><div class="card-title">¿Qué es La Urbana?</div><p>La Urbana no es solo una aplicación para gestionar una cocina. Es nuestro cuaderno de trabajo: registramos lo que hacemos, aprendemos de lo que ocurre, probamos platos y guardamos las ideas que pueden convertirse en algo nuevo.</p></div>
   <div class="guia-flujo"><div class="card"><b>01 · HACEMOS</b><p>Recetas, producción, compras, albaranes, limpieza, APPCC, mermas y comida del personal.</p></div><div class="card"><b>02 · PROBAMOS</b><p>La comida del personal puede convertirse en una prueba sin volver a introducir los datos.</p></div><div class="card"><b>03 · APRENDEMOS</b><p>Valoramos sabor, textura, presentación, coste y qué cambiaríamos.</p></div><div class="card"><b>04 · COMPARTIMOS</b><p>Una prueba puede ser pincho, plato de fin de semana, contenido o historia.</p></div><div class="card"><b>05 · DECIDIMOS</b><p>Seguir probando → cambiar → aprobar → carta → descartar.</p></div></div>
   <div class="card guia-card"><div class="card-title">El circuito</div><div class="guia-circuito">PERSONAL <span>→</span> PRUEBA <span>→</span> PINCHO <span>→</span> CLIENTES <span>→</span> DECISIÓN <span>→</span> CARTA</div><p>No registramos por registrar. Registramos para poder decidir mejor.</p></div>
@@ -4295,6 +4305,18 @@ const TAB_GUIAS = {
   formacion:{es:['Formación y equipo','Aquí se organiza la rotación por puestos, las reuniones semanales y el avance de cada persona.','Escucha, registra el nivel real y asigna el siguiente paso sin encasillar a nadie.'],hu:['Képzés és csapat','Itt szervezzük a munkakörök rotációját, a heti megbeszéléseket és mindenki fejlődését.','Hallgasd meg a csapatot, rögzítsd a valódi szintet, és jelöld ki a következő lépést.']},
   spotify:{es:['Música','Aquí se guardan las referencias musicales y listas para cada momento de La Urbana.','Usa la música para reforzar la experiencia del local, no como una tarea aislada.'],hu:['Zene','Itt tároljuk a La Urbana különböző pillanataihoz tartozó zenei referenciákat és lejátszási listákat.','A zene a hely hangulatát erősítse, ne különálló feladat legyen.']}
 };
+const CIRCUITO_LA_URBANA=[
+  {numero:'01',nombre:'HACEMOS',frase:'Lo que pasa en la cocina queda registrado.',texto:'Aquí anotamos recetas, producción, compras, albaranes, limpieza, APPCC, mermas y comida del personal. No para llenar formularios: para no perder lo que hacemos.',modulos:'Recetas · Cocina · Almacén · Equipo'},
+  {numero:'02',nombre:'PROBAMOS',frase:'Una comida puede abrir una pregunta.',texto:'La comida del personal puede enviarse al Laboratorio. La información viaja con ella y no hace falta introducirla dos veces.',modulos:'Comida del personal → Laboratorio'},
+  {numero:'03',nombre:'APRENDEMOS',frase:'Cada prueba deja una pista para la siguiente.',texto:'Anotamos sabor, textura, presentación, coste, qué funcionó y qué cambiaríamos. La prueba guarda su aprendizaje.',modulos:'Laboratorio · Recetas provisionales'},
+  {numero:'04',nombre:'COMPARTIMOS',frase:'Lo que funciona sale a encontrarse con la gente.',texto:'Una prueba puede convertirse en pincho, plato de fin de semana, contenido o historia. El pincho nos permite observar la respuesta real.',modulos:'Pinchos · Historias · Clientes'},
+  {numero:'05',nombre:'DECIDIMOS',frase:'El aprendizaje se convierte en criterio.',texto:'Seguimos probando, cambiamos, aprobamos, pasamos a carta o descartamos. La decisión y el histórico se conservan.',modulos:'Recetas validadas · Carta · Histórico'}
+];
+let circuitoPasoActual=0;
+function renderCircuito(){const lista=document.getElementById('circuito-pasos'),detalle=document.getElementById('circuito-detalle'),btn=document.getElementById('circuito-siguiente');if(!lista||!detalle)return;lista.innerHTML=CIRCUITO_LA_URBANA.map((x,i)=>'<button class="circuito-paso '+(i===circuitoPasoActual?'activo':'')+'" onclick="mostrarPasoCircuito('+i+')"><span>'+x.numero+'</span><strong>'+x.nombre+'</strong></button>'+(i<CIRCUITO_LA_URBANA.length-1?'<i>→</i>':'')).join('');const x=CIRCUITO_LA_URBANA[circuitoPasoActual];detalle.innerHTML='<div class="circuito-detalle-kicker">PASO '+x.numero+'</div><h4>'+x.nombre+'</h4><p class="circuito-frase">'+x.frase+'</p><p>'+x.texto+'</p><div class="circuito-modulos">'+x.modulos+'</div>';if(btn)btn.textContent=circuitoPasoActual===CIRCUITO_LA_URBANA.length-1?'Volver al principio ↺':'Ver el siguiente paso →';}
+function mostrarPasoCircuito(i){circuitoPasoActual=Math.max(0,Math.min(CIRCUITO_LA_URBANA.length-1,Number(i)||0));renderCircuito();}
+function siguientePasoCircuito(){mostrarPasoCircuito(circuitoPasoActual===CIRCUITO_LA_URBANA.length-1?0:circuitoPasoActual+1);}
+
 const AYUDA_CORTA={
   inicio:'Aquí aparece primero lo que requiere atención. Después puedes abrir APPCC, checklist y producción.',
   appcc:'Aquí registraremos únicamente los controles de seguridad alimentaria que correspondan al APPCC real de La Urbana.',
@@ -4557,7 +4579,7 @@ function tab(id, btn) {
   if(typeof actualizarContextoApp==='function')actualizarContextoApp(id);
   renderTabGuia(id);
   const renders = {
-    inicio: initInicio, guia: function(){}, pendientes: renderPendientes, personal: renderComidaPersonalMaria, pincho: renderPinchoMaria, stock: renderStock, produccion: renderKanban,
+    inicio: initInicio, guia: renderCircuito, pendientes: renderPendientes, personal: renderComidaPersonalMaria, pincho: renderPinchoMaria, stock: renderStock, produccion: renderKanban,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
     raciones: () => { initRaciones(); },
     produccion: () => { renderKanban(); },
