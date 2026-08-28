@@ -1055,6 +1055,10 @@ button[onclick*="borrar"],button[onclick*="eliminar"]{display:none!important}
 body.maria-active #tab-inicio> :not(#maria-panel){display:none!important}
 body.maria-active .maria-locked-panel{display:none!important}
 body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
+/* En Albaranes, María tiene una sola superficie de trabajo: no debe encontrar hojas vacías. */
+body.maria-active #tab-caja>.tab-guide,body.maria-active #tab-caja .book-nav{display:none!important}
+body.maria-active #tab-caja .book-pages-wrap,body.maria-active #tab-caja .book-page{display:contents!important}
+body.maria-active #tab-caja #doc-scan-card{display:block!important}
 @media(max-width:560px){.maria-quick-grid{grid-template-columns:1fr}.maria-quick-grid button>span{font-size:18px}.maria-quick-grid button small{font-size:16px}}
 </style>
 <style id="formato-libro-global">
