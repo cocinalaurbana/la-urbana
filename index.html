@@ -4229,14 +4229,31 @@ function periodoLimpieza(tipo){
   return base;
 }
 function claveLimpieza(tipo){ return 'limpieza_checklist_'+tipo+'_'+periodoLimpieza(tipo); }
+let limpiezaPaginaActual = 0;
 function renderLimpiezaChecklist(){
   const el=document.getElementById('limpieza-checklist-app'); if(!el)return;
   const grupos=Object.values(LIMPIEZA_CHECKLIST);
-  el.innerHTML=grupos.map(g=>{
+  el.innerHTML='<div class="book-nav" id="limpieza-book-nav" aria-label="Checklist de limpieza"></div><div id="limpieza-book-pages"></div>';
+  const pages=document.getElementById('limpieza-book-pages');
+  grupos.forEach((g,i)=>{
     const estado=cargar(claveLimpieza(g.periodo),{});
     const hechas=g.tareas.filter(t=>estado[t[0]]).length;
-    return `<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:7px"><div style="font-weight:800;font-size:13px">${g.icon} ${g.titulo}</div><span class="badge ${hechas===g.tareas.length?'badge-verde':'badge-gris'}">${hechas}/${g.tareas.length}</span></div>${g.tareas.map(t=>`<label style="display:flex;align-items:flex-start;gap:9px;padding:8px 4px;border-bottom:1px solid var(--border);font-size:12px;line-height:1.4;cursor:pointer"><input type="checkbox" ${estado[t[0]]?'checked':''} onchange="marcarLimpieza('${t[0]}','${g.periodo}',this.checked)" style="width:19px;height:19px;flex:0 0 auto;margin:0"> <span style="${estado[t[0]]?'text-decoration:line-through;color:var(--text-3)':''}">${t[1]}</span></label>`).join('')}</div>`;
-  }).join('');
+    const page=document.createElement('div'); page.className='book-page'; page.dataset.limpiezaPage=String(i);
+    page.innerHTML='<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin:4px 0 7px"><div style="font-weight:800;font-size:16px">'+g.icon+' '+g.titulo+'</div><span class="badge '+(hechas===g.tareas.length?'badge-verde':'badge-gris')+'">'+hechas+'/'+g.tareas.length+'</span></div>'+g.tareas.map(t=>'<label style="display:flex;align-items:flex-start;gap:9px;padding:10px 4px;border-bottom:1px solid var(--border);font-size:16px;line-height:1.45;cursor:pointer"><input type="checkbox" '+(estado[t[0]]?'checked':'')+' onchange="marcarLimpieza(\''+t[0]+'\',\''+g.periodo+'\',this.checked)" style="width:21px;height:21px;flex:0 0 auto;margin:0"> <span style="'+(estado[t[0]]?'text-decoration:line-through;color:var(--text-3)':'')+'">'+t[1]+'</span></label>').join('');
+    pages.appendChild(page);
+  });
+  mostrarPaginaLimpieza(limpiezaPaginaActual,false);
+}
+function mostrarPaginaLimpieza(n,scroll){
+  const total=Object.keys(LIMPIEZA_CHECKLIST).length;
+  limpiezaPaginaActual=Math.max(0,Math.min(total-1,Number(n)||0));
+  document.querySelectorAll('#limpieza-book-pages [data-limpieza-page]').forEach((p,i)=>p.classList.toggle('book-page-active',i===limpiezaPaginaActual));
+  const nav=document.getElementById('limpieza-book-nav'); if(nav){
+    nav.innerHTML='<div class="book-nav-title">🧹 Limpieza</div><button type="button" '+(limpiezaPaginaActual===0?'disabled':'')+' onclick="mostrarPaginaLimpieza('+(limpiezaPaginaActual-1)+')">‹ Anterior</button>'+
+      Object.keys(LIMPIEZA_CHECKLIST).map((k,i)=>'<button type="button" class="'+(i===limpiezaPaginaActual?'book-number-active':'')+'" onclick="mostrarPaginaLimpieza('+i+')">'+(i+1)+'</button>').join('')+
+      '<span class="book-page-label">Hoja '+(limpiezaPaginaActual+1)+' de '+total+'</span><button type="button" '+(limpiezaPaginaActual===total-1?'disabled':'')+' onclick="mostrarPaginaLimpieza('+(limpiezaPaginaActual+1)+')">Siguiente ›</button>';
+  }
+  if(scroll!==false){const main=document.getElementById('main-content');if(main)main.scrollTo({top:0,behavior:'smooth'});}
 }
 function marcarLimpieza(id,tipo,hecho){
   const key=claveLimpieza(tipo), estado=cargar(key,{}); if(hecho)estado[id]=true;else delete estado[id]; guardar(key,estado); renderLimpiezaChecklist();
