@@ -267,6 +267,7 @@ body.light .nav-section-label,body.light .nav-back-btn{color:var(--text-2)}
 #main-nav.nav-group-active.nav-world-cocina #nav-turno,
 #main-nav.nav-group-active.nav-world-cocina #nav-appcc,
 #main-nav.nav-group-active.nav-world-cocina #nav-protocolos,
+#main-nav.nav-group-active.nav-world-almacen #nav-stock,
 #main-nav.nav-group-active.nav-world-laboratorio #nav-recetas,
 #main-nav.nav-group-active.nav-world-laboratorio #nav-pruebas,
 #main-nav.nav-group-active.nav-world-historias #nav-instagram,
@@ -1198,6 +1199,7 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
   <div id="nav-grupos" class="nav-groups">
     <button class="nav-group-btn" onclick="irAMundoNav('hoy',this)" id="nav-grupo-hoy" title="Qué toca hoy">📋 <span>Hoy</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('cocina',this)" id="nav-grupo-cocina">👩‍🍳 <span>Cocina</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('almacen',this)" id="nav-grupo-almacen">📦 <span>Almacén</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('equipo',this)" id="nav-grupo-equipo">👥 <span>Equipo</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('laboratorio',this)" id="nav-grupo-laboratorio">🧪 <span>Laboratorio</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('historias',this)" id="nav-grupo-historias">🎥 <span>Historias</span></button>
@@ -2089,8 +2091,9 @@ body.maria-active #tab-caja .card:not(#doc-scan-card){display:none!important}
 
 <!-- PINCHO OPERATIVO · MARÍA -->
 <div id="tab-pincho" class="tab">
-  <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div class="card-title">🥢 Pincho del sábado</div><div style="color:var(--text-2)">Registra la elaboración del viernes y deja claro qué ocurrió.</div></div>
+  <div class="card" style="border-left:4px solid var(--accent);margin-bottom:14px"><div class="card-title">🥢 Pinchos del fin de semana</div><div style="color:var(--text-2)">Solo se utiliza para el pincho del sábado o del domingo. No es una tarea diaria.</div></div>
   <div class="card">
+    <div class="form-group"><label>Día</label><select id="maria-pincho-dia"><option value="sabado">Sábado</option><option value="domingo">Domingo</option></select></div>
     <div class="form-group"><label>Fecha</label><input type="date" id="maria-pincho-fecha"></div>
     <div class="form-group"><label>Nombre del pincho</label><input id="maria-pincho-nombre" placeholder="Ej. Tortilla, croqueta o prueba del día"></div>
     <div class="form-group"><label>Cantidades y elaboración</label><textarea id="maria-pincho-elaboracion" rows="4" placeholder="Ingredientes, cantidades, proceso y raciones"></textarea></div>
@@ -4573,11 +4576,11 @@ function renderPinchoMaria(){
   const listaEl=document.getElementById('maria-pincho-lista');if(!listaEl)return;
   const f=document.getElementById('maria-pincho-fecha');if(f&&!f.value)f.value=hoy();
   const lista=cargar('pinchos_operativos',[]);
-  listaEl.innerHTML=lista.slice(0,8).map(x=>'<div style="border-top:1px solid var(--border);padding:10px 0"><strong>'+escPrueba(x.nombre)+'</strong><div style="color:var(--text-2);font-size:16px">'+escPrueba(x.fecha)+' · '+escPrueba(x.raciones||'—')+' raciones</div><div style="font-size:16px;color:var(--text-2);margin-top:4px;white-space:pre-line">'+escPrueba(x.elaboracion||x.notas||'')+'</div></div>').join('')||'<div style="color:var(--text-3)">Todavía no hay pinchos registrados.</div>';
+  listaEl.innerHTML=lista.slice(0,8).map(x=>'<div style="border-top:1px solid var(--border);padding:10px 0"><strong>'+escPrueba(x.nombre)+'</strong><div style="color:var(--text-2);font-size:16px">'+escPrueba(x.dia||'Fin de semana')+' · '+escPrueba(x.fecha)+' · '+escPrueba(x.raciones||'—')+' raciones</div><div style="font-size:16px;color:var(--text-2);margin-top:4px;white-space:pre-line">'+escPrueba(x.elaboracion||x.notas||'')+'</div></div>').join('')||'<div style="color:var(--text-3)">Todavía no hay pinchos registrados.</div>';
 }
 function guardarPinchoMaria(){
   const nombre=(document.getElementById('maria-pincho-nombre')||{}).value?.trim();if(!nombre){toast('Escribe el nombre del pincho','error');return;}
-  const dato={id:'pincho-'+Date.now(),fecha:document.getElementById('maria-pincho-fecha')?.value||hoy(),nombre,elaboracion:document.getElementById('maria-pincho-elaboracion')?.value.trim()||'',raciones:document.getElementById('maria-pincho-raciones')?.value||'',notas:document.getElementById('maria-pincho-notas')?.value.trim()||'',foto:''};
+  const dato={id:'pincho-'+Date.now(),fecha:document.getElementById('maria-pincho-fecha')?.value||hoy(),dia:document.getElementById('maria-pincho-dia')?.value==='domingo'?'Domingo':'Sábado',nombre,elaboracion:document.getElementById('maria-pincho-elaboracion')?.value.trim()||'',raciones:document.getElementById('maria-pincho-raciones')?.value||'',notas:document.getElementById('maria-pincho-notas')?.value.trim()||'',foto:''};
   const file=document.getElementById('maria-pincho-foto')?.files?.[0],terminar=function(foto){dato.foto=foto||'';const lista=cargar('pinchos_operativos',[]);lista.unshift(dato);guardar('pinchos_operativos',lista);['maria-pincho-nombre','maria-pincho-elaboracion','maria-pincho-raciones','maria-pincho-notas'].forEach(function(id){const e=document.getElementById(id);if(e)e.value='';});const img=document.getElementById('maria-pincho-foto');if(img)img.value='';renderPinchoMaria();renderMariaHome();toast('Pincho guardado ✓','verde');};
   if(file&&typeof leerFotoPlanificada==='function')leerFotoPlanificada(file).then(terminar).catch(function(){terminar('');});else terminar('');
 }
@@ -8523,7 +8526,8 @@ function actualizarWidgetCaja() {
 // Navegación agrupada: menos pestañas, mismas funciones.
 const NAV_GRUPOS = {
   hoy: ['inicio','pendientes','menu','raciones','caja'],
-  cocina: ['produccion','pincho','recetas','stock','pedidos','mermas','appcc','protocolos','personal','menu'],
+  cocina: ['appcc','produccion','mermas','protocolos','recetas','pedidos','personal','menu','pincho'],
+  almacen: ['stock'],
   laboratorio: ['pruebas','raciones'],
   historias: ['instagram','diario','programacion'],
   equipo: ['turno','formacion'],
@@ -8658,10 +8662,10 @@ function initNavegacionAgrupada(){
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
 const NAV_LABELS={appcc:'APPCC',turno:'Turno y limpieza',protocolos:'Limpieza',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
-const NAV_WORLD_NAMES={hoy:'Hoy',cocina:'Cocina',laboratorio:'Laboratorio',historias:'Historias',equipo:'Equipo',negocio:'Negocio'};
+const NAV_WORLD_NAMES={hoy:'Hoy',cocina:'Cocina',almacen:'Almacén',laboratorio:'Laboratorio',historias:'Historias',equipo:'Equipo',negocio:'Negocio'};
 function actualizarContextoApp(id){const bar=document.getElementById('app-context-bar');if(!bar)return;let grupo=Object.keys(NAV_GRUPOS).find(g=>(NAV_GRUPOS[g]||[]).includes(id))||'hoy';const lista=(NAV_GRUPOS[grupo]||[]).filter(x=>!['inicio','pendientes'].includes(x));const pos=lista.indexOf(id);const nombres={inicio:'Inicio',pendientes:'Pendientes',menu:'Menú del día',raciones:'Raciones',caja:'Caja',produccion:'Producción',pincho:'Pincho del sábado',recetas:'Recetas',stock:'Inventario',pedidos:'Compras',mermas:'Mermas',appcc:'APPCC',protocolos:'Limpieza',personal:'Comida del personal',pruebas:'Laboratorio',instagram:'Marketing',turno:'Turno y limpieza',formacion:'Formación y equipo',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',contabilidad:'Contabilidad',controlcostes:'Control de costes',historial:'Historial'};const sec=document.getElementById('app-context-section'),note=document.getElementById('app-context-note'),p=document.getElementById('app-context-position');if(sec)sec.textContent=nombres[id]||NAV_LABELS[id]||id;if(note)note.textContent= grupo==='hoy'?'Vista general':'Mundo · '+NAV_WORLD_NAMES[grupo];if(p)p.textContent=pos>=0?(pos+1)+' de '+lista.length:'';bar.className='world-'+grupo;}
 window.actualizarContextoApp=actualizarContextoApp;
-const NAV_MUNDO_PRINCIPAL={hoy:'inicio',cocina:'produccion',laboratorio:'pruebas',historias:'instagram',equipo:'turno',negocio:'controlcostes'};
+const NAV_MUNDO_PRINCIPAL={hoy:'inicio',cocina:'appcc',almacen:'stock',laboratorio:'pruebas',historias:'instagram',equipo:'turno',negocio:'controlcostes'};
 function irAMundoNav(grupo,btn){
   abrirGrupoNav(grupo);
   const id=NAV_MUNDO_PRINCIPAL[grupo];
@@ -8669,18 +8673,18 @@ function irAMundoNav(grupo,btn){
 }
 function abrirGrupoNav(grupo){
   const nav=document.getElementById('main-nav'); if(!nav) return;
-  nav.classList.remove('nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
+  nav.classList.remove('nav-world-hoy','nav-world-cocina','nav-world-almacen','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
   nav.classList.add('nav-group-active','nav-world-'+grupo);
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   const links=document.getElementById('nav-world-links'); if(!links)return;
-  const tituloMundo={hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo;
+  const tituloMundo={hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',almacen:'ALMACÉN',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo;
   const heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+tituloMundo;
   links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).map(id=>{const permitido=!esMaria()||MARIA_ALLOWED_TABS.includes(id);return `<button class="nav-world-link${permitido?'':' maria-locked'}" ${permitido?`onclick="tab('${id}',this)"`:'disabled aria-disabled="true"'}>${NAV_LABELS[id]||id}</button>`;}).join('');
   links.style.display='flex';
 }
 function volverGruposNav(){
   const nav=document.getElementById('main-nav'); if(!nav) return;
-  nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
+  nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-almacen','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   const links=document.getElementById('nav-world-links'); if(links){links.innerHTML='';links.style.display='none';}const heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';
   tab('inicio',document.getElementById('nav-inicio'));
@@ -9163,7 +9167,8 @@ function descargarGraficoProgramacion(){
 (function(){
   var grupos={
     hoy:['inicio','pendientes','menu','raciones','caja'],
-    cocina:['produccion','pincho','recetas','stock','pedidos','mermas','appcc','protocolos','personal','menu'],
+    cocina:['appcc','produccion','mermas','protocolos','recetas','pedidos','personal','menu','pincho'],
+    almacen:['stock'],
     laboratorio:['pruebas','raciones'],
     historias:['instagram','diario','programacion'],
     equipo:['turno','formacion'],
@@ -9190,20 +9195,20 @@ function descargarGraficoProgramacion(){
   }
   function abrir(grupo,btn){
     var nav=document.getElementById('main-nav');if(!nav)return;
-    ['hoy','cocina','laboratorio','historias','equipo','negocio'].forEach(function(g){nav.classList.remove('nav-world-'+g);});
+    ['hoy','cocina','almacen','laboratorio','historias','equipo','negocio'].forEach(function(g){nav.classList.remove('nav-world-'+g);});
     nav.classList.add('nav-group-active','nav-world-'+grupo);
     var volver=document.getElementById('nav-volver-grupos');if(volver)volver.style.display='flex';
     var links=document.getElementById('nav-world-links');if(!links)return;
-    var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+({hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo);
+    var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+({hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',almacen:'ALMACÉN',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo);
     links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).map(function(id){var permitido=!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0||!window.USUARIO_MARIA;return '<button type="button" class="nav-world-link'+(permitido?'':' maria-locked')+'" '+(permitido?'data-fallback-tab="'+id+'"':'disabled aria-disabled="true"')+'>'+(labels[id]||id)+(permitido?'<span style="margin-left:auto">›</span>':' 🔒 Sin acceso')+'</button>';}).join('');
     links.style.display='flex';
     mostrar((grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';})[0]||'inicio',btn);
   }
   document.addEventListener('click',function(ev){
-    var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-equipo,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
+    var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-almacen,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-equipo,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
     if(!target)return;
-    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';mostrar('inicio',document.getElementById('nav-inicio'));return;}
-    var gm={"nav-grupo-hoy":'hoy',"nav-grupo-cocina":'cocina',"nav-grupo-laboratorio":'laboratorio',"nav-grupo-historias":'historias',"nav-grupo-equipo":'equipo',"nav-grupo-negocio":'negocio'};
+    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-almacen','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';mostrar('inicio',document.getElementById('nav-inicio'));return;}
+    var gm={"nav-grupo-hoy":'hoy',"nav-grupo-cocina":'cocina',"nav-grupo-almacen":'almacen',"nav-grupo-laboratorio":'laboratorio',"nav-grupo-historias":'historias',"nav-grupo-equipo":'equipo',"nav-grupo-negocio":'negocio'};
     if(gm[target.id]){ev.preventDefault();ev.stopImmediatePropagation();abrir(gm[target.id],target);return;}
     var fid=target.getAttribute('data-fallback-tab')||((target.id||'').indexOf('nav-')===0?(target.id||'').slice(4):'');
     if(fid && document.getElementById('tab-'+fid)){ev.preventDefault();ev.stopImmediatePropagation();mostrar(fid,target);}
