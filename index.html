@@ -5703,70 +5703,30 @@ function borrarPedido(id) {
   renderPedidos();
 }
 
+let listaCompraPaginaActual = 0;
+let listaCompraPaginas = [];
 function renderListaCompra() {
-  const el = document.getElementById('lista-compra-auto');
-  if (!el) return;
-  const productos = cargar('stock_productos',[]);
-  const criticos = productos.filter(p => {
-    const sem = getSemaforo(p);
-    return sem === 'rojo' || sem === 'amarillo';
-  }).sort((a,b) => {
-    const orden = {rojo:0, amarillo:1};
-    return (orden[getSemaforo(a)]||2) - (orden[getSemaforo(b)]||2);
-  });
-  if (!criticos.length) {
-    el.innerHTML = '<div style="color:var(--verde);font-size:14px;padding:8px 0">✅ Todo el stock está OK</div>';
-    return;
-  }
-  const proveedores = cargar('proveedores', PROVEEDORES_DEFAULT);
-
-  // Agrupar productos por proveedor
-  const grupos = {}; // { nombreProveedor: { prov, items: [] } }
-  criticos.forEach(p => {
-    const prov = proveedores.find(pr => pr.productos && pr.productos.toLowerCase().split(',').some(pp => p.nombre.toLowerCase().includes(pp.trim())));
-    const key = prov ? prov.nombre : 'Sin proveedor asignado';
-    if (!grupos[key]) grupos[key] = { prov: prov || null, items: [] };
-    grupos[key].items.push(p);
-  });
-
-  // Ordenar: primero grupos con proveedor, luego "Sin proveedor"
-  const keys = Object.keys(grupos).sort((a,b) => {
-    if (a === 'Sin proveedor asignado') return 1;
-    if (b === 'Sin proveedor asignado') return -1;
-    return a.localeCompare(b);
-  });
-
-  el.innerHTML = keys.map(key => {
-    const { prov, items } = grupos[key];
-    const whatsappBtn = prov && prov.telefono
-      ? `<a href="https://wa.me/34${prov.telefono.replace(/\D/g,'')}?text=${encodeURIComponent('Hola, necesitamos hacer un pedido para La Urbana:\n\n' + items.map(p => `· ${p.nombre}`).join('\n') + '\n\n¿Podéis confirmar disponibilidad?')}" target="_blank" style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--accent-l);color:var(--accent-d);text-decoration:none;font-weight:700;white-space:nowrap">Pedir por WhatsApp</a>`
-      : '';
-    const filas = items.map(p => {
-      const sem = getSemaforo(p);
-      const badgeColor = sem === 'rojo' ? 'var(--coral)' : 'var(--mandarina)';
-      const badgeBg = sem === 'rojo' ? 'var(--coral-l)' : 'var(--mandarina-l)';
-      const badgeLabel = sem === 'rojo' ? 'Crítico' : 'Bajo';
-      const total = (p.lotes||[]).reduce((a,l) => a+l.cantidad, 0);
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
-        <div>
-          <span style="font-size:13px;font-weight:600;color:var(--text)">${p.nombre}</span>
-          <span style="font-size:12px;color:var(--text-3);margin-left:6px">${total} ${p.unidad}</span>
-        </div>
-        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:${badgeBg};color:${badgeColor}">${badgeLabel}</span>
-      </div>`;
-    }).join('');
-
-    return `<div style="margin-bottom:16px;background:var(--surface);border-radius:14px;padding:14px;border:1.5px solid var(--border)">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div>
-          <span style="font-size:13px;font-weight:700;color:var(--text);font-family:'Fraunces',serif">${key}</span>
-          <span style="font-size:11px;color:var(--text-3);margin-left:6px">${items.length} producto${items.length>1?'s':''}</span>
-        </div>
-        ${whatsappBtn}
-      </div>
-      ${filas}
-    </div>`;
-  }).join('');
+  const el=document.getElementById('lista-compra-auto'); if(!el)return;
+  const productos=cargar('stock_productos',[]).filter(p=>{const sem=getSemaforo(p);return sem==='rojo'||sem==='amarillo';}).sort((a,b)=>{const orden={rojo:0,amarillo:1};return (orden[getSemaforo(a)]||2)-(orden[getSemaforo(b)]||2);});
+  if(!productos.length){el.innerHTML='<div style="color:var(--verde);font-size:16px;padding:10px 0">✅ Todo el stock está OK</div>';listaCompraPaginas=[];return;}
+  const proveedores=cargar('proveedores',PROVEEDORES_DEFAULT), grupos={};
+  productos.forEach(p=>{const prov=proveedores.find(pr=>pr.productos&&pr.productos.toLowerCase().split(',').some(pp=>p.nombre.toLowerCase().includes(pp.trim())));const key=prov?prov.nombre:'Sin proveedor asignado';if(!grupos[key])grupos[key]={prov:prov||null,items:[]};grupos[key].items.push(p);});
+  const keys=Object.keys(grupos).sort((a,b)=>{if(a==='Sin proveedor asignado')return 1;if(b==='Sin proveedor asignado')return -1;return a.localeCompare(b);});
+  listaCompraPaginas=[];
+  keys.forEach(key=>{const grupo=grupos[key];for(let i=0;i<grupo.items.length;i+=6)listaCompraPaginas.push({key,prov:grupo.prov,items:grupo.items.slice(i,i+6),parte:Math.floor(i/6)+1,totalPartes:Math.ceil(grupo.items.length/6)});});
+  if(listaCompraPaginaActual>=listaCompraPaginas.length)listaCompraPaginaActual=listaCompraPaginas.length-1;
+  if(listaCompraPaginaActual<0)listaCompraPaginaActual=0;
+  mostrarPaginaListaCompra(listaCompraPaginaActual,false);
+}
+function mostrarPaginaListaCompra(n,scroll){
+  const el=document.getElementById('lista-compra-auto');if(!el||!listaCompraPaginas.length)return;
+  listaCompraPaginaActual=Math.max(0,Math.min(listaCompraPaginas.length-1,Number(n)||0));
+  const g=listaCompraPaginas[listaCompraPaginaActual],items=g.items;
+  const whatsappBtn=g.prov&&g.prov.telefono?`<a href="https://wa.me/34${g.prov.telefono.replace(/\D/g,'')}?text=${encodeURIComponent('Hola, necesitamos hacer un pedido para La Urbana:\n\n'+items.map(p=>`· ${p.nombre}`).join('\n')+'\n\n¿Podéis confirmar disponibilidad?')}" target="_blank" style="font-size:14px;padding:7px 10px;border-radius:8px;background:var(--accent-l);color:var(--accent-d);text-decoration:none;font-weight:700;white-space:nowrap">Pedir por WhatsApp</a>`:'';
+  const filas=items.map(p=>{const sem=getSemaforo(p),badgeColor=sem==='rojo'?'var(--coral)':'var(--mandarina)',badgeBg=sem==='rojo'?'var(--coral-l)':'var(--mandarina-l)',badgeLabel=sem==='rojo'?'Crítico':'Bajo',total=(p.lotes||[]).reduce((a,l)=>a+l.cantidad,0);return `<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)"><div><span style="font-size:16px;font-weight:600;color:var(--text)">${p.nombre}</span><span style="font-size:15px;color:var(--text-3);margin-left:6px">${total} ${p.unidad}</span></div><span style="font-size:14px;font-weight:700;padding:3px 8px;border-radius:10px;background:${badgeBg};color:${badgeColor}">${badgeLabel}</span></div>`;}).join('');
+  const nav=`<div class="book-nav" aria-label="Lista de la compra"><div class="book-nav-title">🛒 Lista de la compra</div><button type="button" ${listaCompraPaginaActual===0?'disabled':''} onclick="mostrarPaginaListaCompra(${listaCompraPaginaActual-1})">‹ Anterior</button>${listaCompraPaginas.map((x,i)=>`<button type="button" class="${i===listaCompraPaginaActual?'book-number-active':''}" onclick="mostrarPaginaListaCompra(${i})">${i+1}</button>`).join('')}<span class="book-page-label">Hoja ${listaCompraPaginaActual+1} de ${listaCompraPaginas.length}</span><button type="button" ${listaCompraPaginaActual===listaCompraPaginas.length-1?'disabled':''} onclick="mostrarPaginaListaCompra(${listaCompraPaginaActual+1})">Siguiente ›</button></div>`;
+  el.innerHTML=nav+`<div style="background:var(--surface);border-radius:14px;padding:14px;border:1.5px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px"><div><span style="font-size:16px;font-weight:700;color:var(--text)">${g.key}</span><span style="font-size:14px;color:var(--text-3);margin-left:6px">${g.parte>1?'parte '+g.parte+' · ':''}${g.totalPartes>1?g.totalPartes+' hojas en este proveedor':items.length+' producto'+(items.length>1?'s':'')}</span></div>${whatsappBtn}</div>${filas}</div>`;
+  if(scroll!==false){const main=document.getElementById('main-content');if(main)main.scrollTo({top:0,behavior:'smooth'});}
 }
 
 function exportarListaCompra() {
@@ -9207,6 +9167,42 @@ function descargarGraficoProgramacion(){
   };
   function iniciar(){Object.keys(configuracion).forEach(function(id){preparar(id,configuracion[id]);});}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar);else iniciar();
+})();
+</script>
+
+<script>
+/* Segunda capa del formato libro: listas repetitivas también se dividen en hojas. */
+(function(){
+  var configuracion={
+    renderStock:{id:'stock-lista',porPagina:6,titulo:'Inventario · productos'},
+    renderPedidos:{id:'pedidos-lista',porPagina:6,titulo:'Compras · solicitudes'},
+    renderMermas:{id:'mermas-lista',porPagina:6,titulo:'Mermas · registros'},
+    renderRecetas:{id:'recetas-lista',porPagina:4,titulo:'Recetas · fichas'},
+    renderPruebasRecetas:{id:'pruebas-recetas-lista',porPagina:4,titulo:'Laboratorio · pruebas'},
+    renderProveedores:{id:'proveedores-lista',porPagina:4,titulo:'Proveedores · fichas'},
+    renderHistorial:{id:'historial-lista',porPagina:8,titulo:'Historial · registros'},
+    renderFormacion:{id:'form-revisiones',porPagina:6,titulo:'Formación · revisiones'}
+  };
+  var paginas={};
+  function paginar(id,porPagina,titulo){
+    var el=document.getElementById(id);if(!el)return;
+    var hijos=Array.prototype.slice.call(el.children||[]).filter(function(x){return !x.hasAttribute('data-lista-paginas');});
+    if(hijos.length<=porPagina){var viejo=el.querySelector('[data-lista-paginas]');if(viejo)viejo.remove();paginas[id]=0;return;}
+    var indice=paginas[id]||0,total=Math.ceil(hijos.length/porPagina);indice=Math.max(0,Math.min(total-1,indice));paginas[id]=indice;
+    var wrap=document.createElement('div');wrap.setAttribute('data-lista-paginas','1');
+    var nav=document.createElement('div');nav.className='book-nav';nav.innerHTML='<div class="book-nav-title">'+titulo+'</div><button type="button" '+(indice===0?'disabled':'')+' data-list-prev>‹ Anterior</button>'+Array.from({length:total},function(_,i){return '<button type="button" class="'+(i===indice?'book-number-active':'')+'" data-list-page="'+i+'">'+(i+1)+'</button>';}).join('')+'<span class="book-page-label">Hoja '+(indice+1)+' de '+total+'</span><button type="button" '+(indice===total-1?'disabled':'')+' data-list-next>Siguiente ›</button>';
+    var hojas=[];for(var i=0;i<total;i++){var hoja=document.createElement('div');hoja.className='book-page'+(i===indice?' book-page-active':'');hoja.setAttribute('data-lista-hoja','1');hijos.slice(i*porPagina,(i+1)*porPagina).forEach(function(x){hoja.appendChild(x);});wrap.appendChild(hoja);hojas.push(hoja);}
+    el.innerHTML='';el.appendChild(nav);el.appendChild(wrap);
+    nav.querySelectorAll('[data-list-page]').forEach(function(b){b.addEventListener('click',function(){paginas[id]=Number(b.getAttribute('data-list-page'));paginar(id,porPagina,titulo);});});
+    var prev=nav.querySelector('[data-list-prev]'),next=nav.querySelector('[data-list-next]');
+    if(prev)prev.addEventListener('click',function(){paginas[id]=indice-1;paginar(id,porPagina,titulo);});
+    if(next)next.addEventListener('click',function(){paginas[id]=indice+1;paginar(id,porPagina,titulo);});
+  }
+  function envolver(nombre,cfg){
+    var original=window[nombre];if(typeof original!=='function')return;
+    window[nombre]=function(){var r=original.apply(this,arguments);paginar(cfg.id,cfg.porPagina,cfg.titulo);return r;};
+  }
+  Object.keys(configuracion).forEach(function(nombre){envolver(nombre,configuracion[nombre]);});
 })();
 </script>
 
