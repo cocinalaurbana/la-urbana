@@ -257,7 +257,7 @@ body.light .nav-section-label,body.light .nav-back-btn{color:var(--text-2)}
 /* Los apartados del mundo elegido deben aparecer también en escritorio/tablet. */
 #main-nav.nav-group-active .nav-subitem{display:none!important}
 /* Menú principal reducido: los apartados aparecen solo dentro de su mundo. */
-#main-nav > button[id^="nav-"]:not(#nav-inicio):not(#nav-pendientes):not(#nav-volver-grupos):not([id^="nav-grupo-"]){display:none!important}
+#main-nav > button[id^="nav-"]:not(#nav-inicio):not(#nav-pendientes):not(#nav-volver-grupos):not(#nav-guia):not([id^="nav-grupo-"]){display:none!important}
 #main-nav.nav-group-active.nav-world-hoy #nav-menu,
 #main-nav.nav-group-active.nav-world-hoy #nav-raciones,
 #main-nav.nav-group-active.nav-world-hoy #nav-caja,
@@ -1082,6 +1082,22 @@ body.maria-active #tab-protocolos .book-pages-wrap,body.maria-active #tab-protoc
 .book-nav .book-page-label{font-size:15px;color:var(--text-2);font-weight:700}
 @media(max-width:560px){.book-nav{padding:8px;gap:6px}.book-nav-title{flex:0 0 100%;margin:0 0 2px}.book-nav button{padding:10px 11px}.book-nav .book-page-label{font-size:16px}}
 </style>
+<style id="identidad-la-urbana">
+:root{--bg:#f6efe6;--surface:#fffdf8;--surface-2:#f1e7db;--surface-3:#e6d6c7;--border:#dcc9b7;--border-s:#c9ad98;--text:#382a23;--text-2:#77655a;--text-3:#a18f82;--amber:#b85f43;--amber-l:rgba(184,95,67,.12);--amber-d:#8f432e;--olive:#68744e;--olive-l:rgba(104,116,78,.14);--red:#a84d3d;--red-l:rgba(168,77,61,.12);--verde:#68744e;--verde-l:rgba(104,116,78,.14);--verde-m:#7d895d;--accent:#b85f43;--accent-l:rgba(184,95,67,.12);--accent-d:#8f432e;--rojo:#a84d3d;--rojo-l:rgba(168,77,61,.12);--naranja:#b85f43;--naranja-l:rgba(184,95,67,.12);--coral:#a84d3d;--coral-l:rgba(168,77,61,.12);--mandarina:#b85f43;--mandarina-l:rgba(184,95,67,.12);--amarillo:#b85f43;--amarillo-l:rgba(184,95,67,.12);--sombra:0 4px 18px rgba(91,57,39,.10);--sombra-s:0 2px 8px rgba(91,57,39,.08);--radio:14px;--radio-s:9px}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+body.light{--bg:#f6efe6;--surface:#fffdf8;--surface-2:#f1e7db;--surface-3:#e6d6c7;--border:#dcc9b7;--border-s:#c9ad98;--text:#382a23;--text-2:#77655a;--text-3:#a18f82;--amber:#b85f43;--amber-l:rgba(184,95,67,.12);--amber-d:#8f432e;--olive:#68744e;--olive-l:rgba(104,116,78,.14);--red:#a84d3d;--red-l:rgba(168,77,61,.12);--accent:#b85f43;--accent-l:rgba(184,95,67,.12);--accent-d:#8f432e;--rojo:#a84d3d;--rojo-l:rgba(168,77,61,.12);--sombra:0 4px 18px rgba(91,57,39,.10)}
+h1,h2,h3,.card-title,.modal-title,.portada-title,.guia-title{font-family:Georgia,"Times New Roman",serif;font-weight:500;letter-spacing:-.015em}
+.card{border-color:var(--border);box-shadow:var(--sombra-s);background:var(--surface)}
+#main-nav{background:var(--surface);border-color:var(--border)}
+#main-nav button{color:var(--text-2)}#main-nav button.active{color:var(--accent);background:var(--amber-l)}
+header{background:var(--surface);border-color:var(--border)}
+#login-screen{background:linear-gradient(145deg,#f8f1e8 0%,#efe0d1 100%);color:var(--text)}
+.login-btn{background:rgba(255,253,248,.82);border-color:var(--border);color:var(--text);box-shadow:var(--sombra-s)}
+</style>
+<style id="portada-guia-estilos">
+.portada-la-urbana{max-width:420px;margin:12px auto 18px;padding:16px 18px 18px;background:rgba(255,253,248,.75);border:1px solid var(--border);border-radius:18px;box-shadow:var(--sombra)}.portada-sello{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:900}.portada-foto{height:118px;margin:12px 0;background:linear-gradient(135deg,#b96648 0%,#d9a06e 45%,#6d7653 46%,#dce1ce 100%);border-radius:12px;display:flex;align-items:flex-end;padding:10px;color:#fff;font-size:12px;letter-spacing:1px;text-transform:uppercase}.portada-title{font-size:32px;line-height:1.03;color:var(--text);margin:10px 0}.portada-la-urbana>p{font-size:15px;line-height:1.5;color:var(--text-2)}.portada-principio{margin-top:13px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--amber-l);font-size:14px;line-height:1.5;color:var(--text-2)}.guia-hero{padding:20px;margin-bottom:14px;border-radius:16px;background:linear-gradient(135deg,#b85f43,#d79b6d);color:#fff}.guia-hero .portada-sello{color:#fff;opacity:.8}.guia-hero h2{font-size:32px;margin:8px 0}.guia-hero p{font-size:16px}.guia-card p{font-size:16px;line-height:1.6;color:var(--text-2)}.guia-flujo{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:14px}.guia-flujo .card{padding:12px}.guia-flujo b{color:var(--accent);font-size:14px}.guia-flujo p{font-size:14px;line-height:1.45;color:var(--text-2);margin-top:6px}.guia-circuito{font-weight:900;color:var(--accent);font-size:15px;line-height:1.8;margin:6px 0 10px}.guia-circuito span{color:var(--text-3);padding:0 3px}.tab-guide-help{margin-top:9px}.onboarding-modal{text-align:left;max-width:440px;padding:24px}.onboarding-modal h2{font-size:30px;margin:12px 0 8px}.onboarding-modal p{font-size:17px;line-height:1.6;color:var(--text-2);min-height:72px}.onboarding-count{float:right;color:var(--text-3);font-weight:800}.onboarding-dots{display:flex;gap:6px;margin:16px 0}.onboarding-dots span{width:8px;height:8px;border-radius:50%;background:var(--border)}.onboarding-dots span.active{background:var(--accent);width:22px;border-radius:6px}.modal-overlay{background:rgba(56,42,35,.35)}
+@media(max-width:700px){.guia-flujo{grid-template-columns:1fr 1fr}.portada-title{font-size:29px}}
+</style>
 </head>
 <body>
 
@@ -1132,6 +1148,13 @@ body.maria-active #tab-protocolos .book-pages-wrap,body.maria-active #tab-protoc
   <div id="firebase-auth-box" style="max-width:340px;width:100%;margin:0 auto 18px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);text-align:center">
     <button id="firebase-google-login" type="button" onclick="window._fbSignInGoogle && window._fbSignInGoogle()" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-weight:700;cursor:pointer">🔐 Entrar con Google para sincronizar</button>
     <div id="firebase-auth-status" style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.4">Necesario para proteger y sincronizar los datos de la cocina.</div>
+  </div>
+  <div class="portada-la-urbana">
+    <div class="portada-sello">LA URBANA · COCINA</div>
+    <div class="portada-foto"><span>cocina · oficio · producto</span></div>
+    <h2 class="portada-title">Cocinamos.<br>Probamos.<br>Aprendemos.</h2>
+    <p>Un cuaderno de trabajo propio para cocinar mejor, aprender de lo que hacemos y construir poco a poco la identidad de La Urbana.</p>
+    <div class="portada-principio">La aplicación organiza.<br><strong>Nosotros cocinamos.</strong><br>El equipo aprende.</div>
   </div>
   <div class="bourdain" id="bourdain-quote"></div>
 
@@ -1222,6 +1245,7 @@ body.maria-active #tab-protocolos .book-pages-wrap,body.maria-active #tab-protoc
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
     Pendientes
   </button>
+  <button onclick="tab('guia',this)" id="nav-guia"><span style="font-size:18px">?</span> Cómo funciona</button>
 
   <div class="nav-separator"></div>
   <div id="nav-grupos" class="nav-groups">
@@ -2113,6 +2137,16 @@ body.maria-active #tab-protocolos .book-pages-wrap,body.maria-active #tab-protoc
       <div style="font-size:12px;color:var(--text-3);margin-top:6px">Las recetas marcadas como "Personal" aparecen aquí. Toca una para añadirla al día seleccionado.</div>
     </div>
   </div>
+</div>
+
+<!-- GUÍA GENERAL · LA URBANA -->
+<div id="tab-guia" class="tab lectura-comoda">
+  <div class="guia-hero"><div class="portada-sello">LA URBANA · CUADERNO DE TRABAJO</div><h2 class="guia-title">Cómo funciona La Urbana</h2><p>La aplicación organiza. Nosotros cocinamos. El equipo aprende.</p></div>
+  <div class="card guia-card"><div class="card-title">¿Qué es La Urbana?</div><p>La Urbana no es solo una aplicación para gestionar una cocina. Es nuestro cuaderno de trabajo: registramos lo que hacemos, aprendemos de lo que ocurre, probamos platos y guardamos las ideas que pueden convertirse en algo nuevo.</p></div>
+  <div class="guia-flujo"><div class="card"><b>01 · HACEMOS</b><p>Recetas, producción, compras, albaranes, limpieza, APPCC, mermas y comida del personal.</p></div><div class="card"><b>02 · PROBAMOS</b><p>La comida del personal puede convertirse en una prueba sin volver a introducir los datos.</p></div><div class="card"><b>03 · APRENDEMOS</b><p>Valoramos sabor, textura, presentación, coste y qué cambiaríamos.</p></div><div class="card"><b>04 · COMPARTIMOS</b><p>Una prueba puede ser pincho, plato de fin de semana, contenido o historia.</p></div><div class="card"><b>05 · DECIDIMOS</b><p>Seguir probando → cambiar → aprobar → carta → descartar.</p></div></div>
+  <div class="card guia-card"><div class="card-title">El circuito</div><div class="guia-circuito">PERSONAL <span>→</span> PRUEBA <span>→</span> PINCHO <span>→</span> CLIENTES <span>→</span> DECISIÓN <span>→</span> CARTA</div><p>No registramos por registrar. Registramos para poder decidir mejor.</p></div>
+  <div class="card guia-card"><div class="card-title">Qué registra cada persona</div><p><strong>María</strong> ejecuta y registra cocina. <strong>César</strong> puede gestionarlo todo. <strong>Lore</strong> gestiona y desarrolla el sistema. La aplicación relaciona los datos, calcula los costes y conserva el histórico.</p></div>
+  <div class="card guia-card"><div class="card-title">Estados y memoria</div><p><span class="estado-badge estado-validado">🟢 Validada</span> <span class="estado-badge estado-provisional">🟡 Provisional</span> <span class="estado-badge estado-pendiente">🔴 Pendiente de validar</span></p><p>Las correcciones conservan el histórico. El APPCC definitivo se adaptará al sistema real de La Urbana.</p></div>
 </div>
 
 <!-- COMIDA DEL PERSONAL · MARÍA -->
@@ -3216,6 +3250,9 @@ De [hora] a [hora]. Ven con quien quieras.
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-onboarding" style="z-index:100"><div class="modal onboarding-modal"><div class="onboarding-count" id="onboarding-count">1 / 5</div><div class="portada-sello">LA URBANA</div><h2 id="onboarding-title">Bienvenida a La Urbana</h2><p id="onboarding-text">Este es nuestro espacio de trabajo.</p><div class="onboarding-dots" id="onboarding-dots"></div><button class="btn btn-oro btn-full" onclick="siguienteOnboarding()" id="onboarding-next">Siguiente</button><button class="btn btn-outline btn-full" onclick="cerrarOnboarding()">Saltar</button></div></div>
+<div class="modal-overlay" id="modal-ayuda-contextual"><div class="modal"><div class="modal-title"><span id="ayuda-contextual-titulo">Ayuda</span><button class="modal-close" onclick="cerrarAyudaContextual()">×</button></div><p id="ayuda-contextual-texto" style="line-height:1.6;color:var(--text-2)"></p><button class="btn btn-oro btn-full" onclick="cerrarAyudaContextual()">Entendido</button></div></div>
+
 <div class="modal-overlay" id="modal-receta">
   <div class="modal" style="max-width:520px">
     <div class="modal-title"><span id="modal-receta-titulo">Nueva receta</span><button class="modal-close" onclick="cerrarModal('modal-receta')">×</button></div>
@@ -3928,8 +3965,10 @@ function toggleTheme() {
   localStorage.setItem('urb_tema', isLight ? 'light' : 'dark');
 }
 function initTema() {
+  const migration='urb_tema_identidad_v1';
+  if(!localStorage.getItem(migration)){localStorage.setItem('urb_tema','light');localStorage.setItem(migration,'1');}
   const saved = localStorage.getItem('urb_tema');
-  const isLight = saved === 'light';
+  const isLight = saved !== 'dark';
   if (isLight) document.body.classList.add('light');
   const btn = document.getElementById('btn-theme');
   if (btn) btn.textContent = isLight ? '🌙' : '☀️';
@@ -4166,7 +4205,7 @@ function iniciarSesion(rol) {
   const el = document.getElementById('dash-saludo');
   if (el) el.textContent = saludo + ', ' + names[rol] + '!';
   try { aplicarPermisos(); } catch (e) { console.warn('Permisos iniciales no disponibles; continúo con el panel', e); }
-  try { arrancarApp(); } catch (e) {
+  try { arrancarApp(); setTimeout(abrirOnboarding,250); } catch (e) {
     console.warn('Arranque parcial; intento renderizar el panel', e);
     try { initHeader(); } catch (_) {}
     try { initInicio(); } catch (_) {}
@@ -4240,13 +4279,34 @@ const TAB_GUIAS = {
   formacion:{es:['Formación y equipo','Aquí se organiza la rotación por puestos, las reuniones semanales y el avance de cada persona.','Escucha, registra el nivel real y asigna el siguiente paso sin encasillar a nadie.'],hu:['Képzés és csapat','Itt szervezzük a munkakörök rotációját, a heti megbeszéléseket és mindenki fejlődését.','Hallgasd meg a csapatot, rögzítsd a valódi szintet, és jelöld ki a következő lépést.']},
   spotify:{es:['Música','Aquí se guardan las referencias musicales y listas para cada momento de La Urbana.','Usa la música para reforzar la experiencia del local, no como una tarea aislada.'],hu:['Zene','Itt tároljuk a La Urbana különböző pillanataihoz tartozó zenei referenciákat és lejátszási listákat.','A zene a hely hangulatát erősítse, ne különálló feladat legyen.']}
 };
+const AYUDA_CORTA={
+  inicio:'Aquí aparece primero lo que requiere atención. Después puedes abrir APPCC, checklist y producción.',
+  appcc:'Aquí registraremos únicamente los controles de seguridad alimentaria que correspondan al APPCC real de La Urbana.',
+  mermas:'Registra qué se ha perdido, cuánto y por qué. No necesitas calcular el coste: la aplicación lo relaciona con el precio de compra.',
+  caja:'Haz una fotografía del albarán. La aplicación prepara la entrada y el stock no cambia hasta que Lore o César lo comprueban.',
+  recetas:'Una receta es la versión que decidimos conservar después de probarla. Mira siempre su estado: validada, provisional o pendiente.',
+  personal:'La comida del personal puede ser también una prueba. Si merece la pena, envíala al Laboratorio con un clic.',
+  pincho:'El pincho es un pequeño laboratorio abierto: probamos, observamos la respuesta y aprendemos.',
+  pruebas:'Aquí probamos ideas antes de decidir si merecen quedarse. Cada prueba deja un aprendizaje.',
+  protocolos:'Consulta solo las tareas que correspondan a tu turno. Si algo no puede hacerse, registra la incidencia.',
+  produccion:'Aquí se ve lo que hay que preparar. Marca una tarea solo cuando esté realmente hecha.'
+};
+function abrirAyudaContextual(id){const modal=document.getElementById('modal-ayuda-contextual');if(!modal)return;document.getElementById('ayuda-contextual-titulo').textContent=(NAV_LABELS&&NAV_LABELS[id])||id;document.getElementById('ayuda-contextual-texto').textContent=AYUDA_CORTA[id]||'Esta sección guarda la información necesaria para trabajar y decidir mejor.';modal.style.display='flex';}
+function cerrarAyudaContextual(){const m=document.getElementById('modal-ayuda-contextual');if(m)m.style.display='none';}
+const ONBOARDING=[['Bienvenida a La Urbana','Este es nuestro espacio de trabajo.'],['Aquí registramos','Lo que compramos, cocinamos y hacemos cada día.'],['Aquí probamos','Las ideas pasan por el personal, el laboratorio y los clientes.'],['Aquí aprendemos','Cada prueba deja información para la siguiente.'],['Cada persona tiene su lugar','La aplicación muestra a cada usuario únicamente lo que necesita para trabajar.']];
+let onboardingPaso=0;
+function abrirOnboarding(){if(localStorage.getItem('urb_onboarding_v1'))return;onboardingPaso=0;renderOnboarding();const m=document.getElementById('modal-onboarding');if(m)m.style.display='flex';}
+function renderOnboarding(){const x=ONBOARDING[onboardingPaso],t=document.getElementById('onboarding-title'),p=document.getElementById('onboarding-text'),c=document.getElementById('onboarding-count'),n=document.getElementById('onboarding-next'),d=document.getElementById('onboarding-dots');if(t)t.textContent=x[0];if(p)p.textContent=x[1];if(c)c.textContent=(onboardingPaso+1)+' / '+ONBOARDING.length;if(n)n.textContent=onboardingPaso===ONBOARDING.length-1?'Empezar':'Siguiente';if(d)d.innerHTML=ONBOARDING.map((_,i)=>'<span class="'+(i===onboardingPaso?'active':'')+'"></span>').join('');}
+function siguienteOnboarding(){if(onboardingPaso<ONBOARDING.length-1){onboardingPaso++;renderOnboarding();}else cerrarOnboarding();}
+function cerrarOnboarding(){localStorage.setItem('urb_onboarding_v1','1');const m=document.getElementById('modal-onboarding');if(m)m.style.display='none';}
+
 function renderTabGuia(id) {
   const panel=document.getElementById('tab-'+id); if(!panel) return;
   const g=(TAB_GUIAS[id]||TAB_GUIAS.inicio)[esMaria()?'hu':'es'];
   let el=panel.querySelector(':scope > .tab-guide');
   if(!el){ el=document.createElement('div'); el.className='tab-guide'; panel.insertBefore(el,panel.firstChild); }
   const actor=esMaria()?'María / Te':USUARIO==='cesar'?'César / Tú':'Tu papel';
-  el.innerHTML='<div class="tab-guide-title">'+g[0]+'</div><div class="tab-guide-desc">'+g[1]+'</div><div class="tab-guide-role"><span>'+actor+':</span> '+g[2]+'</div>';
+  el.innerHTML='<div class="tab-guide-title">'+g[0]+'</div><div class="tab-guide-desc">'+g[1]+'</div><div class="tab-guide-role"><span>'+actor+':</span> '+g[2]+'</div><button class="btn btn-outline btn-sm tab-guide-help" onclick="abrirAyudaContextual(\''+id+'\')">¿Cómo funciona?</button>';
 }
 
 const PROTOCOLOS_PRIORITARIOS = [
@@ -4481,7 +4541,7 @@ function tab(id, btn) {
   if(typeof actualizarContextoApp==='function')actualizarContextoApp(id);
   renderTabGuia(id);
   const renders = {
-    inicio: initInicio, pendientes: renderPendientes, personal: renderComidaPersonalMaria, pincho: renderPinchoMaria, stock: renderStock, produccion: renderKanban,
+    inicio: initInicio, guia: function(){}, pendientes: renderPendientes, personal: renderComidaPersonalMaria, pincho: renderPinchoMaria, stock: renderStock, produccion: renderKanban,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
     raciones: () => { initRaciones(); },
     produccion: () => { renderKanban(); },
