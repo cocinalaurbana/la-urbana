@@ -1110,6 +1110,14 @@ body.maria-active #inicio-identidad-admin{display:none!important}
 <style id="memoria-fase1-estilos">
 .memoria-hero{padding:20px;margin-bottom:14px;border-radius:16px;background:linear-gradient(135deg,#68744e,#9b9b70);color:#fff}.memoria-hero .portada-sello{color:#fff;opacity:.82}.memoria-hero h2{font-size:31px;margin:8px 0}.memoria-hero p{font-size:16px;max-width:650px}.memoria-ciclo{margin-top:16px;font-size:12px;font-weight:900;letter-spacing:1px;line-height:1.8}.memoria-ciclo span{opacity:.65;padding:0 4px}.memoria-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.memoria-seccion{padding:16px}.memoria-ayuda{font-size:14px;line-height:1.45;color:var(--text-2);margin-bottom:12px}.memoria-lista{margin-top:15px}.memoria-item{border-top:1px solid var(--border);padding:11px 0;font-size:14px;line-height:1.5}.memoria-item strong{font-size:15px}.memoria-item small{display:block;color:var(--text-3);font-size:12px}.memoria-item .btn{margin-top:8px}.memoria-estado{display:inline-block;margin-left:7px;padding:2px 6px;border-radius:6px;background:var(--amber-l);color:var(--accent);font-size:11px;font-weight:800}.memoria-vacio{font-size:13px;color:var(--text-3);padding:10px 0}@media(max-width:900px){.memoria-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){.memoria-grid{grid-template-columns:1fr}.memoria-ciclo{font-size:11px}}
 </style>
+<style id="acceso-movil-pin">
+/* El acceso ocupa una pantalla real: en móviles el teclado no queda cortado. */
+#login-screen{overflow-y:auto;overflow-x:hidden;justify-content:flex-start;padding-top:18px;padding-bottom:30px;-webkit-overflow-scrolling:touch}
+#login-screen.pin-mode>p,#login-screen.pin-mode #firebase-auth-box,#login-screen.pin-mode .portada-la-urbana,#login-screen.pin-mode .bourdain{display:none!important}
+#login-screen.pin-mode .login-logo-wrap{margin-bottom:20px}
+#login-screen.pin-mode #pin-panel{padding-bottom:24px}
+@media(max-height:740px){#login-screen{padding-top:12px}.login-logo-wrap{margin-bottom:16px!important}.pin-key{padding:12px 8px;font-size:1.35rem}.pin-grid{padding:12px;gap:6px}}
+</style>
 </head>
 <body>
 
@@ -1123,12 +1131,13 @@ body.maria-active #inicio-identidad-admin{display:none!important}
   function choose(role) {
     currentRole = role; pin = '';
     var a = id('login-roles'), b = id('pin-panel');
+    if (id('login-screen')) id('login-screen').classList.add('pin-mode');
     if (a) a.style.display = 'none'; if (b) b.style.display = 'block';
     var names = { lore: '👩‍🍳 Lore', cesar: '🧑‍💼 César', maria: '🧑‍🍳 María' };
     if (id('pin-quien-txt')) id('pin-quien-txt').textContent = names[role] + ' — introduce tu PIN';
     if (id('pin-error')) id('pin-error').textContent = ''; dots();
   }
-  function back() { currentRole = null; pin = ''; if (id('pin-panel')) id('pin-panel').style.display = 'none'; if (id('login-roles')) id('login-roles').style.display = 'block'; dots(); }
+  function back() { currentRole = null; pin = ''; if (id('login-screen')) id('login-screen').classList.remove('pin-mode'); if (id('pin-panel')) id('pin-panel').style.display = 'none'; if (id('login-roles')) id('login-roles').style.display = 'block'; dots(); }
   function login() {
     if (pin !== pins[currentRole]) { if (id('pin-error')) id('pin-error').textContent = 'PIN incorrecto. Inténtalo de nuevo.'; pin = ''; dots(); return; }
     var r = currentRole;
@@ -4171,6 +4180,7 @@ function seleccionarRol(rol, btn) {
   pinBuffer = '';
   // Activar idioma según usuario
   _lang = (rol === 'maria') ? 'hu' : 'es';
+  document.getElementById('login-screen').classList.add('pin-mode');
   document.getElementById('login-roles').style.display = 'none';
   document.getElementById('pin-panel').style.display = 'block';
   const names = {lore:'👩‍🍳 Lore', cesar:'🧑‍💼 César', maria:'🧑‍🍳 María'};
@@ -4183,6 +4193,7 @@ function seleccionarRol(rol, btn) {
 function volverLogin() {
   pinRolActual = null;
   pinBuffer = '';
+  document.getElementById('login-screen').classList.remove('pin-mode');
   document.getElementById('pin-panel').style.display = 'none';
   document.getElementById('login-roles').style.display = 'block';
   document.getElementById('pin-error').textContent = '';
