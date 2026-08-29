@@ -3468,28 +3468,30 @@ De [hora] a [hora]. Ven con quien quieras.
     const btn = document.getElementById('firebase-google-login');
     if (btn) btn.textContent = window._fbAuthUser ? '✅ Cuenta Google conectada' : '🔐 Entrar con Google para sincronizar';
   }
+  async function aceptarCuentaGoogle(user) {
+    if (!allowed(user)) { await auth.signOut(); status('Esta cuenta no está autorizada para La Urbana.', true); return false; }
+    window._fbAuthUser=user; status('Cuenta conectada. Ya puedes elegir tu persona y usar la app.');
+    return true;
+  }
   window._fbSignInGoogle = async function() {
     const btn = document.getElementById('firebase-google-login');
     if (btn) { btn.disabled = true; btn.textContent = 'Conectando…'; }
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
+      // En móviles y navegadores embebidos la ventana emergente se corta con frecuencia.
+      // La redirección vuelve a la misma página y deja que Firebase recupere la sesión.
+      const movil = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'');
+      if (movil) { await auth.signInWithRedirect(provider); return false; }
       const result = await auth.signInWithPopup(provider);
-      if (!allowed(result.user)) {
-        await auth.signOut();
-        status('Esta cuenta no está autorizada para La Urbana.', true);
-        return false;
-      }
-      status('Cuenta conectada. Ya puedes elegir tu persona y usar la app.');
-      return true;
+      return await aceptarCuentaGoogle(result.user);
     } catch (e) {
-      if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
+      const code=e&&e.code||'';
+      if (code==='auth/popup-blocked'||code==='auth/operation-not-supported-in-this-environment'||code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request') {
         try { await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); return false; } catch (_) {}
       }
-      status('No se pudo conectar la cuenta. Inténtalo de nuevo.', true);
-      return false;
-    } finally {
-      if (btn) btn.disabled = false;
-    }
+      const mensaje=code==='auth/unauthorized-domain'?'Este acceso web aún no está autorizado en Google Firebase.':'No se pudo conectar la cuenta. Inténtalo de nuevo.';
+      status(mensaje,true); return false;
+    } finally { if (btn) btn.disabled = false; }
   };
   window._fbEnsureAuth = async function() {
     await window._fbAuthReady;
