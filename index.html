@@ -3548,6 +3548,8 @@ De [hora] a [hora]. Ven con quien quieras.
     } finally { syncing = false; }
   }
   window._fbRecargarNube = sincronizarNube;
+  // Completa el acceso iniciado con redirección, especialmente en móviles.
+  auth.getRedirectResult().then(async result => { if (result && result.user) await aceptarCuentaGoogle(result.user); }).catch(e => { if(e&&e.code) status(e.code==='auth/unauthorized-domain'?'Este acceso web aún no está autorizado en Google Firebase.':'No se pudo completar el acceso con Google.',true); });
   auth.onAuthStateChanged(async user => {
     if (!initialAuthResolved) { initialAuthResolved = true; resolveInitialAuth(user); }
     if (user && allowed(user)) {
