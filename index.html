@@ -2232,7 +2232,7 @@ body.maria-active #inicio-identidad-admin{display:none!important}
         <div><strong>Raxo con patatas:</strong> media 140 g de lomo y 90 g de patata; ración 250 g de lomo y 175 g de patata.</div>
         <div><strong>Pollo Urbana:</strong> media 240 g de pollo y 25 g de chips; ración 350 g y 40 g de chips. Adobo de referencia: tahini, soja, pimienta, ajo-perejil, perejil seco y ajo seco.</div>
         <div><strong>Pollo flambeado:</strong> pollo, queso gallego, parmesano, nata, soja, ajo-aceite, whisky y aceite.</div>
-        <div><strong>Ensaladilla rusa:</strong> producto comprado hecho · BAR PAMPÍN · bandeja de 1 kg. Porcionar 215 g por tapa o 340 g por ración; añadir aceitunas y pan según servicio.</div>
+        <div><strong>Ensaladilla rusa:</strong> producto comprado hecho · BAR PAMPÍN · bandeja de 1 kg. Porcionar 250 g por tapa o 350 g por ración; añadir dos lascas de ventresca y una mariñeira en la tapa, o dos mariñeiras en la ración.</div>
         <div><strong>Tortilla:</strong> ficha anterior de 6 huevos/4 tapas y 12 huevos/8 tapas. Las cantidades actuales de trabajo quedan en el bloque de producción y deben prevalecer al actualizarla.</div>
         <div><strong>Patatas bravas, criollo con patatas, croquetas y tequeños:</strong> también constan en la ficha de gramajes.</div>
       </div>
@@ -5577,10 +5577,10 @@ const ESCANDALLOS = [
   {
     plato: 'Ensaladilla rusa', formatos: [
       { nombre: 'Tapa', ingredientes: [
-        {nombre:'Ensaladilla BAR PAMPÍN', g:215}, {nombre:'Aceitunas negras', uds:2}, {nombre:'Pan mariñeira', uds:1}
+        {nombre:'Ensaladilla BAR PAMPÍN', g:250}, {nombre:'Ventresca atún claro FRISCOS', lascas:2}, {nombre:'Pan mariñeira', uds:1}
       ]},
       { nombre: 'Ración', ingredientes: [
-        {nombre:'Ensaladilla BAR PAMPÍN', g:340}, {nombre:'Aceitunas negras', uds:2}, {nombre:'Pan mariñeira', uds:2}
+        {nombre:'Ensaladilla BAR PAMPÍN', g:350}, {nombre:'Ventresca atún claro FRISCOS', lascas:2}, {nombre:'Pan mariñeira', uds:2}
       ]}
     ]
   },
@@ -5792,7 +5792,7 @@ function mostrarDesglose() {
   if (!f) { div.style.display='none'; return; }
   div.style.display = 'block';
   div.innerHTML = '<strong>Descuenta del stock:</strong><br>' +
-    f.ingredientes.map(i => `• ${i.nombre}: ${i.g ? i.g+'g' : i.uds+' ud'+(i.uds!==1?'s':'')}`).join('<br>');
+    f.ingredientes.map(i => `• ${i.nombre}: ${i.g ? i.g+'g' : i.uds ? i.uds+' ud'+(i.uds!==1?'s':'') : i.lascas ? i.lascas+' lascas (peso pendiente)' : 'cantidad pendiente'}`).join('<br>');
 }
 
 function registrarRaciones() {
@@ -5812,6 +5812,8 @@ function registrarRaciones() {
   f.ingredientes.forEach(ing => {
     const totalG = (ing.g || 0) * cant;
     const totalUds = (ing.uds || 0) * cant;
+    // Las lascas se registran ahora, pero no se descuentan hasta pesar la porción real.
+    if (ing.lascas) return;
     const p = productos.find(x => x.nombre.toLowerCase().includes(ing.nombre.toLowerCase().split(' ')[0]));
     if (!p) return;
     // Convertir gramos a unidades según el producto
@@ -7954,6 +7956,7 @@ function integrarTarifaHermida() {
     {re:/salsa teriyaki/i, coste:6.75, formato:'biberón 500 ml'},
     {re:/^pesto$|pesto genovese/i, coste:9.95, formato:'frasco 510 g'},
     {re:/ensaladilla/i, coste:8.49, formato:'bandeja 1 kg'},
+    {re:/ventresca.*at[uú]n/i, coste:16.95, formato:'RO-900 · 650 g PNE'},
     {re:/callos/i, coste:9.95, formato:'bandeja 1 kg'},
     {re:/croqueta.*cecina|croquetas de cecina/i, coste:0.36, formato:'25 g · caja 2 kg'},
     {re:/tortilla.*camar[oó]n/i, coste:1.30, formato:'85 g · caja 20 uds'},
@@ -8563,14 +8566,14 @@ function seedData() {
       {
         id:'r04', nombre:'Ensaladilla rusa', categoria:'carta',
         foto:'https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=600&h=280&fit=crop',
-        pvp_tapa:4.70, pvp_racion:8.50, coste_tapa:0.15, coste_racion:0.24,
+        pvp_tapa:4.70, pvp_racion:8.50, coste_tapa:null, coste_racion:null,
         margen_tapa:96.5, margen_racion:96.9,
         ingredientes:[
-          {nombre:'Ensaladilla BAR PAMPÍN',cantidad:'215 g (tapa) · 340 g (ración)'},
-          {nombre:'Aceitunas negras',cantidad:'2 uds (todas las raciones)'},
+          {nombre:'Ensaladilla BAR PAMPÍN',cantidad:'250 g (tapa) · 350 g (ración)'},
+          {nombre:'Ventresca atún claro FRISCOS',cantidad:'2 lascas (peso pendiente de comprobar)'},
           {nombre:'Pan mariñeira',cantidad:'1 ud (tapa) · 2 uds (ración)'},
         ],
-        elaboracion:'Producto comprado hecho. Comprobar integridad, fecha y conservación de la bandeja; porcionar en frío y terminar con aceitunas y pan.',
+        elaboracion:'Producto comprado hecho. Comprobar integridad, fecha y conservación de la bandeja; porcionar en frío. Tapa: 250 g + 2 lascas de ventresca + 1 mariñeira. Ración: 350 g + 2 lascas de ventresca + 2 mariñeiras.',
         notas:'Proveedor: Hermida / Disgal Chef · BAR PAMPÍN · bandeja 1 kg. Esta es la versión normal de servicio. La variante vegetariana se desarrollará aparte en Laboratorio, verificando primero la composición de BAR PAMPÍN.'
       },
       {
@@ -8682,7 +8685,8 @@ function migrarEnsaladillaComprada(){
   const tareas=cargar('turno_tareas_custom',null);if(Array.isArray(tareas)){let cambio=false;const out=tareas.map(t=>t.id==='t4'?({...t,label:'🥗 Revisar ensaladilla preparada BAR PAMPÍN — calidad, fecha y frío'}):t);cambio=JSON.stringify(out)!==JSON.stringify(tareas);if(cambio)guardar('turno_tareas_custom',out);}
   const pendientes=cargar('pendientes_laurbana',null);if(Array.isArray(pendientes)){let cambio=false;const out=pendientes.map(x=>x.id==='pend-ensaladilla-prueba-20260825'?({...x,titulo:'Preparar prueba de ensaladilla rusa vegetariana',detalle:'Usar como referencia la ensaladilla BAR PAMPÍN de Disgalchef (bandeja 1 kg). Confirmar primero la composición en etiqueta/ficha y registrar la versión y el resultado en Laboratorio.'}):x);cambio=JSON.stringify(out)!==JSON.stringify(pendientes);if(cambio)guardar('pendientes_laurbana',out);}
   let productos=cargar('stock_productos',[]);if(Array.isArray(productos)){let p=productos.find(x=>/ensaladilla/i.test(x.nombre||''));if(!p){p={id:1034,nombre:'Ensaladilla BAR PAMPÍN',unidad:'bandeja 1 kg',formatos:['bandeja 1 kg'],ubicacion:'nevera-cocina',minimo:1,critico:0,vidaDias:null,lotes:[],proveedor:'Hermida / Disgal Chef',costeUnitario:8.49};productos.push(p);guardar('stock_productos',productos);}else{let cambio=false;if(p.nombre!=='Ensaladilla BAR PAMPÍN'){p.historicoNombres=p.historicoNombres||[];if(!p.historicoNombres.includes(p.nombre))p.historicoNombres.push(p.nombre);p.nombre='Ensaladilla BAR PAMPÍN';cambio=true;}if(p.proveedor!=='Hermida / Disgal Chef'){p.proveedor='Hermida / Disgal Chef';cambio=true;}if(p.costeUnitario!==8.49){p.costeUnitario=8.49;cambio=true;}if(JSON.stringify(p.formatos||[])!==JSON.stringify(['bandeja 1 kg'])){p.formatos=['bandeja 1 kg'];cambio=true;}if(cambio)guardar('stock_productos',productos);}}
-  let recetas=cargar('recetas',[]);if(Array.isArray(recetas)){const r=recetas.find(x=>x.id==='r04'||/ensaladilla rusa/i.test(x.nombre||''));if(r&&r.elaboracion&&!/producto comprado hecho/i.test(r.elaboracion)){r.historico=r.historico||[];r.historico.push({fecha:'2026-08-29',motivo:'Cambio de operativa',ingredientes:r.ingredientes,elaboracion:r.elaboracion,notas:r.notas});r.ingredientes=[{nombre:'Ensaladilla BAR PAMPÍN',cantidad:'215 g (tapa) · 340 g (ración)'},{nombre:'Aceitunas negras',cantidad:'2 uds'},{nombre:'Pan mariñeira',cantidad:'1 ud (tapa) · 2 uds (ración)'}];r.elaboracion='Producto comprado hecho. Comprobar integridad, fecha y conservación de la bandeja; porcionar en frío y terminar con aceitunas y pan.';r.notas='Proveedor: Hermida / Disgal Chef · BAR PAMPÍN · bandeja 1 kg. Esta es la versión normal de servicio. La variante vegetariana se desarrollará aparte en Laboratorio, verificando primero la composición de BAR PAMPÍN.';guardar('recetas',recetas);}}
+  if(Array.isArray(productos)&&!productos.some(x=>/ventresca.*at[uú]n claro/i.test(x.nombre||''))){productos.push({id:1035,nombre:'Ventresca atún claro FRISCOS',unidad:'bolsa 650 g',formatos:['RO-900 · 650 g PNE'],ubicacion:'nevera-cocina',minimo:1,critico:0,vidaDias:null,lotes:[],proveedor:'Hermida / Disgal Chef',costeUnitario:16.95,nota:'2 lascas por ración; pesar la porción antes de fijar coste exacto'});guardar('stock_productos',productos);}
+  let recetas=cargar('recetas',[]);if(Array.isArray(recetas)){const r=recetas.find(x=>x.id==='r04'||/ensaladilla rusa/i.test(x.nombre||''));if(r&&r.elaboracion&&!/producto comprado hecho/i.test(r.elaboracion)){r.historico=r.historico||[];r.historico.push({fecha:'2026-08-29',motivo:'Cambio de operativa',ingredientes:r.ingredientes,elaboracion:r.elaboracion,notas:r.notas});r.ingredientes=[{nombre:'Ensaladilla BAR PAMPÍN',cantidad:'250 g (tapa) · 350 g (ración)'},{nombre:'Ventresca atún claro FRISCOS',cantidad:'2 lascas por servicio (pesar para fijar coste)'},{nombre:'Pan mariñeira',cantidad:'1 ud (tapa) · 2 uds (ración)'}];r.elaboracion='Producto comprado hecho. Comprobar integridad, fecha y conservación de la bandeja; porcionar en frío y terminar con aceitunas y pan.';r.notas='Proveedor: Hermida / Disgal Chef · BAR PAMPÍN · bandeja 1 kg. Esta es la versión normal de servicio. La variante vegetariana se desarrollará aparte en Laboratorio, verificando primero la composición de BAR PAMPÍN.';guardar('recetas',recetas);}}
   const id='ensaladilla-rusa-vegana-pampin-20260829',pruebas=cargar('pruebas_recetas',[]);if(Array.isArray(pruebas)&&!pruebas.some(x=>x.id===id)){pruebas.unshift({id,nombre:'Ensaladilla rusa vegetariana · prueba con referencia BAR PAMPÍN',fecha:'2026-08-29',estado:'En prueba',resultado:'Personal',cantidades:'Ensaladilla BAR PAMPÍN: bandeja 1 kg (confirmar etiqueta y composición vegetariana antes de usar). Registrar aquí los sustitutos vegetales, gramajes y rendimiento de la versión propia.',metodo:'Objetivo: desarrollar una ensaladilla rusa vegetariana viable para La Urbana, sin horno y con producción sencilla. Comparar textura, sabor, ligazón, coste y rendimiento con la referencia comprada.',emplatado:'Pendiente de probar.',notas:'La composición vegetariana no se da por supuesta: comprobar la ficha técnica del proveedor. La bandeja comprada se mantiene como referencia y la variante vegetariana se resolverá en la prueba.',aprendizajes:'',platoEvolucionId:'plato-ensaladilla-pampin-20260828',creado:Date.now()});guardar('pruebas_recetas',pruebas);}
 }
 
@@ -8690,13 +8694,22 @@ function registrarPruebaRealEnsaladillaPampin(){
   const pruebaId='ensaladilla-pampin-salsa-jalapeno-sardina-20260828',pruebas=cargar('pruebas_recetas',[]);
   if(Array.isArray(pruebas)&&!pruebas.some(x=>x.id===pruebaId)){pruebas.unshift({id:pruebaId,nombre:'Ensaladilla BAR PAMPÍN · salsa dulce de pimiento y jalapeño · sardina ahumada',fecha:'2026-08-28',estado:'Mejorar',resultado:'Personal',cantidades:'Ensaladilla BAR PAMPÍN · salsa dulce de pimiento y jalapeño · sardina ahumada · pan',metodo:'Prueba real del personal: probar la ensaladilla con la salsa dulce de pimiento y jalapeño; después añadir sardina ahumada y comparar también la combinación de sardina, pan y salsa.',emplatado:'La sardina no funciona colocada sobre la ensaladilla en esta versión.',notas:'Lore disfrutó mucho la mezcla de ensaladilla y salsa. María también la valoró bien, aunque le resultaba una combinación poco habitual. La sardina ahumada utilizada resultó demasiado intensa y poco delicada para la ensaladilla; con pan y salsa sí funcionó muy bien.',aprendizajes:'Funciona: ensaladilla + salsa dulce de pimiento y jalapeño. No funciona con esta sardina sobre la ensaladilla. Siguiente paso: probar una sardina ahumada más delicada y servirla con pan y salsa, no encima de la ensaladilla.',platoEvolucionId:'plato-ensaladilla-pampin-20260828',creado:Date.now()});guardar('pruebas_recetas',pruebas);}
   let aprendizajes=cargar('aprendizajes_urbana',[]);if(Array.isArray(aprendizajes)&&!aprendizajes.some(x=>x.id==='aprendizaje-ensaladilla-pampin-20260828')){aprendizajes.unshift({id:'aprendizaje-ensaladilla-pampin-20260828',fecha:'2026-08-28',origen:'Prueba ensaladilla BAR PAMPÍN · salsa y sardina',observacion:'La mezcla de ensaladilla Pampín con la salsa dulce de pimiento y jalapeño gustó mucho a Lore y a María. La sardina ahumada utilizada no resultó delicada: sobre la ensaladilla daba un sabor demasiado fuerte. Con pan y salsa, la combinación de sardina sí gustó.',conclusion:'La salsa aporta un contraste que funciona con la ensaladilla. La sardina no debe colocarse encima con este producto; el problema puede estar en la intensidad de esta sardina concreta, no necesariamente en la idea de combinar sardina, pan y salsa.',siguiente:'Repetir sin sardina sobre la ensaladilla y probar una sardina ahumada más delicada servida con pan y salsa.',estado:'Provisional',persona:'lore'});guardar('aprendizajes_urbana',aprendizajes);}
-  let platos=cargar('platos_evolucion',[]);if(Array.isArray(platos)&&!platos.some(x=>x.id==='plato-ensaladilla-pampin-20260828')){platos.unshift({id:'plato-ensaladilla-pampin-20260828',nombre:'Ensaladilla BAR PAMPÍN · salsa dulce y ahumado',origen:'Prueba del personal · 28/08/2026',estado:'Probando',versiones:[{id:'v-ensaladilla-pampin-20260828',numero:1,fecha:'2026-08-28',origen:'Prueba del personal',hecho:'Ensaladilla Pampín + salsa dulce de pimiento y jalapeño + sardina ahumada + pan.',resultado:'La ensaladilla con salsa gustó mucho. La sardina sobre la ensaladilla resultó demasiado intensa; con pan y salsa funcionó.',cambio:'Probar sardina ahumada más delicada y mantenerla fuera de la ensaladilla.',foto:''}],pruebaIds:[pruebaId]});guardar('platos_evolucion',platos);}
+  let platos=cargar('platos_evolucion',[]);if(Array.isArray(platos)&&!platos.some(x=>x.id==='plato-ensaladilla-pampin-20260828')){platos.unshift({id:'plato-ensaladilla-pampin-20260828',nombre:'Ensaladilla BAR PAMPÍN · salsa dulce y ahumado',origen:'Prueba del personal · 28/08/2026',estado:'Probando',versiones:[{id:'v-ensaladilla-pampin-20260828',numero:1,fecha:'2026-08-28',origen:'Prueba del personal',hecho:'Ensaladilla Pampín + salsa dulce de pimiento y jalapeño + sardina ahumada + pan.',resultado:'La ensaladilla con salsa gustó mucho. La sardina sobre la ensaladilla resultó demasiado intensa; con pan y salsa funcionó. La decisión posterior es separar la versión normal de la variante vegetariana.',cambio:'Probar sardina ahumada más delicada y mantenerla fuera de la ensaladilla.',foto:''}],pruebaIds:[pruebaId]});guardar('platos_evolucion',platos);}
 }
 
 function registrarDecisionEnsaladillaVegetariana(){
   const pruebaId='ensaladilla-rusa-vegana-pampin-20260829',pruebas=cargar('pruebas_recetas',[]);if(Array.isArray(pruebas)){const p=pruebas.find(x=>x.id===pruebaId);if(p){p.nombre='Ensaladilla rusa vegetariana · salsa dulce con referencia BAR PAMPÍN';p.estado='En prueba';p.resultado='Variante vegetariana';p.notas='Decisión operativa: mantener la ensaladilla normal de servicio por separado, con su acompañamiento habitual de atún y pan mariñeira. Desarrollar una variante vegetariana con la salsa dulce/mermelada de pimiento y jalapeño. La mayonesa de chipotle queda como posibilidad de prueba si María quiere explorarla.';guardar('pruebas_recetas',pruebas);}}
   let decisiones=cargar('decisiones_urbana',[]);if(Array.isArray(decisiones)&&!decisiones.some(x=>x.id==='decision-ensaladilla-vegetariana-20260829')){decisiones.unshift({id:'decision-ensaladilla-vegetariana-20260829',fecha:'2026-08-29',texto:'Mantener la ensaladilla normal de servicio y desarrollar una variante vegetariana con salsa dulce o mermelada de pimiento y jalapeño.',motivo:'La mezcla de ensaladilla y salsa dulce gustó mucho. La sardina ahumada concreta no funcionó sobre el plato, pero no hace falta forzarla.',resultado:'Tener dos caminos diferenciados: ensaladilla normal por un lado y especialidad vegetariana de temporada por otro. Explorar también una mayonesa de chipotle si María quiere.',revision:'2026-09-06',estado:'Abierta',persona:'lore'});guardar('decisiones_urbana',decisiones);}
   let platos=cargar('platos_evolucion',[]);if(Array.isArray(platos)){const p=platos.find(x=>x.id==='plato-ensaladilla-pampin-20260828');if(p){p.nombre='Ensaladilla BAR PAMPÍN · dos caminos: normal y vegetariana';p.estado='Probando';p.decisionId='decision-ensaladilla-vegetariana-20260829';guardar('platos_evolucion',platos);}}}
+
+function normalizarEnsaladillaServicio(){
+  let recetas=cargar('recetas',[]);if(!Array.isArray(recetas))return;const r=recetas.find(x=>x.id==='r04'||/ensaladilla rusa/i.test(x.nombre||''));if(!r)return;let cambio=false;
+  if(!/producto comprado hecho/i.test(r.elaboracion||'')){r.historico=r.historico||[];r.historico.push({fecha:'2026-08-29',motivo:'Cambio de operativa: se compra hecha',ingredientes:r.ingredientes,elaboracion:r.elaboracion,notas:r.notas});cambio=true;}
+  const ingredientes=[{nombre:'Ensaladilla BAR PAMPÍN',cantidad:'250 g (tapa) · 350 g (ración)'},{nombre:'Ventresca atún claro FRISCOS',cantidad:'2 lascas por servicio (pesar para fijar coste)'},{nombre:'Pan mariñeira',cantidad:'1 ud (tapa) · 2 uds (ración)'}];
+  const elaboracion='Producto comprado hecho. Comprobar integridad, fecha y conservación de la bandeja; porcionar en frío. Tapa: 250 g + 2 lascas de ventresca + 1 mariñeira. Ración: 350 g + 2 lascas de ventresca + 2 mariñeiras.';
+  const notas='Proveedor: Hermida / Disgal Chef · BAR PAMPÍN · bandeja 1 kg. Precio de compra: 8,49 €/kg. La ventresca FRISCOS figura en el listado a 16,95 € por RO-900 de 650 g PNE. El coste exacto por tapa/ración queda pendiente de pesar las dos lascas.';
+  if(JSON.stringify(r.ingredientes)!==JSON.stringify(ingredientes)){r.ingredientes=ingredientes;cambio=true;}if(r.elaboracion!==elaboracion){r.elaboracion=elaboracion;cambio=true;}if(r.notas!==notas){r.notas=notas;cambio=true;}if(r.coste_tapa!==null||r.coste_racion!==null){r.coste_tapa=null;r.coste_racion=null;cambio=true;}if(cambio)guardar('recetas',recetas);
+}
 
 // ══════════════════════════════════════════
 // INIT
@@ -8713,6 +8726,7 @@ function arrancarApp() {
   integrarTarifaHermida();
   migrarChecklistTurno();
   migrarEnsaladillaComprada();
+  normalizarEnsaladillaServicio();
   seedPruebasRecetas();
   registrarPruebaRealEnsaladillaPampin();
   registrarDecisionEnsaladillaVegetariana();
@@ -8817,8 +8831,8 @@ const COMPARATIVA_ESCANDALLOS = [
   {key:'teriyaki-racion',plato:'Pollo Teriyaki',formato:'Ración',antiguo:'No consta en el escandallo antiguo',nuevo:'250 g de raxo de pollo · salsa teriyaki: cantidad pendiente de pesar',pvp:null},
   {key:'flambeado-media',plato:'Pollo flambeado',formato:'Media ración',antiguo:'220 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'150 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:9.20},
   {key:'flambeado-racion',plato:'Pollo flambeado',formato:'Ración',antiguo:'320 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',nuevo:'250 g pollo · 25 g queso · 25 g parmesano · 65 g nata · 15 g soja · 10 g ajo-aceite · 15 g whisky · 20 g aceite',pvp:16.70},
-  {key:'ensaladilla-tapa',plato:'Ensaladilla rusa',formato:'Tapa',antiguo:'215 g ensaladilla · 2 aceitunas · pan',nuevo:'215 g ensaladilla · 2 aceitunas · pan',pvp:4.70},
-  {key:'ensaladilla-racion',plato:'Ensaladilla rusa',formato:'Ración',antiguo:'340 g ensaladilla · 2 aceitunas · pan',nuevo:'340 g ensaladilla · 2 aceitunas · pan',pvp:8.50},
+  {key:'ensaladilla-tapa',plato:'Ensaladilla rusa',formato:'Tapa',antiguo:'215 g ensaladilla · 2 aceitunas · pan (referencia anterior)',nuevo:'250 g ensaladilla · 2 lascas de ventresca · 1 mariñeira · peso de lascas pendiente',pvp:4.70},
+  {key:'ensaladilla-racion',plato:'Ensaladilla rusa',formato:'Ración',antiguo:'340 g ensaladilla · 2 aceitunas · pan (referencia anterior)',nuevo:'350 g ensaladilla · 2 lascas de ventresca · 2 mariñeiras · peso de lascas pendiente',pvp:8.50},
   {key:'tortilla-mediana',plato:'Tortilla',formato:'Mediana · 4 porciones',antiguo:'6 huevos · 750 g patata cruda → 630 g pochada',nuevo:'7 huevos · aproximadamente 700 g de patata ya frita antes de la segunda fritura · pendiente pesar resultado final',pvp:12.00},
   {key:'tortilla-grande',plato:'Tortilla',formato:'Grande · 8 porciones',antiguo:'12 huevos · 1.500 g patata cruda → 1.260 g pochada',nuevo:'12 huevos · cantidad pendiente de pesar; mantener como referencia la proporción de la mediana',pvp:23.00},
   {key:'bravas-tapa',plato:'Patatas bravas',formato:'Tapa',antiguo:'300 g patata · 20 g salsa bravas · 20 g alioli',nuevo:'300 g patata · 20 g salsa bravas · 20 g alioli',pvp:4.70},
