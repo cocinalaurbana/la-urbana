@@ -3478,12 +3478,11 @@ De [hora] a [hora]. Ven con quien quieras.
     if (btn) { btn.disabled = true; btn.textContent = 'Conectando…'; }
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
-      // En móviles y navegadores embebidos la ventana emergente se corta con frecuencia.
-      // La redirección vuelve a la misma página y deja que Firebase recupere la sesión.
-      const movil = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'');
-      if (movil) { await auth.signInWithRedirect(provider); return false; }
-      const result = await auth.signInWithPopup(provider);
-      return await aceptarCuentaGoogle(result.user);
+      // La redirección funciona también dentro de navegadores móviles y de la app,
+      // donde las ventanas emergentes suelen quedar bloqueadas.
+      status('Volverás a La Urbana después de elegir tu cuenta.');
+      await auth.signInWithRedirect(provider);
+      return false;
     } catch (e) {
       const code=e&&e.code||'';
       if (code==='auth/popup-blocked'||code==='auth/operation-not-supported-in-this-environment'||code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request') {
