@@ -4237,10 +4237,10 @@ function verificarPin() {
 }
 
 function iniciarSesion(rol) {
-  if (window._fbAuthEnabled && !window._fbAuthUser) {
-    toast('Primero entra con Google para sincronizar la app', 'error');
-    return;
-  }
+  const sinNube = window._fbAuthEnabled && !window._fbAuthUser;
+  // No bloquear el acceso al cuaderno si Google falla en el navegador móvil.
+  // Los cambios quedan en este dispositivo hasta que se conecte la cuenta.
+  if (sinNube) toast('Google no está conectado: entrando en modo local. Los cambios no se sincronizarán todavía.', 'error');
   try { localStorage.setItem('laurbana_role', rol); } catch (e) {}
   USUARIO = rol;
   document.getElementById('login-screen').style.display = 'none';
