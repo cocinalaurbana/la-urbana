@@ -8420,6 +8420,18 @@ function migrarStockCarta() {
   if (cambio) guardar('stock_productos', productos);
 }
 
+function integrarProveedorKevinPatatas(){
+  const nombre='Kevin Patatas Bar Gaiteirs',telefono='640633888';
+  let proveedores=cargar('proveedores',[]);if(!Array.isArray(proveedores))proveedores=[];
+  let p=proveedores.find(x=>/kevin/i.test(x.nombre||'')||/patatas.*gaite/i.test(x.nombre||''));let cambio=false;
+  if(!p){p={id:16,nombre,aliasContacto:'Kevin Gaitaira',categoria:'Patatas · 4ª gama',telefono,productos:'Patata pelada y envasada al vacío · panadera · gajo · bastón · tortilla',dias:'',notas:'Contacto localizado en Google: Kevin Patatas Bar Gaiteirs. Formatos y precios: confirmar en cada pedido.'};proveedores.push(p);cambio=true;}else{if(p.nombre!==nombre){p.nombre=nombre;cambio=true;}if(p.telefono!==telefono){p.telefono=telefono;cambio=true;}if(p.categoria!=='Patatas · 4ª gama'){p.categoria='Patatas · 4ª gama';cambio=true;}const prod='Patata pelada y envasada al vacío · panadera · gajo · bastón · tortilla';if(p.productos!==prod){p.productos=prod;cambio=true;}if(!p.aliasContacto){p.aliasContacto='Kevin Gaitaira';cambio=true;}if(!/formatos y precios/i.test(p.notas||'')){p.notas=(p.notas?p.notas+' · ':'')+'Formatos y precios: confirmar en cada pedido.';cambio=true;}}
+  if(cambio)guardar('proveedores',proveedores);
+  let productos=cargar('stock_productos',[]);if(!Array.isArray(productos))return;
+  const re=/^patata (pelada|entera|tortilla|panadera|gajo|bast[oó]n)/i;let cambioStock=false;
+  productos.forEach(x=>{if(!re.test(String(x.nombre||'')))return;if(x.proveedor!==nombre){x.proveedor=nombre;cambioStock=true;}if(x.proveedorTelefono!==telefono){x.proveedorTelefono=telefono;cambioStock=true;}if(!x.proveedorContacto){x.proveedorContacto='Kevin Gaitaira';cambioStock=true;}});
+  if(cambioStock)guardar('stock_productos',productos);
+}
+
 function limpiarCatalogoObsoleto() {
   const limpiarTexto = texto => String(texto||'')
     .replace(/tequeños?/ig,'')
@@ -8777,6 +8789,7 @@ function arrancarApp() {
   limpiarCatalogoObsoleto();
   integrarTarifaQuique();
   integrarTarifaHermida();
+  integrarProveedorKevinPatatas();
   migrarChecklistTurno();
   migrarEnsaladillaComprada();
   normalizarEnsaladillaServicio();
