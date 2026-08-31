@@ -3485,6 +3485,8 @@ De [hora] a [hora]. Ven con quien quieras.
   let initialAuthResolved = false;
 
   window._fbAuthEnabled = true;
+  // Durante la prueba del inventario no se ejecutan migraciones que puedan tocar recetas, productos o movimientos.
+  window.PROTECCION_INVENTARIO = true;
   window._fbAuthUser = null;
   window._fbCache = _cache;
   window._fbAuthReady = new Promise(resolve => { resolveInitialAuth = resolve; });
@@ -3560,18 +3562,20 @@ De [hora] a [hora]. Ven con quien quieras.
     try {
       await Promise.all(CLAVES.map(k => window._fbCargar(k, null)));
       window._firebaseReady = true;
-      if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
+      if (!window.PROTECCION_INVENTARIO) {
+        if (typeof migrarChecklistTurno === 'function') migrarChecklistTurno();
       if (typeof migrarPendientesLaUrbana === 'function') migrarPendientesLaUrbana();
       if (typeof migrarStockCarta === 'function') migrarStockCarta();
       if (typeof limpiarCatalogoObsoleto === 'function') limpiarCatalogoObsoleto();
       if (typeof migrarContactosProveedores === 'function') migrarContactosProveedores();
       if (typeof integrarTarifaHermida === 'function') integrarTarifaHermida();
       if (typeof migrarBancoPinchos === 'function') migrarBancoPinchos();
+      }
       if (typeof USUARIO !== 'undefined' && USUARIO && typeof initInicio === 'function') {
         initInicio();
         if (typeof actualizarWidgetCaja === 'function') actualizarWidgetCaja();
         if (typeof renderKanban === 'function' && document.getElementById('tab-produccion')?.classList.contains('active')) renderKanban();
-        if (typeof renderTurnoTareas === 'function' && document.getElementById('tab-turno')?.classList.contains('active')) { migrarChecklistTurno(); renderTurnoTareas(); }
+        if (typeof renderTurnoTareas === 'function' && document.getElementById('tab-turno')?.classList.contains('active')) { renderTurnoTareas(); }
         if (typeof renderPendientes === 'function' && document.getElementById('tab-pendientes')?.classList.contains('active')) renderPendientes();
       }
     } finally { syncing = false; }
@@ -5247,8 +5251,9 @@ function consultarInventarioCerrado(id){inventarioConsultaId=id;renderInventario
 function renderInventariosCerrados(){
   const el=document.getElementById('inventario-cerrados');if(!el)return;const lista=cargar('inventarios_fisicos',[]).filter(x=>x.estado==='cerrado').sort((a,b)=>String(b.fechaHora).localeCompare(String(a.fechaHora)));if(!lista.length){el.innerHTML='';return;}
   const ses=lista.find(x=>String(x.id)===String(inventarioConsultaId))||lista[0],grupos={};(ses.lineas||[]).forEach(l=>{const k=String(l.productoId);if(!grupos[k])grupos[k]={nombre:l.productoNombre,unidad:l.unidad,lineas:[]};grupos[k].lineas.push(l);});
-  const detalle=Object.values(grupos).map(g=>{const total=g.lineas.every(l=>unidadInventarioBase(l.unidad)===unidadInventarioBase(g.unidad))?g.lineas.reduce((a,l)=>a+Number(l.cantidad||0),0):null;return `<div style="padding:7px 0;border-top:1px solid var(--border);font-size:12px"><strong>${escPrueba(g.nombre)}</strong>${total!==null?` <span style="color:var(--olive);font-weight:700">· TOTAL FÍSICO: ${formatStockQty(total)} ${escPrueba(g.unidad)}</span>`:''}<div style="color:var(--text-2);margin-top:2px">${g.lineas.map(l=>`${escPrueba(UBIC_LABELS[l.ubicacion]||l.ubicacion)}: ${l.cantidad} ${escPrueba(l.unidad)}`).join(' · ')}</div></div>`;}).join('');
-  el.innerHTML='<div style="padding:10px;border-radius:9px;background:var(--olive-l);margin-top:10px"><div style="font-size:11px;font-weight:800;color:var(--olive);text-transform:uppercase;letter-spacing:.5px">Inventarios cerrados · solo consulta</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:7px 0">'+lista.map(x=>`<button onclick="consultarInventarioCerrado('${String(x.id).replace(/'/g,'')}')" style="border:1px solid var(--border);border-radius:7px;padding:5px 8px;background:${String(x.id)===String(ses.id)?'var(--surface)':'transparent'};color:var(--text);font-size:11px;cursor:pointer">${escPrueba(x.nombre)}</button>`).join('')+'</div><strong>${escPrueba(ses.nombre)}</strong><div style="font-size:12px;color:var(--text-2);margin-top:3px">${formatHora(ses.fechaHora||'')} · ${escPrueba(ses.cerradoPor||ses.quien||'Persona no indicada')} · ${(ses.lineas||[]).length} existencias físicas</div>${detalle}</div>';
+  const detalle=Object.values(grupos).map(function(g){const total=g.lineas.every(function(l){return unidadInventarioBase(l.unidad)===unidadInventarioBase(g.unidad);})?g.lineas.reduce(function(a,l){return a+Number(l.cantidad||0);},0):null;const ubicaciones=g.lineas.map(function(l){return escPrueba(UBIC_LABELS[l.ubicacion]||l.ubicacion)+': '+l.cantidad+' '+escPrueba(l.unidad);}).join(' · ');return '<div style="padding:7px 0;border-top:1px solid var(--border);font-size:12px"><strong>'+escPrueba(g.nombre)+'</strong>'+(total!==null?' <span style="color:var(--olive);font-weight:700">· TOTAL FÍSICO: '+formatStockQty(total)+' '+escPrueba(g.unidad)+'</span>':'')+'<div style="color:var(--text-2);margin-top:2px">'+ubicaciones+'</div></div>';}).join('');
+  const botones=lista.map(function(x){const id=String(x.id).replace(/'/g,'');return '<button onclick="consultarInventarioCerrado(\''+id+'\')" style="border:1px solid var(--border);border-radius:7px;padding:5px 8px;background:'+(String(x.id)===String(ses.id)?'var(--surface)':'transparent')+';color:var(--text);font-size:11px;cursor:pointer">'+escPrueba(x.nombre)+'</button>';}).join('');
+  el.innerHTML='<div style="padding:10px;border-radius:9px;background:var(--olive-l);margin-top:10px"><div style="font-size:11px;font-weight:800;color:var(--olive);text-transform:uppercase;letter-spacing:.5px">Inventarios cerrados · solo consulta</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:7px 0">'+botones+'</div><strong>'+escPrueba(ses.nombre)+'</strong><div style="font-size:12px;color:var(--text-2);margin-top:3px">'+formatHora(ses.fechaHora||'')+' · '+escPrueba(ses.cerradoPor||ses.quien||'Persona no indicada')+' · '+(ses.lineas||[]).length+' existencias físicas</div>'+detalle+'</div>';
 }
 function quitarLineaInventario(i){const ses=inventarioBorrador();if(!ses)return;ses.lineas.splice(i,1);guardar('inventario_sesion_borrador',ses);renderInventarioLineas();renderInventariosCerrados();renderInventarioComparativa();const q=document.getElementById('inventario-estado');if(q)q.textContent=`${ses.lineas.length} producto(s) contado(s) · Avance guardado como borrador, sin tocar ningún stock.`;}
 function obtenerPuntoCero(){return cargar('inventarios_fisicos',[]).filter(x=>x.estado==='cerrado'&&(/punto cero/i.test(x.nombre||'')||x.puntoCero)).sort((a,b)=>String(a.fechaHora).localeCompare(String(b.fechaHora)))[0]||null;}
@@ -8921,6 +8926,7 @@ function recuperarVersionAureaEnsaladilla(){
 // ══════════════════════════════════════════
 function arrancarApp() {
   seedData();
+  if (!window.PROTECCION_INVENTARIO) {
   migrarPendientesLaUrbana();
   migrarContactosProveedores();
   migrarBancoPinchos();
@@ -8938,6 +8944,7 @@ function arrancarApp() {
   registrarDecisionEnsaladillaVegetariana();
   recuperarVersionAureaEnsaladilla();
   migrarRelacionesMemoria();
+  }
   initHeader();
   // Renderizar la pestaña actual sin devolver a Inicio al sincronizar.
   // Firebase puede volver a llamar a esta función después de que Lore ya haya navegado.
@@ -9139,6 +9146,7 @@ function volverGruposNav(){
 // Retirar la salsa miel-mostaza: ya no forma parte de la carta actual.
 // Se aplica también sobre datos guardados para que desaparezca de la app de todos los dispositivos.
 (function retirarSalsaNoDisponible(){
+  return; // La prueba de inventario no puede eliminar ni modificar recetas.
   const recetasActuales = cargar('recetas', null);
   if (Array.isArray(recetasActuales)) {
     const limpias = recetasActuales.filter(r => r.id !== 's02' && r.nombre !== 'Miel-mostaza');
