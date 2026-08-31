@@ -1822,6 +1822,34 @@ body.maria-active #inicio-identidad-admin{display:none!important}
 <!-- STOCK -->
 <div id="tab-stock" class="tab">
 
+  <!-- INVENTARIO FÍSICO · FOTOGRAFÍA INDEPENDIENTE DEL STOCK OPERATIVO -->
+  <div class="card" id="inventario-fisico-panel" style="margin-bottom:14px;border-left:4px solid var(--olive);padding:14px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px">
+      <div>
+        <div class="card-title">📋 Inventario físico</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.45">Una fotografía de lo que contamos realmente. Guardar una línea aquí no cambia lotes, recetas, compras, mermas ni raciones.</div>
+      </div>
+      <span style="font-size:11px;padding:4px 7px;border-radius:7px;background:var(--olive-l);color:var(--olive);font-weight:800;white-space:nowrap">STOCK FÍSICO</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:8px;margin:10px 0">
+      <div class="form-group" style="margin:0"><label>Inventario</label><input id="inv-sesion-nombre" type="text" value="INVENTARIO 01 · PUNTO CERO DE LA URBANA" style="width:100%;box-sizing:border-box"></div>
+      <div class="form-group" style="margin:0"><label>Fecha y hora</label><input id="inv-fecha-hora" type="datetime-local" style="width:100%;box-sizing:border-box"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin-bottom:8px">
+      <div class="form-group" style="margin:0"><label>Producto existente</label><select id="inv-producto" onchange="actualizarUnidadInventario()" style="width:100%;color:var(--text);background:var(--surface)"></select></div>
+      <div class="form-group" style="margin:0"><label>Ubicación</label><select id="inv-ubicacion" style="width:100%;color:var(--text);background:var(--surface)"><option value="">— Ubicación —</option><option value="nevera-1">🔲 Nevera 1 · transparente</option><option value="nevera-2">🔲 Nevera 2 · blanca</option><option value="congelador-1">🧊 Congelador 1 · pollo</option><option value="congelador-2">🧊 Congelador 2 · lomo/croquetas/bravas</option><option value="congelador-3">🧊 Congelador 3 · columna</option><option value="congelador-4">❄️ Congelador 4 · sobre Nevera 2</option><option value="estanteria">🗄️ Estantería seca</option><option value="embalaje">🥡 Para llevar</option></select></div>
+      <div class="form-group" style="margin:0"><label>Cantidad física</label><input id="inv-cantidad" type="number" min="0" step="0.001" placeholder="Puede ser 0" style="width:100%;box-sizing:border-box"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-bottom:8px">
+      <div class="form-group" style="margin:0"><label>Unidad contada</label><select id="inv-unidad" style="width:100%;color:var(--text);background:var(--surface)"><option value="kg">kg</option><option value="g">g</option><option value="l">litros</option><option value="ml">ml</option><option value="unidad">unidades</option><option value="botella">botellas</option><option value="lata">latas</option><option value="bolsa">bolsas</option><option value="bandeja">bandejas</option><option value="bote">botes</option><option value="brick">bricks</option><option value="manojo">manojos</option><option value="otro">otra unidad</option></select></div>
+      <div class="form-group" style="margin:0"><label>Observaciones <span style="font-weight:400;color:var(--text-3)">— opcional</span></label><input id="inv-observaciones" type="text" placeholder="Ej. tres bolsas en congelador 3; revisar ubicación" style="width:100%;box-sizing:border-box"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><button class="btn btn-oro" onclick="guardarLineaInventario()">＋ Guardar producto contado</button><button class="btn btn-verde" onclick="cerrarInventarioFisico()">✅ Cerrar y guardar fotografía</button></div>
+    <div id="inventario-estado" style="font-size:12px;color:var(--text-3);margin-top:9px"></div>
+    <div id="inventario-lineas" style="margin-top:10px"></div>
+    <div id="inventario-comparativa" style="margin-top:10px"></div>
+  </div>
+
   <!-- Buscador -->
   <div style="position:relative;margin-bottom:10px">
     <input type="text" id="stock-buscar" placeholder="🔍 Buscar producto..." oninput="renderStock()"
@@ -1974,7 +2002,7 @@ body.maria-active #inicio-identidad-admin{display:none!important}
 <div id="tab-raciones" class="tab">
   <div class="card" style="margin-bottom:14px">
     <div style="font-weight:800;font-size:1rem;margin-bottom:4px">🍽️ Raciones servidas hoy</div>
-    <div style="font-size:12px;color:var(--text-3)">Anota cuántas raciones de cada plato se han servido. El stock se descuenta automáticamente.</div>
+    <div style="font-size:12px;color:var(--text-3)">Anota cuántas raciones de cada plato se han servido. Las raciones registradas generan CONSUMO TEÓRICO; no modifican el stock físico. Cualquier ajuste real requiere una acción explícita.</div>
   </div>
 
   <!-- Selector de plato -->
@@ -2628,7 +2656,7 @@ body.maria-active #inicio-identidad-admin{display:none!important}
   <div class="card" style="border-left:3px solid var(--amber);margin-bottom:14px">
     <div class="card-title">📐 Cómo funciona</div>
     <div style="font-size:13px;color:var(--text-2);line-height:1.55">El <b>food cost teórico</b> muestra lo que deberían costar las ventas según las recetas. El <b>food cost real</b> se calcula con el almacén: stock inicial + compras − stock final.</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12px"><span class="badge">Teórico: receta + ventas</span><span class="badge">Real: inventario</span><span class="badge" style="background:var(--amber-l);color:var(--amber)">🟡 Precios provisionales</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12px"><span class="badge">Stock teórico: compras − mermas − consumos</span><span class="badge">Stock físico: inventario contado</span><span class="badge">Diferencia: comparación</span><span class="badge" style="background:var(--amber-l);color:var(--amber)">🟡 Precios provisionales</span></div>
   </div>
 
   <div class="card" style="margin-bottom:14px;border-left:3px solid var(--accent)">
@@ -3523,7 +3551,7 @@ De [hora] a [hora]. Ven con quien quieras.
     }
   };
 
-  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom','memorias_gastronomicas','pendientes_laurbana','entradas_mercancias','documentos_ocr','appcc_' + new Date().toISOString().slice(0,10),'comidas_personal','platos_evolucion','pruebas_recetas','aprendizajes_urbana','decisiones_urbana','pruebas_publicas','contenido_planificado','pinchos_operativos'];
+  const CLAVES = ['stock_productos','proveedores','recetas','pinchos','mermas','pedidos','historial','playlists','gastos','raciones_dia','produccion_tareas','turno_tareas_custom','cierre_checklist_custom','inventario_sesion_borrador','inventarios_fisicos','consumos_teoricos','memorias_gastronomicas','pendientes_laurbana','entradas_mercancias','documentos_ocr','appcc_' + new Date().toISOString().slice(0,10),'comidas_personal','platos_evolucion','pruebas_recetas','aprendizajes_urbana','decisiones_urbana','pruebas_publicas','contenido_planificado','pinchos_operativos'];
   let syncing = false;
   async function sincronizarNube() {
     if (syncing || !window._fbAuthUser) return;
@@ -4315,13 +4343,13 @@ const TAB_GUIAS = {
   pendientes:{es:['Cuaderno de pendientes','Aquí cada tema tiene su propia página para no perderse en un scroll infinito.','Entra en la página correspondiente y marca una tarea solo cuando esté realmente hecha.'],hu:['Függő feladatok füzete','Minden téma külön oldalon jelenik meg, így nem kell végtelenül görgetni.','Nyisd meg a megfelelő oldalt, és csak akkor jelöld késznek, amikor valóban elkészült.']},
   turno:{es:['Turnos y relevo','Aquí se registra qué se hace al entrar, al cerrar y qué queda comunicado al siguiente turno.','Marca lo que realmente has comprobado y escribe en el relevo lo que queda para mañana.'],hu:['Műszak és átadás','Itt rögzítjük a nyitási és zárási feladatokat, valamint azt, amit a következő műszaknak átadunk.','Csak azt jelöld késznek, amit valóban ellenőriztél; a holnapi feladatokat írd be az átadásba.']},
   produccion:{es:['Producción','Aquí se ve qué elaboraciones y preparaciones hay que hacer hoy o mañana.','Realiza las tareas y márcalas cuando estén terminadas; si no se pueden hacer, deja una nota.'],hu:['Előkészítés','Itt látható, mit kell ma vagy holnap elkészíteni és előkészíteni.','A feladatot csak akkor jelöld késznek, amikor elkészült; ha nem lehet elvégezni, írj megjegyzést.']},
-  stock:{es:['Inventario','Aquí se comprueba qué productos hay físicamente, dónde están y qué queda por reponer.','Cuenta sin mover género, respeta las zonas y comunica cualquier diferencia.'],hu:['Készlet','Itt ellenőrizzük, milyen termékek vannak ténylegesen, hol vannak, és miből kell rendelni.','Számolás közben ne mozgasd az árut; tartsd be a zónákat, és jelezd az eltéréseket.']},
+  stock:{es:['Inventario','Aquí se registra una fotografía del stock físico contado, separada del stock teórico y de su diferencia.','Cuenta sin mover género, respeta las zonas y comunica cualquier diferencia.'],hu:['Készlet','Itt ellenőrizzük, milyen termékek vannak ténylegesen, hol vannak, és miből kell rendelni.','Számolás közben ne mozgasd az árut; tartsd be a zónákat, és jelezd az eltéréseket.']},
   mermas:{es:['Mermas y consumos','Aquí se registra lo que se tira, caduca, se daña o se utiliza fuera de una ración normal.','Registra la cantidad real y el motivo; si se usó en cocina, indica para qué.'],hu:['Veszteség és felhasználás','Itt rögzítjük, amit kidobunk, lejár, megsérül, vagy a normál adagoláson kívül használunk fel.','A tényleges mennyiséget és az okot írd be; konyhai felhasználásnál írd le, mire használtad.']},
   appcc:{es:['APPCC y seguridad alimentaria','Aquí se registran temperaturas y controles que protegen la seguridad de los alimentos.','Haz el control cuando corresponde y deja constancia si algo está fuera de rango.'],hu:['HACCP és élelmiszerbiztonság','Itt rögzítjük az élelmiszerek biztonságát védő hőmérséklet- és egyéb ellenőrzéseket.','A megfelelő időben végezd el az ellenőrzést; eltérés esetén írj megjegyzést.']},
   pedidos:{es:['Compras y pedidos','Aquí se prepara la lista de compra y se registra lo que falta o hay que solicitar.','Revisa la lista y comunica faltas o sustituciones; los pedidos de lunes se validan el domingo.'],hu:['Beszerzés és rendelések','Itt készül a bevásárlólista, és itt jelezzük, mi hiányzik vagy mit kell megrendelni.','Ellenőrizd a listát, és jelezd a hiányt vagy a helyettesítést; a hétfői rendelést vasárnap hagyjuk jóvá.']},
   caja:{es:['Entradas y gastos','Aquí se registran las entradas de mercancía, los albaranes y los gastos.','Quien recibe anota o fotografía la entrega; Lore la valida después.'],hu:['Áruátvétel és kiadások','Itt rögzítjük az áruátvételt, a szállítóleveleket és a kiadásokat.','Az átvevő rögzíti vagy lefényképezi a szállítmányt; Lore később ellenőrzi.']},
   menu:{es:['Menú del día','Aquí se registra el menú que se ofrece hoy y sus notas o alérgenos.','Mantén la información actualizada para que cocina y sala trabajen con la misma referencia.'],hu:['Napi menü','Itt rögzítjük a napi menüt, a megjegyzéseket és az allergéneket.','Tartsd naprakészen, hogy a konyha és a pult ugyanazt az információt használja.']},
-  raciones:{es:['Raciones','Aquí se anotan las raciones servidas para relacionar producción, consumo y ventas.','Registra las cantidades reales, no las estimadas.'],hu:['Adagok','Itt rögzítjük a kiadott adagokat, hogy összevessük az előkészítést, a felhasználást és az értékesítést.','A tényleges mennyiségeket írd be, ne becslést.']},
+  raciones:{es:['Raciones','Aquí se registran raciones servidas como consumo teórico; no modifican el stock físico.','Registra las cantidades reales, no las estimadas; cualquier ajuste físico requiere una acción explícita.'],hu:['Adagok','Itt rögzítjük a kiadott adagokat, hogy összevessük az előkészítést, a felhasználást és az értékesítést.','A tényleges mennyiségeket írd be, ne becslést.']},
   recetas:{es:['Recetas','Aquí se guardan las recetas, cantidades y rendimientos que deben repetirse.','Usa la receta como referencia común y comunica cualquier cambio.'],hu:['Receptek','Itt tároljuk az ismételhető recepteket, mennyiségeket és hozamokat.','A recept legyen a közös referencia; minden változást jelezz.']},
   pruebas:{es:['Laboratorio de menú','Aquí se prueban platos, elaboraciones y presentaciones antes de incorporarlos a la carta o al menú.','Anota qué se ha probado y qué decisión se toma; no des una prueba por definitiva sin validación.'],hu:['Receptpróbák','Itt rögzítjük a próbákat, mielőtt egy étel bekerül az étlapra.','Írd le, mit próbáltunk ki és mi lett a döntés; jóváhagyás nélkül ne tekintsük véglegesnek.']},
   proveedores:{es:['Proveedores','Aquí se guarda quién suministra cada producto, sus datos y sus tarifas.','Comprueba los cambios de precio y comunica cualquier incidencia con el proveedor.'],hu:['Beszállítók','Itt tároljuk a beszállítókat, elérhetőségüket és áraikat.','Ellenőrizd az árváltozásokat, és jelezd a beszállítóval kapcsolatos problémákat.']},
@@ -4613,7 +4641,7 @@ function tab(id, btn) {
   if(typeof actualizarContextoApp==='function')actualizarContextoApp(id);
   renderTabGuia(id);
   const renders = {
-    inicio: initInicio, guia: renderCircuito, memoria: renderMemoria, pendientes: renderPendientes, personal: renderComidaPersonalMaria, pincho: renderPinchoMaria, stock: renderStock, produccion: renderKanban,
+    inicio: initInicio, guia: renderCircuito, memoria: renderMemoria, pendientes: renderPendientes, personal: renderComidaPersonalMaria, pincho: renderPinchoMaria, stock: () => { initInventarioFisico(); renderStock(); }, produccion: renderKanban,
     mermas: () => { poblarSelectorProductos(); renderMermas(); },
     raciones: () => { initRaciones(); },
     produccion: () => { renderKanban(); },
@@ -5155,6 +5183,86 @@ const UBIC_ALIAS = {
   'cocina-congelador-diario':'congelador-4','congelador-cocina':'congelador-4'
 };
 function ubicacionCanonica(u) { return UBIC_ALIAS[u] || u || ''; }
+
+// ══════════════════════════════════════════
+// INVENTARIO FÍSICO · fotografía independiente
+// ══════════════════════════════════════════
+const INVENTARIO_UNIDADES = ['kg','g','l','ml','unidad','botella','lata','bolsa','bandeja','bote','brick','manojo','otro'];
+function unidadInventarioBase(u){
+  const s=String(u||'').toLowerCase().trim();
+  if(/^kg|kil/.test(s))return 'kg'; if(/^g( |r|ram|$)/.test(s))return 'g';
+  if(/^l( |it|$)/.test(s))return 'l'; if(/^ml/.test(s))return 'ml';
+  if(/^(ud|unidad|unidades)/.test(s))return 'unidad'; if(/^botell/.test(s))return 'botella';
+  if(/^lat/.test(s))return 'lata'; if(/^bols/.test(s))return 'bolsa'; if(/^bande/.test(s))return 'bandeja';
+  if(/^bot(e|es)/.test(s))return 'bote'; if(/^brick|brik/.test(s))return 'brick'; if(/^manoj/.test(s))return 'manojo'; return 'otro';
+}
+function convertirUnidadInventario(cantidad,desde,hacia){
+  const a=unidadInventarioBase(desde),b=unidadInventarioBase(hacia),n=Number(cantidad);
+  if(!isFinite(n))return null; if(a===b)return n;
+  if(a==='kg'&&b==='g')return n*1000; if(a==='g'&&b==='kg')return n/1000;
+  if(a==='l'&&b==='ml')return n*1000; if(a==='ml'&&b==='l')return n/1000;
+  return null;
+}
+function fechaHoraLocalInput(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());}
+function poblarSelectorInventario(){
+  const sel=document.getElementById('inv-producto');if(!sel)return;
+  const actual=sel.value,productos=cargar('stock_productos',[]).slice().sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''),'es'));
+  sel.innerHTML='<option value="">— Producto existente —</option>'+productos.map(p=>`<option value="${p.id}">${escPrueba(p.nombre)} · ${escPrueba(p.unidad||'unidad')}</option>`).join('');
+  if(productos.some(p=>String(p.id)===String(actual)))sel.value=actual;
+}
+function actualizarUnidadInventario(){
+  const id=document.getElementById('inv-producto')?.value,prod=cargar('stock_productos',[]).find(p=>String(p.id)===String(id)),sel=document.getElementById('inv-unidad');
+  if(!prod||!sel)return; const base=unidadInventarioBase(prod.unidad);sel.value=INVENTARIO_UNIDADES.includes(base)?base:'otro';
+  const ubic=document.getElementById('inv-ubicacion');if(ubic&&!ubic.value&&prod.ubicacion)ubic.value=ubicacionCanonica(prod.ubicacion);
+}
+function inventarioBorrador(){return cargar('inventario_sesion_borrador',null);}
+function initInventarioFisico(){
+  const ses=inventarioBorrador()||{id:'inventario-'+Date.now(),nombre:'INVENTARIO 01 · PUNTO CERO DE LA URBANA',fechaHora:new Date().toISOString(),quien:USUARIO||'',estado:'abierto',lineas:[]};
+  const n=document.getElementById('inv-sesion-nombre'),f=document.getElementById('inv-fecha-hora'),q=document.getElementById('inventario-estado');
+  if(n)n.value=ses.nombre||'INVENTARIO 01 · PUNTO CERO DE LA URBANA';if(f)f.value=ses.fechaHora?new Date(ses.fechaHora).toISOString().slice(0,16):fechaHoraLocalInput();
+  poblarSelectorInventario(); if(q)q.textContent=`${(ses.lineas||[]).length} producto(s) contado(s) · Lo guardado aquí es independiente del stock operativo.`;renderInventarioLineas();renderInventarioComparativa();
+}
+function leerSesionInventarioDesdeFormulario(){
+  const d=document.getElementById('inv-fecha-hora')?.value;const ses=inventarioBorrador()||{id:'inventario-'+Date.now(),lineas:[],estado:'abierto'};
+  ses.nombre=document.getElementById('inv-sesion-nombre')?.value.trim()||'INVENTARIO 01 · PUNTO CERO DE LA URBANA';ses.fechaHora=d?new Date(d).toISOString():new Date().toISOString();ses.quien=ses.quien||USUARIO||'Desconocido';return ses;
+}
+function guardarLineaInventario(){
+  const prodId=document.getElementById('inv-producto')?.value,prod=cargar('stock_productos',[]).find(p=>String(p.id)===String(prodId));
+  const ubic=ubicacionCanonica(document.getElementById('inv-ubicacion')?.value||''),cantidad=Number(document.getElementById('inv-cantidad')?.value),unidad=document.getElementById('inv-unidad')?.value||'otro';
+  if(!prod){toast('Selecciona un producto existente','error');return;}if(!ubic){toast('Selecciona la ubicación','error');return;}if(!isFinite(cantidad)||cantidad<0){toast('Indica la cantidad física, también puede ser 0','error');return;}
+  const ses=leerSesionInventarioDesdeFormulario();const linea={productoId:prod.id,productoNombre:prod.nombre,ubicacion:ubic,cantidad,unidad,observaciones:document.getElementById('inv-observaciones')?.value.trim()||'',registradoEn:ahora(),quien:USUARIO||ses.quien};
+  const existente=(ses.lineas||[]).findIndex(x=>String(x.productoId)===String(prod.id));if(existente>=0)ses.lineas[existente]=linea;else ses.lineas.push(linea);
+  guardar('inventario_sesion_borrador',ses);document.getElementById('inv-cantidad').value='';document.getElementById('inv-observaciones').value='';
+  document.getElementById('inv-producto').value='';document.getElementById('inv-ubicacion').value='';renderInventarioLineas();renderInventarioComparativa();document.getElementById('inventario-estado').textContent=`${ses.lineas.length} producto(s) contado(s) · Avance guardado como borrador, sin tocar ningún stock.`;toast('Producto contado ✓','verde');
+}
+function renderInventarioLineas(){
+  const el=document.getElementById('inventario-lineas');if(!el)return;const ses=inventarioBorrador();if(!ses||!ses.lineas?.length){el.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:8px 0">Aún no hay productos contados. Empieza por la ubicación que estés recorriendo.</div>';return;}
+  el.innerHTML='<div style="font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Avance del inventario · '+ses.lineas.length+' productos</div>'+ses.lineas.map((l,i)=>`<div style="display:flex;align-items:center;gap:7px;padding:7px 0;border-top:1px solid var(--border);font-size:12px"><div style="flex:1;min-width:0"><strong>${escPrueba(l.productoNombre)}</strong><div style="color:var(--text-3)">${escPrueba(UBIC_LABELS[l.ubicacion]||l.ubicacion)} · ${l.cantidad} ${escPrueba(l.unidad)}${l.observaciones?' · '+escPrueba(l.observaciones):''}</div></div><button onclick="quitarLineaInventario(${i})" style="border:0;background:none;color:var(--rojo);font-size:16px;cursor:pointer" title="Quitar del borrador">×</button></div>`).join('');
+}
+function quitarLineaInventario(i){const ses=inventarioBorrador();if(!ses)return;ses.lineas.splice(i,1);guardar('inventario_sesion_borrador',ses);renderInventarioLineas();renderInventarioComparativa();}
+function obtenerPuntoCero(){return cargar('inventarios_fisicos',[]).filter(x=>x.estado==='cerrado'&&(/punto cero/i.test(x.nombre||'')||x.puntoCero)).sort((a,b)=>String(a.fechaHora).localeCompare(String(b.fechaHora)))[0]||null;}
+function calcularStockTeoricoPuntoCero(prodId){
+  const base=obtenerPuntoCero(),prod=cargar('stock_productos',[]).find(p=>String(p.id)===String(prodId));if(!base||!prod)return {estado:'pendiente',motivo:'Todavía no hay un INVENTARIO 01 cerrado.'};
+  const linea=(base.lineas||[]).find(x=>String(x.productoId)===String(prodId));if(!linea)return {estado:'pendiente',motivo:'El producto no figura en el punto cero.'};
+  const inicial=convertirUnidadInventario(linea.cantidad,linea.unidad,prod.unidad);if(inicial===null)return {estado:'pendiente',motivo:'Unidad no convertible entre inventario y producto.'};
+  let entradas=0,mermas=0,consumo=0,pendientes=[];const desde=new Date(base.fechaHora).getTime();
+  cargar('entradas_mercancias',[]).filter(e=>new Date(e.fecha||e.creado||0).getTime()>=desde).forEach(e=>(e.lineas||[]).forEach(l=>{if(String(l.productoId)!==String(prodId))return;const v=convertirCantidadMovimiento(l.cantidad,l.unidad||prod.unidad,prod.unidad);if(v===null)pendientes.push('entrada');else entradas+=v;}));
+  cargar('mermas',[]).filter(m=>new Date(m.cuando||0).getTime()>=desde&&String(m.prodId)===String(prodId)).forEach(m=>{const v=convertirCantidadMovimiento(m.cantidadStock,m.unidadStock||m.unidad,prod.unidad);if(v===null)pendientes.push('merma');else mermas+=v;});
+  cargar('consumos_teoricos',[]).filter(m=>new Date(m.fecha||0).getTime()>=desde&&String(m.productoId)===String(prodId)).forEach(m=>{const v=convertirCantidadMovimiento(m.cantidad,m.unidad,prod.unidad);if(v===null)pendientes.push('consumo');else consumo+=v;});
+  return {estado:pendientes.length?'pendiente':'ok',inicial,entradas,mermas,consumo,total:inicial+entradas-mermas-consumo,motivo:pendientes.length?'Hay movimientos con unidad pendiente de convertir.':''};
+}
+function convertirCantidadMovimiento(cantidad,desde,hacia){const a=unidadInventarioBase(desde),b=unidadInventarioBase(hacia),n=Number(cantidad);if(!isFinite(n))return null;if(a===b)return n;if((a==='kg'||a==='g')&&(b==='kg'||b==='g'))return a==='kg'&&b==='g'?n*1000:a==='g'&&b==='kg'?n/1000:n;if((a==='l'||a==='ml')&&(b==='l'||b==='ml'))return a==='l'&&b==='ml'?n*1000:a==='ml'&&b==='l'?n/1000:n;return null;}
+function renderInventarioComparativa(){
+  const el=document.getElementById('inventario-comparativa');if(!el)return;const base=obtenerPuntoCero();
+  if(!base){el.innerHTML='<div style="padding:10px;border-radius:9px;background:var(--surface-2);font-size:12px;color:var(--text-2)"><strong>STOCK TEÓRICO · DIFERENCIA</strong><br>Quedarán pendientes hasta cerrar el INVENTARIO 01. El sistema no usará el total de lotes para sobrescribir el stock físico.</div>';return;}
+  const cerrados=cargar('inventarios_fisicos',[]).filter(x=>x.estado==='cerrado').sort((a,b)=>String(b.fechaHora).localeCompare(String(a.fechaHora))),actual=cerrados[0]||base,productos=cargar('stock_productos',[]);
+  const filas=(actual.lineas||[]).slice(0,12).map(l=>{const p=productos.find(x=>String(x.id)===String(l.productoId)),t=calcularStockTeoricoPuntoCero(l.productoId),fisico=p?convertirUnidadInventario(l.cantidad,l.unidad,p.unidad):null,dif=t.estado==='ok'&&fisico!==null?fisico-t.total:null;return `<div style="padding:7px 0;border-top:1px solid var(--border);font-size:12px"><strong>${escPrueba(l.productoNombre)}</strong><div style="display:flex;gap:8px;flex-wrap:wrap;color:var(--text-2);margin-top:2px"><span>Físico: ${l.cantidad} ${escPrueba(l.unidad)}</span><span>Teórico: ${t.estado==='ok'?formatStockQty(t.total)+' '+escPrueba(p?.unidad||''):'Dato pendiente de confirmar'}</span><span>Diferencia: ${dif===null?'Pendiente':formatStockQty(dif)+' '+escPrueba(p?.unidad||'')}</span></div></div>`;}).join('');
+  el.innerHTML='<div style="padding:10px;border-radius:9px;background:var(--surface-2);font-size:12px;color:var(--text-2)"><strong>STOCK FÍSICO · STOCK TEÓRICO · DIFERENCIA</strong><br>Fotografía comparada: '+escPrueba(actual.nombre)+' · '+formatHora(actual.fechaHora||'')+'</div>'+filas;
+}
+function cerrarInventarioFisico(){
+  const ses=leerSesionInventarioDesdeFormulario();if(!ses.lineas?.length){toast('Cuenta al menos un producto antes de cerrar','error');return;}if(!esAdmin()){toast('Solo Lore o César pueden cerrar la fotografía','error');return;}
+  ses.estado='cerrado';ses.cerradoEn=ahora();ses.cerradoPor=USUARIO;ses.puntoCero=/punto cero/i.test(ses.nombre||'');const lista=cargar('inventarios_fisicos',[]);lista.unshift(ses);guardar('inventarios_fisicos',lista);guardar('inventario_sesion_borrador',null);addHistorial('inventario','📋 '+ses.nombre+' · '+ses.lineas.length+' productos · fotografía física cerrada');renderInventarioLineas();renderInventarioComparativa();const q=document.getElementById('inventario-estado');if(q)q.textContent='Fotografía cerrada y guardada. El stock físico no se ha modificado.';toast('Inventario físico guardado ✓','verde');
+}
 
 function abrirModalProducto(id) {
   if (!esAdmin()) { toast('Solo Lore o César pueden gestionar productos','error'); return; }
@@ -5840,11 +5948,11 @@ function mostrarDesglose() {
   const f = e && e.formatos.find(x => x.nombre === fmt);
   if (!f) { div.style.display='none'; return; }
   div.style.display = 'block';
-  div.innerHTML = '<strong>Descuenta del stock:</strong><br>' +
+  div.innerHTML = '<strong>Consumo teórico que se registrará:</strong><br>' +
     f.ingredientes.map(i => `• ${i.nombre}: ${i.g ? i.g+'g' : i.uds ? i.uds+' ud'+(i.uds!==1?'s':'') : i.lascas ? i.lascas+' lascas (peso pendiente)' : 'cantidad pendiente'}`).join('<br>');
 }
 
-function registrarRaciones() {
+function registrarRacionesLegacy() {
   const plato = document.getElementById('rac-plato').value;
   const fmt = document.getElementById('rac-formato').value;
   const cant = parseInt(document.getElementById('rac-cantidad').value) || 1;
@@ -5901,6 +6009,24 @@ function registrarRaciones() {
   renderRacionesHoy();
   renderStock();
   toast(`${cant} ración${cant>1?'es':''} de ${plato} registrada${cant>1?'s':''} ✓`, 'verde');
+}
+
+// Las raciones solo generan movimiento teórico. Nunca descuentan la fotografía física.
+function registrarRaciones() {
+  const plato=document.getElementById('rac-plato').value,fmt=document.getElementById('rac-formato').value,cant=parseInt(document.getElementById('rac-cantidad').value)||1;
+  if(!plato){toast('Selecciona un plato','error');return;}if(!fmt){toast('Selecciona el formato','error');return;}
+  const e=ESCANDALLOS.find(x=>x.plato===plato),f=e&&e.formatos.find(x=>x.nombre===fmt),productos=cargar('stock_productos',[]),movimientos=cargar('consumos_teoricos',[]),consumos=[];
+  (f&&f.ingredientes||[]).forEach(ing=>{
+    if(ing.lascas)return;
+    const p=productos.find(x=>String(x.nombre||'').toLowerCase()===String(ing.nombre||'').toLowerCase())||productos.find(x=>String(x.nombre||'').toLowerCase().includes(String(ing.nombre||'').toLowerCase().split(' ')[0]));
+    let cantidad=null,unidad=p?.unidad||'';
+    if(p&&ing.uds) cantidad=Number(ing.uds)*cant;
+    else if(p&&ing.g){const fmtProd=getFormatoMerma(p);cantidad=fmtProd?Number(ing.g)*cant/fmtProd.contenido:(unidadInventarioBase(p.unidad)==='kg'?Number(ing.g)*cant/1000:Number(ing.g)*cant);}
+    const m={id:'consumo-'+Date.now()+'-'+consumos.length,productoId:p?.id||null,productoNombre:p?.nombre||ing.nombre,cantidad,unidad,ingrediente:ing.nombre,plato,formato:fmt,raciones:cant,fecha:ahora(),quien:USUARIO||'Desconocido',estado:'teorico',pendiente:!p||cantidad===null};movimientos.unshift(m);consumos.push(m);
+  });
+  guardar('consumos_teoricos',movimientos);
+  const lista=cargar('raciones_dia',[]),registro={id:Date.now(),plato,formato:fmt,cantidad:cant,quien:USUARIO,cuando:ahora(),descuentos:consumos.filter(x=>!x.pendiente).map(x=>`${x.productoNombre} · ${x.cantidad} ${x.unidad}`),consumoTeoricoIds:consumos.map(x=>x.id),tipoMovimiento:'consumo_teorico'};lista.unshift(registro);guardar('raciones_dia',lista);addHistorial('raciones',`🍽️ ${cant}× ${plato} (${fmt}) — consumo teórico · ${USUARIO}`);
+  document.getElementById('rac-cantidad').value='1';renderRacionesHoy();toast(`${cant} ración${cant>1?'es':''} registrada${cant>1?'s':''} como consumo teórico ✓`,'verde');
 }
 
 function renderRacionesHoy() {
@@ -7145,7 +7271,7 @@ function aplicarDocumentoAlStock(){
   const fecha=hoy(), proveedor=document.getElementById('doc-scan-proveedor')?.value||'Proveedor del documento', productos=cargar('stock_productos',[]);
   lineas.forEach(l=>{const p=productos.find(x=>String(x.id)===String(l.productoId));if(!p)return;p.lotes=p.lotes||[];p.lotes.push({id:Date.now()+Math.random(),cantidad:Number(l.cantidad),fecha,quien:USUARIO,origen:'OCR',documento:_docScanFile?.name||'',tipoDocumento:_docScanTipo});});
   guardar('stock_productos',productos);window.PRODUCTOS_STOCK=productos;
-  const entradas=cargar('entradas_mercancias',[]);entradas.unshift({id:Date.now(),fecha,proveedor,quien:USUARIO,subidoPor:_docScanSubidoPor||'maria',validadoPor:USUARIO,validadoEn:ahora(),estado:'aplicado_al_stock',origen:'OCR',tipoDocumento:_docScanTipo,documento:_docScanFile?.name||'',textoOCR:_docScanTexto.slice(0,6000),lineas:lineas.map(l=>({nombre:l.nombre,cantidad:Number(l.cantidad),productoId:l.productoId}))});if(entradas.length>200)entradas.splice(200);guardar('entradas_mercancias',entradas);
+  const entradas=cargar('entradas_mercancias',[]);entradas.unshift({id:Date.now(),fecha,proveedor,quien:USUARIO,subidoPor:_docScanSubidoPor||'maria',validadoPor:USUARIO,validadoEn:ahora(),estado:'aplicado_al_stock',origen:'OCR',tipoDocumento:_docScanTipo,documento:_docScanFile?.name||'',textoOCR:_docScanTexto.slice(0,6000),lineas:lineas.map(l=>({nombre:l.nombre,cantidad:Number(l.cantidad),unidad:l.unidad||'',productoId:l.productoId}))});if(entradas.length>200)entradas.splice(200);guardar('entradas_mercancias',entradas);
   const docs=cargar('documentos_ocr',[]);docs.unshift({id:Date.now(),fecha,proveedor,tipo:_docScanTipo,nombre:_docScanFile?.name||'',texto:_docScanTexto.slice(0,6000),lineas:lineas.map(l=>({nombre:l.nombre,cantidad:Number(l.cantidad),productoId:l.productoId})),quien:USUARIO,subidoPor:_docScanSubidoPor||'maria',validadoPor:USUARIO,validadoEn:ahora(),estado:'aplicado_al_stock'});if(docs.length>100)docs.splice(100);guardar('documentos_ocr',docs);
   addHistorial('entradas',`📷 Entrada por ${_docScanTipo}: ${lineas.length} producto(s) · ${proveedor}`);actualizarFlujoDocumento('aplicado');toast('Entrada OCR aplicada al stock ✓','verde');
   _docScanFile=null;_docScanTexto='';_docScanLineas=[];const input=document.getElementById('doc-scan-file');if(input)input.value='';seleccionarDocumentoOCR({files:[]});actualizarFlujoDocumento('aplicado');const progreso=document.getElementById('doc-scan-progreso');if(progreso)progreso.textContent='Entrada aplicada. Documento guardado en el registro.';if(typeof renderStock==='function')renderStock();cargarCaja();
@@ -7215,7 +7341,7 @@ function guardarEntrada() {
     hora: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),
     lineas: lineas.map(l => {
       const p = productos.find(x => x.id == l.productoId);
-      return { nombre: p ? p.nombre : l.productoId, cantidad: l.cantidad, productoId: l.productoId };
+      return { nombre: p ? p.nombre : l.productoId, cantidad: l.cantidad, unidad: p ? p.unidad : '', productoId: l.productoId };
     })
   });
   if (entradas.length > 200) entradas.splice(200);
@@ -7682,6 +7808,7 @@ function verReceta(id) {
   abrirModal('modal-ver-receta');
 }
 function borrarReceta(id) {
+  toast('Las recetas actuales se conservan; no se pueden borrar desde aquí.','error'); return;
   if (!confirm('¿Borrar esta receta?')) return;
   guardar('recetas', cargar('recetas',[]).filter(r => r.id!=id));
   cerrarModal('modal-ver-receta');
@@ -9483,7 +9610,7 @@ function descargarGraficoProgramacion(){
   var labels={appcc:'APPCC',turno:'Turno y limpieza',protocolos:'Limpieza',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
   function renderFor(id){
     try{
-      var f={inicio:window.initInicio,pendientes:window.renderPendientes,personal:window.renderComidaPersonalMaria,pincho:window.renderPinchoMaria,menu:window.initMenu,raciones:window.initRaciones,caja:window.initCaja,produccion:window.renderKanban,stock:window.renderStock,mermas:function(){window.poblarSelectorProductos&&window.poblarSelectorProductos();window.renderMermas&&window.renderMermas();},turno:window.initTurno,appcc:window.initAppcc,protocolos:window.initProtocolos,recetas:window.renderRecetas,pruebas:window.renderPruebasRecetas,pedidos:window.renderPedidos,proveedores:window.renderProveedores,nuevosproveedores:window.renderNuevosProveedores,contabilidad:window.renderContabilidad,controlcostes:window.renderControlCostes,historial:window.renderHistorial,formacion:window.renderFormacion,instagram:function(){},diario:window.renderDiario,programacion:window.initProgramacion}[id];
+      var f={inicio:window.initInicio,pendientes:window.renderPendientes,personal:window.renderComidaPersonalMaria,pincho:window.renderPinchoMaria,menu:window.initMenu,raciones:window.initRaciones,caja:window.initCaja,produccion:window.renderKanban,stock:function(){window.initInventarioFisico&&window.initInventarioFisico();window.renderStock&&window.renderStock();},mermas:function(){window.poblarSelectorProductos&&window.poblarSelectorProductos();window.renderMermas&&window.renderMermas();},turno:window.initTurno,appcc:window.initAppcc,protocolos:window.initProtocolos,recetas:window.renderRecetas,pruebas:window.renderPruebasRecetas,pedidos:window.renderPedidos,proveedores:window.renderProveedores,nuevosproveedores:window.renderNuevosProveedores,contabilidad:window.renderContabilidad,controlcostes:window.renderControlCostes,historial:window.renderHistorial,formacion:window.renderFormacion,instagram:function(){},diario:window.renderDiario,programacion:window.initProgramacion}[id];
       if(typeof f==='function')f();
     }catch(e){console.warn('No se pudo actualizar el contenido de '+id,e);}
   }
