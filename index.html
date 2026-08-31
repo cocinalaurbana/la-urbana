@@ -5275,6 +5275,8 @@ function cerrarInventarioFisico(){
   ses.estado='cerrado';ses.cerradoEn=ahora();ses.cerradoPor=USUARIO;ses.puntoCero=/punto cero/i.test(ses.nombre||'');const lista=cargar('inventarios_fisicos',[]);lista.unshift(ses);guardar('inventarios_fisicos',lista);guardar('inventario_sesion_borrador',null);addHistorial('inventario','📋 '+ses.nombre+' · '+ses.lineas.length+' productos · fotografía física cerrada');renderInventarioLineas();renderInventariosCerrados();renderInventarioComparativa();const q=document.getElementById('inventario-estado');if(q)q.textContent='Fotografía cerrada y guardada. El stock físico no se ha modificado.';toast('Inventario físico guardado ✓','verde');
 }
 
+window.initInventarioFisico=initInventarioFisico;window.renderInventariosCerrados=renderInventariosCerrados;window.renderInventarioLineas=renderInventarioLineas;
+
 function abrirModalProducto(id) {
   if (!esAdmin()) { toast('Solo Lore o César pueden gestionar productos','error'); return; }
   productoEditId = id || null;
