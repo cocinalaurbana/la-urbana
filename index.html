@@ -5220,7 +5220,7 @@ function inventarioBorrador(){return cargar('inventario_sesion_borrador',null);}
 function initInventarioFisico(){
   const ses=inventarioBorrador()||{id:'inventario-'+Date.now(),nombre:'INVENTARIO 01 · PUNTO CERO',fechaHora:new Date().toISOString(),quien:USUARIO||'',estado:'abierto',lineas:[]};
   const n=document.getElementById('inv-sesion-nombre'),f=document.getElementById('inv-fecha-hora'),q=document.getElementById('inventario-estado');
-  if(n)n.value=ses.nombre||'INVENTARIO 01 · PUNTO CERO';if(f)f.value=ses.fechaHora?new Date(ses.fechaHora).toISOString().slice(0,16):fechaHoraLocalInput();
+  if(n)n.value=ses.nombre||'INVENTARIO 01 · PUNTO CERO';if(f){const fd=new Date(ses.fechaHora||'');f.value=isNaN(fd.getTime())?fechaHoraLocalInput():fd.toISOString().slice(0,16);}
   poblarSelectorInventario(); if(q)q.textContent=`${(ses.lineas||[]).length} producto(s) contado(s) · Lo guardado aquí es independiente del stock operativo.`;renderInventarioLineas();renderInventariosCerrados();renderInventarioComparativa();
 }
 function leerSesionInventarioDesdeFormulario(){
