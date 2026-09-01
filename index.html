@@ -4644,6 +4644,39 @@ function mostrarPaginaPendientes(n, scroll=true){
   if (scroll) { const main=document.getElementById('main-content'); if(main) main.scrollTo({top:0,behavior:'smooth'}); }
 }
 
+// ── CIRCUITO EXPLICATIVO DE LA URBANA ──
+const CIRCUITO_PASOS = [
+  {n:'01', nombre:'PERSONAL', titulo:'Primero lo probamos nosotros', texto:'Una idea empieza como comida real del equipo. La probamos, escuchamos qué ocurre y dejamos constancia de lo que funciona y lo que cambiaríamos.', modulos:'Comida del personal · Cocina'},
+  {n:'02', nombre:'PRUEBA', titulo:'Lo convertimos en aprendizaje', texto:'Registramos la prueba con sus cantidades, método, sabor, textura, presentación y siguiente cambio. Todavía no es una receta oficial.', modulos:'Laboratorio · Recetas'},
+  {n:'03', nombre:'PINCHO', titulo:'Le damos un formato pequeño', texto:'Si merece seguir, puede convertirse en un pincho para probarlo con público sin comprometer todavía toda la carta.', modulos:'Pincho · Producción'},
+  {n:'04', nombre:'CLIENTES', titulo:'Observamos la respuesta real', texto:'Lo ofrecemos con honestidad y recogemos comentarios, repetición y lo que sucede en sala. No confundimos una opinión con una sentencia.', modulos:'Historias · Marketing'},
+  {n:'05', nombre:'DECISIÓN', titulo:'Decidimos con lo aprendido', texto:'El plato puede seguir probándose, cambiar, aprobarse, transformarse o jubilarse. También es una decisión válida dejarlo en archivo.', modulos:'Pruebas · Historial'},
+  {n:'06', nombre:'CARTA', titulo:'Solo entra si se sostiene', texto:'Cuando el plato está probado, repetible y tiene sentido para La Urbana, puede pasar a la carta con una ficha que el equipo pueda ejecutar.', modulos:'Recetas · Menú · Costes'}
+];
+let circuitoPasoActual = 0;
+function renderCircuito() {
+  const pasos = document.getElementById('circuito-pasos');
+  const detalle = document.getElementById('circuito-detalle');
+  if (!pasos || !detalle) return;
+  pasos.innerHTML = CIRCUITO_PASOS.map((p,i) => `<button type="button" class="circuito-paso ${i===circuitoPasoActual?'activo':''}" onclick="mostrarPasoCircuito(${i})"><span>${p.n}</span><strong>${p.nombre}</strong></button>${i<CIRCUITO_PASOS.length-1?'<i>→</i>':''}`).join('');
+  mostrarPasoCircuito(circuitoPasoActual, false);
+}
+function mostrarPasoCircuito(indice, desplazar=true) {
+  circuitoPasoActual = Math.max(0, Math.min(CIRCUITO_PASOS.length-1, Number(indice)||0));
+  const paso = CIRCUITO_PASOS[circuitoPasoActual];
+  const pasos = document.getElementById('circuito-pasos');
+  const detalle = document.getElementById('circuito-detalle');
+  if (!paso || !detalle) return;
+  if (pasos) pasos.querySelectorAll('.circuito-paso').forEach((el,i)=>el.classList.toggle('activo',i===circuitoPasoActual));
+  detalle.innerHTML = `<div class="circuito-detalle-kicker">PASO ${paso.n} · ${paso.nombre}</div><h4>${paso.titulo}</h4><p>${paso.texto}</p><span class="circuito-modulos">${paso.modulos}</span>`;
+  const boton = document.getElementById('circuito-siguiente');
+  if (boton) boton.textContent = circuitoPasoActual === CIRCUITO_PASOS.length-1 ? 'Volver al principio ↺' : 'Ver el siguiente paso →';
+  if (desplazar && detalle.scrollIntoView) detalle.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function siguientePasoCircuito() {
+  mostrarPasoCircuito(circuitoPasoActual === CIRCUITO_PASOS.length-1 ? 0 : circuitoPasoActual+1);
+}
+
 function tab(id, btn) {
   const mariaAllowedTabs = MARIA_ALLOWED_TABS;
   if (esMaria() && !mariaAllowedTabs.includes(id)) { toast(window._noAccesoMsg || 'No tienes acceso a esta sección', 'error'); return; }
