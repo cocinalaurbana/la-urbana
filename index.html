@@ -2313,13 +2313,13 @@ body.maria-active #inicio-identidad-admin{display:none!important}
   <div class="card" style="margin-bottom:14px">
     <div class="card-title">➕ Ficha de prueba</div>
     <div style="display:grid;grid-template-columns:1.4fr .7fr .55fr;gap:8px">
-      <div class="form-group"><label>Plato</label><select id="prueba-plato" onchange="actualizarFichaPrueba()"></select></div>
+      <div class="form-group"><label>Plato</label><select id="prueba-plato" onchange="actualizarFichaPrueba()"><option value="tortilla">Tortilla de camarones</option><option value="salpicon">Salpicón de Quique</option><option value="croquetas">Croquetas</option><option value="pastel">Pastel de pescado</option><option value="chipirones">Chipirones fritos</option><option value="pan">Pan del bocata</option><option value="alioli">Alioli cítrico</option></select></div>
       <div class="form-group"><label>Fecha</label><input type="date" id="prueba-fecha"></div>
-      <div class="form-group"><label>Versión</label><select id="prueba-version"></select></div>
+      <div class="form-group"><label>Versión</label><select id="prueba-version"><option>V1</option><option>V2</option><option>V3</option><option>V4</option><option>V5</option><option>V6</option><option>V7</option><option>V8</option></select></div>
     </div>
     <div class="form-group"><label>Quién prueba</label><input id="prueba-quien" placeholder="Lore, María, César…"></div>
-    <div id="prueba-objetivo" style="padding:10px 12px;border-radius:9px;background:var(--surface-2);font-size:12px;line-height:1.5;color:var(--text-2);margin-bottom:10px"></div>
-    <div class="form-group"><label>Puntuación · 1 a 5</label><div id="prueba-criterios" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div></div>
+    <div id="prueba-objetivo" style="padding:10px 12px;border-radius:9px;background:var(--surface-2);font-size:12px;line-height:1.5;color:var(--text-2);margin-bottom:10px"><b>Objetivo:</b> Conseguir un resultado realmente crujiente.</div>
+    <div class="form-group"><label>Puntuación · 1 a 5</label><div id="prueba-criterios" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border:1px solid var(--border);border-radius:8px"><span style="font-size:12px">Crujiente</span><select id="prueba-criterio-crujiente" style="width:62px;padding:5px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text)"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border:1px solid var(--border);border-radius:8px"><span style="font-size:12px">Sabor</span><select id="prueba-criterio-sabor" style="width:62px;padding:5px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text)"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border:1px solid var(--border);border-radius:8px"><span style="font-size:12px">Ligereza</span><select id="prueba-criterio-ligereza" style="width:62px;padding:5px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text)"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div></div></div>
     <div class="form-group"><label id="prueba-recomendaria-label">¿Lo pediríamos?</label><select id="prueba-recomendaria"><option value="">—</option><option value="Sí">Sí</option><option value="No">No</option></select></div>
     <div class="form-group"><label>Observaciones</label><textarea id="prueba-observaciones" rows="3" placeholder="Qué ocurrió durante la prueba…"></textarea></div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
@@ -2330,7 +2330,7 @@ body.maria-active #inicio-identidad-admin{display:none!important}
       <div class="form-group"><label>Decisión</label><select id="prueba-decision"><option value="">—</option><option value="Pasa">🟢 Pasa</option><option value="Repetir con cambios">🟡 Repetir con cambios</option><option value="Descartar">🔴 Descartar</option></select></div>
       <div class="form-group"><label>Próximo cambio</label><input id="prueba-proximo" placeholder="Qué cambiaremos en la siguiente versión"></div>
     </div>
-    <div class="form-group"><label>Plato en evolución</label><select id="prueba-evolucion"></select><div style="font-size:11px;color:var(--text-3);margin-top:4px">La prueba queda vinculada a su recorrido, sin convertirla en receta definitiva.</div></div>
+    <div class="form-group"><label>Plato en evolución</label><select id="prueba-evolucion"><option value="">— Sin vincular —</option><option value="plato-prueba-tortilla">Tortilla de camarones</option><option value="plato-prueba-salpicon">Salpicón de Quique</option><option value="plato-prueba-croquetas">Croquetas</option><option value="plato-prueba-pastel">Pastel de pescado</option><option value="plato-prueba-chipirones">Chipirones fritos</option><option value="plato-prueba-pan">Pan del bocata</option><option value="plato-prueba-alioli">Alioli cítrico</option></select><div style="font-size:11px;color:var(--text-3);margin-top:4px">La prueba queda vinculada a su recorrido, sin convertirla en receta definitiva.</div></div>
     <button class="btn btn-oro" onclick="guardarPruebaReceta()">💾 Guardar prueba</button>
   </div>
   <div id="pruebas-recetas-lista"></div>
@@ -7923,7 +7923,7 @@ function seedPlatosPruebaBase(){
   let lista=cargar('platos_evolucion',[]); if(!Array.isArray(lista)) lista=[]; let cambio=false;
   PLANTILLAS_PRUEBA_ORDEN.forEach(function(clave){
     const t=PLANTILLAS_PRUEBA[clave];
-    if(!lista.some(x=>normalizarOCR(x.nombre)===normalizarOCR(t.nombre))){
+    if(!lista.some(x=>x && normalizarOCR(x.nombre)===normalizarOCR(t.nombre))){
       lista.unshift({id:'plato-prueba-'+clave,nombre:t.nombre,origen:'Propuesta experimental · Laboratorio de menú',estado:'Laboratorio',versiones:[],pruebaIds:[]}); cambio=true;
     }
   });
@@ -9928,6 +9928,17 @@ function descargarGraficoProgramacion(){
     window[nombre]=function(){var r=original.apply(this,arguments);paginar(cfg.id,cfg.porPagina,cfg.titulo);return r;};
   }
   Object.keys(configuracion).forEach(function(nombre){envolver(nombre,configuracion[nombre]);});
+})();
+</script>
+
+<script>
+// Inicialización de respaldo de la ficha del Laboratorio tras el formato libro.
+(function(){
+  function iniciarFicha(){
+    try{ if(window.inicializarFichaPrueba && document.getElementById('prueba-plato')) window.inicializarFichaPrueba(); }
+    catch(e){ console.warn('No se pudo preparar la ficha de prueba',e); }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(iniciarFicha,0);}); else setTimeout(iniciarFicha,0);
 })();
 </script>
 
