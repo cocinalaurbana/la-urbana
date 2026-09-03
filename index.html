@@ -2313,7 +2313,7 @@ body.maria-active #inicio-identidad-admin{display:none!important}
   <div class="card" style="margin-bottom:14px">
     <div class="card-title">➕ Ficha de prueba</div>
     <div style="display:grid;grid-template-columns:1.4fr .7fr .55fr;gap:8px">
-      <div class="form-group"><label>Plato</label><select id="prueba-plato" onchange="actualizarFichaPrueba()"><option value="tortilla">Tortilla de camarones</option><option value="salpicon">Salpicón de Quique</option><option value="croquetas">Croquetas</option><option value="pastel">Pastel de pescado</option><option value="chipirones">Chipirones fritos</option><option value="pan">Pan del bocata</option><option value="alioli">Alioli cítrico</option></select></div>
+      <div class="form-group"><label>Plato</label><select id="prueba-plato" onchange="actualizarFichaPrueba()" oninput="actualizarFichaPrueba()"><option value="tortilla">Tortilla de camarones</option><option value="salpicon">Salpicón de Quique</option><option value="croquetas">Croquetas</option><option value="pastel">Pastel de pescado</option><option value="chipirones">Chipirones fritos</option><option value="pan">Pan del bocata</option><option value="alioli">Alioli cítrico</option></select></div>
       <div class="form-group"><label>Fecha</label><input type="date" id="prueba-fecha"></div>
       <div class="form-group"><label>Versión</label><select id="prueba-version"><option>V1</option><option>V2</option><option>V3</option><option>V4</option><option>V5</option><option>V6</option><option>V7</option><option>V8</option></select></div>
     </div>
@@ -9938,6 +9938,8 @@ function descargarGraficoProgramacion(){
     try{ if(window.inicializarFichaPrueba && document.getElementById('prueba-plato')) window.inicializarFichaPrueba(); }
     catch(e){ console.warn('No se pudo preparar la ficha de prueba',e); }
   }
+  document.addEventListener('change',function(ev){if(ev.target&&ev.target.id==='prueba-plato')setTimeout(iniciarFicha,0);},true);
+  document.addEventListener('input',function(ev){if(ev.target&&ev.target.id==='prueba-plato')setTimeout(iniciarFicha,0);},true);
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(iniciarFicha,0);}); else setTimeout(iniciarFicha,0);
 })();
 </script>
