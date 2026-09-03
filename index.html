@@ -2307,33 +2307,30 @@ body.maria-active #inicio-identidad-admin{display:none!important}
 <div id="tab-pruebas" class="tab">
   <div class="card" style="border-left:3px solid var(--accent);margin-bottom:14px">
     <div class="card-title">🧪 Laboratorio de menú</div>
-    <div style="font-size:13px;line-height:1.6;color:var(--text-2)">Aquí no buscamos acertar a la primera. Guardamos cada prueba con sus cantidades, textura, sabor, emplatado y decisión: <b>seguir probando, pasa a la siguiente, aprobada o descartada</b>.</div>
+    <div style="font-size:13px;line-height:1.6;color:var(--text-2)">Ficha rápida para comparar versiones. Registramos dónde falla cada plato; <b>no se calcula una media automática</b> y una prueba no sustituye ninguna receta actual.</div>
+    <div style="font-size:11px;line-height:1.5;color:var(--text-3);margin-top:8px">No modifica inventario, stock, costes ni producción. Las pruebas descartadas también conservan su aprendizaje.</div>
   </div>
   <div class="card" style="margin-bottom:14px">
-    <div class="card-title">➕ Registrar una prueba</div>
-    <div style="display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:8px">
-      <div class="form-group"><label>Nombre de la prueba</label><input id="prueba-nombre" placeholder="Ej. Ensaladilla · textura patata tibia"></div>
+    <div class="card-title">➕ Ficha de prueba</div>
+    <div style="display:grid;grid-template-columns:1.4fr .7fr .55fr;gap:8px">
+      <div class="form-group"><label>Plato</label><select id="prueba-plato" onchange="actualizarFichaPrueba()"></select></div>
       <div class="form-group"><label>Fecha</label><input type="date" id="prueba-fecha"></div>
-      <div class="form-group"><label>Decisión</label><select id="prueba-estado"><option value="En prueba">En prueba</option><option value="Pasa a la siguiente prueba">Pasa a la siguiente prueba</option><option value="Aprobada">Aprobada</option><option value="Mejorar">Mejorar</option><option value="Descartada">Descartada</option></select></div>
+      <div class="form-group"><label>Versión</label><select id="prueba-version"></select></div>
     </div>
-    <div class="form-group"><label>Cantidades utilizadas</label><textarea id="prueba-cantidades" rows="5" placeholder="Ingrediente — cantidad exacta"></textarea></div>
-    <div class="form-group"><label>Método y cambios de esta prueba</label><textarea id="prueba-metodo" rows="4" placeholder="Qué hicimos diferente y cómo lo hicimos"></textarea></div>
-    <div class="form-group"><label>Emplatado / presentación</label><textarea id="prueba-emplatado" rows="3" placeholder="Forma, plato, altura, crujiente, garnish..."></textarea></div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px">
-      <div class="form-group"><label>Coste aproximado por ración (€)</label><input id="prueba-coste-racion" type="number" min="0" step="0.01" placeholder="Pendiente"></div>
-      <div class="form-group"><label>Resultado / destino</label><select id="prueba-resultado"><option value="">—</option><option value="Personal">Personal</option><option value="Pincho">Pincho</option><option value="Plato fin de semana">Plato fin de semana</option><option value="Carta">Carta</option><option value="Descartado">Descartado</option></select></div>
+    <div class="form-group"><label>Quién prueba</label><input id="prueba-quien" placeholder="Lore, María, César…"></div>
+    <div id="prueba-objetivo" style="padding:10px 12px;border-radius:9px;background:var(--surface-2);font-size:12px;line-height:1.5;color:var(--text-2);margin-bottom:10px"></div>
+    <div class="form-group"><label>Puntuación · 1 a 5</label><div id="prueba-criterios" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div></div>
+    <div class="form-group"><label id="prueba-recomendaria-label">¿Lo pediríamos?</label><select id="prueba-recomendaria"><option value="">—</option><option value="Sí">Sí</option><option value="No">No</option></select></div>
+    <div class="form-group"><label>Observaciones</label><textarea id="prueba-observaciones" rows="3" placeholder="Qué ocurrió durante la prueba…"></textarea></div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+      <div class="form-group"><label>Lo mejor</label><textarea id="prueba-mejor" rows="2" placeholder="Qué funcionó mejor"></textarea></div>
+      <div class="form-group"><label>Lo que cambiaría</label><textarea id="prueba-cambiaria" rows="2" placeholder="Qué cambiaría"></textarea></div>
     </div>
-    <div class="form-group"><label>Ejercicio de mirada asociado</label><select id="prueba-mirada"><option value="">— No asociar ahora —</option><option value="Luz · 3 fotos">Luz · 3 fotos del mismo plato</option><option value="Textura · detalle">Textura · una foto de detalle</option><option value="Secuencia · vídeo">Secuencia · vídeo de la transformación</option><option value="Sonido · escucha">Sonido · grabar ambiente y gesto</option><option value="Historia · voz">Historia · recoger una voz o conversación</option></select></div>
-    <div class="form-group"><label>Material que hay que producir</label><textarea id="prueba-material" rows="2" placeholder="Ej. 3 fotos, un plano de manos, sonido de la freidora..."></textarea></div>
-    <div class="form-group"><label>Pieza o resultado creado</label><input id="prueba-pieza" type="text" placeholder="Se completa después: foto elegida, vídeo, texto..." /></div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-      <div class="form-group"><label>Sabor (1–5)</label><select id="prueba-sabor"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-      <div class="form-group"><label>Textura (1–5)</label><select id="prueba-textura"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-      <div class="form-group"><label>Acidez (1–5)</label><select id="prueba-acidez"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-      <div class="form-group"><label>Visual (1–5)</label><select id="prueba-visual"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group"><label>Decisión</label><select id="prueba-decision"><option value="">—</option><option value="Pasa">🟢 Pasa</option><option value="Repetir con cambios">🟡 Repetir con cambios</option><option value="Descartar">🔴 Descartar</option></select></div>
+      <div class="form-group"><label>Próximo cambio</label><input id="prueba-proximo" placeholder="Qué cambiaremos en la siguiente versión"></div>
     </div>
-    <div class="form-group"><label>Observaciones y siguiente cambio</label><textarea id="prueba-notas" rows="3" placeholder="Qué nos gustó, qué no, qué probamos después"></textarea></div>
-    <div class="form-group"><label>¿Qué hemos aprendido?</label><textarea id="prueba-aprendizajes" rows="3" placeholder="Funcionó: … / No funcionó: … / Próxima vez: …"></textarea></div>
+    <div class="form-group"><label>Plato en evolución</label><select id="prueba-evolucion"></select><div style="font-size:11px;color:var(--text-3);margin-top:4px">La prueba queda vinculada a su recorrido, sin convertirla en receta definitiva.</div></div>
     <button class="btn btn-oro" onclick="guardarPruebaReceta()">💾 Guardar prueba</button>
   </div>
   <div id="pruebas-recetas-lista"></div>
@@ -2349,7 +2346,7 @@ body.maria-active #inicio-identidad-admin{display:none!important}
       <div class="form-group"><label>Coste real de la prueba (€)</label><input id="publica-coste" type="number" min="0" step="0.01"></div>
       <div class="form-group"><label>Decisión final</label><select id="publica-decision"><option value="">—</option><option>Se queda</option><option>Vuelve a probarse</option><option>Se transforma</option><option>Descartado</option></select></div>
     </div>
-    <div class="form-group"><label>Comentarios de clientes y observaciones</label><textarea id="publica-comentarios" rows="3" placeholder="Qué dijeron, qué dejaron, qué se pidió repetir..."></textarea></div>
+    <div class="form-group"><label>Comentarios de clientes y observaciones</label><textarea id="publica-comentarios" rows="3" placeholder="Qué dijeron, qué dejaron, qué se pidió repetir…"></textarea></div>
     <button class="btn btn-oro btn-sm" onclick="guardarResultadoPublico()">Guardar resultado</button>
     <div id="pruebas-publicas-lista" style="margin-top:12px"></div>
   </div>
@@ -4385,7 +4382,14 @@ const TAB_GUIAS = {
 };
 const ESTADOS_PLATO_EVOLUCION={Idea:'🌱 Idea',Probando:'🍽️ Probando',Laboratorio:'🧪 Laboratorio',Pincho:'🥢 Pincho','Especialidad de temporada':'⭐ Especialidad de temporada','Candidato a carta':'📋 Candidato a carta',Validado:'🟢 Validado',Archivado:'📦 Archivado'};
 function guardarPlatoEvolucion(){const nombre=document.getElementById('evolucion-nombre')?.value.trim();if(!nombre){toast('Escribe el nombre del plato','error');return;}const lista=cargar('platos_evolucion',[]);let p=lista.find(x=>normalizarOCR(x.nombre)===normalizarOCR(nombre));if(!p){p={id:'plato-'+Date.now(),nombre,origen:'',estado:'Idea',versiones:[],pruebaIds:[]};lista.unshift(p);}p.estado=document.getElementById('evolucion-estado')?.value||p.estado;p.versiones=p.versiones||[];p.versiones.push({id:'v-'+Date.now(),numero:p.versiones.length+1,fecha:hoy(),origen:document.getElementById('evolucion-origen')?.value.trim()||'',hecho:document.getElementById('evolucion-cambio')?.value.trim()||'',resultado:'',cambio:''});if(!p.origen)p.origen=p.versiones[0].origen;guardar('platos_evolucion',lista);['evolucion-nombre','evolucion-origen','evolucion-cambio'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});renderMemoria();toast('Versión guardada ✓','verde');}
-function crearPruebaDesdePlato(id){const p=cargar('platos_evolucion',[]).find(x=>x.id===id);if(!p)return;const v=(p.versiones||[]).slice(-1)[0]||{};const pruebas=cargar('pruebas_recetas',[]);const existente=pruebas.find(x=>x.platoEvolucionId===id&&x.estado==='En prueba');if(existente){toast('Este plato ya tiene una prueba abierta','error');return;}const prueba={id:'prueba-plato-'+Date.now(),nombre:p.nombre+' · versión '+(v.numero||1),fecha:hoy(),estado:'En prueba',resultado:'',cantidades:v.hecho||'',metodo:'Prueba creada desde Plato en evolución.',notas:'Origen: '+(p.origen||'La Urbana'),aprendizajes:'',foto:v.foto||'',platoEvolucionId:p.id,creado:Date.now()};pruebas.unshift(prueba);guardar('pruebas_recetas',pruebas);p.estado='Laboratorio';p.pruebaIds=p.pruebaIds||[];p.pruebaIds.push(prueba.id);guardar('platos_evolucion',cargar('platos_evolucion',[]).map(x=>x.id===p.id?p:x));renderMemoria();toast('Plato pasado al Laboratorio ✓','verde');}
+function crearPruebaDesdePlato(id){
+  const p=cargar('platos_evolucion',[]).find(x=>x.id===id);if(!p)return;
+  const clave=clavePlantillaPrueba(p.nombre||''),t=PLANTILLAS_PRUEBA[clave],version='V'+siguienteVersionPrueba(clave||'tortilla');
+  const pruebas=cargar('pruebas_recetas',[]),existente=pruebas.find(x=>x.platoEvolucionId===id&&x.estado==='En prueba');
+  if(existente){toast('Este plato ya tiene una prueba abierta','error');return;}
+  const prueba={id:'prueba-plato-'+Date.now(),nombre:p.nombre,plato:p.nombre,version,fecha:hoy(),estado:'En prueba',resultado:'',quien:USUARIO==='maria'?'María':USUARIO==='cesar'?'César':'Lore',observaciones:'',puntuaciones:{},recomendaria:'',mejor:'',cambiaria:'',decision:'',proximo:'',objetivo:t?.objetivo||'',propuesta:t?.propuesta||'',platoEvolucionId:p.id,creado:Date.now()};
+  pruebas.unshift(prueba);guardar('pruebas_recetas',pruebas);p.estado='Laboratorio';p.pruebaIds=p.pruebaIds||[];p.pruebaIds.push(prueba.id);guardar('platos_evolucion',cargar('platos_evolucion',[]).map(x=>x.id===p.id?p:x));renderMemoria();toast('Plato pasado al Laboratorio ✓','verde');
+}
 function valorRelacionMemoria(id){
   const v=document.getElementById(id)?.value||'';if(!v)return {texto:'La Urbana',platoEvolucionId:'',pruebaId:''};
   const partes=v.split(':');const tipo=partes.shift();const real=partes.join(':');
@@ -4404,6 +4408,7 @@ function guardarDecisionUrbana(){
   const texto=document.getElementById('decision-texto')?.value.trim();if(!texto){toast('Escribe la decisión','error');return;}const rel=valorRelacionMemoria('decision-relacion');const lista=cargar('decisiones_urbana',[]);lista.unshift({id:'decision-'+Date.now(),fecha:hoy(),texto,motivo:document.getElementById('decision-motivo')?.value.trim()||'',resultado:document.getElementById('decision-resultado')?.value.trim()||'',revision:document.getElementById('decision-revision')?.value||'',estado:'Abierta',persona:USUARIO||'lore',platoEvolucionId:rel.platoEvolucionId,pruebaId:rel.pruebaId});guardar('decisiones_urbana',lista);['decision-relacion','decision-texto','decision-motivo','decision-resultado','decision-revision'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});renderMemoria();toast('Decisión guardada y relacionada ✓','verde');
 }
 function renderMemoria(){
+  seedPlatosPruebaBase();
   const pEl=document.getElementById('platos-evolucion-lista'),aEl=document.getElementById('aprendizajes-lista'),dEl=document.getElementById('decisiones-lista');if(!pEl||!aEl||!dEl)return;poblarSelectoresMemoria();
   const ps=cargar('platos_evolucion',[]),tests=cargar('pruebas_recetas',[]),apr=cargar('aprendizajes_urbana',[]),dec=cargar('decisiones_urbana',[]),pub=cargar('pruebas_publicas',[]);
   pEl.innerHTML=ps.map(p=>{const vs=p.versiones||[],v=vs[vs.length-1]||{},tp=tests.filter(x=>x.platoEvolucionId===p.id),aa=apr.filter(x=>x.platoEvolucionId===p.id||tp.some(t=>t.id===x.pruebaId)),dd=dec.filter(x=>x.platoEvolucionId===p.id||tp.some(t=>t.id===x.pruebaId)),rr=pub.filter(x=>tp.some(t=>t.id===x.pruebaId));return '<div class="memoria-item"><div><strong>'+escPrueba(p.nombre)+'</strong><span class="memoria-estado">'+(ESTADOS_PLATO_EVOLUCION[p.estado]||p.estado)+'</span></div><small>'+vs.length+' versión'+(vs.length===1?'':'es')+' · última '+escPrueba(v.fecha||'—')+'</small><div style="margin-top:5px">'+escPrueba(v.hecho||v.resultado||'Sin detalle todavía')+'</div>'+(v.costeEstimado!=null?'<small>Coste estimado registrado: '+Number(v.costeEstimado).toFixed(2)+' €</small>':'')+'<div style="font-size:11px;color:var(--text-3);margin-top:6px">'+tp.length+' prueba(s) · '+aa.length+' aprendizaje(s) · '+dd.length+' decisión(es) · '+rr.length+' resultado(s) de clientes</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-outline btn-sm" onclick="'+(tp.find(x=>x.estado==='En prueba')?'abrirAprendizajeDesdePrueba('+JSON.stringify(tp.find(x=>x.estado==='En prueba').id)+')':'crearPruebaDesdePlato('+JSON.stringify(p.id)+')')+'">'+(tp.find(x=>x.estado==='En prueba')?'📚 Continuar memoria':'🧪 Pasar a Laboratorio')+'</button></div></div>';}).join('')||'<div class="memoria-vacio">Todavía no hay platos en evolución.</div>';
@@ -7887,6 +7892,77 @@ function borrarReceta(id) {
 function escPrueba(v) {
   return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]; });
 }
+
+// Ficha sencilla del Laboratorio: cada plato conserva sus criterios y sus versiones.
+const PLANTILLAS_PRUEBA = {
+  tortilla: {nombre:'Tortilla de camarones', objetivo:'Conseguir un resultado realmente crujiente. Investigar si falla la masa, el grosor, la cantidad, la temperatura o el tiempo.', propuesta:'Mañana: comparar V1 y V2 cambiando una variable cada vez; registrar también cómo aguanta el crujiente a los 2 minutos.', criterios:[['crujiente','Crujiente'],['sabor','Sabor'],['ligereza','Ligereza']], pregunta:'¿La pediríamos?', siNo:'¿La pediríamos?'},
+  salpicon: {nombre:'Salpicón de Quique', objetivo:'Mantener una buena proporción de pescado y conseguir más frescura y acidez.', propuesta:'Mañana: probar una vinagreta propia y anotar sus ingredientes y proporciones exactas. No darla por buena antes de probarla.', criterios:[['frescura','Frescura'],['acidez','Acidez'],['pescado','Proporción de pescado'],['sabor','Sabor general']], pregunta:'¿Lo pediríamos?', siNo:'¿Lo pediríamos?'},
+  croquetas: {nombre:'Croquetas', objetivo:'Comparar opciones atendiendo al relleno, la bechamel y la fritura.', propuesta:'Mañana: registrar el tipo y la proporción del relleno, la textura de la bechamel y el resultado de la fritura.', criterios:[['relleno','Relleno'],['bechamel','Bechamel'],['fritura','Fritura'],['sabor','Sabor general']], pregunta:'¿La pediríamos?', siNo:'¿La pediríamos?'},
+  pastel: {nombre:'Pastel de pescado', objetivo:'Dar una segunda oportunidad al plato sin utilizar horno durante el servicio.', propuesta:'Mañana: probar la pieza bien fría y limpia, dorada en sartén/plancha, con alioli cítrico ligero, un elemento ácido y un único crujiente.', criterios:[['textura','Textura'],['dorado','Dorado'],['acidez','Acidez'],['sabor','Sabor general']], pregunta:'¿Lo pediríamos?', siNo:'¿Lo pediríamos?'},
+  chipirones: {nombre:'Chipirones fritos', objetivo:'Comprobar la fritura y el punto del chipirón, incluyendo el alioli cítrico como acompañamiento.', propuesta:'Mañana: registrar el comportamiento de la fritura y si el alioli cítrico acompaña sin tapar el producto.', criterios:[['fritura','Fritura'],['textura','Textura del chipirón'],['sabor','Sabor'],['acompanamiento','Acompañamiento']], pregunta:'¿Los pediríamos?', siNo:'¿Los pediríamos?'},
+  pan: {nombre:'Pan del bocata', objetivo:'Encontrar un pan que mantenga textura, tostado y resistencia con el relleno.', propuesta:'Mañana: probar diferentes opciones y registrar también cómo se comporta después de unos minutos.', criterios:[['textura','Textura'],['tostado','Tostado'],['resistencia','Resistencia con el relleno'],['sabor','Sabor']], pregunta:'¿Lo utilizaríamos?', siNo:'¿Lo utilizaríamos?'},
+  alioli: {nombre:'Alioli cítrico', objetivo:'Conseguir un alioli ligero y ácido que acompañe sin tapar el producto.', propuesta:'Mañana: hacer una prueba comparativa con limón y otra con lima y decidir cuál funciona mejor con los chipirones.', criterios:[['textura','Textura'],['ajo','Intensidad de ajo'],['acidez','Acidez'],['equilibrio','Equilibrio']], pregunta:'¿Funciona con el plato?', siNo:'¿Funciona con el plato?'}
+};
+const PLANTILLAS_PRUEBA_ORDEN=['tortilla','salpicon','croquetas','pastel','chipirones','pan','alioli'];
+function clavePlantillaPrueba(nombre){
+  const n=normalizarOCR(nombre);
+  if(n.includes('tortilla') && n.includes('camaron')) return 'tortilla';
+  if(n.includes('salpicon')) return 'salpicon';
+  if(n.includes('croqueta')) return 'croquetas';
+  if(n.includes('pastel') && n.includes('pescado')) return 'pastel';
+  if(n.includes('chipiron')) return 'chipirones';
+  if(n.includes('pan') && n.includes('bocata')) return 'pan';
+  if(n.includes('alioli') && n.includes('citr')) return 'alioli';
+  return '';
+}
+function plantillaPruebaActual(){
+  const clave=document.getElementById('prueba-plato')?.value||'tortilla';
+  return PLANTILLAS_PRUEBA[clave]||PLANTILLAS_PRUEBA.tortilla;
+}
+function seedPlatosPruebaBase(){
+  let lista=cargar('platos_evolucion',[]); if(!Array.isArray(lista)) lista=[]; let cambio=false;
+  PLANTILLAS_PRUEBA_ORDEN.forEach(function(clave){
+    const t=PLANTILLAS_PRUEBA[clave];
+    if(!lista.some(x=>normalizarOCR(x.nombre)===normalizarOCR(t.nombre))){
+      lista.unshift({id:'plato-prueba-'+clave,nombre:t.nombre,origen:'Propuesta experimental · Laboratorio de menú',estado:'Laboratorio',versiones:[],pruebaIds:[]}); cambio=true;
+    }
+  });
+  if(cambio) guardar('platos_evolucion',lista);
+  return lista;
+}
+function pruebaVersionNumero(v){ const m=String(v||'').match(/(\d+)/); return m?Number(m[1]):0; }
+function siguienteVersionPrueba(clave){
+  const t=PLANTILLAS_PRUEBA[clave], lista=cargar('pruebas_recetas',[]); let max=0;
+  lista.forEach(function(p){ const pc=p.plato||((clavePlantillaPrueba(p.nombre||'')?PLANTILLAS_PRUEBA[clavePlantillaPrueba(p.nombre||'')].nombre:'')); if(pc===t.nombre) max=Math.max(max,pruebaVersionNumero(p.version)||(p.versiones?Math.max.apply(null,p.versiones.map(pruebaVersionNumero)):0)); });
+  return Math.max(1,max+1);
+}
+function poblarVersionesPrueba(){
+  const sel=document.getElementById('prueba-version'); if(!sel)return;
+  const clave=document.getElementById('prueba-plato')?.value||'tortilla', siguiente=siguienteVersionPrueba(clave), actual=sel.value;
+  sel.innerHTML=Array.from({length:Math.max(8,siguiente+2)},(_,i)=>'<option value="V'+(i+1)+'">V'+(i+1)+'</option>').join('');
+  sel.value=actual&&Number(actual.slice(1))>=1?actual:'V'+siguiente;
+}
+function poblarSelectorEvolucionPrueba(){
+  const sel=document.getElementById('prueba-evolucion'); if(!sel)return;
+  const actual=sel.value, lista=seedPlatosPruebaBase();
+  sel.innerHTML='<option value="">— Sin vincular —</option>'+PLANTILLAS_PRUEBA_ORDEN.map(function(clave){const t=PLANTILLAS_PRUEBA[clave],p=lista.find(x=>normalizarOCR(x.nombre)===normalizarOCR(t.nombre));return p?'<option value="'+escPrueba(p.id)+'">'+escPrueba(p.nombre)+'</option>':'';}).join('');
+  if(actual && lista.some(x=>x.id===actual)) sel.value=actual;
+  else { const clave=document.getElementById('prueba-plato')?.value||'tortilla',t=PLANTILLAS_PRUEBA[clave],p=lista.find(x=>normalizarOCR(x.nombre)===normalizarOCR(t.nombre)); if(p)sel.value=p.id; }
+}
+function actualizarFichaPrueba(){
+  const t=plantillaPruebaActual(), objetivo=document.getElementById('prueba-objetivo'), criterios=document.getElementById('prueba-criterios'), label=document.getElementById('prueba-recomendaria-label');
+  if(objetivo) objetivo.innerHTML='<b>Objetivo:</b> '+escPrueba(t.objetivo)+'<br><span style="color:var(--text-3)">'+escPrueba(t.propuesta)+'</span>';
+  if(label)label.textContent=t.siNo;
+  if(criterios)criterios.innerHTML=t.criterios.map(function(c){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border:1px solid var(--border);border-radius:8px"><span style="font-size:12px">'+escPrueba(c[1])+'</span><select id="prueba-criterio-'+escPrueba(c[0])+'" style="width:62px;padding:5px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text)"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>';}).join('');
+  poblarVersionesPrueba(); poblarSelectorEvolucionPrueba();
+}
+function inicializarFichaPrueba(){
+  const plato=document.getElementById('prueba-plato'); if(!plato)return;
+  const actual=plato.value||'tortilla'; plato.innerHTML=PLANTILLAS_PRUEBA_ORDEN.map(function(k){return '<option value="'+k+'">'+escPrueba(PLANTILLAS_PRUEBA[k].nombre)+'</option>';}).join(''); plato.value=actual;
+  const f=document.getElementById('prueba-fecha'); if(f&&!f.value)f.value=hoy();
+  const q=document.getElementById('prueba-quien'); if(q&&!q.value)q.value=USUARIO==='maria'?'María':USUARIO==='cesar'?'César':USUARIO==='lore'?'Lore':'';
+  actualizarFichaPrueba();
+}
 function seedPruebasRecetas() {
   let lista = cargar('pruebas_recetas', null);
   if (!Array.isArray(lista)) lista = [];
@@ -7964,17 +8040,37 @@ function seedPruebasRecetas() {
   guardar('pruebas_recetas', lista);
 }
 function limpiarFormularioPrueba() {
-  ['prueba-nombre','prueba-cantidades','prueba-metodo','prueba-emplatado','prueba-notas','prueba-coste-racion','prueba-material','prueba-pieza','prueba-aprendizajes','prueba-sabor','prueba-textura','prueba-acidez','prueba-visual'].forEach(function(id){ const e=document.getElementById(id); if(e) e.value=''; });
-  const f=document.getElementById('prueba-fecha'); if(f) f.value=hoy();
-  const est=document.getElementById('prueba-estado'); if(est) est.value='En prueba';
-  const res=document.getElementById('prueba-resultado'); if(res) res.value='';
-  const mirada=document.getElementById('prueba-mirada'); if(mirada) mirada.value='';
+  ['prueba-observaciones','prueba-mejor','prueba-cambiaria','prueba-proximo'].forEach(function(id){const e=document.getElementById(id);if(e)e.value='';});
+  const f=document.getElementById('prueba-fecha');if(f)f.value=hoy();
+  const q=document.getElementById('prueba-quien');if(q)q.value=USUARIO==='maria'?'María':USUARIO==='cesar'?'César':USUARIO==='lore'?'Lore':'';
+  ['prueba-recomendaria','prueba-decision'].forEach(function(id){const e=document.getElementById(id);if(e)e.value='';});
+  inicializarFichaPrueba();
 }
 function guardarPruebaReceta() {
-  const nombre = document.getElementById('prueba-nombre').value.trim();
-  if (!nombre) { toast('Pon un nombre a la prueba','error'); return; }
-  const prueba = { id:'prueba-'+Date.now(), nombre, fecha:document.getElementById('prueba-fecha').value||hoy(), estado:document.getElementById('prueba-estado').value, resultado:document.getElementById('prueba-resultado')?.value||'', costeRacion:document.getElementById('prueba-coste-racion')?.value||'', mirada:document.getElementById('prueba-mirada')?.value||'', material:document.getElementById('prueba-material')?.value.trim()||'', pieza:document.getElementById('prueba-pieza')?.value.trim()||'', cantidades:document.getElementById('prueba-cantidades').value.trim(), metodo:document.getElementById('prueba-metodo').value.trim(), emplatado:document.getElementById('prueba-emplatado').value.trim(), sabor:document.getElementById('prueba-sabor').value, textura:document.getElementById('prueba-textura').value, acidez:document.getElementById('prueba-acidez').value, visual:document.getElementById('prueba-visual').value, notas:document.getElementById('prueba-notas').value.trim(), aprendizajes:document.getElementById('prueba-aprendizajes')?.value.trim()||'', creado:Date.now() };
-  const lista=cargar('pruebas_recetas',[]); lista.unshift(prueba); guardar('pruebas_recetas',lista); addHistorial('menu','🧪 Prueba de receta: '+nombre); limpiarFormularioPrueba(); renderPruebasRecetas(); toast('Prueba guardada ✓','verde');
+  const clave=document.getElementById('prueba-plato')?.value||'tortilla', t=PLANTILLAS_PRUEBA[clave]||PLANTILLAS_PRUEBA.tortilla;
+  const version=document.getElementById('prueba-version')?.value||('V'+siguienteVersionPrueba(clave));
+  const quien=document.getElementById('prueba-quien')?.value.trim();
+  if(!quien){toast('Indica quién prueba','error');return;}
+  const puntuaciones={}; t.criterios.forEach(function(c){puntuaciones[c[0]]=document.getElementById('prueba-criterio-'+c[0])?.value||'';});
+  const platoEvolucionId=document.getElementById('prueba-evolucion')?.value||'';
+  const prueba={
+    id:'prueba-'+Date.now(), nombre:t.nombre, plato:t.nombre, version, fecha:document.getElementById('prueba-fecha')?.value||hoy(),
+    quien, observaciones:document.getElementById('prueba-observaciones')?.value.trim()||'', puntuaciones,
+    recomendaria:document.getElementById('prueba-recomendaria')?.value||'', mejor:document.getElementById('prueba-mejor')?.value.trim()||'',
+    cambiaria:document.getElementById('prueba-cambiaria')?.value.trim()||'', decision:document.getElementById('prueba-decision')?.value||'',
+    proximo:document.getElementById('prueba-proximo')?.value.trim()||'', objetivo:t.objetivo, propuesta:t.propuesta,
+    platoEvolucionId, estado:'En prueba', creado:Date.now()
+  };
+  const lista=cargar('pruebas_recetas',[]);lista.unshift(prueba);guardar('pruebas_recetas',lista);
+  if(platoEvolucionId){
+    const ps=cargar('platos_evolucion',[]),p=ps.find(x=>x.id===platoEvolucionId);
+    if(p){
+      p.estado='Laboratorio';p.pruebaIds=p.pruebaIds||[];if(!p.pruebaIds.includes(prueba.id))p.pruebaIds.push(prueba.id);p.versiones=p.versiones||[];
+      p.versiones.push({id:'v-'+Date.now(),numero:pruebaVersionNumero(version),version,fecha:prueba.fecha,origen:'Prueba de menú',hecho:prueba.observaciones,resultado:prueba.decision,cambio:prueba.proximo,pruebaId:prueba.id});
+      guardar('platos_evolucion',ps);
+    }
+  }
+  addHistorial('menu','🧪 '+t.nombre+' · '+version+' registrada');limpiarFormularioPrueba();renderPruebasRecetas();if(typeof renderMemoria==='function')renderMemoria();toast('Prueba guardada ✓','verde');
 }
 function borrarPruebaReceta(id) {
   if (!confirm('La prueba se conservará en el histórico y pasará a archivada. ¿Continuar?')) return;
@@ -7984,7 +8080,7 @@ function borrarPruebaReceta(id) {
 function renderPruebaPublicaSelector(){
   const sel=document.getElementById('prueba-publica-id'); if(!sel)return;
   const lista=cargar('pruebas_recetas',[]); const actual=sel.value;
-  sel.innerHTML='<option value="">— Selecciona una prueba —</option>'+lista.map(p=>`<option value="${escPrueba(p.id)}">${escPrueba(p.nombre)} · ${escPrueba(p.fecha||'')}</option>`).join('');
+  sel.innerHTML='<option value="">— Selecciona una prueba —</option>'+lista.map(p=>`<option value="${escPrueba(p.id)}">${escPrueba(p.plato||p.nombre)} · ${escPrueba(p.version||'')}</option>`).join('');
   if(lista.some(p=>p.id===actual))sel.value=actual;
   cargarResultadoPublico();
 }
@@ -8009,17 +8105,23 @@ function renderPruebasPublicas(){
   const el=document.getElementById('pruebas-publicas-lista'); if(!el)return;
   const pruebas=cargar('pruebas_recetas',[]), resultados=cargar('pruebas_publicas',[]);
   if(!resultados.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3)">Todavía no hay resultados de clientes registrados.</div>';return;}
-  el.innerHTML=resultados.map(x=>{const p=pruebas.find(y=>y.id===x.pruebaId)||{};return `<div style="border-top:1px solid var(--border);padding:10px 0;font-size:13px"><strong>${escPrueba(p.nombre||'Prueba')}</strong><div style="color:var(--text-2);margin-top:4px">${x.preparadas||'—'} preparadas · ${x.vendidas||'—'} servidas${x.repetir?` · Repetir: ${escPrueba(x.repetir)}`:''}${x.volverian?` · Volverían: ${escPrueba(x.volverian)}`:''}</div>${x.costeReal?`<div style="color:var(--text-2);margin-top:3px">Coste real: ${escPrueba(x.costeReal)} €</div>`:''}${x.decision?`<div style="color:var(--accent-d);font-weight:700;margin-top:3px">Decisión: ${escPrueba(x.decision)}</div>`:''}${x.comentarios?`<div style="margin-top:5px;white-space:pre-line">${escPrueba(x.comentarios)}</div>`:''}</div>`;}).join('');
+  el.innerHTML=resultados.map(x=>{const p=pruebas.find(y=>y.id===x.pruebaId)||{};return `<div style="border-top:1px solid var(--border);padding:10px 0;font-size:13px"><strong>${escPrueba(p.plato||p.nombre||'Prueba')} · ${escPrueba(p.version||'')}</strong><div style="color:var(--text-2);margin-top:4px">${x.preparadas||'—'} preparadas · ${x.vendidas||'—'} servidas${x.repetir?` · Repetir: ${escPrueba(x.repetir)}`:''}${x.volverian?` · Volverían: ${escPrueba(x.volverian)}`:''}</div>${x.costeReal?`<div style="color:var(--text-2);margin-top:3px">Coste real: ${escPrueba(x.costeReal)} €</div>`:''}${x.decision?`<div style="color:var(--accent-d);font-weight:700;margin-top:3px">Decisión: ${escPrueba(x.decision)}</div>`:''}${x.comentarios?`<div style="margin-top:5px;white-space:pre-line">${escPrueba(x.comentarios)}</div>`:''}</div>`;}).join('');
 }
 function renderPruebasRecetas() {
-  seedPruebasRecetas();
+  seedPruebasRecetas();seedPlatosPruebaBase();inicializarFichaPrueba();
   const el=document.getElementById('pruebas-recetas-lista'); if(!el) return;
   renderPruebasPublicas();
   const lista=cargar('pruebas_recetas',[]);
-  const colores={'Aprobada':'var(--verde)','Pasa a la siguiente prueba':'var(--accent)','En prueba':'var(--amber)','Mejorar':'var(--amber)','Descartada':'var(--rojo)','Propuesta':'var(--text-3)'};
-  el.innerHTML=lista.map(p=>{
-    const notas=[['Sabor',p.sabor],['Textura',p.textura],['Acidez',p.acidez],['Visual',p.visual]].filter(x=>x[1]);
-    return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${colores[p.estado]||'var(--border)'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">${escPrueba(p.nombre)}</div><div style="font-size:11px;color:var(--text-3)">${p.fecha||''}</div></div><span class="badge" style="color:${colores[p.estado]||'var(--text)'}">${escPrueba(p.estado)}</span></div>${p.resultado||p.costeRacion||p.mirada?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${p.resultado?`<span class="badge">Destino: ${escPrueba(p.resultado)}</span>`:''}${p.costeRacion?`<span class="badge">Coste/ración: ${escPrueba(p.costeRacion)} €</span>`:''}${p.mirada?`<span class="badge">📷 ${escPrueba(p.mirada)}</span>`:''}</div>`:''}${p.material?`<div style="margin-top:10px"><div class="prueba-label">Material que producir</div><div class="prueba-texto">${escPrueba(p.material)}</div></div>`:''}${p.pieza?`<div style="margin-top:10px"><div class="prueba-label">Pieza creada</div><div class="prueba-texto">${escPrueba(p.pieza)}</div></div>`:''}${p.cantidades?`<div style="margin-top:12px"><div class="prueba-label">Cantidades</div><div class="prueba-texto">${escPrueba(p.cantidades)}</div></div>`:''}${p.metodo?`<div style="margin-top:10px"><div class="prueba-label">Método</div><div class="prueba-texto">${escPrueba(p.metodo)}</div></div>`:''}${p.emplatado?`<div style="margin-top:10px"><div class="prueba-label">Emplatado</div><div class="prueba-texto">${escPrueba(p.emplatado)}</div></div>`:''}${notas.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${notas.map(x=>`<span class="badge">${x[0]}: ${x[1]}/5</span>`).join('')}</div>`:''}${p.notas?`<div style="margin-top:10px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:12px;line-height:1.5">${escPrueba(p.notas)}</div>`:''}${p.aprendizajes?`<div style="margin-top:10px;background:var(--verde-l);padding:10px;border-radius:8px;font-size:13px;line-height:1.55"><b>📚 Aprendizajes</b><br>${escPrueba(p.aprendizajes)}</div>`:''}<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px"><button class="btn btn-outline btn-sm" onclick="crearContenidoDesdePrueba(${JSON.stringify(p.id)})">🎥 Crear contenido</button><button class="btn btn-outline btn-sm" onclick="borrarPruebaReceta(${JSON.stringify(p.id)})">Archivar</button></div></div>`;
+  const colores={'Pasa':'var(--verde)','Repetir con cambios':'var(--amber)','Descartar':'var(--rojo)','Aprobada':'var(--verde)','Pasa a la siguiente prueba':'var(--accent)','En prueba':'var(--amber)','Mejorar':'var(--amber)','Descartada':'var(--rojo)','Propuesta':'var(--text-3)'};
+  const decisionIcon={Pasa:'🟢', 'Repetir con cambios':'🟡', Descartar:'🔴'};
+  el.innerHTML=lista.map(function(p){
+    const clave=clavePlantillaPrueba(p.plato||p.nombre||''),t=PLANTILLAS_PRUEBA[clave],version=p.version||((p.nombre||'').match(/V\d+/i)||['V1'])[0];
+    const puntuaciones=p.puntuaciones||{}, notas=t?t.criterios.map(c=>[c[1],puntuaciones[c[0]]]).filter(x=>x[1]):[['Sabor',p.sabor],['Textura',p.textura],['Acidez',p.acidez],['Visual',p.visual]].filter(x=>x[1]);
+    const criterios=notas.length?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+notas.map(x=>'<span class="badge">'+escPrueba(x[0])+': '+escPrueba(x[1])+'/5</span>').join('')+'</div>':'';
+    const yes=p.recomendaria?'<div style="margin-top:8px;font-weight:700">'+escPrueba(t?.siNo||'¿Lo pediríamos?')+' '+escPrueba(p.recomendaria)+'</div>':'';
+    const decision=p.decision?'<div style="margin-top:10px;font-weight:800;color:'+(colores[p.decision]||'var(--text)')+'">'+(decisionIcon[p.decision]||'')+' Decisión: '+escPrueba(p.decision)+'</div>':'';
+    const bloque=(label,text,style)=>text?'<div style="margin-top:9px;'+(style||'')+'"><b>'+label+'</b><div style="white-space:pre-line;margin-top:3px">'+escPrueba(text)+'</div></div>':'';
+    return '<div class="card" style="margin-bottom:12px;border-left:3px solid '+(colores[p.decision||p.estado]||'var(--border'))+'"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="card-title" style="margin-bottom:4px">'+escPrueba(p.plato||p.nombre||'Prueba')+' · '+escPrueba(version)+'</div><div style="font-size:11px;color:var(--text-3)">'+escPrueba(p.fecha||'')+(p.quien?' · '+escPrueba(p.quien):'')+'</div></div><span class="badge" style="color:'+(colores[p.decision||p.estado]||'var(--text)')+'">'+escPrueba(p.decision||p.estado||'En prueba')+'</span></div>'+criterios+yes+bloque('Observaciones',p.observaciones||p.notas)+bloque('Lo mejor',p.mejor)+bloque('Lo que cambiaría',p.cambiaria)+decision+bloque('Próximo cambio',p.proximo||p.aprendizajes,'background:var(--surface-2);padding:9px;border-radius:8px;font-size:12px;line-height:1.5')+'<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px"><button class="btn btn-outline btn-sm" onclick="crearContenidoDesdePrueba('+JSON.stringify(p.id)+')">🎥 Crear contenido</button><button class="btn btn-outline btn-sm" onclick="borrarPruebaReceta('+JSON.stringify(p.id)+')">Archivar</button></div></div>';
   }).join('');
 }
 
