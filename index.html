@@ -1069,6 +1069,31 @@ body.maria-active #tab-protocolos .book-nav{display:none!important}
 body.maria-active #tab-protocolos .book-pages-wrap,body.maria-active #tab-protocolos .book-page{display:contents!important}
 @media(max-width:560px){.maria-quick-grid{grid-template-columns:1fr}.maria-quick-grid button>span{font-size:18px}.maria-quick-grid button small{font-size:16px}}
 </style>
+<style id="maria-simple-mode">
+/* María: pantalla de trabajo muy visual y con muy poco texto. */
+body.maria-active #maria-panel{max-width:620px;margin:0 auto;padding-bottom:24px}
+body.maria-active #maria-panel h2{font-size:30px;margin:8px 0 5px}
+body.maria-active #maria-panel .maria-home-kicker{font-size:13px;letter-spacing:1px}
+body.maria-active #maria-panel #maria-hoy-fecha{font-size:18px;margin-bottom:12px}
+body.maria-active #maria-panel .maria-ayuda{padding:14px 16px;border-radius:12px;background:var(--amber-l);font-size:17px;line-height:1.4;margin-bottom:14px}
+body.maria-active #maria-panel .maria-tareas-card{border-left:5px solid var(--accent);margin-bottom:14px}
+body.maria-active #maria-panel .maria-tareas-card .card-title{font-size:21px}
+body.maria-active #maria-panel #maria-hoy-tareas>div{min-height:52px;padding:12px 4px;font-size:18px}
+body.maria-active #maria-panel #maria-hoy-tareas>div span:first-child{font-size:25px}
+body.maria-active .maria-quick-grid{grid-template-columns:1fr;gap:12px}
+body.maria-active .maria-quick-grid button{min-height:82px;padding:16px 18px;border:2px solid var(--border);border-radius:16px;box-shadow:var(--sombra-s);gap:5px}
+body.maria-active .maria-quick-grid button>span{font-size:22px}
+body.maria-active .maria-quick-grid button small{font-size:17px}
+body.maria-active #main-nav .nav-section-label,body.maria-active #main-nav .nav-separator,body.maria-active #main-nav #nav-directo-wrap{display:none!important}
+body.maria-active #main-nav button{font-size:16px;padding:13px 12px}
+body.maria-active #main-nav .maria-hidden{display:none!important}
+body.maria-active #tab-personal .form-group:nth-child(5),body.maria-active #tab-personal .form-group:nth-child(6),body.maria-active #tab-personal .form-group:nth-child(7),body.maria-active #tab-personal .form-group:nth-child(8),body.maria-active #tab-personal .form-group:nth-child(9),body.maria-active #tab-personal .form-group:nth-child(10){display:none!important}
+body.maria-active #tab-pincho .form-group:nth-child(6),body.maria-active #tab-pincho .form-group:nth-child(7){display:none!important}
+body.maria-active #tab-personal .form-group label,body.maria-active #tab-pincho .form-group label{font-size:17px}
+body.maria-active #tab-personal input,body.maria-active #tab-personal textarea,body.maria-active #tab-pincho input,body.maria-active #tab-pincho textarea{font-size:17px;padding:13px}
+body.maria-active #tab-personal .btn,body.maria-active #tab-pincho .btn{font-size:19px;padding:15px;min-height:56px}
+@media(max-width:560px){body.maria-active #maria-panel h2{font-size:28px}body.maria-active #maria-panel #maria-hoy-tareas>div{font-size:17px}.maria-quick-grid button>span{font-size:23px}}
+</style>
 <style id="formato-libro-global">
 /* Formato libro para los apartados largos: una hoja visible cada vez. */
 .book-page{display:none}
@@ -1403,15 +1428,16 @@ body.maria-active #inicio-identidad-admin{display:none!important}
     <div class="maria-home-kicker">LA URBANA · COCINA</div>
     <h2 style="margin:6px 0 3px">María · hoy</h2>
     <div id="maria-hoy-fecha" style="color:var(--text-2);margin-bottom:16px"></div>
-    <div class="card" style="margin-bottom:14px;border-left:4px solid var(--accent)"><div class="card-title">HOY · Tareas pendientes</div><div id="maria-hoy-tareas"></div></div>
+    <div class="maria-ayuda">Hoy solo tienes que <strong>pulsar un botón</strong>. Escribe lo mínimo.</div>
+    <div class="card maria-tareas-card" style="margin-bottom:14px"><div class="card-title">HOY · ¿Qué toca?</div><div id="maria-hoy-tareas"></div></div>
     <div class="maria-quick-grid">
-      <button onclick="tab('recetas',document.getElementById('nav-recetas'))">🍳<span>Recetas</span><small>Consultar y crear</small></button>
-      <button onclick="tab('pincho',document.getElementById('nav-pincho'))">🥢<span>Pincho del sábado</span><small>Preparar y registrar</small></button>
-      <button onclick="tab('personal',document.getElementById('nav-personal'))">🍽️<span>Comida del personal</span><small>Registrar comida</small></button>
-      <button onclick="tab('mermas',document.getElementById('nav-mermas'))">🗑️<span>Mermas</span><small>Anotar pérdida</small></button>
-      <button onclick="tab('protocolos',document.getElementById('nav-protocolos'))">🧽<span>Limpieza</span><small>Checklist asignada</small></button>
-      <button onclick="tab('caja',document.getElementById('nav-caja'))">📦<span>Albaranes</span><small>Fotografiar y guardar</small></button>
-      <button onclick="tab('appcc',document.getElementById('nav-appcc'))">🛡️<span>APPCC</span><small>Registros asignados</small></button>
+      <button onclick="tab('recetas',document.getElementById('nav-recetas'))">🍳<span>Recetas</span><small>Ver una receta</small></button>
+      <button onclick="tab('pincho',document.getElementById('nav-pincho'))">🥢<span>Pincho</span><small>Preparar y guardar</small></button>
+      <button onclick="tab('personal',document.getElementById('nav-personal'))">🍽️<span>Comida</span><small>Anotar lo que hiciste</small></button>
+      <button onclick="tab('mermas',document.getElementById('nav-mermas'))">🗑️<span>Se ha tirado algo</span><small>Anotar pérdida</small></button>
+      <button onclick="tab('protocolos',document.getElementById('nav-protocolos'))">🧽<span>Limpieza</span><small>Ver qué hacer</small></button>
+      <button onclick="tab('caja',document.getElementById('nav-caja'))">📦<span>Llegó un pedido</span><small>Hacer una foto</small></button>
+      <button onclick="tab('appcc',document.getElementById('nav-appcc'))">🛡️<span>Temperaturas</span><small>Hacer el control</small></button>
     </div>
     
   </div>
@@ -5065,13 +5091,13 @@ function toggleRutinaHoy(id,checked){
 function renderMariaHome(){
   const el=document.getElementById('maria-hoy-tareas');if(!el)return;
   const tareas=[
-    {txt:'Revisar la limpieza asignada',id:'protocolos'},
-    {txt:'Registrar albarán si llegó mercancía',id:'caja'},
-    {txt:'Registrar una merma si ocurrió',id:'mermas'},
-    {txt:'Registrar la comida del personal',id:'personal'},
-    {txt:'Preparar o registrar el pincho',id:'pincho'}
+    {txt:'🧽 Limpiar',id:'protocolos'},
+    {txt:'📦 Llegó un pedido',id:'caja'},
+    {txt:'🗑️ Se tiró algo',id:'mermas'},
+    {txt:'🍽️ Preparar comida',id:'personal'},
+    {txt:'🥢 Preparar pincho',id:'pincho'}
   ];
-  el.innerHTML=tareas.map(t=>'<div style="display:flex;align-items:center;gap:9px;padding:10px 0;border-top:1px solid var(--border);cursor:pointer" onclick="tab(\''+t.id+'\',document.getElementById(\'nav-'+t.id+'\'))"><span style="font-size:20px">☐</span><span>'+t.txt+'</span><span style="margin-left:auto;color:var(--accent-d)">›</span></div>').join('');
+  el.innerHTML=tareas.map(t=>'<div style="display:flex;align-items:center;gap:9px;border-top:1px solid var(--border);cursor:pointer" onclick="tab(\''+t.id+'\',document.getElementById(\'nav-'+t.id+'\'))"><span style="font-size:25px">☐</span><span>'+t.txt+'</span><span style="margin-left:auto;color:var(--accent-d);font-size:25px">›</span></div>').join('');
   const f=document.getElementById('maria-hoy-fecha');if(f)f.textContent=new Date().toLocaleDateString('hu-HU',{weekday:'long',day:'numeric',month:'long'});
 }
 function renderComidaPersonalMaria(){
