@@ -248,6 +248,18 @@ body.light .nav-section-label,body.light .nav-back-btn{color:var(--text-2)}
 .nav-groups{display:flex;flex-direction:column;gap:4px}
 .nav-group-btn{width:100%;background:var(--surface-2)!important;border:1px solid var(--border)!important;color:var(--text)!important;padding:12px 14px!important;font-size:0.9rem!important;font-weight:600!important;cursor:pointer;border-radius:10px!important;text-align:left;font-family:inherit;display:flex;align-items:center;gap:10px}
 .nav-group-btn:hover{background:var(--amber-l)!important;border-color:var(--amber)!important;color:var(--amber)!important}
+.nav-circuito-principal,.nav-auxiliares{display:flex;flex-direction:column;gap:3px}
+.nav-circuito-label{font-size:10px;font-weight:700;color:var(--text-3);letter-spacing:.8px;text-transform:uppercase;padding:4px 14px 5px}
+.nav-circuito-link{width:100%;background:none;border:1px solid transparent!important;color:var(--text-2)!important;padding:8px 10px!important;font-size:12px!important;font-weight:500!important;cursor:pointer;border-radius:9px!important;text-align:left;font-family:inherit;display:flex;align-items:center;gap:8px;line-height:1.2}
+.nav-circuito-link:hover{background:var(--surface-2)!important;border-color:var(--border)!important;color:var(--text)!important}
+.nav-circuito-link.active{background:var(--amber-l)!important;border-color:rgba(199,155,71,.3)!important;color:var(--amber)!important}
+.nav-circuito-link strong{display:block;font-size:12px;font-weight:700}
+.nav-circuito-link small{display:block;font-size:10px;color:var(--text-3);font-weight:400;margin-top:2px}
+.nav-circuito-num{display:flex;align-items:center;justify-content:center;flex:0 0 21px;height:21px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);font-size:10px;font-weight:800;color:var(--text-3)}
+.nav-circuito-link.active .nav-circuito-num{background:var(--amber);border-color:var(--amber);color:var(--bg)}
+.nav-aux-link{justify-content:space-between;padding-left:14px!important}
+.nav-aux-link span{font-weight:700}
+.nav-aux-link small{margin-top:0}
 .nav-back-btn{display:none;width:100%;background:none;border:0;color:var(--text-3);padding:8px 10px;font-size:12px;cursor:pointer;text-align:left;font-family:inherit}
 .nav-world-links{display:none;flex-direction:column;gap:3px;width:100%}.nav-world-links button{width:100%;display:flex!important}
 .nav-group-active .nav-world-links{display:flex}
@@ -1260,16 +1272,16 @@ body.maria-active #inicio-identidad-admin{display:none!important}
     <label for="nav-directo">Ir a:</label>
     <select id="nav-directo" onchange="if(this.value) tab(this.value,null)" oninput="if(this.value) tab(this.value,null)">
       <option value="inicio">Hoy</option>
-      <option value="pendientes">Pendientes</option>
-      <option value="produccion">Cocina / Producción</option>
-      <option value="stock">Almacén / Inventario</option>
-      <option value="pedidos">Compras</option>
-      <option value="proveedores">Proveedores</option>
-      <option value="caja">Entregas / Albaranes</option>
+      <option value="pendientes">Pendientes · acceso directo</option>
+      <option value="stock">Inventario / Stock</option>
+      <option value="pedidos">Compras / Pedidos</option>
+      <option value="caja">Recepciones / Albaranes</option>
+      <option value="produccion">Producción</option>
       <option value="mermas">Mermas</option>
-      <option value="appcc">APPCC</option>
-      <option value="protocolos">Protocolos</option>
-      <option value="pruebas">Laboratorio</option>
+      <option value="appcc">Control · APPCC</option>
+      <option value="protocolos">Control · Protocolos</option>
+      <option value="proveedores">Proveedores · auxiliar</option>
+      <option value="pruebas">Laboratorio · auxiliar</option>
     </select>
   </div>
   <!-- Entrada principal: Hoy -->
@@ -1277,20 +1289,38 @@ body.maria-active #inicio-identidad-admin{display:none!important}
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Hoy
   </button>
-  <button onclick="tab('pendientes',this)" id="nav-pendientes">
+  <button onclick="tab('pendientes',this)" id="nav-pendientes" style="display:none">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
     Pendientes
   </button>
 
   <div class="nav-separator"></div>
-  <div id="nav-grupos" class="nav-groups">
+  <!-- Circuito principal: solo reorganiza accesos existentes; no crea módulos ni datos nuevos. -->
+  <div id="nav-circuito-principal" class="nav-circuito-principal">
+    <div class="nav-circuito-label">CIRCUITO OPERATIVO</div>
+    <button type="button" class="nav-circuito-link" id="circuito-stock" onclick="tab('stock',this)"><span class="nav-circuito-num">1</span><span><strong>Inventario / Stock</strong></span></button>
+    <button type="button" class="nav-circuito-link" id="circuito-pedidos" onclick="tab('pedidos',this)"><span class="nav-circuito-num">2</span><span><strong>Compras / Pedidos</strong></span></button>
+    <button type="button" class="nav-circuito-link" id="circuito-caja" onclick="tab('caja',this)"><span class="nav-circuito-num">3</span><span><strong>Recepciones / Albaranes</strong></span></button>
+    <button type="button" class="nav-circuito-link" id="circuito-almacen" onclick="tab('stock',this)"><span class="nav-circuito-num">4</span><span><strong>Almacén</strong></span></button>
+    <button type="button" class="nav-circuito-link" id="circuito-produccion" onclick="tab('produccion',this)"><span class="nav-circuito-num">5</span><span><strong>Producción</strong></span></button>
+    <button type="button" class="nav-circuito-link" id="circuito-mermas" onclick="tab('mermas',this)"><span class="nav-circuito-num">6</span><span><strong>Mermas</strong></span></button>
+    <button type="button" class="nav-circuito-link" id="circuito-control" onclick="tab('appcc',this)"><span class="nav-circuito-num">7</span><span><strong>Control</strong></span></button>
+  </div>
+  <div class="nav-separator"></div>
+  <div id="nav-auxiliares" class="nav-auxiliares">
+    <div class="nav-circuito-label">AUXILIARES</div>
+    <button type="button" class="nav-circuito-link nav-aux-link" id="aux-proveedores" onclick="tab('proveedores',this)"><span>Proveedores</span><small>Base de apoyo</small></button>
+    <button type="button" class="nav-circuito-link nav-aux-link" id="aux-laboratorio" onclick="tab('pruebas',this)"><span>Laboratorio</span><small>Pruebas y desarrollo</small></button>
+  </div>
+  <!-- Navegación anterior conservada para mantener rutas y compatibilidad interna. -->
+  <div id="nav-grupos" class="nav-groups" style="display:none">
     <button class="nav-group-btn" onclick="irAMundoNav('operacion',this)" id="nav-grupo-operacion">⚙️ <span>Operación</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('control',this)" id="nav-grupo-control">🛡️ <span>Control</span></button>
     <button class="nav-group-btn" onclick="irAMundoNav('desarrollo',this)" id="nav-grupo-desarrollo">🧪 <span>Desarrollo</span></button>
   </div>
-  <button class="nav-back-btn" id="nav-volver-grupos" onclick="volverGruposNav()">‹ Todos los apartados</button>
-  <div id="nav-world-heading" class="nav-world-heading" aria-live="polite"></div>
-  <div id="nav-world-links" class="nav-world-links" aria-live="polite"></div>
+  <button class="nav-back-btn" id="nav-volver-grupos" onclick="volverGruposNav()" style="display:none">‹ Todos los apartados</button>
+  <div id="nav-world-heading" class="nav-world-heading" aria-live="polite" style="display:none"></div>
+  <div id="nav-world-links" class="nav-world-links" aria-live="polite" style="display:none"></div>
   <div class="nav-section-label nav-legacy-label">Prioritario</div>
 
   <button onclick="tab('appcc',this)" id="nav-appcc">
