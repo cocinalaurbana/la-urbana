@@ -1784,18 +1784,19 @@ body.maria-active #inicio-identidad-admin{display:none!important}
 
   <!-- ENTRADAS DE MERCANCÍA -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-title">📥 Recepción de miércoles / Nueva entrada</div>
-    <div style="font-size:12px;color:var(--text-2);line-height:1.45;margin:-4px 0 10px;padding:8px 10px;background:var(--surface-2);border-radius:9px">César: fotografía el albarán y las etiquetas del pollo/raxo. Lore: valida la recepción el domingo. Si falta algo, anótalo en la nota.</div>
+    <div class="card-title">📥 Recibir pedido / entrada al stock</div>
+    <div style="font-size:12px;color:var(--text-2);line-height:1.45;margin:-4px 0 10px;padding:8px 10px;background:var(--surface-2);border-radius:9px">Primero comprueba físicamente el pedido. Después indica cantidad y ubicación y pulsa «Confirmar recepción». Solo entonces se suma al stock físico.</div>
     <div style="display:flex;gap:8px;margin-bottom:8px">
       <select id="entrada-proveedor" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
         <option value="">— Proveedor —</option>
       </select>
       <input type="date" id="entrada-fecha" style="padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface)">
     </div>
+    <div style="font-size:10px;color:var(--text-3);letter-spacing:.4px;text-transform:uppercase;margin:8px 0 4px">Producto · cantidad · ubicación real</div>
     <div id="entrada-lineas" style="margin-bottom:8px"></div>
-    <button class="btn btn-outline btn-sm" style="width:100%;margin-bottom:8px" onclick="addLineaEntrada()">➕ Añadir producto</button>
+    <button class="btn btn-outline btn-sm" style="width:100%;margin-bottom:8px" onclick="addLineaEntrada()">➕ Añadir producto y ubicación</button>
     <input type="text" id="entrada-nota" placeholder="Nota (opcional)" style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface);margin-bottom:8px">
-    <button class="btn btn-verde btn-full" onclick="guardarEntrada()">✅ Guardar entrada</button>
+    <button class="btn btn-verde btn-full" onclick="guardarEntrada()">✅ Confirmar recepción y añadir al stock</button>
   </div>
 
   <!-- GASTOS EN EFECTIVO -->
@@ -7614,7 +7615,7 @@ function addLineaEntrada() {
   const productos = window.PRODUCTOS_STOCK || [];
   const opts = productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
   const idx = _lineasEntrada.length;
-  _lineasEntrada.push({ productoId: '', cantidad: 1 });
+  _lineasEntrada.push({ productoId: '', cantidad: 1, ubicacion: '' });
   renderLineasEntrada();
 }
 
@@ -7624,16 +7625,29 @@ function renderLineasEntrada() {
   if (!_lineasEntrada.length) { el.innerHTML = ''; return; }
   el.innerHTML = _lineasEntrada.map((l, i) => {
     const opts = productos.map(p => `<option value="${p.id}" ${p.id==l.productoId?'selected':''}>${p.nombre}</option>`).join('');
-    return `<div style="display:flex;gap:6px;margin-bottom:6px;align-items:center">
+    return `<div style="display:grid;grid-template-columns:1.5fr .65fr 1.35fr auto;gap:6px;margin-bottom:6px;align-items:center">
       <select onchange="_lineasEntrada[${i}].productoId=this.value"
-        style="flex:2;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--text);background:var(--surface)">
+        style="min-width:0;padding:8px 7px;border-radius:10px;border:1.5px solid var(--border);font-size:12px;color:var(--text);background:var(--surface)">
         <option value="">— Producto —</option>${opts}
       </select>
       <input type="number" min="0" step="0.1" value="${l.cantidad}"
         onchange="_lineasEntrada[${i}].cantidad=parseFloat(this.value)||0"
-        style="width:70px;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface);text-align:center">
+        style="width:100%;padding:8px 5px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text);background:var(--surface);text-align:center">
+      <select onchange="_lineasEntrada[${i}].ubicacion=this.value"
+        style="min-width:0;padding:8px 5px;border-radius:10px;border:1.5px solid var(--border);font-size:11px;color:var(--text);background:var(--surface)">
+        <option value="">— Ubicación —</option>
+        <option value="nevera-1" ${l.ubicacion==='nevera-1'?'selected':''}>Nevera 1</option>
+        <option value="nevera-2" ${l.ubicacion==='nevera-2'?'selected':''}>Nevera 2</option>
+        <option value="congelador-1" ${l.ubicacion==='congelador-1'?'selected':''}>Congelador 1</option>
+        <option value="congelador-2" ${l.ubicacion==='congelador-2'?'selected':''}>Congelador 2</option>
+        <option value="congelador-3" ${l.ubicacion==='congelador-3'?'selected':''}>Congelador 3</option>
+        <option value="congelador-4" ${l.ubicacion==='congelador-4'?'selected':''}>Congelador 4</option>
+        <option value="estanteria" ${l.ubicacion==='estanteria'?'selected':''}>Estantería seca</option>
+        <option value="cocina" ${l.ubicacion==='cocina'?'selected':''}>Cocina</option>
+        <option value="limpieza" ${l.ubicacion==='limpieza'?'selected':''}>Limpieza</option>
+      </select>
       <button onclick="_lineasEntrada.splice(${i},1);renderLineasEntrada()"
-        style="background:none;border:none;color:var(--rojo);font-size:20px;cursor:pointer;padding:2px 6px">×</button>
+        style="background:none;border:none;color:var(--rojo);font-size:20px;cursor:pointer;padding:2px 4px">×</button>
     </div>`;
   }).join('');
 }
@@ -7643,6 +7657,8 @@ function guardarEntrada() {
   if (!proveedor) { toast('Selecciona un proveedor', 'error'); return; }
   const lineas = _lineasEntrada.filter(l => l.productoId && l.cantidad > 0);
   if (!lineas.length) { toast('Añade al menos un producto', 'error'); return; }
+  const sinUbicacion = lineas.filter(l => !l.ubicacion);
+  if (sinUbicacion.length) { toast('Indica la ubicación de cada producto', 'error'); return; }
   const fecha = document.getElementById('entrada-fecha').value || hoy();
   const nota  = document.getElementById('entrada-nota').value.trim();
 
@@ -7653,7 +7669,8 @@ function guardarEntrada() {
     const p = productos.find(x => x.id == l.productoId);
     if (!p) return;
     p.lotes = p.lotes || [];
-    p.lotes.push({ id: Date.now() + Math.random(), cantidad: l.cantidad, fecha, quien: USUARIO });
+    p.ubicacion = ubicacionCanonica(l.ubicacion);
+    p.lotes.push({ id: Date.now() + Math.random(), cantidad: l.cantidad, fecha, quien: USUARIO, proveedor, ubicacion: ubicacionCanonica(l.ubicacion), origen: 'recepcion', estado: 'recibido' });
   });
   guardar('stock_productos', productos);
   window.PRODUCTOS_STOCK = productos;
@@ -7665,7 +7682,7 @@ function guardarEntrada() {
     hora: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),
     lineas: lineas.map(l => {
       const p = productos.find(x => x.id == l.productoId);
-      return { nombre: p ? p.nombre : l.productoId, cantidad: l.cantidad, unidad: p ? p.unidad : '', productoId: l.productoId };
+      return { nombre: p ? p.nombre : l.productoId, cantidad: l.cantidad, unidad: p ? p.unidad : '', ubicacion: ubicacionCanonica(l.ubicacion), proveedor, estado: 'recibido', productoId: l.productoId };
     })
   });
   if (entradas.length > 200) entradas.splice(200);
@@ -7679,7 +7696,7 @@ function guardarEntrada() {
   document.getElementById('entrada-proveedor').value = '';
   if (typeof renderStock === 'function') renderStock();
   cargarCaja();
-  toast('Entrada guardada ✓', 'verde');
+  toast('Recepción confirmada: stock actualizado ✓', 'verde');
 }
 
 // ── Gastos en efectivo ──
