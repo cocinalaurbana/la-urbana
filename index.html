@@ -1259,49 +1259,35 @@ body.maria-active #inicio-identidad-admin{display:none!important}
   <div class="nav-directo-wrap">
     <label for="nav-directo">Ir a:</label>
     <select id="nav-directo" onchange="if(this.value) tab(this.value,null)" oninput="if(this.value) tab(this.value,null)">
-      <option value="inicio">Portada</option>
+      <option value="inicio">Hoy</option>
       <option value="pendientes">Pendientes</option>
-      <option value="menu">Menú</option>
-      <option value="raciones">Raciones</option>
-      <option value="caja">Caja</option>
-      <option value="stock">Inventario</option>
-      <option value="recetas">Recetas</option>
-      <option value="pruebas">Laboratorio</option>
-      <option value="produccion">Producción</option>
-      <option value="mermas">Mermas</option>
-      <option value="turno">Checklist</option>
-      <option value="appcc">APPCC</option>
-      <option value="controlcostes">Control de costes</option>
-      <option value="contabilidad">Contabilidad</option>
+      <option value="produccion">Cocina / Producción</option>
+      <option value="stock">Almacén / Inventario</option>
       <option value="pedidos">Compras</option>
       <option value="proveedores">Proveedores</option>
-      <option value="nuevosproveedores">Nuevos proveedores</option>
-      <option value="historial">Historial</option>
-      <option value="formacion">Formación y equipo</option>
-      <option value="diario">Diario</option>
-      <option value="programacion">Propuestas</option>
+      <option value="caja">Entregas / Albaranes</option>
+      <option value="mermas">Mermas</option>
+      <option value="appcc">APPCC</option>
+      <option value="protocolos">Protocolos</option>
+      <option value="pruebas">Laboratorio</option>
     </select>
   </div>
-  <!-- Dashboard -->
+  <!-- Entrada principal: Hoy -->
   <button class="active" onclick="tab('inicio',this)" id="nav-inicio">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-    Dashboard
+    Hoy
   </button>
   <button onclick="tab('pendientes',this)" id="nav-pendientes">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
     Pendientes
   </button>
-  <button onclick="tab('guia',this)" id="nav-guia"><span style="font-size:18px">?</span> Cómo funciona</button>
 
   <div class="nav-separator"></div>
   <div id="nav-grupos" class="nav-groups">
-    <button class="nav-group-btn" onclick="irAMundoNav('hoy',this)" id="nav-grupo-hoy" title="Qué toca hoy">📋 <span>Hoy</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('cocina',this)" id="nav-grupo-cocina">👩‍🍳 <span>Cocina</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('almacen',this)" id="nav-grupo-almacen">📦 <span>Almacén</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('equipo',this)" id="nav-grupo-equipo">👥 <span>Equipo</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('laboratorio',this)" id="nav-grupo-laboratorio">🧪 <span>Laboratorio</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('historias',this)" id="nav-grupo-historias">🎥 <span>Historias</span></button>
-    <button class="nav-group-btn" onclick="irAMundoNav('negocio',this)" id="nav-grupo-negocio">📊 <span>Negocio</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('hoy',this)" id="nav-grupo-hoy" title="Qué necesita atención hoy">📋 <span>Hoy</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('operacion',this)" id="nav-grupo-operacion">⚙️ <span>Operación</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('control',this)" id="nav-grupo-control">🛡️ <span>Control</span></button>
+    <button class="nav-group-btn" onclick="irAMundoNav('desarrollo',this)" id="nav-grupo-desarrollo">🧪 <span>Desarrollo</span></button>
   </div>
   <button class="nav-back-btn" id="nav-volver-grupos" onclick="volverGruposNav()">‹ Todos los apartados</button>
   <div id="nav-world-heading" class="nav-world-heading" aria-live="polite"></div>
@@ -1443,7 +1429,7 @@ body.maria-active #inicio-identidad-admin{display:none!important}
   </div>
 
   <div class="dash-greeting">
-    <h2 id="dash-saludo">Hola, Lore.</h2>
+    <h2 id="dash-saludo">Qué necesita atención</h2>
     <p id="header-fecha-dash">—</p>
   </div>
 
@@ -4613,7 +4599,7 @@ function aplicarPermisos() {
   const selector=document.getElementById('nav-directo');
   if(selector)Array.from(selector.options).forEach(opt=>{opt.hidden=maria&&!allowed.includes(opt.value);});
   const btn=document.getElementById('btn-nuevo-prod');if(btn)btn.style.display=esAdmin()?'':'none';
-  const nombresUsuario={lore:'Lore',cesar:'César',maria:'María'};const saludoEl=document.getElementById('dash-saludo');if(saludoEl)saludoEl.textContent='Hola, '+(nombresUsuario[USUARIO]||'')+'.';
+  const nombresUsuario={lore:'Lore',cesar:'César',maria:'María'};const saludoEl=document.getElementById('dash-saludo');if(saludoEl)saludoEl.textContent='Qué necesita atención';
   if(typeof initHeader==='function')initHeader();
   poblarSelectorProductos();
   window._noAccesoMsg=maria?'Ehhez a részhez nincs hozzáférésed':'No tienes acceso a esta sección';
@@ -5178,7 +5164,7 @@ function prepararInicioCompacto(){
 
 function initInicio() {
   try {
-  const nombresUsuario={lore:'Lore',cesar:'César',maria:'María'};const saludoEl=document.getElementById('dash-saludo');if(saludoEl)saludoEl.textContent='Hola, '+(nombresUsuario[USUARIO]||'')+'.';
+  const nombresUsuario={lore:'Lore',cesar:'César',maria:'María'};const saludoEl=document.getElementById('dash-saludo');if(saludoEl)saludoEl.textContent='Qué necesita atención';
   prepararInicioCompacto();
   renderHoyUnificado();
   renderRutinaHoy();
@@ -9396,13 +9382,10 @@ function actualizarWidgetCaja() {
 
 // Navegación agrupada: menos pestañas, mismas funciones.
 const NAV_GRUPOS = {
-  hoy: ['inicio','pendientes','menu','raciones','caja'],
-  cocina: ['appcc','produccion','mermas','recetas','pedidos','personal','menu','pincho','protocolos'],
-  almacen: ['stock'],
-  laboratorio: ['pruebas','memoria','raciones'],
-  historias: ['instagram','diario','programacion'],
-  equipo: ['turno','formacion'],
-  negocio: ['caja','proveedores','nuevosproveedores','contabilidad','controlcostes','historial'],
+  hoy: ['inicio','pendientes','turno'],
+  operacion: ['produccion','stock','pedidos','proveedores','caja','mermas'],
+  control: ['appcc','protocolos'],
+  desarrollo: ['pruebas'],
 };
 
 const PILOTO_FOOD_COST = [
@@ -9532,11 +9515,11 @@ function initNavegacionAgrupada(){
   nav.querySelectorAll('.nav-separator,.nav-section-label').forEach(e=>e.classList.add('nav-legacy'));
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
 }
-const NAV_LABELS={appcc:'APPCC',turno:'Turno y limpieza',protocolos:'Limpieza',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
-const NAV_WORLD_NAMES={hoy:'Hoy',cocina:'Cocina',almacen:'Almacén',laboratorio:'Laboratorio',historias:'Historias',equipo:'Equipo',negocio:'Negocio'};
-function actualizarContextoApp(id){const bar=document.getElementById('app-context-bar');if(!bar)return;let grupo=Object.keys(NAV_GRUPOS).find(g=>(NAV_GRUPOS[g]||[]).includes(id))||'hoy';const lista=(NAV_GRUPOS[grupo]||[]).filter(x=>!['inicio','pendientes'].includes(x));const pos=lista.indexOf(id);const nombres={inicio:'Inicio',pendientes:'Pendientes',menu:'Menú del día',raciones:'Raciones',caja:'Caja',produccion:'Producción',pincho:'Pincho del sábado',recetas:'Recetas',stock:'Inventario',pedidos:'Compras',mermas:'Mermas',appcc:'APPCC',protocolos:'Limpieza',personal:'Comida del personal',pruebas:'Laboratorio',instagram:'Marketing',turno:'Turno y limpieza',formacion:'Formación y equipo',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',contabilidad:'Contabilidad',controlcostes:'Control de costes',historial:'Historial'};const sec=document.getElementById('app-context-section'),note=document.getElementById('app-context-note'),p=document.getElementById('app-context-position');if(sec)sec.textContent=nombres[id]||NAV_LABELS[id]||id;if(note)note.textContent= grupo==='hoy'?'Vista general':'Mundo · '+NAV_WORLD_NAMES[grupo];if(p)p.textContent=pos>=0?(pos+1)+' de '+lista.length:'';bar.className='world-'+grupo;}
+const NAV_LABELS={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Cocina / Producción',stock:'Almacén / Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Entregas / Albaranes',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
+const NAV_WORLD_NAMES={hoy:'Hoy',operacion:'Operación',control:'Control',desarrollo:'Desarrollo'};
+function actualizarContextoApp(id){const bar=document.getElementById('app-context-bar');if(!bar)return;let grupo=Object.keys(NAV_GRUPOS).find(g=>(NAV_GRUPOS[g]||[]).includes(id))||'hoy';const lista=(NAV_GRUPOS[grupo]||[]).filter(x=>!['inicio','pendientes'].includes(x));const pos=lista.indexOf(id);const nombres={inicio:'Inicio',pendientes:'Pendientes',menu:'Menú del día',raciones:'Raciones',caja:'Entregas / Albaranes',produccion:'Producción',pincho:'Pincho del sábado',recetas:'Recetas',stock:'Inventario',pedidos:'Compras',mermas:'Mermas',appcc:'APPCC',protocolos:'Limpieza',personal:'Comida del personal',pruebas:'Laboratorio',instagram:'Marketing',turno:'Turno y limpieza',formacion:'Formación y equipo',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',contabilidad:'Contabilidad',controlcostes:'Control de costes',historial:'Historial'};const sec=document.getElementById('app-context-section'),note=document.getElementById('app-context-note'),p=document.getElementById('app-context-position');if(sec)sec.textContent=nombres[id]||NAV_LABELS[id]||id;if(note)note.textContent= grupo==='hoy'?'Vista general':'Mundo · '+NAV_WORLD_NAMES[grupo];if(p)p.textContent=pos>=0?(pos+1)+' de '+lista.length:'';bar.className='world-'+grupo;}
 window.actualizarContextoApp=actualizarContextoApp;
-const NAV_MUNDO_PRINCIPAL={hoy:'inicio',cocina:'appcc',almacen:'stock',laboratorio:'pruebas',historias:'instagram',equipo:'turno',negocio:'controlcostes'};
+const NAV_MUNDO_PRINCIPAL={hoy:'inicio',operacion:'produccion',control:'appcc',desarrollo:'pruebas'};
 function irAMundoNav(grupo,btn){
   abrirGrupoNav(grupo);
   const id=NAV_MUNDO_PRINCIPAL[grupo];
@@ -9544,7 +9527,7 @@ function irAMundoNav(grupo,btn){
 }
 function abrirGrupoNav(grupo){
   const nav=document.getElementById('main-nav'); if(!nav) return;
-  nav.classList.remove('nav-world-hoy','nav-world-cocina','nav-world-almacen','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
+  nav.classList.remove('nav-world-hoy','nav-world-operacion','nav-world-control','nav-world-desarrollo');
   nav.classList.add('nav-group-active','nav-world-'+grupo);
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   const links=document.getElementById('nav-world-links'); if(!links)return;
@@ -9555,7 +9538,7 @@ function abrirGrupoNav(grupo){
 }
 function volverGruposNav(){
   const nav=document.getElementById('main-nav'); if(!nav) return;
-  nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-almacen','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');
+  nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-operacion','nav-world-control','nav-world-desarrollo');
   nav.querySelectorAll('.nav-subitem').forEach(b=>b.style.display='none');
   const links=document.getElementById('nav-world-links'); if(links){links.innerHTML='';links.style.display='none';}const heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';
   tab('inicio',document.getElementById('nav-inicio'));
@@ -10038,15 +10021,12 @@ function descargarGraficoProgramacion(){
 <script>
 (function(){
   var grupos={
-    hoy:['inicio','pendientes','menu','raciones','caja'],
-    cocina:['appcc','produccion','mermas','recetas','pedidos','personal','menu','pincho','protocolos'],
-    almacen:['stock'],
-    laboratorio:['pruebas','raciones'],
-    historias:['instagram','diario','programacion'],
-    equipo:['turno','formacion'],
-    negocio:['caja','proveedores','nuevosproveedores','contabilidad','controlcostes','historial']
+    hoy:['inicio','pendientes','turno'],
+    operacion:['produccion','stock','pedidos','proveedores','caja','mermas'],
+    control:['appcc','protocolos'],
+    desarrollo:['pruebas']
   };
-  var labels={appcc:'APPCC',turno:'Turno y limpieza',protocolos:'Limpieza',produccion:'Producción',stock:'Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Caja',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
+  var labels={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Cocina / Producción',stock:'Almacén / Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Entregas / Albaranes',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
   function renderFor(id){
     try{
       var f={inicio:window.initInicio,pendientes:window.renderPendientes,personal:window.renderComidaPersonalMaria,pincho:window.renderPinchoMaria,menu:window.initMenu,raciones:window.initRaciones,caja:window.initCaja,produccion:window.renderKanban,stock:function(){window.initInventarioFisico&&window.initInventarioFisico();window.renderStock&&window.renderStock();},mermas:function(){window.poblarSelectorProductos&&window.poblarSelectorProductos();window.renderMermas&&window.renderMermas();},turno:window.initTurno,appcc:window.initAppcc,protocolos:window.initProtocolos,recetas:window.renderRecetas,pruebas:window.renderPruebasRecetas,pedidos:window.renderPedidos,proveedores:window.renderProveedores,nuevosproveedores:window.renderNuevosProveedores,contabilidad:window.renderContabilidad,controlcostes:window.renderControlCostes,historial:window.renderHistorial,formacion:window.renderFormacion,instagram:function(){},diario:window.renderDiario,programacion:window.initProgramacion}[id];
@@ -10068,21 +10048,21 @@ function descargarGraficoProgramacion(){
   }
   function abrir(grupo,btn){
     var nav=document.getElementById('main-nav');if(!nav)return;
-    ['hoy','cocina','almacen','laboratorio','historias','equipo','negocio'].forEach(function(g){nav.classList.remove('nav-world-'+g);});
+    ['hoy','operacion','control','desarrollo'].forEach(function(g){nav.classList.remove('nav-world-'+g);});
     nav.classList.add('nav-group-active','nav-world-'+grupo);
     var volver=document.getElementById('nav-volver-grupos');if(volver)volver.style.display='flex';
     var links=document.getElementById('nav-world-links');if(!links)return;
-    var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+({hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',almacen:'ALMACÉN',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo);
+    var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+({hoy:'HOY',operacion:'OPERACIÓN',control:'CONTROL',desarrollo:'DESARROLLO'}[grupo]||grupo);
     links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).filter(function(id){return !window.USUARIO_MARIA||!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0;}).map(function(id){return '<button type="button" class="nav-world-link" data-fallback-tab="'+id+'">'+(labels[id]||id)+'<span style="margin-left:auto">›</span></button>';}).join('');
     links.style.display='flex';
     var primera=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes'&&(!window.USUARIO_MARIA||!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0);})[0]||'inicio';
     mostrar(primera,btn);
   }
   document.addEventListener('click',function(ev){
-    var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-cocina,#nav-grupo-almacen,#nav-grupo-laboratorio,#nav-grupo-historias,#nav-grupo-equipo,#nav-grupo-negocio,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
+    var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-operacion,#nav-grupo-control,#nav-grupo-desarrollo,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
     if(!target)return;
-    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-cocina','nav-world-almacen','nav-world-laboratorio','nav-world-historias','nav-world-equipo','nav-world-negocio');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';mostrar('inicio',document.getElementById('nav-inicio'));return;}
-    var gm={"nav-grupo-hoy":'hoy',"nav-grupo-cocina":'cocina',"nav-grupo-almacen":'almacen',"nav-grupo-laboratorio":'laboratorio',"nav-grupo-historias":'historias',"nav-grupo-equipo":'equipo',"nav-grupo-negocio":'negocio'};
+    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-operacion','nav-world-control','nav-world-desarrollo');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';mostrar('inicio',document.getElementById('nav-inicio'));return;}
+    var gm={"nav-grupo-hoy":'hoy',"nav-grupo-operacion":'operacion',"nav-grupo-control":'control',"nav-grupo-desarrollo":'desarrollo'};
     if(gm[target.id]){ev.preventDefault();ev.stopImmediatePropagation();abrir(gm[target.id],target);return;}
     var fid=target.getAttribute('data-fallback-tab')||((target.id||'').indexOf('nav-')===0?(target.id||'').slice(4):'');
     if(fid && document.getElementById('tab-'+fid)){ev.preventDefault();ev.stopImmediatePropagation();mostrar(fid,target);}
