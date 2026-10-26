@@ -9579,7 +9579,7 @@ function abrirGrupoNav(grupo){
   const links=document.getElementById('nav-world-links'); if(!links)return;
   const tituloMundo={hoy:'HOY',cocina:'COCINA',laboratorio:'LABORATORIO',historias:'HISTORIAS',almacen:'ALMACÉN',equipo:'EQUIPO',negocio:'NEGOCIO'}[grupo]||grupo;
   const heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+tituloMundo;
-  links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).filter(id=>!esMaria()||MARIA_ALLOWED_TABS.includes(id)).map(id=>`<button class="nav-world-link" onclick="tab('${id}',this)">${NAV_LABELS[id]||id}</button>`).join('');
+  links.innerHTML=(NAV_GRUPOS[grupo]||[]).filter(id=>!['inicio','pendientes'].includes(id)).filter(id=>!esMaria()||MARIA_ALLOWED_TABS.includes(id)).map(id=>`<button type="button" class="nav-world-link" data-fallback-tab="${id}" onclick="tab('${id}',this)">${NAV_LABELS[id]||id}</button>`).join('');
   links.style.display='flex';
 }
 function volverGruposNav(){
@@ -10063,61 +10063,37 @@ function descargarGraficoProgramacion(){
 
 </script>
 
-<!-- Navegación de respaldo: los mundos y el selector deben funcionar aunque falle un evento inline. -->
+<!-- Respaldo no invasivo: deja que la navegación principal actúe primero y solo reintenta si no cambió la sección. -->
 <script>
 (function(){
-  var grupos={
-    hoy:['inicio','pendientes','turno'],
-    operacion:['produccion','stock','pedidos','proveedores','caja','mermas'],
-    control:['appcc','protocolos'],
-    desarrollo:['pruebas']
-  };
-  var labels={appcc:'APPCC',turno:'Checklist',protocolos:'Protocolos',produccion:'Cocina / Producción',stock:'Almacén / Inventario',mermas:'Mermas',pedidos:'Compras',menu:'Menú del día',caja:'Entregas / Albaranes',raciones:'Raciones',recetas:'Recetas',pruebas:'Laboratorio',contabilidad:'Contabilidad',controlcostes:'Control de costes',proveedores:'Proveedores',nuevosproveedores:'Nuevos proveedores',historial:'Historial',formacion:'Formación y equipo',personal:'Comida del personal',pincho:'Pincho del sábado',instagram:'Marketing',diario:'Diario',programacion:'Propuestas'};
-  function renderFor(id){
-    try{
-      var f={inicio:window.initInicio,pendientes:window.renderPendientes,personal:window.renderComidaPersonalMaria,pincho:window.renderPinchoMaria,menu:window.initMenu,raciones:window.initRaciones,caja:window.initCaja,produccion:window.renderKanban,stock:function(){window.initInventarioFisico&&window.initInventarioFisico();window.renderStock&&window.renderStock();},mermas:function(){window.poblarSelectorProductos&&window.poblarSelectorProductos();window.renderMermas&&window.renderMermas();},turno:window.initTurno,appcc:window.initAppcc,protocolos:window.initProtocolos,recetas:window.renderRecetas,pruebas:window.renderPruebasRecetas,pedidos:window.renderPedidos,proveedores:window.renderProveedores,nuevosproveedores:window.renderNuevosProveedores,contabilidad:window.renderContabilidad,controlcostes:window.renderControlCostes,historial:window.renderHistorial,formacion:window.renderFormacion,instagram:function(){},diario:window.renderDiario,programacion:window.initProgramacion}[id];
-      if(typeof f==='function')f();
-    }catch(e){console.warn('No se pudo actualizar el contenido de '+id,e);}
-  }
-  function mostrar(id,btn){
-    if(window.USUARIO_MARIA&&window.MARIA_ALLOWED_TABS&&window.MARIA_ALLOWED_TABS.indexOf(id)<0)return;
-    var dest=document.getElementById('tab-'+id); if(!dest)return;
-    document.querySelectorAll('#main-content > .tab').forEach(function(t){t.classList.remove('active');t.style.display='none';});
-    dest.classList.add('active');dest.style.display='block';
-    document.querySelectorAll('#main-nav button').forEach(function(b){b.classList.remove('active');});
-    if(btn)btn.classList.add('active');
-    window._tabActual=id;
-    try{window.actualizarContextoApp&&window.actualizarContextoApp(id);}catch(e){}
-    try{window.renderTabGuia&&window.renderTabGuia(id);}catch(e){}
-    renderFor(id);
-    var main=document.getElementById('main-content');if(main)main.scrollTop=0;
-  }
-  function abrir(grupo,btn){
-    var nav=document.getElementById('main-nav');if(!nav)return;
-    ['hoy','operacion','control','desarrollo'].forEach(function(g){nav.classList.remove('nav-world-'+g);});
-    nav.classList.add('nav-group-active','nav-world-'+grupo);
-    var volver=document.getElementById('nav-volver-grupos');if(volver)volver.style.display='flex';
-    var links=document.getElementById('nav-world-links');if(!links)return;
-    var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='▸ '+({hoy:'HOY',operacion:'OPERACIÓN',control:'CONTROL',desarrollo:'DESARROLLO'}[grupo]||grupo);
-    links.innerHTML=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes';}).filter(function(id){return !window.USUARIO_MARIA||!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0;}).map(function(id){return '<button type="button" class="nav-world-link" data-fallback-tab="'+id+'">'+(labels[id]||id)+'<span style="margin-left:auto">›</span></button>';}).join('');
-    links.style.display='flex';
-    var primera=(grupos[grupo]||[]).filter(function(id){return id!=='inicio'&&id!=='pendientes'&&(!window.USUARIO_MARIA||!window.MARIA_ALLOWED_TABS||window.MARIA_ALLOWED_TABS.indexOf(id)>=0);})[0]||'inicio';
-    mostrar(primera,btn);
+  function activa(id){
+    var el=document.getElementById('tab-'+id);
+    return !!(el && el.classList.contains('active') && el.style.display!=='none');
   }
   document.addEventListener('click',function(ev){
-    var target=ev.target&&ev.target.closest?ev.target.closest('#nav-grupo-hoy,#nav-grupo-operacion,#nav-grupo-control,#nav-grupo-desarrollo,.nav-world-link,#nav-volver-grupos,button[id^="nav-"]'):null;
+    var target=ev.target&&ev.target.closest?ev.target.closest('#main-nav button[id^="nav-"],#main-nav .nav-world-link[data-fallback-tab]'):null;
     if(!target)return;
-    if(target.id==='nav-volver-grupos'){ev.preventDefault();ev.stopImmediatePropagation();var nav=document.getElementById('main-nav');if(nav)nav.classList.remove('nav-group-active','nav-world-hoy','nav-world-operacion','nav-world-control','nav-world-desarrollo');var links=document.getElementById('nav-world-links');if(links){links.innerHTML='';links.style.display='none';}var heading=document.getElementById('nav-world-heading');if(heading)heading.innerHTML='';mostrar('inicio',document.getElementById('nav-inicio'));return;}
-    var gm={"nav-grupo-hoy":'hoy',"nav-grupo-operacion":'operacion',"nav-grupo-control":'control',"nav-grupo-desarrollo":'desarrollo'};
-    if(gm[target.id]){ev.preventDefault();ev.stopImmediatePropagation();abrir(gm[target.id],target);return;}
-    var fid=target.getAttribute('data-fallback-tab')||((target.id||'').indexOf('nav-')===0?(target.id||'').slice(4):'');
-    if(fid && document.getElementById('tab-'+fid)){ev.preventDefault();ev.stopImmediatePropagation();mostrar(fid,target);}
-  },true);
+    var nav=document.getElementById('main-nav');
+    if(target.id==='nav-volver-grupos'){
+      if(nav&&!nav.classList.contains('nav-group-active'))return;
+      if(typeof window.volverGruposNav==='function')window.volverGruposNav();
+      return;
+    }
+    var grupos={'nav-grupo-operacion':'operacion','nav-grupo-control':'control','nav-grupo-desarrollo':'desarrollo'};
+    if(grupos[target.id]){
+      if(nav&&nav.classList.contains('nav-group-active'))return;
+      if(typeof window.irAMundoNav==='function')window.irAMundoNav(grupos[target.id],target);
+      return;
+    }
+    var id=target.getAttribute('data-fallback-tab')||((target.id||'').indexOf('nav-')===0?target.id.slice(4):'');
+    if(!id||!document.getElementById('tab-'+id)||activa(id))return;
+    if(typeof window.tab==='function')window.tab(id,target);
+  },false);
   document.addEventListener('change',function(ev){
-    var el=ev.target;if(!el||el.id!=='nav-directo'||!el.value)return;
-    if(window.USUARIO_MARIA&&window.MARIA_ALLOWED_TABS&&window.MARIA_ALLOWED_TABS.indexOf(el.value)<0){ev.preventDefault();ev.stopImmediatePropagation();if(window.toast)toast(window._noAccesoMsg||'Ehhez a részhez nincs hozzáférésed','error');return;}
-    ev.preventDefault();ev.stopImmediatePropagation();mostrar(el.value,null);
-  },true);
+    var el=ev.target;
+    if(!el||el.id!=='nav-directo'||!el.value||activa(el.value))return;
+    if(typeof window.tab==='function')window.tab(el.value,null);
+  },false);
 })();
 </script>
 
